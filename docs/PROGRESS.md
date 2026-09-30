@@ -121,6 +121,12 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-09-30 (31) — In-app update tested by the owner
+- **Done:** PR #5 merged, v0.2.4 published (21:32 UTC).
+- **Verified (owner):** in-app update from 0.2.3 to 0.2.4 worked ("Restart and update").
+- **Open:** which system it was tested on decides whether "Windows silent update by hand" is ticked; ByeDPI with
+  the stricter checks on the owner's Discord setup.
+
 ### 2026-09-30 (30) — 0.2.4: stricter connection checks
 - **Owner's report (Linux, 0.2.2):** Discord through ByeDPI stuck on start ("recv: Connection reset by peer")
   although the Lab had picked a strategy; zapret worked. Stricter checks, DECISIONS #41:
