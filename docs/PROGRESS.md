@@ -124,7 +124,7 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 ### 2026-09-30 (32) — 0.2.5: standard strategies as a JSON file in the repository
 - **Done:** the standard strategies moved from Rust tables to `strategies/default.json` (DECISIONS #42). The app
   embeds it and the service fetches the newest one from `main` with the daily update check and on "Update
-  lists" in the Lab; a file it cannot read (newer format, empty, blank entries) is ignored. The owner chose
+  online lists" in the Lab; a file it cannot read (newer format, empty, blank entries) is ignored. The owner chose
   this over a separate strategy repository.
 - **Verified (container):** service lists the 12 embedded ByeDPI strategies; a valid file in
   `<data>/strategies/default.json` replaces them (13, new one first); a file with an unknown format falls back
