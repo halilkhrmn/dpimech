@@ -60,14 +60,30 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 - [x] GitHub Actions: CI (fmt, clippy, tests) and tag-triggered releases with installer + zip + SHA256SUMS
 - [x] dpimngr update check (GitHub releases) + notification; Windows Security exclusion button (opt-in)
 - [x] Single GUI instance (second launch shows the running window)
-- [x] Translations (tr, ru): 246 strings, bundled .po catalogs shared by Slint and Rust, language from the system or Settings
+- [x] Translations (tr, ru): 291 strings, bundled .po catalogs shared by Slint and Rust, language from the system or Settings
 - [ ] Tray right-click menu toggles — not exercised (the user was using the app; would need mouse automation)
 - [ ] Windows Packet Filter driver upgrade and Defender exclusion — skipped at the user's request
 ### Priority 1 (PLAN.md → Priorities) · *done*
 - [x] DPIMech rename + migration · [x] UI polish (cursor, avg. ping, refresh icon, editor latency)
 - [x] Wizard percent + live log, daily log files · [x] About + Thanks · [x] Anti-cheat and other-tool warnings
 - [x] README per OS in en/tr/ru, "not a VPN", "AI-assisted, tested by hand"
-- [ ] Priority 2: shortcuts and quick launch (details to be written down)
+- [x] Priority 2: profile shortcuts — card ⋯ / right-click menu and editor button, icon = logo + app icon,
+  desktop / menu entries per OS, `dpimech --launch` progress window; replaced on recreate, removed with the
+  profile, Settings → "Remove all shortcuts" (Linux tested in the container; Windows/macOS not yet by hand)
+
+### Diagnostics · *done, waiting for field logs*
+- [x] Default log: strategy + port on start, Lab baseline / best strategy / failed sites, routed processes,
+  "no process matches", DNS vs 1.1.1.1 warning
+- [x] Detailed log (Settings, off by default): per-connection lines with the TLS site name (Linux), per-strategy
+  Lab lines; daily log files opt-in; automatic error snapshot when a profile fails
+- [ ] Discord per-app on Linux resets connections (owner's report) — waiting for the detailed log from 0.2.2
+
+### Releases and distribution · *done*
+- [x] GPL-3.0-or-later; repository `halilkhrmn/dpimech` (fresh history, commits under the owner's GitHub identity)
+- [x] `main` protected by a ruleset (PRs only); merging a PR that raises the version publishes the release
+  (Windows installer + zip, .deb, .rpm, AppImage, .dmg, SHA256SUMS) and creates the tag
+- [x] Fedora: COPR `halilkahraman/DPIMech` built from source, started by the release through a webhook
+- [x] Landing page on GitHub Pages; download box picks the newest release and the visitor's system
 
 ### Phase 6 — Linux · *in progress*
 - [x] Service builds and runs on Linux; Unix socket open to local users (0666), second instance refused
@@ -75,8 +91,8 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 - [x] `install` / `uninstall` via systemd (binary in `/usr/local/lib/dpimngr`, unit in `/etc/systemd/system`)
 - [x] Data dir hardening: root-owned, no group/other write, planted symlinks removed
 - [x] `.tar.gz` packages (exec bits kept, setuid dropped, links skipped); `<stem>-<arch>` binary names
-- [ ] Real ByeDPI Linux release installed from GitHub (asset/binary names unverified — no GitHub access in the dev container)
-- [ ] systemd install on a real systemd machine (only tested with a stand-in `systemctl`)
+- [x] Real ByeDPI Linux release installed from GitHub (owner's desktop: "ByeDPI v0.17.3 installed")
+- [x] systemd install on a real systemd machine (owner's desktop, 0.2.1 from the packages)
 - [x] zapret on Linux: nfqws + tpws from the same package (per-CPU binaries, exec bits), argument allowlists
 - [x] nfqws system-wide: `inet dpimngr` nftables table (queue 200, `bypass`, ports from `--filter-tcp/udp`) for as long as the engine runs; stale table removed at start
 - [x] tpws as a local SOCKS proxy (127.0.0.1, managed port) with the SOCKS health probe
@@ -92,10 +108,21 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 - [x] Engines: zapret's universal `binaries/mac64/tpws` as a local SOCKS proxy (ByeDPI: if its release has a macOS build)
 - [x] GUI: tray created inside the event loop, LaunchAgent autostart, osascript notifications and admin prompt, macOS folders for prefs/logs, AppleLanguages
 - [x] `tools/build-macos-app.sh` (universal .app + .dmg, unsigned), macOS in CI and in the release workflow
-- [ ] Hand test on a Mac; code signing / notarization
+- [ ] Hand test on a Mac; code signing / notarization (the .dmg is built by every release)
 - [ ] Whole computer (pf + tpws) and per-app routing
 
 ## Work log
+
+### 2026-09-30 (27) — Status after the switch to pull requests
+- **Done:** PR #1 merged by the owner; the owner turned on the `main` ruleset and deleted the old `release`
+  branch. Checklist brought up to date (shortcuts, diagnostics, releases and distribution, Linux items the
+  owner's desktop has now covered).
+- **Verified:** first push to `main` after the merge: Release ran only its `plan` job (0.2.2 already tagged, so
+  builds and publish were skipped), Pages deployed the new landing page, CI green; ruleset `main` is active.
+- **Hand tests so far:** Windows 11 — 0.2.1 installs and the service runs; Linux desktop — 0.2.1 installs
+  and runs, ByeDPI downloads; Fedora COPR builds automatically on release.
+- **Next:** Discord on Linux with 0.2.2's detailed log (DNS warning? which host resets?); profile shortcut
+  on Windows; a first look on a Mac.
 
 ### 2026-09-30 (26) — PR-only main, releases on merge, landing page download box
 - **Done:** Release workflow: a `plan` job publishes when `main` has an untagged version (or a tag is pushed),
@@ -106,8 +133,7 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 - **Verified:** workflow YAML parses and jobs chain plan → builds → publish; page rendered in Chromium with
   Windows / macOS / Fedora / Linux / iPhone user agents against the live API (0.2.2): exe, dmg, COPR link,
   AppImage, generic button respectively.
-- **Open:** the owner turns on the `main` ruleset (docs/RELEASING.md) — the cloud session may not change
-  repository settings.
+- **Open → done:** the owner turned on the `main` ruleset and deleted the `release` branch (see (27)).
 
 ### 2026-09-30 (25) — 0.2.2: better logs, DNS check, shortcut housekeeping
 - **Report (owner, Linux):** wizard set up Discord per-app with ByeDPI; engine logged "recv: Connection reset by
