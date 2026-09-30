@@ -110,6 +110,8 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 - **Verified:** Windows cross clippy, Linux tests; the Windows path itself needs the hand test with 0.2.1.
 - **Release chain verified:** pushing to `release` published v0.2.1 (all 7 files) and the COPR webhook started the
   Fedora build of 0.2.1 by itself (confirmed on COPR by the owner).
+- **Hand test (owner, real Linux desktop):** 0.2.1 installed and ran without problems — the first test outside
+  the development container.
 
 ### 2026-09-30 (23) — Releases without pushing tags
 - **Done:** pushing to the `release` branch runs the release workflow, which creates the tag `v<version>`
