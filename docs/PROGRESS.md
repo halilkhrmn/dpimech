@@ -79,6 +79,13 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
   Lab lines; daily log files opt-in; automatic error snapshot when a profile fails
 - [ ] Discord per-app on Linux resets connections (owner's report) — waiting for the detailed log from 0.2.2
 
+### SpoofDPI and in-app updates · *done (0.2.3)*
+- [x] SpoofDPI 1.5 on Linux/macOS: package, argument policy, managed SOCKS5 launch, 8 built-in strategies,
+  per-app routing by TLS name (DECISIONS #39)
+- [x] In-app updates: background download + SHA-256 check by the service, "Restart and update"; Windows
+  silent installer, AppImage swap, package managers left in charge (DECISIONS #40)
+- [ ] Windows silent update by hand (needs 0.2.3 installed and a 0.2.4 to update to)
+
 ### Releases and distribution · *done*
 - [x] GPL-3.0-or-later; repository `halilkhrmn/dpimech` (fresh history, commits under the owner's GitHub identity)
 - [x] `main` protected by a ruleset (PRs only); merging a PR that raises the version publishes the release
@@ -113,6 +120,21 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 - [ ] Whole computer (pf + tpws) and per-app routing
 
 ## Work log
+
+### 2026-09-30 (29) — 0.2.3: SpoofDPI, in-app updates, two fixes
+- **Done:** SpoofDPI engine (DECISIONS #39) incl. relay option to connect by TLS name; in-app updates
+  (DECISIONS #40); engine output stripped of terminal colour codes; Windows Security hint hidden off Windows
+  (the owner saw it on Linux); fix: stopping and quickly starting a profile stopped the new run too (the old
+  run's clean-up removed the new run's entry) — each run now has its own number.
+- **Verified (container):** real SpoofDPI 1.5.4 as a local-proxy profile (traffic flows; its colour codes no
+  longer reach the log), Strategy Lab ran its strategies (DoH is blocked in this sandbox, system DNS passed),
+  quick stop+start keeps the profile running; update flow as 0.2.1 against the real v0.2.2 release: service
+  downloaded `DPIMech-0.2.2-x86_64.AppImage`, SHA-256 equal to GitHub's digest, banner "DPIMech 0.2.2 is ready
+  to install", "Restart and update" swapped the AppImage, the old window exited and exactly one new 0.2.2
+  window started. Windows cross clippy clean; unit tests for SpoofDPI assets/policy/strategies, SOCKS
+  requests by name, colour stripping.
+- **Not verified:** the Windows silent install + relaunch (needs a real Windows and a newer release).
+- **Owner's Discord log:** still from a pre-0.2.2 build (no "strategy:" / "best strategy" lines).
 
 ### 2026-09-30 (28) — Windows hand tests, plan brought up to date
 - **Hand tests (owner, Windows 11):** profile shortcut works (profile on, then the app opens); tray right-click
