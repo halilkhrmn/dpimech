@@ -14,6 +14,7 @@ mod notify;
 mod picker;
 mod prefs;
 mod report;
+mod selfupdate;
 mod shortcut;
 mod shortcutui;
 mod single;
@@ -68,6 +69,11 @@ fn main() -> anyhow::Result<()> {
             weak.unwrap().set_app_update_text(tr("Checking…").into());
             let _ = tx.send(Command::CheckAppUpdate);
         }
+    });
+    ui.on_restart_and_update({
+        let weak = ui.as_weak();
+        let tx = cmd_tx.clone();
+        move || selfupdate::restart_and_update(&weak.unwrap(), &tx)
     });
     ui.on_download_app_update(|| {
         let url = APP_UPDATE_URL.with_borrow(|u| u.clone());

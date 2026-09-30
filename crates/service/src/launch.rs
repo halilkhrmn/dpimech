@@ -88,6 +88,18 @@ pub fn build(data: &DataDir, packages: &Packages, launch: &Launch) -> anyhow::Re
             format!("--dpi-desync-fwmark={DESYNC_MARK}"),
         ]);
     }
+    if launch.engine == EngineKind::SpoofDpi {
+        let port = launch.port.context("SpoofDPI needs a local port")?;
+        // --clean: never read a spoofdpi.toml from /etc or a home directory.
+        args.extend([
+            "--app-mode".into(),
+            "socks5".into(),
+            "--listen-addr".into(),
+            format!("127.0.0.1:{port}"),
+            "--no-tui".into(),
+            "--clean".into(),
+        ]);
+    }
     if launch.engine == EngineKind::ZapretTpws {
         let port = launch.port.context("tpws needs a local port")?;
         args.extend([

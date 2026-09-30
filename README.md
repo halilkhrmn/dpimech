@@ -80,6 +80,7 @@ real desktop. Feedback is welcome.
 | **zapret (nfqws)** | Whole computer. DPIMech adds its own nftables rules while it runs and removes them afterwards. | `nftables`, kernel modules `nft_queue` and `nfnetlink_queue` (standard on most distributions) |
 | **zapret (tpws)** | Whole computer, only some apps, or a local SOCKS proxy | Nothing extra (cgroup v2 for "only some apps") |
 | **ByeDPI** | Only some apps, or a local SOCKS proxy | Nothing extra (cgroup v2 for "only some apps") |
+| **SpoofDPI** | Only some apps, or a local SOCKS proxy. Can resolve names over HTTPS (DoH), which also gets past DNS blocking | Nothing extra |
 
 "Only some apps" and tpws for the whole computer route TCP only; UDP (for example voice)
 goes direct. An app's traffic is picked up about a second after it starts.

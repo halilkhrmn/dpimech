@@ -52,6 +52,11 @@ impl DataDir {
         self.root.join("downloads")
     }
 
+    /// Verified DPIMech updates waiting to be installed.
+    pub fn updates_dir(&self) -> PathBuf {
+        self.root.join("updates")
+    }
+
     /// Versioned install root of an archive package: `<data>/engines/<slug>/`.
     /// Packages are only ever launched from here, never from a client-supplied path,
     /// because the service runs privileged.

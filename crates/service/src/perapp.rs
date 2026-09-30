@@ -13,6 +13,9 @@ pub struct Route {
     /// Linux: route all outgoing TCP to these ports (nftables set body, e.g. "80, 443")
     /// instead of only `apps` — tpws for the whole computer.
     pub system_wide: Option<String>,
+    /// Linux: hand the engine the TLS server name instead of the address the app connected
+    /// to, so an engine with its own DNS (SpoofDPI over DoH) gets around DNS blocking too.
+    pub by_name: bool,
 }
 
 #[cfg(target_os = "linux")]

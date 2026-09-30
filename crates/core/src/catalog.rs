@@ -283,6 +283,43 @@ const GOODBYEDPI: &[BuiltinStrategy] = &[
     },
 ];
 
+/// SpoofDPI 1.5. Most resolve names over HTTPS (DoH), which also gets past providers that
+/// block by DNS; the last ones use the system's DNS for networks where DoH is blocked.
+const SPOOFDPI: &[BuiltinStrategy] = &[
+    BuiltinStrategy {
+        name: "split at SNI + DoH",
+        args: "--dns-mode https",
+    },
+    BuiltinStrategy {
+        name: "split at SNI + disorder + DoH",
+        args: "--dns-mode https --https-disorder",
+    },
+    BuiltinStrategy {
+        name: "first byte + DoH",
+        args: "--dns-mode https --https-split-mode first-byte",
+    },
+    BuiltinStrategy {
+        name: "1-byte chunks + DoH",
+        args: "--dns-mode https --https-split-mode chunk --https-chunk-size 1",
+    },
+    BuiltinStrategy {
+        name: "random split + disorder + DoH",
+        args: "--dns-mode https --https-split-mode random --https-disorder",
+    },
+    BuiltinStrategy {
+        name: "fake packets + DoH",
+        args: "--dns-mode https --https-fake-count 3",
+    },
+    BuiltinStrategy {
+        name: "split at SNI (system DNS)",
+        args: "--dns-mode system",
+    },
+    BuiltinStrategy {
+        name: "split at SNI + disorder (system DNS)",
+        args: "--dns-mode system --https-disorder",
+    },
+];
+
 pub fn builtin_strategies(engine: EngineKind) -> &'static [BuiltinStrategy] {
     match engine {
         EngineKind::ByeDpi => BYEDPI,
@@ -290,7 +327,7 @@ pub fn builtin_strategies(engine: EngineKind) -> &'static [BuiltinStrategy] {
         EngineKind::ZapretWinws | EngineKind::ZapretNfqws => WINWS,
         EngineKind::GoodbyeDpi => GOODBYEDPI,
         EngineKind::ZapretTpws => TPWS,
-        _ => &[],
+        EngineKind::SpoofDpi => SPOOFDPI,
     }
 }
 
@@ -495,15 +532,18 @@ mod tests {
     }
 
     #[test]
-    fn tpws_strategies_pass_the_argument_policy() {
+    fn proxy_strategies_pass_the_argument_policy() {
         let dir = std::env::temp_dir();
-        for s in builtin_strategies(EngineKind::ZapretTpws) {
-            let args = crate::args::split_args(s.args);
-            assert!(
-                crate::argpolicy::check_engine_args(EngineKind::ZapretTpws, &args, &[&dir]).is_ok(),
-                "{}",
-                s.name
-            );
+        for engine in [EngineKind::ZapretTpws, EngineKind::SpoofDpi] {
+            for s in builtin_strategies(engine) {
+                let args = crate::args::split_args(s.args);
+                assert!(
+                    crate::argpolicy::check_engine_args(engine, &args, &[&dir]).is_ok(),
+                    "{}: {}",
+                    engine.display_name(),
+                    s.name
+                );
+            }
         }
     }
 }

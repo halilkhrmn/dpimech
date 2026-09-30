@@ -316,6 +316,42 @@ const TPWS: &[Opt] = &[
     l("version", N, Deny),
 ];
 
+/// SpoofDPI 1.5 (`internal/config/cli.go`). DPIMech runs it as a SOCKS5 proxy on a port it
+/// chooses and ignores config files (`--clean`), so a planted `/etc/spoofdpi.toml` or a
+/// profile cannot change the mode or where it listens.
+const SPOOFDPI: &[Opt] = &[
+    l("app-mode", R, Managed),
+    l("listen-addr", R, Managed),
+    l("clean", Opt_, Managed),
+    l("no-tui", Opt_, Managed),
+    // Would read an arbitrary TOML file as root.
+    o('c', "config", R, Deny),
+    // Rewrites the system's network settings (macOS).
+    l("auto-configure-network", Opt_, Deny),
+    l("freebsd-fib", R, Deny),
+    o('v', "version", Opt_, Deny),
+    o('h', "help", Opt_, Deny),
+    l("log-level", R, Allow),
+    l("default-fake-ttl", R, Allow),
+    l("tcp-timeout", R, Allow),
+    l("dns-addr", R, Allow),
+    l("dns-cache", Opt_, Allow),
+    l("dns-mode", R, Allow),
+    l("dns-https-url", R, Allow),
+    l("dns-qtype", R, Allow),
+    l("dns-timeout", R, Allow),
+    l("https-split-mode", R, Allow),
+    l("https-chunk-size", R, Allow),
+    l("https-disorder", Opt_, Allow),
+    l("https-fake-count", R, Allow),
+    l("https-fake-packet", R, Allow),
+    l("https-skip", Opt_, Allow),
+    l("udp-fake-count", R, Allow),
+    l("udp-fake-packet", R, Allow),
+    l("udp-skip", Opt_, Allow),
+    l("udp-idle-timeout", R, Allow),
+];
+
 /// GoodbyeDPI 0.2.x.
 const GOODBYEDPI: &[Opt] = &[
     o('p', "", N, Allow),
@@ -372,8 +408,7 @@ fn table(engine: EngineKind) -> Option<Table> {
         EngineKind::ZapretNfqws => Some(&[NFQWS_ONLY, ZAPRET_COMMON]),
         EngineKind::ZapretTpws => Some(&[TPWS]),
         EngineKind::GoodbyeDpi => Some(&[GOODBYEDPI]),
-        // TODO(phase 6): SpoofDPI.
-        EngineKind::SpoofDpi => None,
+        EngineKind::SpoofDpi => Some(&[SPOOFDPI]),
     }
 }
 
@@ -564,6 +599,35 @@ mod tests {
 
     fn gdpi(s: &str) -> Result<(), String> {
         check(EngineKind::GoodbyeDpi, s)
+    }
+
+    fn spoof(s: &str) -> Result<(), String> {
+        check(EngineKind::SpoofDpi, s)
+    }
+
+    #[test]
+    fn spoofdpi_allows_strategies_and_blocks_the_rest() {
+        assert!(spoof("--dns-mode https --https-disorder").is_ok());
+        assert!(
+            spoof("--https-split-mode=chunk --https-chunk-size 1 --https-disorder=false").is_ok()
+        );
+        assert!(spoof("--dns-mode udp --dns-addr 1.1.1.1:53 --log-level debug").is_ok());
+        assert!(
+            spoof("--config /etc/shadow").is_err(),
+            "reads arbitrary files"
+        );
+        assert!(spoof("-c /tmp/x.toml").is_err());
+        assert!(
+            spoof("--listen-addr 0.0.0.0:1080").is_err(),
+            "managed listen address"
+        );
+        assert!(spoof("--app-mode http").is_err(), "managed mode");
+        assert!(spoof("--auto-configure-network").is_err());
+        assert!(
+            spoof("--https-disorder true").is_err(),
+            "a stray value is not an option"
+        );
+        assert!(spoof("--tun").is_err(), "unknown options are rejected");
     }
 
     #[test]

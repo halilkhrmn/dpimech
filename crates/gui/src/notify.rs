@@ -167,9 +167,22 @@ pub fn app_update(version: &str) {
         show(
             &tr("DPIMech update available"),
             &trf!(
-                "Version {} is ready. Open Settings to download it.",
+                "Version {} is out. Settings → About shows how to get it.",
                 version
             ),
+        );
+    }
+}
+
+/// The update is downloaded and waits for a restart; once per version.
+pub fn update_ready(version: &str) {
+    static SHOWN: Mutex<Option<String>> = Mutex::new(None);
+    let mut shown = SHOWN.lock().unwrap();
+    if shown.as_deref() != Some(version) {
+        *shown = Some(version.to_owned());
+        show(
+            &trf!("DPIMech {} is ready", version),
+            &tr("Restart DPIMech to update: use the button at the top of the window."),
         );
     }
 }

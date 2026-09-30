@@ -83,6 +83,8 @@ install -Dm644 crates/gui/assets/dpimech.png %{buildroot}%{_datadir}/icons/hicol
 %{_datadir}/icons/hicolor/256x256/apps/dpimech.png
 
 %changelog
+* Wed Sep 30 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.2.3-1
+- SpoofDPI engine, in-app updates, fix for quickly restarting a profile
 * Wed Sep 30 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.2.2-1
 - More useful logs (detailed log option, DNS check), shortcut clean-up
 * Wed Sep 30 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.2.1-1

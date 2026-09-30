@@ -116,6 +116,7 @@ impl PerAppRouter {
                 tasks.push(tokio::spawn(relay(
                     listener,
                     route.port,
+                    route.by_name,
                     self.logs.clone(),
                     self.failures.clone(),
                 )));
@@ -501,6 +502,7 @@ fn children_of(parent: u32) -> Vec<u32> {
 async fn relay(
     listener: TcpListener,
     socks_port: u16,
+    by_name: bool,
     logs: Arc<LogBus>,
     failures: mpsc::UnboundedSender<String>,
 ) {
@@ -509,7 +511,7 @@ async fn relay(
             Ok((inbound, _)) => {
                 let logs = logs.clone();
                 tokio::spawn(async move {
-                    if let Err(e) = forward(inbound, socks_port, &logs).await {
+                    if let Err(e) = forward(inbound, socks_port, by_name, &logs).await {
                         tracing::debug!("relay connection: {e}");
                         if e.kind() == std::io::ErrorKind::ConnectionRefused {
                             logs.push(
@@ -532,8 +534,14 @@ async fn relay(
 /// A stuck engine must not keep the app's connections hanging forever.
 const ENGINE_HANDSHAKE: Duration = Duration::from_secs(15);
 
+/// Where the engine should connect: the app's address, or the TLS server name and port.
+enum Target {
+    Addr(SocketAddr),
+    Name(String, u16),
+}
+
 /// Opens the SOCKS5 tunnel to `target` through the engine.
-async fn open_tunnel(socks_port: u16, target: SocketAddr) -> std::io::Result<TcpStream> {
+async fn open_tunnel(socks_port: u16, target: &Target) -> std::io::Result<TcpStream> {
     tokio::time::timeout(ENGINE_HANDSHAKE, async {
         let mut outbound = TcpStream::connect(("127.0.0.1", socks_port)).await?;
         socks5_connect(&mut outbound, target).await?;
@@ -548,28 +556,43 @@ async fn open_tunnel(socks_port: u16, target: SocketAddr) -> std::io::Result<Tcp
     })
 }
 
-async fn forward(mut inbound: TcpStream, socks_port: u16, logs: &LogBus) -> std::io::Result<()> {
-    let target = original_destination(&inbound)?;
-    if !logs.detailed() {
-        let mut outbound = open_tunnel(socks_port, target).await?;
-        tokio::io::copy_bidirectional(&mut inbound, &mut outbound).await?;
-        return Ok(());
-    }
-    // Detailed log: name the site (TLS SNI) and say how the connection ended. peek() leaves
-    // the bytes in place; apps where the server talks first just get no name.
-    let started = std::time::Instant::now();
-    let mut first = [0u8; 2048];
-    let name =
+async fn forward(
+    mut inbound: TcpStream,
+    socks_port: u16,
+    by_name: bool,
+    logs: &LogBus,
+) -> std::io::Result<()> {
+    let address = original_destination(&inbound)?;
+    let detailed = logs.detailed();
+    // The TLS server name, when it is needed (by-name routes, detailed log). peek() leaves the
+    // bytes in place. Only HTTPS is waited for: elsewhere the server may speak first.
+    let name = if (by_name && address.port() == 443) || detailed {
+        let mut first = [0u8; 2048];
         match tokio::time::timeout(Duration::from_millis(300), inbound.peek(&mut first)).await {
             Ok(Ok(n)) => crate::sni::server_name(&first[..n]),
             _ => None,
-        };
-    let what = match &name {
-        Some(name) => format!("{name} ({target})"),
-        None => target.to_string(),
+        }
+    } else {
+        None
+    };
+    let target = match &name {
+        Some(name) if by_name => Target::Name(name.clone(), address.port()),
+        _ => Target::Addr(address),
+    };
+    if !detailed {
+        let mut outbound = open_tunnel(socks_port, &target).await?;
+        tokio::io::copy_bidirectional(&mut inbound, &mut outbound).await?;
+        return Ok(());
+    }
+    // Detailed log: name the site and say how the connection ended.
+    let started = std::time::Instant::now();
+    let what = match (&name, &target) {
+        (Some(name), Target::Name(..)) => format!("{name} (by name; app asked for {address})"),
+        (Some(name), Target::Addr(_)) => format!("{name} ({address})"),
+        (None, _) => address.to_string(),
     };
     let result = async {
-        let mut outbound = open_tunnel(socks_port, target).await?;
+        let mut outbound = open_tunnel(socks_port, &target).await?;
         tokio::io::copy_bidirectional(&mut inbound, &mut outbound).await
     }
     .await;
@@ -633,9 +656,35 @@ fn original_destination(stream: &TcpStream) -> std::io::Result<SocketAddr> {
     }
 }
 
-/// SOCKS5 CONNECT without authentication, by IP address (the engine sees the TLS SNI in the
-/// stream, which is what it works on).
-async fn socks5_connect(stream: &mut TcpStream, target: SocketAddr) -> std::io::Result<()> {
+/// The SOCKS5 CONNECT request for `target` (address type 1 = IPv4, 3 = name, 4 = IPv6).
+fn socks5_request(target: &Target) -> Vec<u8> {
+    let mut request = vec![5, 1, 0];
+    let port = match target {
+        Target::Addr(SocketAddr::V4(a)) => {
+            request.push(1);
+            request.extend_from_slice(&a.ip().octets());
+            a.port()
+        }
+        Target::Addr(SocketAddr::V6(a)) => {
+            request.push(4);
+            request.extend_from_slice(&a.ip().octets());
+            a.port()
+        }
+        Target::Name(name, port) => {
+            // SNI names are at most 255 bytes by the TLS spec; sni.rs only returns ASCII.
+            let name = &name.as_bytes()[..name.len().min(255)];
+            request.push(3);
+            request.push(name.len() as u8);
+            request.extend_from_slice(name);
+            *port
+        }
+    };
+    request.extend_from_slice(&port.to_be_bytes());
+    request
+}
+
+/// SOCKS5 CONNECT without authentication, by address or by TLS server name (see `Target`).
+async fn socks5_connect(stream: &mut TcpStream, target: &Target) -> std::io::Result<()> {
     use std::io::{Error, ErrorKind};
 
     stream.write_all(&[5, 1, 0]).await?;
@@ -644,19 +693,7 @@ async fn socks5_connect(stream: &mut TcpStream, target: SocketAddr) -> std::io::
     if choice != [5, 0] {
         return Err(Error::other("SOCKS5 greeting refused"));
     }
-    let mut request = vec![5, 1, 0];
-    match target {
-        SocketAddr::V4(a) => {
-            request.push(1);
-            request.extend_from_slice(&a.ip().octets());
-        }
-        SocketAddr::V6(a) => {
-            request.push(4);
-            request.extend_from_slice(&a.ip().octets());
-        }
-    }
-    request.extend_from_slice(&target.port().to_be_bytes());
-    stream.write_all(&request).await?;
+    stream.write_all(&socks5_request(target)).await?;
     let mut head = [0u8; 4];
     stream.read_exact(&mut head).await?;
     if head[1] != 0 {
@@ -683,6 +720,20 @@ async fn socks5_connect(stream: &mut TcpStream, target: SocketAddr) -> std::io::
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn socks_requests_by_address_and_by_name() {
+        let v4 = Target::Addr("162.159.128.233:443".parse().unwrap());
+        assert_eq!(
+            socks5_request(&v4),
+            [5, 1, 0, 1, 162, 159, 128, 233, 1, 187]
+        );
+        let name = Target::Name("dis.gd".into(), 443);
+        assert_eq!(
+            socks5_request(&name),
+            [5, 1, 0, 3, 6, b'd', b'i', b's', b'.', b'g', b'd', 1, 187]
+        );
+    }
 
     #[test]
     fn ruleset_orders_app_rules_before_system_wide_and_excludes_the_service() {

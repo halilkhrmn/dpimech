@@ -63,6 +63,14 @@ pub enum Request {
     CancelLab,
     /// Checks GitHub for a newer DPIMech release.
     CheckAppUpdate,
+    /// Downloads the newest release in `format` into the service's data folder and verifies
+    /// it; answered with `AppUpdateReady` (or an error when nothing newer exists).
+    PrepareAppUpdate {
+        format: UpdateFormat,
+    },
+    /// Windows: starts the installer prepared by `PrepareAppUpdate`, silently. The service is
+    /// stopped and restarted by the installer, so the connection drops.
+    InstallAppUpdate,
     /// Adds DPIMech's engine folder to Windows Security exclusions (WinDivert is often
     /// flagged). Only on an explicit user request.
     AddDefenderExclusion,
@@ -107,6 +115,11 @@ pub enum Reply {
         latest: Option<String>,
         url: String,
     },
+    AppUpdateReady {
+        version: String,
+        /// The downloaded file (readable by the GUI; an AppImage is copied from here).
+        path: String,
+    },
     ForeignTools {
         tools: Vec<ForeignTool>,
     },
@@ -141,6 +154,26 @@ pub enum Event {
     Log {
         line: LogLine,
     },
+}
+
+/// What a self-update downloads.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum UpdateFormat {
+    /// `dpimech-setup-<version>.exe`, run silently by the service.
+    WindowsInstaller,
+    /// `DPIMech-<version>-x86_64.AppImage`, swapped in by the GUI (it owns the file).
+    AppImage,
+}
+
+impl UpdateFormat {
+    pub fn asset_name(self, version: &str) -> String {
+        let version = version.trim_start_matches('v');
+        match self {
+            UpdateFormat::WindowsInstaller => format!("dpimech-setup-{version}.exe"),
+            UpdateFormat::AppImage => format!("DPIMech-{version}-x86_64.AppImage"),
+        }
+    }
 }
 
 /// A DPI tool found running outside DPIMech's engine folder.

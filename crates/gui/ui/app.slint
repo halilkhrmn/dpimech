@@ -1,4 +1,4 @@
-import { Palette } from "std-widgets.slint";
+import { Palette, Button } from "std-widgets.slint";
 import { Theme, Icons } from "theme.slint";
 import { ProfileItem, LogItem, NavItem, Glyph } from "components.slint";
 import { DashboardPage, LogsPage, PlaceholderPage, SettingsPage } from "pages.slint";
@@ -135,8 +135,12 @@ export component AppWindow inherits Window {
     in property <string> app-version;
     in property <string> app-update-text;
     in property <bool> app-update-available;
+    /// A downloaded update waits for a restart.
+    in property <bool> app-update-ready;
+    in property <string> app-update-version;
     callback check-app-update;
     callback download-app-update;
+    callback restart-and-update;
     in property <bool> show-defender-note;
     in property <string> defender-status;
     in property <string> defender-state;
@@ -270,6 +274,24 @@ export component AppWindow inherits Window {
                 }
             }
 
+            if app-update-ready: Rectangle {
+                background: Palette.accent-background.transparentize(0.85);
+                HorizontalLayout {
+                    padding-left: 24px;
+                    padding-right: 16px;
+                    padding-top: 6px;
+                    padding-bottom: 6px;
+                    spacing: 10px;
+                    VerticalLayout { alignment: center; Glyph { source: Icons.refresh; color: Palette.accent-background; } }
+                    Text {
+                        text: @tr("DPIMech {} is ready to install.", app-update-version);
+                        vertical-alignment: center;
+                        horizontal-stretch: 1;
+                    }
+                    Button { text: @tr("Restart and update"); primary: true; clicked => { root.restart-and-update(); } }
+                }
+            }
+
             if !service-connected: Rectangle {
                 height: 40px;
                 background: Theme.starting.transparentize(0.8);
@@ -366,8 +388,10 @@ export component AppWindow inherits Window {
                 app-version: app-version;
                 app-update-text: app-update-text;
                 app-update-available: app-update-available;
+                app-update-ready: app-update-ready;
                 check-app-update => { root.check-app-update(); }
                 download-app-update => { root.download-app-update(); }
+                restart-and-update => { root.restart-and-update(); }
                 language-names: language-names;
                 language-index: language-index;
                 set-language(i) => { root.set-language(i); }
