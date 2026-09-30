@@ -12,6 +12,7 @@ pub enum PackageId {
     GoodbyeDpi,
     ProxiFyre,
     PacketFilterDriver,
+    SpoofDpi,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -31,9 +32,10 @@ pub struct ExtractRule {
 }
 
 impl PackageId {
-    pub const ALL: [PackageId; 5] = [
+    pub const ALL: [PackageId; 6] = [
         PackageId::ByeDpi,
         PackageId::Zapret,
+        PackageId::SpoofDpi,
         PackageId::GoodbyeDpi,
         PackageId::ProxiFyre,
         PackageId::PacketFilterDriver,
@@ -46,6 +48,7 @@ impl PackageId {
             PackageId::GoodbyeDpi => "GoodbyeDPI",
             PackageId::ProxiFyre => "ProxiFyre",
             PackageId::PacketFilterDriver => "Windows Packet Filter",
+            PackageId::SpoofDpi => "SpoofDPI",
         }
     }
 
@@ -66,6 +69,9 @@ impl PackageId {
             PackageId::PacketFilterDriver => {
                 "Kernel driver required by ProxiFyre. Installed system-wide."
             }
+            PackageId::SpoofDpi => {
+                "SOCKS5 proxy that splits TLS and can resolve names over HTTPS (DoH), which also gets around DNS blocking."
+            }
         }
     }
 
@@ -76,6 +82,7 @@ impl PackageId {
             PackageId::GoodbyeDpi => "goodbyedpi",
             PackageId::ProxiFyre => "proxifyre",
             PackageId::PacketFilterDriver => "windows-packet-filter",
+            PackageId::SpoofDpi => "spoofdpi",
         }
     }
 
@@ -87,6 +94,7 @@ impl PackageId {
             PackageId::GoodbyeDpi => "ValdikSS/GoodbyeDPI",
             PackageId::ProxiFyre => "wiresock/proxifyre",
             PackageId::PacketFilterDriver => "wiresock/ndisapi",
+            PackageId::SpoofDpi => "xvzc/SpoofDPI",
         }
     }
 
@@ -105,6 +113,8 @@ impl PackageId {
             PackageId::GoodbyeDpi | PackageId::ProxiFyre | PackageId::PacketFilterDriver => {
                 &[Os::Windows]
             }
+            // SpoofDPI 1.x publishes Linux and macOS builds only.
+            PackageId::SpoofDpi => &[Os::Linux, Os::MacOs],
         }
     }
 
@@ -121,6 +131,7 @@ impl PackageId {
             PackageId::GoodbyeDpi => Some("goodbyedpi"),
             PackageId::ProxiFyre => Some("ProxiFyre"),
             PackageId::PacketFilterDriver => None,
+            PackageId::SpoofDpi => Some("spoofdpi"),
         }
     }
 
@@ -192,8 +203,7 @@ impl PackageId {
             EngineKind::ZapretWinws => Some(PackageId::Zapret),
             EngineKind::GoodbyeDpi => Some(PackageId::GoodbyeDpi),
             EngineKind::ZapretNfqws | EngineKind::ZapretTpws => Some(PackageId::Zapret),
-            // TODO(phase 6): SpoofDPI.
-            EngineKind::SpoofDpi => None,
+            EngineKind::SpoofDpi => Some(PackageId::SpoofDpi),
         }
     }
 
@@ -226,6 +236,16 @@ impl PackageId {
                     _ => "-x86.zip",
                 };
                 n.starts_with("proxifyre-v") && n.ends_with(suffix)
+            }
+            // goreleaser: spoofdpi_<version>_<linux|darwin>_<x86_64|arm64|i386|arm>.tar.gz
+            (PackageId::SpoofDpi, Os::Linux | Os::MacOs) => {
+                let system = if os == Os::MacOs { "darwin" } else { "linux" };
+                let cpu = match arch {
+                    "aarch64" => "arm64",
+                    "x86" => "i386",
+                    other => other,
+                };
+                n.starts_with("spoofdpi_") && n.ends_with(&format!("_{system}_{cpu}.tar.gz"))
             }
             (PackageId::PacketFilterDriver, Os::Windows) => {
                 let suffix = match arch {
@@ -322,5 +342,18 @@ mod tests {
         ));
         assert!(!PackageId::Zapret.matches_asset("sha256sum.txt", w, "x86_64"));
         assert!(PackageId::GoodbyeDpi.matches_asset("goodbyedpi-0.2.2.zip", w, "x86_64"));
+    }
+
+    #[test]
+    fn matches_spoofdpi_assets() {
+        let s = PackageId::SpoofDpi;
+        assert!(s.matches_asset("spoofdpi_1.5.4_linux_x86_64.tar.gz", Os::Linux, "x86_64"));
+        assert!(s.matches_asset("spoofdpi_1.5.4_linux_arm64.tar.gz", Os::Linux, "aarch64"));
+        assert!(s.matches_asset("spoofdpi_1.5.4_darwin_arm64.tar.gz", Os::MacOs, "aarch64"));
+        assert!(!s.matches_asset("spoofdpi_1.5.4_linux_x86_64.tar.gz", Os::MacOs, "x86_64"));
+        assert!(!s.matches_asset("spoofdpi_1.5.4_linux_mips64.tar.gz", Os::Linux, "x86_64"));
+        assert!(!s.matches_asset("spoofdpi_1.5.4_amd64.deb", Os::Linux, "x86_64"));
+        assert!(!s.matches_asset("checksums.txt", Os::Linux, "x86_64"));
+        assert!(!s.matches_asset("spoofdpi_1.5.4_linux_x86_64.tar.gz", Os::Windows, "x86_64"));
     }
 }

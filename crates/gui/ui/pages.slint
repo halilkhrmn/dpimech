@@ -147,8 +147,10 @@ export component SettingsPage inherits VerticalLayout {
     in property <string> app-version;
     in property <string> app-update-text;
     in property <bool> app-update-available;
+    in property <bool> app-update-ready;
     callback check-app-update;
     callback download-app-update;
+    callback restart-and-update;
 
     padding: Theme.page-padding;
     spacing: 20px;
@@ -357,7 +359,8 @@ export component SettingsPage inherits VerticalLayout {
                         spacing: 8px;
                         alignment: start;
                         Button { text: @tr("Check for updates"); clicked => { root.check-app-update(); } }
-                        if app-update-available: Button { text: @tr("Download"); primary: true; clicked => { root.download-app-update(); } }
+                        if app-update-ready: Button { text: @tr("Restart and update"); primary: true; clicked => { root.restart-and-update(); } }
+                        if app-update-available && !app-update-ready: Button { text: @tr("Download"); primary: true; clicked => { root.download-app-update(); } }
                     }
                 }
             }

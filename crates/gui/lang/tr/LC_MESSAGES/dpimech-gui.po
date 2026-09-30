@@ -4,31 +4,39 @@ msgstr ""
 "Language: tr\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ui/app.slint:200
+#: ui/app.slint:204
 msgid "Profiles"
 msgstr "Profiller"
 
-#: ui/app.slint:205
+#: ui/app.slint:209
 msgid "Strategy Lab"
 msgstr "Strateji Laboratuvarı"
 
-#: ui/app.slint:210
+#: ui/app.slint:214
 msgid "Engines"
 msgstr "Motorlar"
 
-#: ui/app.slint:216
+#: ui/app.slint:220
 msgid "Logs"
 msgstr "Kayıtlar"
 
-#: ui/app.slint:222
+#: ui/app.slint:226
 msgid "Settings"
 msgstr "Ayarlar"
 
-#: ui/app.slint:265
+#: ui/app.slint:269
 msgid "Another DPI tool is running: {}. Two tools on the same traffic break connections — close it, or turn DPIMech's profiles off."
 msgstr "Başka bir DPI aracı çalışıyor: {}. Aynı trafikte iki araç bağlantıları bozar — onu kapat ya da DPIMech profillerini kapat."
 
-#: ui/app.slint:281
+#: ui/app.slint:287
+msgid "DPIMech {} is ready to install."
+msgstr "DPIMech {} kurulmaya hazır."
+
+#: ui/app.slint:291
+msgid "Restart and update"
+msgstr "Yeniden başlat ve güncelle"
+
+#: ui/app.slint:303
 msgid "Background service is not running. Engines can't be started until it is."
 msgstr "Arka plan servisi çalışmıyor. Servis çalışmadan motorlar başlatılamaz."
 
@@ -380,139 +388,139 @@ msgstr "Temizle"
 msgid "Coming soon"
 msgstr "Yakında"
 
-#: ui/pages.slint:171
+#: ui/pages.slint:173
 msgid "Interface"
 msgstr "Arayüz"
 
-#: ui/pages.slint:178
+#: ui/pages.slint:180
 msgid "Easy mode"
 msgstr "Kolay mod"
 
-#: ui/pages.slint:180
+#: ui/pages.slint:182
 msgid "Fewer menus; the setup wizard does the work. Turn off for engines, the Strategy Lab and logs."
 msgstr "Daha az menü; işi kurulum sihirbazı yapar. Motorlar, Strateji Laboratuvarı ve kayıtlar için kapat."
 
-#: ui/pages.slint:193
+#: ui/pages.slint:195
 msgid "Language"
 msgstr "Dil"
 
-#: ui/pages.slint:201
+#: ui/pages.slint:203
 msgid "Run the setup wizard again"
 msgstr "Kurulum sihirbazını yeniden çalıştır"
 
-#: ui/pages.slint:202
+#: ui/pages.slint:204
 msgid "Open wizard"
 msgstr "Sihirbazı aç"
 
-#: ui/pages.slint:208
+#: ui/pages.slint:210
 msgid "Startup"
 msgstr "Başlangıç"
 
-#: ui/pages.slint:215
+#: ui/pages.slint:217
 msgid "Start DPIMech when I sign in"
 msgstr "Oturum açınca DPIMech'i başlat"
 
-#: ui/pages.slint:217
+#: ui/pages.slint:219
 msgid "The background service always starts with the computer; this brings back the tray icon."
 msgstr "Arka plan servisi her zaman bilgisayarla başlar; bu, tepsi simgesini geri getirir."
 
-#: ui/pages.slint:230
+#: ui/pages.slint:232
 msgid "Start minimized to the tray"
 msgstr "Tepside küçültülmüş başlat"
 
-#: ui/pages.slint:242
+#: ui/pages.slint:244
 msgid "Log"
 msgstr "Kayıt"
 
-#: ui/pages.slint:249
+#: ui/pages.slint:251
 msgid "Save the log to daily files"
 msgstr "Kaydı günlük dosyalara yaz"
 
-#: ui/pages.slint:251
+#: ui/pages.slint:253
 msgid "One file per day while DPIMech is open; files older than 14 days are deleted. Even when this is off, the recent log is saved to this folder if a profile stops with an error."
 msgstr "DPIMech açıkken her gün için bir dosya; 14 günden eski dosyalar silinir. Bu kapalıyken bile bir profil hatayla durursa son kayıtlar bu klasöre kaydedilir."
 
-#: ui/pages.slint:266
+#: ui/pages.slint:268
 msgid "Detailed log"
 msgstr "Ayrıntılı kayıt"
 
-#: ui/pages.slint:268
+#: ui/pages.slint:270
 msgid "Also logs every connection (site, address, how it ended) and each tested strategy. Turn it on to find out why something does not open; it makes the log much longer."
 msgstr "Her bağlantıyı (site, adres, nasıl bittiği) ve denenen her stratejiyi de kaydeder. Bir şeyin neden açılmadığını bulmak için aç; kayıtları çok uzatır."
 
-#: ui/pages.slint:291
+#: ui/pages.slint:293
 msgid "Change folder…"
 msgstr "Klasörü değiştir…"
 
-#: ui/pages.slint:292
+#: ui/pages.slint:294
 msgid "Open folder"
 msgstr "Klasörü aç"
 
-#: ui/pages.slint:299
+#: ui/pages.slint:301
 msgid "Shortcuts"
 msgstr "Kısayollar"
 
-#: ui/pages.slint:306
+#: ui/pages.slint:308
 msgid "Profile shortcuts on the desktop and in the menu: {}"
 msgstr "Masaüstündeki ve menüdeki profil kısayolları: {}"
 
-#: ui/pages.slint:310
+#: ui/pages.slint:312
 msgid "Create one with right click (or ⋯) on a profile. Deleting a profile removes its shortcuts."
 msgstr "Profile sağ tıklayarak (ya da ⋯) oluşturabilirsin. Profil silinince kısayolları da silinir."
 
-#: ui/pages.slint:317
+#: ui/pages.slint:319
 msgid "Remove all shortcuts"
 msgstr "Tüm kısayolları kaldır"
 
-#: ui/pages.slint:325
+#: ui/pages.slint:327
 msgid "Background service"
 msgstr "Arka plan servisi"
 
-#: ui/pages.slint:328
+#: ui/pages.slint:330
 msgid "Connected"
 msgstr "Bağlı"
 
-#: ui/pages.slint:328
+#: ui/pages.slint:330
 msgid "Not running"
 msgstr "Çalışmıyor"
 
-#: ui/pages.slint:332
+#: ui/pages.slint:334
 msgid "Install the service"
 msgstr "Servisi kur"
 
-#: ui/pages.slint:338
+#: ui/pages.slint:340
 msgid "About"
 msgstr "Hakkında"
 
-#: ui/pages.slint:343
+#: ui/pages.slint:345
 msgid "Opens sites and apps that your internet provider blocks by running well-known open-source DPI bypass tools on your computer. It is not a VPN: your traffic still goes straight to the sites, nothing is sent through another server."
 msgstr "İnternet sağlayıcının engellediği siteleri ve uygulamaları, bilgisayarında bilinen açık kaynaklı DPI aşma araçlarını çalıştırarak açar. Bir VPN değildir: trafiğin yine doğrudan sitelere gider, hiçbir şey başka bir sunucudan geçmez."
 
-#: ui/pages.slint:347
+#: ui/pages.slint:349
 msgid "Platform: {}"
 msgstr "Platform: {}"
 
-#: ui/pages.slint:348
+#: ui/pages.slint:350
 msgid "Free software under the GNU GPL v3 or later."
 msgstr "GNU GPL v3 veya sonrası lisanslı özgür yazılım."
 
-#: ui/pages.slint:352
+#: ui/pages.slint:354
 msgid "Source code"
 msgstr "Kaynak kod"
 
-#: ui/pages.slint:353
+#: ui/pages.slint:355
 msgid "Report a problem"
 msgstr "Sorun bildir"
 
-#: ui/pages.slint:360
+#: ui/pages.slint:363
 msgid "Download"
 msgstr "İndir"
 
-#: ui/pages.slint:366
+#: ui/pages.slint:369
 msgid "Thanks"
 msgstr "Teşekkürler"
 
-#: ui/pages.slint:370
+#: ui/pages.slint:373
 msgid "DPIMech only manages these projects; the real work is theirs."
 msgstr "DPIMech bu projeleri sadece yönetir; asıl işi onlar yapar."
 
@@ -688,47 +696,55 @@ msgstr "Tekrar dene"
 msgid "Finish"
 msgstr "Bitir"
 
-#: src/bridge.rs:64
+#: src/bridge.rs:72
 msgid "Start it with: dpimech-service run"
 msgstr "Şununla başlat: dpimech-service run"
 
-#: src/bridge.rs:80
+#: src/bridge.rs:88
 msgid "Version {} · data in {}"
 msgstr "Sürüm {} · veriler: {}"
 
-#: src/bridge.rs:112
-msgid "Version {} is available."
-msgstr "{} sürümü çıktı."
+#: src/bridge.rs:172
+msgid "Could not update: {}"
+msgstr "Güncellenemedi: {}"
 
-#: src/bridge.rs:155
-msgid "Version {} is available (you have {})."
-msgstr "{} sürümü çıktı (sendeki: {})."
-
-#: src/bridge.rs:159
+#: src/bridge.rs:187
 msgid "You have the latest version ({})."
 msgstr "En son sürümü kullanıyorsun ({})."
 
-#: src/bridge.rs:162
+#: src/bridge.rs:190
 msgid "Could not check for updates: {}"
 msgstr "Güncellemeler kontrol edilemedi: {}"
 
-#: src/bridge.rs:224
+#: src/bridge.rs:252
 msgid "Could not load strategies: {}"
 msgstr "Stratejiler yüklenemedi: {}"
 
-#: src/bridge.rs:236
+#: src/bridge.rs:264
 msgid "ISP lookup failed: {}"
 msgstr "İnternet sağlayıcısı bulunamadı: {}"
 
-#: src/bridge.rs:339
+#: src/bridge.rs:368
+msgid "DPIMech {} is downloaded. Restart DPIMech to update."
+msgstr "DPIMech {} indirildi. Güncellemek için DPIMech'i yeniden başlat."
+
+#: src/bridge.rs:382
+msgid "Version {} is available."
+msgstr "{} sürümü çıktı."
+
+#: src/bridge.rs:397
+msgid "Downloading DPIMech {}…"
+msgstr "DPIMech {} indiriliyor…"
+
+#: src/bridge.rs:429
 msgid "Saved the log to {}"
 msgstr "Kayıtlar şuraya kaydedildi: {}"
 
-#: src/bridge.rs:372
+#: src/bridge.rs:463
 msgid "Looking up…"
 msgstr "Aranıyor…"
 
-#: src/bridge.rs:374
+#: src/bridge.rs:465
 msgid "This needs the background service."
 msgstr "Bunun için arka plan servisi gerekli."
 
@@ -952,27 +968,27 @@ msgstr "Profilin başlaması çok uzun sürüyor. Nedenini DPIMech'teki Kayıtla
 msgid "the menu entry has no command"
 msgstr "menü girdisinde komut yok"
 
-#: src/main.rs:371
+#: src/main.rs:377
 msgid "Folder for DPIMech log files"
 msgstr "DPIMech kayıt dosyaları için klasör"
 
-#: src/main.rs:559
+#: src/main.rs:565
 msgid "The service is installed. Connecting…"
 msgstr "Servis kuruldu. Bağlanılıyor…"
 
-#: src/main.rs:560
+#: src/main.rs:566
 msgid "Installing the service failed: {}"
 msgstr "Servis kurulamadı: {}"
 
-#: src/main.rs:568
+#: src/main.rs:574
 msgid "Installing… confirm the prompt. DPIMech connects by itself when the service is ready."
 msgstr "Kuruluyor… izin penceresini onayla. Servis hazır olunca DPIMech kendiliğinden bağlanır."
 
-#: src/main.rs:569
+#: src/main.rs:575
 msgid "Could not start the installer: {}"
 msgstr "Kurulum başlatılamadı: {}"
 
-#: src/main.rs:623
+#: src/main.rs:629
 msgid "Downloading online lists…"
 msgstr "Çevrimiçi listeler indiriliyor…"
 
@@ -1017,12 +1033,40 @@ msgid "DPIMech update available"
 msgstr "DPIMech güncellemesi var"
 
 #: src/notify.rs:169
-msgid "Version {} is ready. Open Settings to download it."
-msgstr "{} sürümü hazır. İndirmek için Ayarlar'ı aç."
+msgid "Version {} is out. Settings → About shows how to get it."
+msgstr "{} sürümü çıktı. Nasıl alacağını Ayarlar → Hakkında gösterir."
+
+#: src/notify.rs:184
+msgid "DPIMech {} is ready"
+msgstr "DPIMech {} hazır"
+
+#: src/notify.rs:185
+msgid "Restart DPIMech to update: use the button at the top of the window."
+msgstr "Güncellemek için DPIMech'i yeniden başlat: pencerenin üstündeki düğmeyi kullan."
 
 #: src/picker.rs:92
 msgid "Choose an application"
 msgstr "Bir uygulama seç"
+
+#: src/selfupdate.rs:34
+msgid "Update it with your package manager (Fedora: sudo dnf upgrade), or download it."
+msgstr "Paket yöneticinle güncelle (Fedora: sudo dnf upgrade) ya da indir."
+
+#: src/selfupdate.rs:36
+msgid "Download it from the releases page."
+msgstr "Sürümler sayfasından indir."
+
+#: src/selfupdate.rs:72
+msgid "No update has been downloaded yet."
+msgstr "Henüz indirilmiş bir güncelleme yok."
+
+#: src/selfupdate.rs:74
+msgid "This copy is not an AppImage."
+msgstr "Bu kopya bir AppImage değil."
+
+#: src/selfupdate.rs:156
+msgid "Installing the update…"
+msgstr "Güncelleme kuruluyor…"
 
 #: src/shortcut.rs:131
 msgid "Choose where to put the shortcut."

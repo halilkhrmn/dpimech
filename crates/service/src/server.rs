@@ -155,6 +155,21 @@ async fn dispatch(supervisor: &Supervisor, request: Request) -> anyhow::Result<R
                 dpimech_core::catalog::APP_REPO
             ),
         },
+        Request::PrepareAppUpdate { format } => {
+            let (version, path) = supervisor.packages.prepare_app_update(format).await?;
+            Reply::AppUpdateReady {
+                version,
+                path: path.display().to_string(),
+            }
+        }
+        Request::InstallAppUpdate => {
+            #[cfg(windows)]
+            supervisor.packages.install_app_update().await?;
+            #[cfg(not(windows))]
+            anyhow::bail!("the service installs updates only on Windows");
+            #[cfg(windows)]
+            Reply::Ok
+        }
         Request::AddDefenderExclusion => {
             crate::defender::exclude(&supervisor.data_dir().root.join("engines")).await?;
             Reply::Ok

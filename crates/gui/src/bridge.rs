@@ -38,7 +38,15 @@ pub enum Command {
     CheckAppUpdate,
     AddDefenderExclusion,
     SetDetailedLog(bool),
+    /// Windows: run the downloaded update's installer (through the service).
+    InstallUpdate,
 }
+
+/// One check per app start, so an update found while the window was closed still shows up.
+static CHECKED_THIS_SESSION: std::sync::atomic::AtomicBool =
+    std::sync::atomic::AtomicBool::new(false);
+/// A download is in progress; a second one would only race it.
+static PREPARING: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
 
 /// The user's "detailed log" choice, sent again whenever the service (re)connects.
 static DETAILED_LOG: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
@@ -88,6 +96,15 @@ async fn run(ui: Weak<AppWindow>, mut commands: mpsc::UnboundedReceiver<Command>
             .await;
         refresh_profiles(&ui, &client).await;
         refresh_packages(&ui, &client).await;
+        if !CHECKED_THIS_SESSION.swap(true, std::sync::atomic::Ordering::Relaxed)
+            && let Ok(Reply::AppUpdate {
+                latest: Some(latest),
+                url,
+                ..
+            }) = client.request(Request::CheckAppUpdate).await
+        {
+            update_found(&ui, &client, latest, url);
+        }
         if let Ok(Reply::DefenderStatus { excluded }) =
             client.request(Request::DefenderStatus).await
         {
@@ -106,12 +123,7 @@ async fn run(ui: Weak<AppWindow>, mut commands: mpsc::UnboundedReceiver<Command>
                     Some(Event::Log { line }) => append_log(&ui, line),
                     Some(Event::ProfilesChanged | Event::ProfileStatus { .. }) => refresh_profiles(&ui, &client).await,
                     Some(Event::PackagesChanged) => refresh_packages(&ui, &client).await,
-                    Some(Event::AppUpdateAvailable { version, url }) => {
-                        crate::notify::app_update(&version);
-                        let _ = ui.upgrade_in_event_loop(move |ui| {
-                            crate::set_app_update(&ui, trf!("Version {} is available.", version), Some(url));
-                        });
-                    }
+                    Some(Event::AppUpdateAvailable { version, url }) => update_found(&ui, &client, version, url),
                     Some(Event::LabProgress { done, total, result }) => {
                         if let Some(result) = result {
                             let _ = ui.upgrade_in_event_loop(move |ui| {
@@ -145,16 +157,32 @@ async fn handle_command(
         Command::Start(id) => (Request::StartProfile { id }, false),
         Command::CheckProfile(id) => (Request::CheckProfile { id }, false),
         Command::SetDetailedLog(on) => (Request::SetDetailedLog { on }, false),
+        Command::InstallUpdate => {
+            let result = client.request(Request::InstallAppUpdate).await;
+            let _ = ui.upgrade_in_event_loop(move |ui| match result {
+                Ok(_) => {
+                    // The installer closes this window anyway; leave first and come back
+                    // once the new version is in place.
+                    #[cfg(windows)]
+                    if let Err(e) = crate::selfupdate::relaunch_after_install() {
+                        eprintln!("relaunch helper: {e}");
+                    }
+                    let _ = slint::quit_event_loop();
+                }
+                Err(e) => ui.set_app_update_text(trf!("Could not update: {}", e).into()),
+            });
+            return;
+        }
         Command::CheckAppUpdate => {
             let text = match client.request(Request::CheckAppUpdate).await {
                 Ok(Reply::AppUpdate {
-                    current,
                     latest: Some(latest),
                     url,
-                }) => Ok((
-                    trf!("Version {} is available (you have {}).", latest, current),
-                    Some(url),
-                )),
+                    ..
+                }) => {
+                    update_found(ui, client, latest, url);
+                    return;
+                }
                 Ok(Reply::AppUpdate { current, .. }) => {
                     Ok((trf!("You have the latest version ({}).", current), None))
                 }
@@ -329,6 +357,65 @@ async fn toggle_all(ui: &Weak<AppWindow>, client: &Client, last_active: &mut Vec
     refresh_profiles(ui, client).await;
 }
 
+/// A newer release exists: download it in the background where DPIMech can update itself,
+/// otherwise say how to get it.
+fn update_found(ui: &Weak<AppWindow>, client: &Client, version: String, url: String) {
+    use std::sync::atomic::Ordering;
+
+    let version = version.trim_start_matches('v').to_owned();
+    if crate::selfupdate::ready_version_matches(&version) {
+        let _ = ui.upgrade_in_event_loop(move |ui| {
+            ui.set_app_update_text(
+                trf!(
+                    "DPIMech {} is downloaded. Restart DPIMech to update.",
+                    version
+                )
+                .into(),
+            );
+        });
+        return;
+    }
+    let Some(format) = crate::selfupdate::format() else {
+        crate::notify::app_update(&version);
+        let _ = ui.upgrade_in_event_loop(move |ui| {
+            let text = format!(
+                "{} {}",
+                trf!("Version {} is available.", version),
+                crate::selfupdate::manual_hint()
+            );
+            crate::set_app_update(&ui, text, Some(url));
+        });
+        return;
+    };
+    if PREPARING.swap(true, Ordering::SeqCst) {
+        return;
+    }
+    let (ui, client) = (ui.clone(), client.clone());
+    tokio::spawn(async move {
+        let _ = ui.upgrade_in_event_loop({
+            let version = version.clone();
+            move |ui| {
+                ui.set_app_update_text(trf!("Downloading DPIMech {}…", version).into());
+            }
+        });
+        let result = client.request(Request::PrepareAppUpdate { format }).await;
+        PREPARING.store(false, Ordering::SeqCst);
+        let _ = ui.upgrade_in_event_loop(move |ui| match result {
+            Ok(Reply::AppUpdateReady { version, path }) => {
+                crate::selfupdate::ready(&ui, version, path);
+            }
+            // Could not download (offline, rate limit): the releases page still works.
+            other => {
+                if let Err(e) = other {
+                    eprintln!("update download: {e}");
+                }
+                crate::notify::app_update(&version);
+                crate::set_app_update(&ui, trf!("Version {} is available.", version), Some(url));
+            }
+        });
+    });
+}
+
 async fn refresh_profiles(ui: &Weak<AppWindow>, client: &Client) {
     if let Ok(Reply::Profiles { profiles }) = client.request(Request::ListProfiles).await {
         // Even with daily files off, a failure keeps the log that explains it. The error line
@@ -357,9 +444,15 @@ async fn refresh_packages(ui: &Weak<AppWindow>, client: &Client) {
 
 fn apply_packages(ui: &AppWindow, packages: &[PackageInfo]) {
     wizard::on_packages(ui, packages);
-    ui.set_show_defender_note(packages.iter().any(|p| {
-        matches!(p.id, PackageId::Zapret | PackageId::GoodbyeDpi) && p.installed_version.is_some()
-    }));
+    // WinDivert (in zapret's Windows build and GoodbyeDPI) is what antivirus programs flag;
+    // on Linux and macOS there is no Windows Security to warn about.
+    ui.set_show_defender_note(
+        cfg!(windows)
+            && packages.iter().any(|p| {
+                matches!(p.id, PackageId::Zapret | PackageId::GoodbyeDpi)
+                    && p.installed_version.is_some()
+            }),
+    );
     let items: Vec<PackageItem> = packages.iter().map(convert::package_item).collect();
     ui.set_updates_available(packages.iter().any(PackageInfo::update_available));
     ui.set_packages(ModelRc::new(VecModel::from(items)));

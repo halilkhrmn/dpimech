@@ -53,6 +53,9 @@ fn takes_all_traffic(profile: &Profile) -> bool {
 }
 
 struct Running {
+    /// Which start this is: a stopped run that is still shutting down must not remove or
+    /// overwrite the run that replaced it.
+    run: u64,
     /// `Some(reason)` stops the engine and marks the profile as failed.
     stop: oneshot::Sender<Option<String>>,
     /// Wakes the connection monitor for an immediate check.
@@ -65,6 +68,7 @@ struct State {
     running: HashMap<String, Running>,
     /// Profiles that failed only because their engine was missing; cleared once it is installed.
     missing_engine: HashSet<String>,
+    next_run: u64,
 }
 
 #[derive(Clone)]
@@ -99,6 +103,7 @@ impl Supervisor {
                 status: HashMap::new(),
                 running: HashMap::new(),
                 missing_engine: HashSet::new(),
+                next_run: 0,
             })),
             logs,
             packages,
@@ -286,9 +291,12 @@ impl Supervisor {
         }
         let (stop_tx, stop_rx) = oneshot::channel();
         let check_now = Arc::new(Notify::new());
+        state.next_run += 1;
+        let run = state.next_run;
         state.running.insert(
             id.to_owned(),
             Running {
+                run,
                 stop: stop_tx,
                 check_now: check_now.clone(),
             },
@@ -296,7 +304,10 @@ impl Supervisor {
         drop(state);
 
         let this = self.clone();
-        tokio::spawn(async move { this.run_process(profile, command, stop_rx, check_now).await });
+        tokio::spawn(async move {
+            this.run_process(profile, command, stop_rx, check_now, run)
+                .await
+        });
         Ok(())
     }
 
@@ -442,12 +453,14 @@ impl Supervisor {
                         port: *port,
                         tcp_only: *tcp_only,
                         system_wide: None,
+                        by_name: p.engine == EngineKind::SpoofDpi,
                     }),
                     Routing::SystemWide { .. } if is_routed(p) => Some(Route {
                         apps: Vec::new(),
                         port: engine_port(p)?,
                         tcp_only: true,
                         system_wide: Some(system_wide_ports(&p.args)),
+                        by_name: false,
                     }),
                     _ => None,
                 })
@@ -508,6 +521,7 @@ impl Supervisor {
         first_command: Command,
         mut stop_rx: oneshot::Receiver<Option<String>>,
         check_now: Arc<Notify>,
+        run: u64,
     ) {
         let id = profile.id.as_str();
         let name = profile.name.as_str();
@@ -744,8 +758,14 @@ impl Supervisor {
         }
         {
             let mut state = self.state.lock().await;
-            state.running.remove(id);
-            self.set_status(&mut state, id, final_status);
+            // Stopped and started again quickly: the new run owns the entry and the status.
+            let current = state.running.get(id).map(|r| r.run);
+            if current == Some(run) {
+                state.running.remove(id);
+            }
+            if current.is_none() || current == Some(run) {
+                self.set_status(&mut state, id, final_status);
+            }
         }
         if per_app && let Err(e) = self.sync_routes().await {
             self.logs.error("ProxiFyre", format!("{e:#}"));
@@ -768,7 +788,7 @@ impl Supervisor {
             let mut last = String::new();
             let mut repeats = 0u32;
             while let Ok(Some(line)) = lines.next_line().await {
-                let line = line.trim().to_owned();
+                let line = strip_ansi(&line).trim().to_owned();
                 if line.is_empty() {
                     continue;
                 }
@@ -791,6 +811,26 @@ impl Supervisor {
             }
         });
     }
+}
+
+/// Removes terminal colour codes (`ESC [ … letter`): SpoofDPI colours its log even when the
+/// output is not a terminal, and the codes would show up as junk on the Logs page.
+fn strip_ansi(line: &str) -> String {
+    let mut out = String::with_capacity(line.len());
+    let mut chars = line.chars().peekable();
+    while let Some(c) = chars.next() {
+        if c == '\u{1b}' && chars.peek() == Some(&'[') {
+            chars.next();
+            for c in chars.by_ref() {
+                if c.is_ascii_alphabetic() {
+                    break;
+                }
+            }
+        } else {
+            out.push(c);
+        }
+    }
+    out
 }
 
 /// Stops the health probe when one engine run ends (restart or stop).
@@ -900,4 +940,16 @@ fn system_wide_ports(args: &str) -> String {
     }
     let _ = args;
     "80, 443".to_owned()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::strip_ansi;
+
+    #[test]
+    fn colour_codes_are_removed() {
+        let line = "\u{1b}[32mINF\u{1b}[0m \u{1b}[90m2026-09-30T20:23:03Z\u{1b}[0m [app] \u{1b}[1mspoofdpi;\u{1b}[0m";
+        assert_eq!(strip_ansi(line), "INF 2026-09-30T20:23:03Z [app] spoofdpi;");
+        assert_eq!(strip_ansi("plain [x]"), "plain [x]");
+    }
 }

@@ -225,3 +225,24 @@ own release), a launchd service and an unsigned universal `.dmg`. The wizard hid
 - **Landing page:** the version is no longer written into `site/index.html`; a small script reads
   `releases/latest` from the GitHub API and offers the right file (Windows .exe, macOS .dmg, Fedora → COPR,
   Ubuntu/Debian .deb, other Linux AppImage). Without the API every link opens the releases page.
+
+## 39. SpoofDPI as a SOCKS5 engine on Linux and macOS (2026-09-30)
+- **Decision:** SpoofDPI 1.5 (`xvzc/SpoofDPI`) is installed from its GitHub releases like the other engines
+  (tar.gz, GitHub SHA-256 digest) and started as `--app-mode socks5 --listen-addr 127.0.0.1:<port> --no-tui
+  --clean`, so it fits the existing proxy routes (local proxy, Linux per-app) and the Strategy Lab.
+- **Why:** its own DNS over HTTPS is a direct answer to DNS blocking. For that to work behind per-app routing,
+  the Linux relay hands SpoofDPI the TLS server name instead of the address the app got (`Route::by_name`).
+- **Limits:** no Windows builds exist for 1.x, so it is Linux/macOS only; its SOCKS5 mode is marked
+  experimental upstream. `--config`, `--auto-configure-network` and the listen/mode options are refused by
+  the argument policy; `--clean` keeps a planted `/etc/spoofdpi.toml` from being read as root.
+
+## 40. In-app updates (2026-09-30)
+- **Decision:** when a newer release exists, the GUI asks the service to download it (`PrepareAppUpdate`):
+  the service fetches the file for this system into the admin-only `<data>/updates`, checks GitHub's SHA-256
+  digest, and the GUI shows "DPIMech X is ready — Restart and update" (banner, Settings, notification).
+  Windows: the service runs the installer with `/VERYSILENT` (no UAC prompt, it is already SYSTEM); a hidden
+  PowerShell started by the GUI waits for the new version and opens the window again. AppImage: the GUI
+  copies the file over its own AppImage and starts it once the old process has exited. deb/rpm/COPR: the
+  package manager stays in charge; the app only says how.
+- **Safety:** only versions newer than the running one, only files with a GitHub digest, the installer is
+  hashed again right before it runs, and the client cannot name a file or URL.

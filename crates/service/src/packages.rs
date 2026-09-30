@@ -9,7 +9,7 @@ use std::sync::Arc;
 use std::time::Duration;
 
 use anyhow::{Context, bail};
-use dpimech_core::ipc::Event;
+use dpimech_core::ipc::{Event, UpdateFormat};
 use dpimech_core::model::Os;
 use dpimech_core::packages::{ExtractRule, PackageId, PackageInfo, PackageKind, PackageTask};
 use dpimech_core::paths::DataDir;
@@ -59,6 +59,15 @@ pub struct Packages {
     tasks: Arc<Mutex<HashMap<PackageId, PackageTask>>>,
     events: broadcast::Sender<Event>,
     logs: Arc<LogBus>,
+    /// The DPIMech update downloaded by `prepare_app_update`.
+    prepared: Arc<Mutex<Option<PreparedUpdate>>>,
+}
+
+#[derive(Clone)]
+#[cfg_attr(not(windows), allow(dead_code))] // only Windows installs through the service
+struct PreparedUpdate {
+    path: PathBuf,
+    sha256: String,
 }
 
 impl Packages {
@@ -75,6 +84,7 @@ impl Packages {
             tasks: Arc::default(),
             events,
             logs,
+            prepared: Arc::default(),
         }
     }
 
@@ -282,7 +292,7 @@ impl Packages {
         let downloads = self.data.downloads_dir();
         tokio::fs::create_dir_all(&downloads).await?;
         let file = downloads.join(&asset.name);
-        let actual = self.download(id, asset, &file).await?;
+        let actual = self.download(Some(id), asset, &file).await?;
         if actual != expected {
             let _ = tokio::fs::remove_file(&file).await;
             bail!("checksum mismatch (expected {expected}, got {actual})");
@@ -306,8 +316,117 @@ impl Packages {
         result.map(|()| version)
     }
 
-    /// Streams the asset to disk and returns its SHA-256.
-    async fn download(&self, id: PackageId, asset: &Asset, dest: &Path) -> anyhow::Result<String> {
+    /// Downloads the newest DPIMech release in `format` into `<data>/updates`, checked against
+    /// GitHub's SHA-256 digest. Returns its version and path; a file already downloaded for the
+    /// same version is reused. Only newer versions are accepted.
+    pub async fn prepare_app_update(
+        &self,
+        format: UpdateFormat,
+    ) -> anyhow::Result<(String, PathBuf)> {
+        let fits = match format {
+            UpdateFormat::WindowsInstaller => Os::current() == Os::Windows,
+            UpdateFormat::AppImage => {
+                Os::current() == Os::Linux && std::env::consts::ARCH == "x86_64"
+            }
+        };
+        if !fits {
+            bail!("this kind of update is not available on this system");
+        }
+        let release = self
+            .fetch_repo_latest(dpimech_core::catalog::APP_REPO)
+            .await?;
+        if !dpimech_core::packages::version_lt(dpimech_core::VERSION, &release.tag_name) {
+            bail!("DPIMech is up to date");
+        }
+        let name = format.asset_name(&release.tag_name);
+        let asset = release
+            .assets
+            .iter()
+            .find(|a| a.name == name)
+            .with_context(|| format!("{} has no {name}", release.tag_name))?;
+        let expected = asset
+            .digest
+            .as_deref()
+            .and_then(|d| d.strip_prefix("sha256:"))
+            .context("the update has no SHA-256 digest; refusing to use it")?
+            .to_ascii_lowercase();
+
+        let dir = self.data.updates_dir();
+        tokio::fs::create_dir_all(&dir).await?;
+        let file = dir.join(&name);
+        let have = if file.is_file() {
+            sha256_file(file.clone()).await.ok()
+        } else {
+            None
+        };
+        if have.as_deref() != Some(expected.as_str()) {
+            let part = dir.join(format!("{name}.part"));
+            let actual = self.download(None, asset, &part).await?;
+            if actual != expected {
+                let _ = tokio::fs::remove_file(&part).await;
+                bail!("the update's checksum does not match (expected {expected}, got {actual})");
+            }
+            tokio::fs::rename(&part, &file).await?;
+            self.logs
+                .info(SOURCE, format!("DPIMech {} downloaded", release.tag_name));
+        }
+        // Older downloads are of no use any more.
+        if let Ok(mut entries) = tokio::fs::read_dir(&dir).await {
+            while let Ok(Some(entry)) = entries.next_entry().await {
+                if entry.path() != file {
+                    let _ = tokio::fs::remove_file(entry.path()).await;
+                }
+            }
+        }
+        *self.prepared.lock().await = Some(PreparedUpdate {
+            path: file.clone(),
+            sha256: expected,
+        });
+        Ok((release.tag_name, file))
+    }
+
+    /// Windows: runs the prepared installer silently. It stops this service, replaces the
+    /// files and starts the service again (`[Run]` in installer/dpimech.iss).
+    #[cfg(windows)]
+    pub async fn install_app_update(&self) -> anyhow::Result<()> {
+        use std::os::windows::process::CommandExt;
+
+        const DETACHED_PROCESS: u32 = 0x0000_0008;
+        const CREATE_NEW_PROCESS_GROUP: u32 = 0x0000_0200;
+
+        let prepared = self
+            .prepared
+            .lock()
+            .await
+            .clone()
+            .context("no update has been downloaded yet")?;
+        // The file sits in the admin-only data folder, but check again right before running
+        // it as SYSTEM.
+        if sha256_file(prepared.path.clone()).await? != prepared.sha256 {
+            bail!("the downloaded update changed on disk; download it again");
+        }
+        let log = self.data.logs_dir().join("update-install.log");
+        std::process::Command::new(&prepared.path)
+            .args(["/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/SP-"])
+            .arg(format!("/LOG={}", log.display()))
+            // The installer outlives this service, which it stops.
+            .creation_flags(DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP)
+            .spawn()
+            .context("starting the installer")?;
+        self.logs.info(
+            SOURCE,
+            "installing the update; the service restarts in a moment",
+        );
+        Ok(())
+    }
+
+    /// Streams the asset to disk and returns its SHA-256; `id` gets progress updates.
+    async fn download(
+        &self,
+        id: Option<PackageId>,
+        asset: &Asset,
+        dest: &Path,
+    ) -> anyhow::Result<String> {
         let response = self
             .http
             .get(&asset.browser_download_url)
@@ -329,8 +448,10 @@ impl Packages {
             let percent = ((received * 100) / total).min(100) as u8;
             if percent >= last_percent + 5 {
                 last_percent = percent;
-                self.set_task(id, PackageTask::Downloading { percent })
-                    .await;
+                if let Some(id) = id {
+                    self.set_task(id, PackageTask::Downloading { percent })
+                        .await;
+                }
             }
         }
         out.flush().await?;
@@ -524,6 +645,26 @@ fn map_entry(rel: &Path, rules: &[ExtractRule]) -> Option<PathBuf> {
             .filter(|rest| !rest.is_empty())
             .map(|rest| PathBuf::from(format!("{}{rest}", rule.to)))
     })
+}
+
+/// SHA-256 of a file, hex.
+async fn sha256_file(path: PathBuf) -> anyhow::Result<String> {
+    tokio::task::spawn_blocking(move || {
+        use std::io::Read;
+
+        let mut file = std::fs::File::open(&path)?;
+        let mut hasher = Sha256::new();
+        let mut buf = vec![0u8; 64 * 1024];
+        loop {
+            let n = file.read(&mut buf)?;
+            if n == 0 {
+                break;
+            }
+            hasher.update(&buf[..n]);
+        }
+        Ok(hex::encode(hasher.finalize()))
+    })
+    .await?
 }
 
 /// Copies files that exist in `from` but not in `to`, leaving existing (possibly locked) ones.

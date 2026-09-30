@@ -85,6 +85,8 @@ crates/gui/       dpimech binary (Slint)
   src/shortcutui.rs "Create shortcut" dialog state; ui/shortcut.slint
   src/launcher.rs   `dpimech --launch <id> [--open <app>]`: progress window, start profile, open app; ui/launch.slint
   src/prefs.rs      per-user GUI prefs (easy mode, onboarded) + elevated service install
+  src/selfupdate.rs in-app update: service downloads + verifies, Windows installer run silently by the
+                    service, AppImage swapped by the GUI; banner "Restart and update"
   src/notify.rs     Windows notifications (own AppUserModelID), status-change detection
   src/single.rs     single GUI instance (Windows mutex + event, Unix socket)
   src/logfile.rs    daily log files (opt-in) and error snapshots written by the GUI (never by the service)

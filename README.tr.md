@@ -81,6 +81,7 @@ masaüstünde henüz test edilmedi. Geri bildirimlerini bekliyoruz.
 | **zapret (nfqws)** | Tüm bilgisayar. DPIMech çalışırken kendi nftables kurallarını ekler, sonra kaldırır. | `nftables`, `nft_queue` ve `nfnetlink_queue` çekirdek modülleri (çoğu dağıtımda hazır gelir) |
 | **zapret (tpws)** | Tüm bilgisayar, sadece bazı uygulamalar ya da yerel SOCKS proxy | Ek bir şey gerekmez ("sadece bazı uygulamalar" için cgroup v2) |
 | **ByeDPI** | Sadece bazı uygulamalar ya da yerel SOCKS proxy | Ek bir şey gerekmez ("sadece bazı uygulamalar" için cgroup v2) |
+| **SpoofDPI** | Sadece bazı uygulamalar ya da yerel SOCKS proxy. Adları HTTPS üzerinden (DoH) çözebilir; bu, DNS engelini de aşar | Ek bir şey gerekmez |
 
 "Sadece bazı uygulamalar" ve tüm bilgisayar için tpws sadece TCP trafiğini yönlendirir; UDP
 (örneğin sesli sohbet) doğrudan gider. Bir uygulamanın trafiği, uygulama açıldıktan yaklaşık bir
