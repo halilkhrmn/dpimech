@@ -4,7 +4,7 @@ use std::path::PathBuf;
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 pub struct Prefs {
     /// Simplified interface for people who just want it to work.
     #[serde(default)]
@@ -12,9 +12,13 @@ pub struct Prefs {
     /// The first-run question was answered.
     #[serde(default)]
     pub onboarded: bool,
-    /// Also write the log to daily files (see logfile.rs).
-    #[serde(default = "default_true")]
+    /// Also write the log to daily files (see logfile.rs). Off by default: a failure saves
+    /// the recent log by itself.
+    #[serde(default)]
     pub log_to_file: bool,
+    /// Ask the service for the detailed (troubleshooting) log.
+    #[serde(default)]
+    pub detailed_log: bool,
     /// Folder for the log files; `None` = the default per-user folder.
     #[serde(default)]
     pub log_dir: Option<PathBuf>,
@@ -23,28 +27,17 @@ pub struct Prefs {
     pub language: String,
 }
 
-impl Default for Prefs {
-    fn default() -> Self {
-        Self {
-            easy_mode: false,
-            onboarded: false,
-            log_to_file: true,
-            log_dir: None,
-            language: String::new(),
-        }
-    }
-}
-
-fn default_true() -> bool {
-    true
-}
-
 impl Prefs {
     /// Where log files go right now, or `None` when writing is off.
     pub fn log_dir(&self) -> Option<PathBuf> {
         if !self.log_to_file {
             return None;
         }
+        self.log_folder()
+    }
+
+    /// The chosen log folder or the default one, whether or not daily files are on.
+    pub fn log_folder(&self) -> Option<PathBuf> {
         self.log_dir.clone().or_else(crate::logfile::default_dir)
     }
 }
@@ -60,6 +53,11 @@ fn config_base() -> Option<PathBuf> {
         .or_else(|| std::env::var_os("XDG_CONFIG_HOME"))
         .map(PathBuf::from)
         .or_else(|| std::env::var_os("HOME").map(|h| PathBuf::from(h).join(".config")))
+}
+
+/// Another file next to gui.toml (e.g. the shortcut list).
+pub fn config_file(name: &str) -> Option<PathBuf> {
+    Some(config_base()?.join("dpimech").join(name))
 }
 
 fn path() -> Option<PathBuf> {

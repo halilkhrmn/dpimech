@@ -170,6 +170,20 @@ async fn dispatch(supervisor: &Supervisor, request: Request) -> anyhow::Result<R
             supervisor.check_now(&id).await?;
             Reply::Ok
         }
+        Request::SetDetailedLog { on } => {
+            if on != supervisor.logs.detailed() {
+                supervisor.logs.set_detailed(on);
+                supervisor.logs.info(
+                    "service",
+                    if on {
+                        "detailed log on"
+                    } else {
+                        "detailed log off"
+                    },
+                );
+            }
+            Reply::Ok
+        }
         Request::CancelLab => {
             supervisor.lab.cancel().await;
             Reply::Ok

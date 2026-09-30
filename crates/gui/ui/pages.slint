@@ -92,7 +92,7 @@ export component LogsPage inherits VerticalLayout {
                     font-size: 12px;
                     width: 110px;
                     overflow: elide;
-                    color: line.level == "error" ? Theme.error : line.level == "warn" ? Theme.starting : Palette.accent-background;
+                    color: line.level == "error" ? Theme.error : line.level == "warn" ? Theme.starting : line.level == "debug" ? Theme.muted : Palette.accent-background;
                 }
                 Text {
                     text: line.text;
@@ -100,6 +100,8 @@ export component LogsPage inherits VerticalLayout {
                     font-size: 12px;
                     wrap: word-wrap;
                     horizontal-stretch: 1;
+                    // Detailed-log lines stay in the background.
+                    color: line.level == "debug" ? Theme.muted : Palette.foreground;
                 }
             }
         }
@@ -127,8 +129,13 @@ export component SettingsPage inherits VerticalLayout {
     in property <int> language-index;
     callback set-language(int);
     in property <bool> log-to-file;
+    in property <bool> detailed-log;
     in property <string> log-dir;
     callback set-log-to-file(bool);
+    callback set-detailed-log(bool);
+    in property <int> shortcut-count;
+    in property <string> shortcuts-removed;
+    callback remove-all-shortcuts;
     callback choose-log-dir;
     callback open-log-dir;
     callback open-link(string);
@@ -232,7 +239,7 @@ export component SettingsPage inherits VerticalLayout {
             }
 
             GroupBox {
-                title: @tr("Log files");
+                title: @tr("Log");
                 GridLayout {
                     spacing-horizontal: 16px;
                     spacing-vertical: 12px;
@@ -241,7 +248,7 @@ export component SettingsPage inherits VerticalLayout {
                             horizontal-stretch: 1;
                             Text { text: @tr("Save the log to daily files"); }
                             Text {
-                                text: @tr("One file per day while DPIMech is open; files older than 14 days are deleted. Useful when asking for help.");
+                                text: @tr("One file per day while DPIMech is open; files older than 14 days are deleted. Even when this is off, the recent log is saved to this folder if a profile stops with an error.");
                                 font-size: 12px;
                                 color: Theme.muted;
                                 wrap: word-wrap;
@@ -251,6 +258,23 @@ export component SettingsPage inherits VerticalLayout {
                             accessible-label: @tr("Save the log to daily files");
                             checked: log-to-file;
                             toggled => { root.set-log-to-file(self.checked); }
+                        }
+                    }
+                    Row {
+                        VerticalLayout {
+                            horizontal-stretch: 1;
+                            Text { text: @tr("Detailed log"); }
+                            Text {
+                                text: @tr("Also logs every connection (site, address, how it ended) and each tested strategy. Turn it on to find out why something does not open; it makes the log much longer.");
+                                font-size: 12px;
+                                color: Theme.muted;
+                                wrap: word-wrap;
+                            }
+                        }
+                        Switch {
+                            accessible-label: @tr("Detailed log");
+                            checked: detailed-log;
+                            toggled => { root.set-detailed-log(self.checked); }
                         }
                     }
                     Row {
@@ -267,6 +291,32 @@ export component SettingsPage inherits VerticalLayout {
                             Button { text: @tr("Change folder…"); clicked => { root.choose-log-dir(); } }
                             Button { text: @tr("Open folder"); clicked => { root.open-log-dir(); } }
                         }
+                    }
+                }
+            }
+
+            GroupBox {
+                title: @tr("Shortcuts");
+                HorizontalLayout {
+                    spacing: 16px;
+                    VerticalLayout {
+                        horizontal-stretch: 1;
+                        alignment: center;
+                        Text {
+                            text: shortcuts-removed != "" ? shortcuts-removed : @tr("Profile shortcuts on the desktop and in the menu: {}", shortcut-count);
+                            wrap: word-wrap;
+                        }
+                        Text {
+                            text: @tr("Create one with right click (or ⋯) on a profile. Deleting a profile removes its shortcuts.");
+                            font-size: 12px;
+                            color: Theme.muted;
+                            wrap: word-wrap;
+                        }
+                    }
+                    Button {
+                        text: @tr("Remove all shortcuts");
+                        enabled: shortcut-count > 0;
+                        clicked => { root.remove-all-shortcuts(); }
                     }
                 }
             }

@@ -191,8 +191,12 @@ fn main() -> anyhow::Result<()> {
 
     ui.on_delete_profile({
         let tx = cmd_tx.clone();
+        let weak = ui.as_weak();
         move |id| {
-            let _ = tx.send(Command::Delete(id.into()));
+            let id = id.to_string();
+            let _ = tx.send(Command::Delete(id.clone()));
+            // A shortcut to a deleted profile would only show an error.
+            shortcutui::remove_for_profile(weak.clone(), id);
         }
     });
 
@@ -331,10 +335,24 @@ fn main() -> anyhow::Result<()> {
                     .unwrap_or_default()
                     .into(),
             );
-            logfile::configure(p.log_dir());
+            ui.set_detailed_log(p.detailed_log);
+            logfile::configure(p.log_dir(), p.log_folder());
+            bridge::set_detailed_log(p.detailed_log);
         }
     };
     show_log_settings(&prefs.borrow());
+    ui.on_set_detailed_log({
+        let prefs = prefs.clone();
+        let show = show_log_settings.clone();
+        let tx = cmd_tx.clone();
+        move |on| {
+            let mut p = prefs.borrow_mut();
+            p.detailed_log = on;
+            prefs::save(&p);
+            show(&p);
+            let _ = tx.send(Command::SetDetailedLog(on));
+        }
+    });
     ui.on_set_log_to_file({
         let prefs = prefs.clone();
         let show = show_log_settings.clone();
@@ -447,6 +465,10 @@ fn main() -> anyhow::Result<()> {
     ui.on_shortcut_create({
         let weak = ui.as_weak();
         move || shortcutui::create(&weak.unwrap())
+    });
+    ui.on_remove_all_shortcuts({
+        let weak = ui.as_weak();
+        move || shortcutui::remove_all(&weak.unwrap())
     });
     wizard::init(&ui, cmd_tx.clone());
     ui.on_open_wizard({

@@ -5,7 +5,7 @@ use std::time::Duration;
 
 use dpimech_core::ipc::{Client, Event, Reply, Request};
 use dpimech_core::lab::LabRequest;
-use dpimech_core::model::{EngineKind, LogLine, Profile};
+use dpimech_core::model::{EngineKind, LogLevel, LogLine, Profile};
 use dpimech_core::packages::{PackageId, PackageInfo};
 use slint::{ComponentHandle, Model, ModelRc, SharedString, VecModel, Weak};
 use tokio::sync::mpsc;
@@ -37,6 +37,14 @@ pub enum Command {
     CheckProfile(String),
     CheckAppUpdate,
     AddDefenderExclusion,
+    SetDetailedLog(bool),
+}
+
+/// The user's "detailed log" choice, sent again whenever the service (re)connects.
+static DETAILED_LOG: std::sync::atomic::AtomicBool = std::sync::atomic::AtomicBool::new(false);
+
+pub fn set_detailed_log(on: bool) {
+    DETAILED_LOG.store(on, std::sync::atomic::Ordering::Relaxed);
 }
 
 pub fn spawn(ui: Weak<AppWindow>, commands: mpsc::UnboundedReceiver<Command>) {
@@ -73,6 +81,11 @@ async fn run(ui: Weak<AppWindow>, mut commands: mpsc::UnboundedReceiver<Command>
             _ => String::new(),
         };
         set_connected(&ui, true, info);
+        let _ = client
+            .request(Request::SetDetailedLog {
+                on: DETAILED_LOG.load(std::sync::atomic::Ordering::Relaxed),
+            })
+            .await;
         refresh_profiles(&ui, &client).await;
         refresh_packages(&ui, &client).await;
         if let Ok(Reply::DefenderStatus { excluded }) =
@@ -131,6 +144,7 @@ async fn handle_command(
         Command::Delete(id) => (Request::DeleteProfile { id }, true),
         Command::Start(id) => (Request::StartProfile { id }, false),
         Command::CheckProfile(id) => (Request::CheckProfile { id }, false),
+        Command::SetDetailedLog(on) => (Request::SetDetailedLog { on }, false),
         Command::CheckAppUpdate => {
             let text = match client.request(Request::CheckAppUpdate).await {
                 Ok(Reply::AppUpdate {
@@ -317,7 +331,20 @@ async fn toggle_all(ui: &Weak<AppWindow>, client: &Client, last_active: &mut Vec
 
 async fn refresh_profiles(ui: &Weak<AppWindow>, client: &Client) {
     if let Ok(Reply::Profiles { profiles }) = client.request(Request::ListProfiles).await {
-        crate::notify::on_profiles(&profiles);
+        // Even with daily files off, a failure keeps the log that explains it. The error line
+        // itself arrives just after the status change, so wait for it a moment.
+        for name in crate::notify::on_profiles(&profiles) {
+            let ui = ui.clone();
+            tokio::spawn(async move {
+                tokio::time::sleep(Duration::from_millis(1500)).await;
+                if let Some(path) = crate::logfile::save_error_snapshot(&name) {
+                    append_log(
+                        &ui,
+                        gui_line(LogLevel::Info, trf!("Saved the log to {}", path.display())),
+                    );
+                }
+            });
+        }
         let _ = ui.upgrade_in_event_loop(move |ui| crate::apply_profiles(&ui, profiles));
     }
 }
@@ -358,16 +385,26 @@ fn set_connected(ui: &Weak<AppWindow>, connected: bool, info: String) {
     });
 }
 
+/// A line from the app itself (not the service) on the Logs page.
+pub fn app_log(ui: &Weak<AppWindow>, text: String) {
+    append_log(ui, gui_line(LogLevel::Info, text));
+}
+
 fn gui_error(text: String) -> LogLine {
+    gui_line(LogLevel::Error, text)
+}
+
+fn gui_line(level: LogLevel, text: String) -> LogLine {
     LogLine {
         unix_ms: chrono::Utc::now().timestamp_millis() as u64,
-        level: dpimech_core::model::LogLevel::Error,
+        level,
         source: "app".into(),
         text,
     }
 }
 
 fn replace_logs(ui: &Weak<AppWindow>, lines: Vec<LogLine>) {
+    crate::logfile::remember(&lines);
     let _ = ui.upgrade_in_event_loop(move |ui| {
         let items: Vec<LogItem> = lines
             .iter()

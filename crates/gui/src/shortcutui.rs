@@ -19,6 +19,7 @@ thread_local! {
 const PREVIEW: u32 = 160;
 
 pub fn init(ui: &AppWindow) {
+    ui.set_shortcut_count(shortcut::count() as i32);
     ui.set_shortcut_menu_label(
         if cfg!(windows) {
             tr("Start menu")
@@ -99,13 +100,16 @@ pub fn create(ui: &AppWindow) {
             ui.set_shortcut_busy(false);
             match result {
                 Ok(paths) => {
+                    // Done: close the dialog and say where the shortcut went on the Logs page.
                     let list = paths
                         .iter()
                         .map(|p| p.display().to_string())
                         .collect::<Vec<_>>()
-                        .join("\n");
-                    ui.set_shortcut_status(trf!("Shortcut created:\n{}", list).into());
-                    ui.set_shortcut_ok(true);
+                        .join(", ");
+                    crate::bridge::app_log(&ui.as_weak(), trf!("Shortcut created: {}", list));
+                    ui.set_shortcut_open(false);
+                    ui.set_shortcut_count(shortcut::count() as i32);
+                    ui.set_shortcuts_removed(SharedString::new());
                 }
                 Err(e) => {
                     ui.set_shortcut_status(trf!("Could not create the shortcut: {}", e).into());
@@ -125,4 +129,27 @@ fn apps_model(choices: &[Choice]) -> ModelRc<SharedString> {
     let mut names: Vec<SharedString> = choices.iter().map(|c| c.title.as_str().into()).collect();
     names.push(tr("Nothing, only turn the profile on").into());
     ModelRc::new(VecModel::from(names))
+}
+
+/// Removes a deleted profile's shortcuts off the UI thread.
+pub fn remove_for_profile(ui: slint::Weak<AppWindow>, id: String) {
+    std::thread::spawn(move || {
+        let removed = shortcut::remove_for(&id);
+        let _ = ui.upgrade_in_event_loop(move |ui| {
+            if removed > 0 {
+                crate::bridge::app_log(
+                    &ui.as_weak(),
+                    trf!("Removed {} shortcut(s) of the deleted profile", removed),
+                );
+            }
+            ui.set_shortcut_count(shortcut::count() as i32);
+        });
+    });
+}
+
+/// Settings → "Remove all shortcuts".
+pub fn remove_all(ui: &AppWindow) {
+    let removed = shortcut::remove_all();
+    ui.set_shortcut_count(shortcut::count() as i32);
+    ui.set_shortcuts_removed(trf!("Removed {} shortcut(s).", removed).into());
 }

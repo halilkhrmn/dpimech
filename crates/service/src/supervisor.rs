@@ -589,8 +589,20 @@ impl Supervisor {
                 )))
             });
             if restarts == 0 {
+                let args: Vec<String> = cmd
+                    .as_std()
+                    .get_args()
+                    .map(|a| a.to_string_lossy().into_owned())
+                    .collect();
+                let port = engine_port(&profile)
+                    .map(|p| format!(" on port {p}"))
+                    .unwrap_or_default();
+                self.logs.info(
+                    name,
+                    format!("{} started{port}", profile.engine.display_name()),
+                );
                 self.logs
-                    .info(name, format!("{} started", profile.engine.display_name()));
+                    .info(name, format!("strategy: {}", args.join(" ")));
             }
             {
                 let mut state = self.state.lock().await;

@@ -4,31 +4,31 @@ msgstr ""
 "Language: ru\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ui/app.slint:195
+#: ui/app.slint:200
 msgid "Profiles"
 msgstr "Профили"
 
-#: ui/app.slint:200
+#: ui/app.slint:205
 msgid "Strategy Lab"
 msgstr "Лаборатория"
 
-#: ui/app.slint:205
+#: ui/app.slint:210
 msgid "Engines"
 msgstr "Движки"
 
-#: ui/app.slint:211
+#: ui/app.slint:216
 msgid "Logs"
 msgstr "Журнал"
 
-#: ui/app.slint:217
+#: ui/app.slint:222
 msgid "Settings"
 msgstr "Настройки"
 
-#: ui/app.slint:260
+#: ui/app.slint:265
 msgid "Another DPI tool is running: {}. Two tools on the same traffic break connections — close it, or turn DPIMech's profiles off."
 msgstr "Работает другой инструмент обхода DPI: {}. Два инструмента на одном трафике ломают соединения — закройте его или выключите профили DPIMech."
 
-#: ui/app.slint:276
+#: ui/app.slint:281
 msgid "Background service is not running. Engines can't be started until it is."
 msgstr "Фоновая служба не запущена. Пока она не работает, движки нельзя запустить."
 
@@ -376,119 +376,143 @@ msgstr "Сначала новые. Вывод движков и события �
 msgid "Clear"
 msgstr "Очистить"
 
-#: ui/pages.slint:115
+#: ui/pages.slint:117
 msgid "Coming soon"
 msgstr "Скоро"
 
-#: ui/pages.slint:164
+#: ui/pages.slint:171
 msgid "Interface"
 msgstr "Интерфейс"
 
-#: ui/pages.slint:171
+#: ui/pages.slint:178
 msgid "Easy mode"
 msgstr "Простой режим"
 
-#: ui/pages.slint:173
+#: ui/pages.slint:180
 msgid "Fewer menus; the setup wizard does the work. Turn off for engines, the Strategy Lab and logs."
 msgstr "Меньше меню, всё делает мастер настройки. Выключите, чтобы видеть движки, лабораторию стратегий и журнал."
 
-#: ui/pages.slint:186
+#: ui/pages.slint:193
 msgid "Language"
 msgstr "Язык"
 
-#: ui/pages.slint:194
+#: ui/pages.slint:201
 msgid "Run the setup wizard again"
 msgstr "Снова запустить мастер настройки"
 
-#: ui/pages.slint:195
+#: ui/pages.slint:202
 msgid "Open wizard"
 msgstr "Открыть мастер"
 
-#: ui/pages.slint:201
+#: ui/pages.slint:208
 msgid "Startup"
 msgstr "Автозапуск"
 
-#: ui/pages.slint:208
+#: ui/pages.slint:215
 msgid "Start DPIMech when I sign in"
 msgstr "Запускать DPIMech при входе в систему"
 
-#: ui/pages.slint:210
+#: ui/pages.slint:217
 msgid "The background service always starts with the computer; this brings back the tray icon."
 msgstr "Фоновая служба всегда запускается вместе с компьютером; этот параметр возвращает значок в трее."
 
-#: ui/pages.slint:223
+#: ui/pages.slint:230
 msgid "Start minimized to the tray"
 msgstr "Запускать свёрнутым в трей"
 
-#: ui/pages.slint:235
-msgid "Log files"
-msgstr "Файлы журнала"
-
 #: ui/pages.slint:242
+msgid "Log"
+msgstr "Журнал"
+
+#: ui/pages.slint:249
 msgid "Save the log to daily files"
 msgstr "Сохранять журнал в файлы по дням"
 
-#: ui/pages.slint:244
-msgid "One file per day while DPIMech is open; files older than 14 days are deleted. Useful when asking for help."
-msgstr "Один файл в день, пока DPIMech открыт; файлы старше 14 дней удаляются. Пригодится, когда просите о помощи."
+#: ui/pages.slint:251
+msgid "One file per day while DPIMech is open; files older than 14 days are deleted. Even when this is off, the recent log is saved to this folder if a profile stops with an error."
+msgstr "Один файл в день, пока DPIMech открыт; файлы старше 14 дней удаляются. Даже когда это выключено, недавний журнал сохраняется в эту папку, если профиль остановился с ошибкой."
 
-#: ui/pages.slint:267
+#: ui/pages.slint:266
+msgid "Detailed log"
+msgstr "Подробный журнал"
+
+#: ui/pages.slint:268
+msgid "Also logs every connection (site, address, how it ended) and each tested strategy. Turn it on to find out why something does not open; it makes the log much longer."
+msgstr "Также записывает каждое соединение (сайт, адрес, чем закончилось) и каждую проверенную стратегию. Включите, чтобы понять, почему что-то не открывается; журнал станет намного длиннее."
+
+#: ui/pages.slint:291
 msgid "Change folder…"
 msgstr "Сменить папку…"
 
-#: ui/pages.slint:268
+#: ui/pages.slint:292
 msgid "Open folder"
 msgstr "Открыть папку"
 
-#: ui/pages.slint:275
+#: ui/pages.slint:299
+msgid "Shortcuts"
+msgstr "Ярлыки"
+
+#: ui/pages.slint:306
+msgid "Profile shortcuts on the desktop and in the menu: {}"
+msgstr "Ярлыки профилей на рабочем столе и в меню: {}"
+
+#: ui/pages.slint:310
+msgid "Create one with right click (or ⋯) on a profile. Deleting a profile removes its shortcuts."
+msgstr "Создайте ярлык правым щелчком (или ⋯) по профилю. При удалении профиля его ярлыки тоже удаляются."
+
+#: ui/pages.slint:317
+msgid "Remove all shortcuts"
+msgstr "Удалить все ярлыки"
+
+#: ui/pages.slint:325
 msgid "Background service"
 msgstr "Фоновая служба"
 
-#: ui/pages.slint:278
+#: ui/pages.slint:328
 msgid "Connected"
 msgstr "Подключено"
 
-#: ui/pages.slint:278
+#: ui/pages.slint:328
 msgid "Not running"
 msgstr "Не запущена"
 
-#: ui/pages.slint:282
+#: ui/pages.slint:332
 msgid "Install the service"
 msgstr "Установить службу"
 
-#: ui/pages.slint:288
+#: ui/pages.slint:338
 msgid "About"
 msgstr "О программе"
 
-#: ui/pages.slint:293
+#: ui/pages.slint:343
 msgid "Opens sites and apps that your internet provider blocks by running well-known open-source DPI bypass tools on your computer. It is not a VPN: your traffic still goes straight to the sites, nothing is sent through another server."
 msgstr "Открывает сайты и приложения, которые блокирует провайдер, запуская на вашем компьютере известные инструменты обхода DPI с открытым кодом. Это не VPN: трафик по-прежнему идёт напрямую на сайты, ничего не проходит через чужой сервер."
 
-#: ui/pages.slint:297
+#: ui/pages.slint:347
 msgid "Platform: {}"
 msgstr "Платформа: {}"
 
-#: ui/pages.slint:298
+#: ui/pages.slint:348
 msgid "Free software under the GNU GPL v3 or later."
 msgstr "Свободная программа под лицензией GNU GPL v3 или новее."
 
-#: ui/pages.slint:302
+#: ui/pages.slint:352
 msgid "Source code"
 msgstr "Исходный код"
 
-#: ui/pages.slint:303
+#: ui/pages.slint:353
 msgid "Report a problem"
 msgstr "Сообщить о проблеме"
 
-#: ui/pages.slint:310
+#: ui/pages.slint:360
 msgid "Download"
 msgstr "Скачать"
 
-#: ui/pages.slint:316
+#: ui/pages.slint:366
 msgid "Thanks"
 msgstr "Благодарности"
 
-#: ui/pages.slint:320
+#: ui/pages.slint:370
 msgid "DPIMech only manages these projects; the real work is theirs."
 msgstr "DPIMech только управляет этими проектами, основная работа — их."
 
@@ -664,43 +688,47 @@ msgstr "Повторить"
 msgid "Finish"
 msgstr "Готово"
 
-#: src/bridge.rs:56
+#: src/bridge.rs:64
 msgid "Start it with: dpimech-service run"
 msgstr "Запустите её командой: dpimech-service run"
 
-#: src/bridge.rs:72
+#: src/bridge.rs:80
 msgid "Version {} · data in {}"
 msgstr "Версия {} · данные в {}"
 
-#: src/bridge.rs:99
+#: src/bridge.rs:112
 msgid "Version {} is available."
 msgstr "Доступна версия {}."
 
-#: src/bridge.rs:141
+#: src/bridge.rs:155
 msgid "Version {} is available (you have {})."
 msgstr "Доступна версия {} (у вас {})."
 
-#: src/bridge.rs:145
+#: src/bridge.rs:159
 msgid "You have the latest version ({})."
 msgstr "У вас последняя версия ({})."
 
-#: src/bridge.rs:148
+#: src/bridge.rs:162
 msgid "Could not check for updates: {}"
 msgstr "Не удалось проверить обновления: {}"
 
-#: src/bridge.rs:210
+#: src/bridge.rs:224
 msgid "Could not load strategies: {}"
 msgstr "Не удалось загрузить стратегии: {}"
 
-#: src/bridge.rs:222
+#: src/bridge.rs:236
 msgid "ISP lookup failed: {}"
 msgstr "Не удалось определить провайдера: {}"
 
-#: src/bridge.rs:350
+#: src/bridge.rs:339
+msgid "Saved the log to {}"
+msgstr "Журнал сохранён: {}"
+
+#: src/bridge.rs:372
 msgid "Looking up…"
 msgstr "Поиск…"
 
-#: src/bridge.rs:352
+#: src/bridge.rs:374
 msgid "This needs the background service."
 msgstr "Для этого нужна фоновая служба."
 
@@ -772,23 +800,23 @@ msgstr "Работает · {}"
 msgid "avg. {} ms"
 msgstr "в среднем {} мс"
 
-#: src/convert.rs:365
+#: src/convert.rs:366
 msgid "just now"
 msgstr "только что"
 
-#: src/convert.rs:366
+#: src/convert.rs:367
 msgid "{} min"
 msgstr "{} мин"
 
-#: src/convert.rs:367
+#: src/convert.rs:368
 msgid "{} h {} min"
 msgstr "{} ч {} мин"
 
-#: src/convert.rs:379
+#: src/convert.rs:380
 msgid "Last check: {}/{} sites answered"
 msgstr "Последняя проверка: ответили {}/{} сайтов"
 
-#: src/convert.rs:385
+#: src/convert.rs:386
 msgid "(usually {} ms)"
 msgstr "(обычно {} мс)"
 
@@ -924,71 +952,71 @@ msgstr "Профиль запускается слишком долго. При�
 msgid "the menu entry has no command"
 msgstr "в пункте меню нет команды"
 
-#: src/main.rs:353
+#: src/main.rs:371
 msgid "Folder for DPIMech log files"
 msgstr "Папка для файлов журнала DPIMech"
 
-#: src/main.rs:537
+#: src/main.rs:559
 msgid "The service is installed. Connecting…"
 msgstr "Служба установлена. Подключение…"
 
-#: src/main.rs:538
+#: src/main.rs:560
 msgid "Installing the service failed: {}"
 msgstr "Не удалось установить службу: {}"
 
-#: src/main.rs:546
+#: src/main.rs:568
 msgid "Installing… confirm the prompt. DPIMech connects by itself when the service is ready."
 msgstr "Установка… подтвердите запрос. DPIMech подключится сам, когда служба будет готова."
 
-#: src/main.rs:547
+#: src/main.rs:569
 msgid "Could not start the installer: {}"
 msgstr "Не удалось запустить установку: {}"
 
-#: src/main.rs:601
+#: src/main.rs:623
 msgid "Downloading online lists…"
 msgstr "Загрузка онлайн-списков…"
 
-#: src/notify.rs:46
+#: src/notify.rs:54
 msgid "{} stopped"
 msgstr "{} остановлен"
 
-#: src/notify.rs:54
+#: src/notify.rs:62
 msgid "{} needs attention"
 msgstr "{} требует внимания"
 
-#: src/notify.rs:60
+#: src/notify.rs:68
 msgid "the sites stopped answering"
 msgstr "сайты перестали отвечать"
 
-#: src/notify.rs:62
+#: src/notify.rs:70
 msgid "{} ms instead of the usual {} ms"
 msgstr "{} мс вместо обычных {} мс"
 
-#: src/notify.rs:64
+#: src/notify.rs:72
 msgid "only {}/{} sites answer"
 msgstr "отвечают только {}/{} сайтов"
 
-#: src/notify.rs:67
+#: src/notify.rs:75
 msgid "{} is slow"
 msgstr "{} работает медленно"
 
-#: src/notify.rs:68
+#: src/notify.rs:76
 msgid "Connection check: {}."
 msgstr "Проверка соединения: {}."
 
-#: src/notify.rs:74
+#: src/notify.rs:82
 msgid "{} was restarted"
 msgstr "{} перезапущен"
 
-#: src/notify.rs:75
+#: src/notify.rs:83
 msgid "DPIMech restarted the engine to fix the connection."
 msgstr "DPIMech перезапустил движок, чтобы восстановить соединение."
 
-#: src/notify.rs:160
+#: src/notify.rs:168
 msgid "DPIMech update available"
 msgstr "Доступно обновление DPIMech"
 
-#: src/notify.rs:161
+#: src/notify.rs:169
 msgid "Version {} is ready. Open Settings to download it."
 msgstr "Версия {} готова. Откройте настройки, чтобы скачать её."
 
@@ -996,45 +1024,49 @@ msgstr "Версия {} готова. Откройте настройки, чт�
 msgid "Choose an application"
 msgstr "Выберите приложение"
 
-#: src/shortcut.rs:130
+#: src/shortcut.rs:131
 msgid "Choose where to put the shortcut."
 msgstr "Выберите, куда поместить ярлык."
 
-#: src/shortcut.rs:134
+#: src/shortcut.rs:135
 msgid "Give the shortcut a name."
 msgstr "Дайте ярлыку имя."
 
-#: src/shortcut.rs:446
+#: src/shortcut.rs:622
 msgid "Starts the DPIMech profile \"{}\""
 msgstr "Запускает профиль DPIMech «{}»"
 
-#: src/shortcutui.rs:24
+#: src/shortcutui.rs:25
 msgid "Start menu"
 msgstr "Меню «Пуск»"
 
-#: src/shortcutui.rs:26
+#: src/shortcutui.rs:27
 msgid "Applications folder"
 msgstr "Папка «Программы»"
 
-#: src/shortcutui.rs:28
+#: src/shortcutui.rs:29
 msgid "Applications menu"
 msgstr "Меню приложений"
 
-#: src/shortcutui.rs:107
-msgid ""
-"Shortcut created:\n"
-"{}"
-msgstr ""
-"Ярлык создан:\n"
-"{}"
+#: src/shortcutui.rs:109
+msgid "Shortcut created: {}"
+msgstr "Ярлык создан: {}"
 
-#: src/shortcutui.rs:111
+#: src/shortcutui.rs:115
 msgid "Could not create the shortcut: {}"
 msgstr "Не удалось создать ярлык: {}"
 
-#: src/shortcutui.rs:126
+#: src/shortcutui.rs:130
 msgid "Nothing, only turn the profile on"
 msgstr "Ничего, только включить профиль"
+
+#: src/shortcutui.rs:142
+msgid "Removed {} shortcut(s) of the deleted profile"
+msgstr "Удалено ярлыков удалённого профиля: {}"
+
+#: src/shortcutui.rs:154
+msgid "Removed {} shortcut(s)."
+msgstr "Удалено ярлыков: {}."
 
 #: src/tray.rs:137
 msgid "idle"

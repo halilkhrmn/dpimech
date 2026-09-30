@@ -196,3 +196,21 @@ own release), a launchd service and an unsigned universal `.dmg`. The wizard hid
   starts it as an ordinary unconfined service); the `.deb` and the release `.rpm` keep `/usr/lib/dpimech`.
   The GUI accepts both when it offers to start a packaged service.
 - **Trade-off:** the source RPM is ~120 MB because `cargo vendor` includes the Windows crates.
+
+## 36. Logs: short by default, detailed on request, saved when something fails (2026-09-30)
+- **Default log** says what matters for a support question: the strategy and port an engine started with,
+  the Lab's result without a bypass and its best strategy (with the sites that failed), which app processes
+  were routed (Linux) and a warning when none match, and a DNS comparison with 1.1.1.1.
+- **Detailed log** (Settings, off by default) adds one line per connection on Linux per-app routing
+  (site from the TLS SNI, address, bytes, how it ended) and one per tested strategy. It is a `Debug` level
+  the service only emits after a GUI sent `SetDetailedLog`, so older GUIs never see the new level.
+- **Files:** daily files are now opt-in; instead, when a profile stops with an error the GUI writes the
+  recent log (last 500 lines) to `dpimech-error-<date>_<time>.log` in the log folder (10 kept). The service
+  still never writes to a user-chosen path (see #26).
+
+## 37. Shortcuts are tracked so they can be replaced and removed (2026-09-30)
+- The GUI records every shortcut it made in `shortcuts.toml` (per profile). Creating a shortcut again for a
+  profile replaces the old ones (even with another name or place); deleting a profile removes its
+  shortcuts; Settings has "Remove all shortcuts".
+- Removal only deletes files that really are ours (a .lnk / .desktop / .app whose command contains
+  `--launch`), because the list is a user-writable file and must not be able to point at anything else.

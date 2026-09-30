@@ -10,20 +10,28 @@ use dpimech_core::model::{ProfileState, ProfileStatus};
 static PREVIOUS: Mutex<Option<HashMap<String, ProfileStatus>>> = Mutex::new(None);
 
 /// Compares with the last known statuses and shows a toast for meaningful changes.
-/// The very first list (app start) only records the state.
-pub fn on_profiles(profiles: &[ProfileState]) {
+/// The very first list (app start) only records the state. Returns the names of profiles
+/// that have just stopped with an error.
+pub fn on_profiles(profiles: &[ProfileState]) -> Vec<String> {
     let mut guard = PREVIOUS.lock().unwrap();
     let first = guard.is_none();
     let previous = guard.get_or_insert_with(HashMap::new);
+    let mut failed = Vec::new();
     for p in profiles {
         let before = previous.insert(p.profile.id.clone(), p.status.clone());
         if first {
             continue;
         }
+        if matches!(p.status, ProfileStatus::Error { .. })
+            && !matches!(before, Some(ProfileStatus::Error { .. }))
+        {
+            failed.push(p.profile.name.clone());
+        }
         if let Some((title, body)) = describe(&p.profile.name, before.as_ref(), &p.status) {
             show(&title, &body);
         }
     }
+    failed
 }
 
 fn describe(

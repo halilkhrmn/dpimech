@@ -142,7 +142,13 @@ test edilmedi.
 - **Aynı anda tek DPI aracı:** DPIMech'in yanında başka bir engel aşma aracı (GoodbyeDPI, zapret,
   ByeDPI Manager, …) çalışırsa bağlantılar tuhaf şekillerde bozulur. DPIMech böyle bir araç görünce
   seni uyarır.
-- **Kayıtlar:** Ayarlar → *Log files* her gün için bir dosya kaydeder; yardım isterken işe yarar.
+- **Hâlâ açılmıyor mu? DNS'ini kontrol et.** Bazı sağlayıcılar (örneğin Türkiye'de) siteleri,
+  adlarına yanlış adres vererek de engeller; bunu hiçbir motor düzeltemez. Strateji Laboratuvarı,
+  DNS'in 1.1.1.1'den farklı cevap verirse uyarır. O zaman DNS'ini `1.1.1.1` / `1.0.0.1` yap (ya da
+  sistemde veya tarayıcıda "DNS over HTTPS"i aç).
+- **Kayıtlar:** Ayarlar → *Kayıt*. Bir profil hatayla durursa son kayıtlar kendiliğinden bir dosyaya
+  kaydedilir. *Ayrıntılı kayıt* her bağlantıyı da (site, adres, nasıl bittiği) yazar; bir şeyin neden
+  açılmadığını bulmak için aç ve yardım isterken dosyayı ekle.
 
 ## Güvenli mi?
 

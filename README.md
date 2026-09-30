@@ -138,7 +138,13 @@ and checked automatically on macOS, but not yet tested by hand on a Mac.
   playing, or unblock only the apps you need.
 - **One DPI tool at a time:** if another bypass tool (GoodbyeDPI, zapret, ByeDPI Manager, …) runs
   next to DPIMech, connections break in strange ways. DPIMech warns you when it sees one.
-- **Logs:** Settings → *Log files* saves a file per day, useful when asking for help.
+- **Still blocked? Check your DNS.** Some providers (for example in Turkey) also block sites by
+  giving a wrong address for their names; no engine can fix that. The Strategy Lab warns when your
+  DNS answers differently from 1.1.1.1. Then set your DNS to `1.1.1.1` / `1.0.0.1` (or turn on
+  "DNS over HTTPS" in your system or browser).
+- **Logs:** Settings → *Log*. When a profile stops with an error, the recent log is saved to a file
+  by itself. *Detailed log* also records every connection (site, address, how it ended) — turn it
+  on to find out why something does not open, and attach the file when asking for help.
 
 ## Is it safe?
 

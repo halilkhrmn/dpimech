@@ -97,6 +97,22 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-09-30 (25) — 0.2.2: better logs, DNS check, shortcut housekeeping
+- **Report (owner, Linux):** wizard set up Discord per-app with ByeDPI; engine logged "recv: Connection reset by
+  peer" and Discord did not open. The routing worked (the reset comes from ByeDPI), but the log could not tell
+  which host or why. Suspected cause in Turkey: DNS blocking (wrong address for Discord's names).
+- **Done:** logs (DECISIONS #36): strategy/port on start, Lab baseline + best strategy + failed sites, routed
+  processes and "no process matches", DNS vs 1.1.1.1 warning (`dnscheck.rs`), detailed log toggle with per-
+  connection lines incl. SNI (`sni.rs`), engine handshake timeout (15 s) in the Linux relay; daily files
+  opt-in, error snapshots automatic. Shortcuts (DECISIONS #37): dialog closes after Create, recreate
+  replaces, profile delete removes, Settings → Remove all.
+- **Verified (container):** detailed relay line `example.com (93.184.215.14:443): sent 597 B, received
+  3222 B`; "now routed: curl (pid …)"; Lab lines (baseline 0/2, best 2/2 with strategy); DoH unreachable is
+  reported in the detailed log; recreate removed an older differently named shortcut and left a foreign
+  file alone; Remove all cleaned desktop file, icon and list; error snapshot contains the error line.
+  Unit tests: SNI parser, DoH JSON, network comparison.
+- **Next:** owner re-tests Discord with the detailed log on and sends the snapshot / DNS warning.
+
 ### 2026-09-30 (24) — 0.2.1: Windows service would not install
 - **Bug (hand test on Windows 11):** after installing 0.2.0 over 0.1.x the service was never registered; "Install
   the service" asked for UAC and then nothing happened, so ISP detection and the engine list waited forever.

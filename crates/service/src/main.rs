@@ -10,6 +10,7 @@
 
 mod acl;
 mod defender;
+mod dnscheck;
 #[cfg(windows)]
 mod firewall;
 mod foreign;
@@ -29,6 +30,8 @@ mod perapp;
 #[cfg(target_os = "linux")]
 mod perapp_linux;
 mod server;
+#[cfg(target_os = "linux")]
+mod sni;
 mod supervisor;
 #[cfg(target_os = "linux")]
 mod systemd;

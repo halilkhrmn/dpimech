@@ -124,7 +124,8 @@ pub fn app_icon(choice: &Choice) -> Option<Rgba> {
     }
 }
 
-/// Creates the shortcut(s) and returns where they were put.
+/// Creates the shortcut(s) and returns where they were put. Shortcuts made earlier for the
+/// same profile are replaced, even if their name or place was different.
 pub fn create(req: &Request) -> anyhow::Result<Vec<PathBuf>> {
     if !req.desktop && !req.menu {
         bail!("{}", crate::i18n::tr("Choose where to put the shortcut."));
@@ -140,7 +141,177 @@ pub fn create(req: &Request) -> anyhow::Result<Vec<PathBuf>> {
         args.push(OPEN_FLAG.to_owned());
         args.push(open.launch.clone());
     }
-    platform::create(req, &name, &args, &icon)
+    let made = platform::create(req, &name, &args, &icon)?;
+    let mut registry = Registry::load();
+    for old in registry.take(&req.profile_id) {
+        if !made.contains(&old) {
+            remove_shortcut(&old);
+        }
+    }
+    remove_icons(&req.profile_id, true);
+    registry.entries.extend(made.iter().map(|path| Entry {
+        profile: req.profile_id.clone(),
+        path: path.clone(),
+    }));
+    registry.save();
+    Ok(made)
+}
+
+/// Deletes every shortcut made for a profile (when the profile is deleted); returns how many.
+pub fn remove_for(profile_id: &str) -> usize {
+    let mut registry = Registry::load();
+    let mut paths = registry.take(profile_id);
+    // Menu entries have a fixed name, so they are found even without the list.
+    if let Some(menu) = platform::menu_entry(profile_id)
+        && !paths.contains(&menu)
+    {
+        paths.push(menu);
+    }
+    registry.save();
+    remove_icons(profile_id, false);
+    paths.iter().filter(|p| remove_shortcut(p)).count()
+}
+
+/// Deletes every shortcut DPIMech made (Settings); returns how many.
+pub fn remove_all() -> usize {
+    let mut profiles: Vec<String> = Registry::load()
+        .entries
+        .into_iter()
+        .map(|e| e.profile)
+        .collect();
+    profiles.dedup();
+    profiles.iter().map(|p| remove_for(p)).sum()
+}
+
+/// Shortcuts that still exist.
+pub fn count() -> usize {
+    Registry::load()
+        .entries
+        .iter()
+        .filter(|e| e.path.exists())
+        .count()
+}
+
+/// Where each shortcut went, so it can be replaced or removed later (`shortcuts.toml`).
+#[derive(Default, serde::Serialize, serde::Deserialize)]
+struct Registry {
+    #[serde(default, rename = "shortcut")]
+    entries: Vec<Entry>,
+}
+
+#[derive(Clone, serde::Serialize, serde::Deserialize)]
+struct Entry {
+    profile: String,
+    path: PathBuf,
+}
+
+impl Registry {
+    fn load() -> Registry {
+        crate::prefs::config_file("shortcuts.toml")
+            .and_then(|p| std::fs::read_to_string(p).ok())
+            .and_then(|t| toml::from_str(&t).ok())
+            .unwrap_or_default()
+    }
+
+    fn save(&self) {
+        let Some(path) = crate::prefs::config_file("shortcuts.toml") else {
+            return;
+        };
+        if let Some(dir) = path.parent() {
+            let _ = std::fs::create_dir_all(dir);
+        }
+        if let Ok(text) = toml::to_string_pretty(self) {
+            let _ = std::fs::write(path, text);
+        }
+    }
+
+    /// Removes and returns a profile's entries.
+    fn take(&mut self, profile: &str) -> Vec<PathBuf> {
+        let (mine, rest) = std::mem::take(&mut self.entries)
+            .into_iter()
+            .partition(|e| e.profile == profile);
+        self.entries = rest;
+        mine.into_iter().map(|e: Entry| e.path).collect()
+    }
+}
+
+/// Deletes a shortcut, but only one that is really ours: its command is `dpimech --launch`.
+/// The list is a user-writable file, so it must not be able to point us at anything else.
+fn remove_shortcut(path: &Path) -> bool {
+    if !is_our_shortcut(path) {
+        return false;
+    }
+    let removed = if path.is_dir() {
+        std::fs::remove_dir_all(path)
+    } else {
+        std::fs::remove_file(path)
+    };
+    removed.is_ok()
+}
+
+fn is_our_shortcut(path: &Path) -> bool {
+    let ext = path
+        .extension()
+        .and_then(|e| e.to_str())
+        .unwrap_or_default()
+        .to_ascii_lowercase();
+    let contents = match ext.as_str() {
+        // .lnk files store the arguments as UTF-16.
+        "lnk" => std::fs::read(path).ok().map(|b| {
+            let wide: Vec<u8> = LAUNCH_FLAG
+                .encode_utf16()
+                .flat_map(u16::to_le_bytes)
+                .collect();
+            b.windows(wide.len()).any(|w| w == wide.as_slice())
+        }),
+        "desktop" => std::fs::read_to_string(path)
+            .ok()
+            .map(|t| t.contains(LAUNCH_FLAG)),
+        "app" => std::fs::read_to_string(path.join("Contents/MacOS/launch"))
+            .ok()
+            .map(|t| t.contains(LAUNCH_FLAG)),
+        _ => None,
+    };
+    contents.unwrap_or(false)
+}
+
+/// Icon files are named `<profile>-<timestamp>.<ext>`; `keep_newest` keeps the one just made.
+fn remove_icons(profile_id: &str, keep_newest: bool) {
+    let Some(dir) = platform::icon_dir() else {
+        return;
+    };
+    let Ok(entries) = std::fs::read_dir(&dir) else {
+        return;
+    };
+    let prefix = format!("{}-", safe_id(profile_id));
+    let mut icons: Vec<PathBuf> = entries
+        .flatten()
+        .map(|e| e.path())
+        .filter(|p| {
+            p.file_name()
+                .and_then(|n| n.to_str())
+                .and_then(|n| n.strip_prefix(&prefix))
+                .is_some_and(|rest| {
+                    rest.split('.')
+                        .next()
+                        .is_some_and(|t| t.bytes().all(|b| b.is_ascii_digit()))
+                })
+        })
+        .collect();
+    icons.sort();
+    if keep_newest {
+        icons.pop();
+    }
+    for icon in icons {
+        let _ = std::fs::remove_file(icon);
+    }
+}
+
+fn safe_id(profile_id: &str) -> String {
+    profile_id
+        .chars()
+        .filter(|c| c.is_ascii_alphanumeric() || *c == '-' || *c == '_')
+        .collect()
 }
 
 /// The program a shortcut should start: the AppImage itself rather than its temporary mount.
@@ -171,11 +342,7 @@ fn icon_path(dir: &Path, profile_id: &str, ext: &str) -> PathBuf {
         .duration_since(std::time::UNIX_EPOCH)
         .map(|d| d.as_secs())
         .unwrap_or_default();
-    let id: String = profile_id
-        .chars()
-        .filter(|c| c.is_ascii_alphanumeric() || *c == '-' || *c == '_')
-        .collect();
-    dir.join(format!("{id}-{stamp}.{ext}"))
+    dir.join(format!("{}-{stamp}.{ext}", safe_id(profile_id)))
 }
 
 fn logo() -> Rgba {
@@ -409,6 +576,16 @@ mod platform {
 
     const CREATE_NO_WINDOW: u32 = 0x0800_0000;
 
+    pub fn icon_dir() -> Option<PathBuf> {
+        let base = std::env::var_os("LOCALAPPDATA")?;
+        Some(PathBuf::from(base).join("DPIMech").join("shortcuts"))
+    }
+
+    /// Windows shortcuts are named by the user; only the list knows them.
+    pub fn menu_entry(_profile_id: &str) -> Option<PathBuf> {
+        None
+    }
+
     /// WScript.Shell through PowerShell: writing .lnk files by hand means implementing
     /// MS-SHLLINK, and windows-sys has no IShellLink bindings. Values travel in environment
     /// variables, never inside the script text.
@@ -430,8 +607,7 @@ $s.Save()
         args: &[String],
         icon: &Rgba,
     ) -> anyhow::Result<Vec<PathBuf>> {
-        let base = std::env::var_os("LOCALAPPDATA").context("LOCALAPPDATA is not set")?;
-        let dir = PathBuf::from(base).join("DPIMech").join("shortcuts");
+        let dir = icon_dir().context("LOCALAPPDATA is not set")?;
         std::fs::create_dir_all(&dir)?;
         let ico = icon_path(&dir, &req.profile_id, "ico");
         std::fs::write(&ico, encode_ico(icon)).context("writing the shortcut icon")?;
@@ -491,8 +667,7 @@ mod platform {
         args: &[String],
         icon: &Rgba,
     ) -> anyhow::Result<Vec<PathBuf>> {
-        let data = super::linux::data_home().context("HOME is not set")?;
-        let dir = data.join("dpimech").join("shortcuts");
+        let dir = icon_dir().context("HOME is not set")?;
         std::fs::create_dir_all(&dir)?;
         let png = icon_path(&dir, &req.profile_id, "png");
         std::fs::write(&png, encode_png(icon)).context("writing the shortcut icon")?;
@@ -511,17 +686,9 @@ mod platform {
             png.display()
         );
 
-        let id: String = req
-            .profile_id
-            .chars()
-            .filter(|c| c.is_ascii_alphanumeric() || *c == '-' || *c == '_')
-            .collect();
         let mut targets = Vec::new();
         if req.menu {
-            targets.push(
-                data.join("applications")
-                    .join(format!("dpimech-profile-{id}.desktop")),
-            );
+            targets.extend(menu_entry(&req.profile_id));
         }
         if req.desktop {
             targets.push(super::linux::desktop_dir().join(format!("{name}.desktop")));
@@ -545,6 +712,21 @@ mod platform {
                 .status();
         }
         Ok(targets)
+    }
+
+    pub fn icon_dir() -> Option<PathBuf> {
+        Some(super::linux::data_home()?.join("dpimech").join("shortcuts"))
+    }
+
+    pub fn menu_entry(profile_id: &str) -> Option<PathBuf> {
+        Some(
+            super::linux::data_home()?
+                .join("applications")
+                .join(format!(
+                    "dpimech-profile-{}.desktop",
+                    super::safe_id(profile_id)
+                )),
+        )
     }
 
     fn one_line(s: &str) -> String {
@@ -634,6 +816,15 @@ mod platform {
             made.push(bundle);
         }
         Ok(made)
+    }
+
+    /// The icon lives inside each .app bundle.
+    pub fn icon_dir() -> Option<PathBuf> {
+        None
+    }
+
+    pub fn menu_entry(_profile_id: &str) -> Option<PathBuf> {
+        None
     }
 
     fn sh_quote(s: &str) -> String {

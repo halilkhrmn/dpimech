@@ -1,31 +1,31 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8\n"
 
-#: ui/app.slint:195
+#: ui/app.slint:200
 msgid "Profiles"
 msgstr ""
 
-#: ui/app.slint:200
+#: ui/app.slint:205
 msgid "Strategy Lab"
 msgstr ""
 
-#: ui/app.slint:205
+#: ui/app.slint:210
 msgid "Engines"
 msgstr ""
 
-#: ui/app.slint:211
+#: ui/app.slint:216
 msgid "Logs"
 msgstr ""
 
-#: ui/app.slint:217
+#: ui/app.slint:222
 msgid "Settings"
 msgstr ""
 
-#: ui/app.slint:260
+#: ui/app.slint:265
 msgid "Another DPI tool is running: {}. Two tools on the same traffic break connections — close it, or turn DPIMech's profiles off."
 msgstr ""
 
-#: ui/app.slint:276
+#: ui/app.slint:281
 msgid "Background service is not running. Engines can't be started until it is."
 msgstr ""
 
@@ -373,119 +373,143 @@ msgstr ""
 msgid "Clear"
 msgstr ""
 
-#: ui/pages.slint:115
+#: ui/pages.slint:117
 msgid "Coming soon"
 msgstr ""
 
-#: ui/pages.slint:164
+#: ui/pages.slint:171
 msgid "Interface"
 msgstr ""
 
-#: ui/pages.slint:171
+#: ui/pages.slint:178
 msgid "Easy mode"
 msgstr ""
 
-#: ui/pages.slint:173
+#: ui/pages.slint:180
 msgid "Fewer menus; the setup wizard does the work. Turn off for engines, the Strategy Lab and logs."
 msgstr ""
 
-#: ui/pages.slint:186
+#: ui/pages.slint:193
 msgid "Language"
 msgstr ""
 
-#: ui/pages.slint:194
+#: ui/pages.slint:201
 msgid "Run the setup wizard again"
 msgstr ""
 
-#: ui/pages.slint:195
+#: ui/pages.slint:202
 msgid "Open wizard"
 msgstr ""
 
-#: ui/pages.slint:201
+#: ui/pages.slint:208
 msgid "Startup"
 msgstr ""
 
-#: ui/pages.slint:208
+#: ui/pages.slint:215
 msgid "Start DPIMech when I sign in"
 msgstr ""
 
-#: ui/pages.slint:210
+#: ui/pages.slint:217
 msgid "The background service always starts with the computer; this brings back the tray icon."
 msgstr ""
 
-#: ui/pages.slint:223
+#: ui/pages.slint:230
 msgid "Start minimized to the tray"
 msgstr ""
 
-#: ui/pages.slint:235
-msgid "Log files"
+#: ui/pages.slint:242
+msgid "Log"
 msgstr ""
 
-#: ui/pages.slint:242
+#: ui/pages.slint:249
 msgid "Save the log to daily files"
 msgstr ""
 
-#: ui/pages.slint:244
-msgid "One file per day while DPIMech is open; files older than 14 days are deleted. Useful when asking for help."
+#: ui/pages.slint:251
+msgid "One file per day while DPIMech is open; files older than 14 days are deleted. Even when this is off, the recent log is saved to this folder if a profile stops with an error."
 msgstr ""
 
-#: ui/pages.slint:267
-msgid "Change folder…"
+#: ui/pages.slint:266
+msgid "Detailed log"
 msgstr ""
 
 #: ui/pages.slint:268
+msgid "Also logs every connection (site, address, how it ended) and each tested strategy. Turn it on to find out why something does not open; it makes the log much longer."
+msgstr ""
+
+#: ui/pages.slint:291
+msgid "Change folder…"
+msgstr ""
+
+#: ui/pages.slint:292
 msgid "Open folder"
 msgstr ""
 
-#: ui/pages.slint:275
-msgid "Background service"
+#: ui/pages.slint:299
+msgid "Shortcuts"
 msgstr ""
 
-#: ui/pages.slint:278
-msgid "Connected"
-msgstr ""
-
-#: ui/pages.slint:278
-msgid "Not running"
-msgstr ""
-
-#: ui/pages.slint:282
-msgid "Install the service"
-msgstr ""
-
-#: ui/pages.slint:288
-msgid "About"
-msgstr ""
-
-#: ui/pages.slint:293
-msgid "Opens sites and apps that your internet provider blocks by running well-known open-source DPI bypass tools on your computer. It is not a VPN: your traffic still goes straight to the sites, nothing is sent through another server."
-msgstr ""
-
-#: ui/pages.slint:297
-msgid "Platform: {}"
-msgstr ""
-
-#: ui/pages.slint:298
-msgid "Free software under the GNU GPL v3 or later."
-msgstr ""
-
-#: ui/pages.slint:302
-msgid "Source code"
-msgstr ""
-
-#: ui/pages.slint:303
-msgid "Report a problem"
+#: ui/pages.slint:306
+msgid "Profile shortcuts on the desktop and in the menu: {}"
 msgstr ""
 
 #: ui/pages.slint:310
+msgid "Create one with right click (or ⋯) on a profile. Deleting a profile removes its shortcuts."
+msgstr ""
+
+#: ui/pages.slint:317
+msgid "Remove all shortcuts"
+msgstr ""
+
+#: ui/pages.slint:325
+msgid "Background service"
+msgstr ""
+
+#: ui/pages.slint:328
+msgid "Connected"
+msgstr ""
+
+#: ui/pages.slint:328
+msgid "Not running"
+msgstr ""
+
+#: ui/pages.slint:332
+msgid "Install the service"
+msgstr ""
+
+#: ui/pages.slint:338
+msgid "About"
+msgstr ""
+
+#: ui/pages.slint:343
+msgid "Opens sites and apps that your internet provider blocks by running well-known open-source DPI bypass tools on your computer. It is not a VPN: your traffic still goes straight to the sites, nothing is sent through another server."
+msgstr ""
+
+#: ui/pages.slint:347
+msgid "Platform: {}"
+msgstr ""
+
+#: ui/pages.slint:348
+msgid "Free software under the GNU GPL v3 or later."
+msgstr ""
+
+#: ui/pages.slint:352
+msgid "Source code"
+msgstr ""
+
+#: ui/pages.slint:353
+msgid "Report a problem"
+msgstr ""
+
+#: ui/pages.slint:360
 msgid "Download"
 msgstr ""
 
-#: ui/pages.slint:316
+#: ui/pages.slint:366
 msgid "Thanks"
 msgstr ""
 
-#: ui/pages.slint:320
+#: ui/pages.slint:370
 msgid "DPIMech only manages these projects; the real work is theirs."
 msgstr ""
 
@@ -661,43 +685,47 @@ msgstr ""
 msgid "Finish"
 msgstr ""
 
-#: src/bridge.rs:56
+#: src/bridge.rs:64
 msgid "Start it with: dpimech-service run"
 msgstr ""
 
-#: src/bridge.rs:72
+#: src/bridge.rs:80
 msgid "Version {} · data in {}"
 msgstr ""
 
-#: src/bridge.rs:99
+#: src/bridge.rs:112
 msgid "Version {} is available."
 msgstr ""
 
-#: src/bridge.rs:141
+#: src/bridge.rs:155
 msgid "Version {} is available (you have {})."
 msgstr ""
 
-#: src/bridge.rs:145
+#: src/bridge.rs:159
 msgid "You have the latest version ({})."
 msgstr ""
 
-#: src/bridge.rs:148
+#: src/bridge.rs:162
 msgid "Could not check for updates: {}"
 msgstr ""
 
-#: src/bridge.rs:210
+#: src/bridge.rs:224
 msgid "Could not load strategies: {}"
 msgstr ""
 
-#: src/bridge.rs:222
+#: src/bridge.rs:236
 msgid "ISP lookup failed: {}"
 msgstr ""
 
-#: src/bridge.rs:350
+#: src/bridge.rs:339
+msgid "Saved the log to {}"
+msgstr ""
+
+#: src/bridge.rs:372
 msgid "Looking up…"
 msgstr ""
 
-#: src/bridge.rs:352
+#: src/bridge.rs:374
 msgid "This needs the background service."
 msgstr ""
 
@@ -769,23 +797,23 @@ msgstr ""
 msgid "avg. {} ms"
 msgstr ""
 
-#: src/convert.rs:365
+#: src/convert.rs:366
 msgid "just now"
 msgstr ""
 
-#: src/convert.rs:366
+#: src/convert.rs:367
 msgid "{} min"
 msgstr ""
 
-#: src/convert.rs:367
+#: src/convert.rs:368
 msgid "{} h {} min"
 msgstr ""
 
-#: src/convert.rs:379
+#: src/convert.rs:380
 msgid "Last check: {}/{} sites answered"
 msgstr ""
 
-#: src/convert.rs:385
+#: src/convert.rs:386
 msgid "(usually {} ms)"
 msgstr ""
 
@@ -921,71 +949,71 @@ msgstr ""
 msgid "the menu entry has no command"
 msgstr ""
 
-#: src/main.rs:353
+#: src/main.rs:371
 msgid "Folder for DPIMech log files"
 msgstr ""
 
-#: src/main.rs:537
+#: src/main.rs:559
 msgid "The service is installed. Connecting…"
 msgstr ""
 
-#: src/main.rs:538
+#: src/main.rs:560
 msgid "Installing the service failed: {}"
 msgstr ""
 
-#: src/main.rs:546
+#: src/main.rs:568
 msgid "Installing… confirm the prompt. DPIMech connects by itself when the service is ready."
 msgstr ""
 
-#: src/main.rs:547
+#: src/main.rs:569
 msgid "Could not start the installer: {}"
 msgstr ""
 
-#: src/main.rs:601
+#: src/main.rs:623
 msgid "Downloading online lists…"
 msgstr ""
 
-#: src/notify.rs:46
+#: src/notify.rs:54
 msgid "{} stopped"
 msgstr ""
 
-#: src/notify.rs:54
+#: src/notify.rs:62
 msgid "{} needs attention"
 msgstr ""
 
-#: src/notify.rs:60
+#: src/notify.rs:68
 msgid "the sites stopped answering"
 msgstr ""
 
-#: src/notify.rs:62
+#: src/notify.rs:70
 msgid "{} ms instead of the usual {} ms"
 msgstr ""
 
-#: src/notify.rs:64
+#: src/notify.rs:72
 msgid "only {}/{} sites answer"
 msgstr ""
 
-#: src/notify.rs:67
+#: src/notify.rs:75
 msgid "{} is slow"
 msgstr ""
 
-#: src/notify.rs:68
+#: src/notify.rs:76
 msgid "Connection check: {}."
 msgstr ""
 
-#: src/notify.rs:74
+#: src/notify.rs:82
 msgid "{} was restarted"
 msgstr ""
 
-#: src/notify.rs:75
+#: src/notify.rs:83
 msgid "DPIMech restarted the engine to fix the connection."
 msgstr ""
 
-#: src/notify.rs:160
+#: src/notify.rs:168
 msgid "DPIMech update available"
 msgstr ""
 
-#: src/notify.rs:161
+#: src/notify.rs:169
 msgid "Version {} is ready. Open Settings to download it."
 msgstr ""
 
@@ -993,42 +1021,48 @@ msgstr ""
 msgid "Choose an application"
 msgstr ""
 
-#: src/shortcut.rs:130
+#: src/shortcut.rs:131
 msgid "Choose where to put the shortcut."
 msgstr ""
 
-#: src/shortcut.rs:134
+#: src/shortcut.rs:135
 msgid "Give the shortcut a name."
 msgstr ""
 
-#: src/shortcut.rs:446
+#: src/shortcut.rs:622
 msgid "Starts the DPIMech profile \"{}\""
 msgstr ""
 
-#: src/shortcutui.rs:24
+#: src/shortcutui.rs:25
 msgid "Start menu"
 msgstr ""
 
-#: src/shortcutui.rs:26
+#: src/shortcutui.rs:27
 msgid "Applications folder"
 msgstr ""
 
-#: src/shortcutui.rs:28
+#: src/shortcutui.rs:29
 msgid "Applications menu"
 msgstr ""
 
-#: src/shortcutui.rs:107
-msgid ""
-"Shortcut created:\n"
-"{}"
+#: src/shortcutui.rs:109
+msgid "Shortcut created: {}"
 msgstr ""
 
-#: src/shortcutui.rs:111
+#: src/shortcutui.rs:115
 msgid "Could not create the shortcut: {}"
 msgstr ""
 
-#: src/shortcutui.rs:126
+#: src/shortcutui.rs:130
 msgid "Nothing, only turn the profile on"
+msgstr ""
+
+#: src/shortcutui.rs:142
+msgid "Removed {} shortcut(s) of the deleted profile"
+msgstr ""
+
+#: src/shortcutui.rs:154
+msgid "Removed {} shortcut(s)."
 msgstr ""
 
 #: src/tray.rs:137

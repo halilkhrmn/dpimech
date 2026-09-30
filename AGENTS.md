@@ -50,6 +50,8 @@ crates/service/   dpimech-service binary
   src/perapp_linux.rs  Linux per-app / whole-computer proxy routing (cgroups, nft redirect, SOCKS relay)
   src/job.rs        engines die with the service (Windows job object, Linux PR_SET_PDEATHSIG)
   src/health.rs     SOCKS5 health probe used by the restart watchdog
+  src/dnscheck.rs   Lab: compares system DNS with 1.1.1.1 (DoH) to spot DNS blocking
+  src/sni.rs        TLS SNI parser: the detailed log names the site of a redirected connection (Linux)
   src/foreign.rs    finds other DPI tools running outside <data>/engines (ForeignTools request)
   src/migrate.rs    one-time move from the old name dpimngr (data dir) during `install`
   src/acl.rs        locks down the data dir (Windows: SIDs, takeown + icacls; Unix: root-owned, no g/o write)
@@ -58,7 +60,8 @@ crates/service/   dpimech-service binary
   src/launch.rs     engine + strategy → command (placeholders, defaults, argument policy); used by profiles and the Lab
   src/lab.rs        Strategy Lab runner, online strategy lists, ISP lookup
   src/server.rs     IPC accept loop + request dispatch
-  src/logs.rs       ring buffer + broadcast of user-visible log lines
+  src/logs.rs       ring buffer + broadcast of user-visible log lines; debug lines only while a GUI
+                    asked for the detailed log (SetDetailedLog)
   src/winsvc.rs     Windows SCM integration
   src/systemd.rs    Linux systemd install / uninstall (unit in /etc/systemd/system)
   src/launchd.rs    macOS launchd install / uninstall (LaunchDaemon, binary in /Library/PrivilegedHelperTools)
@@ -77,13 +80,14 @@ crates/gui/       dpimech binary (Slint)
   src/autostart.rs  "start when I sign in" via HKCU Run (+ --minimized)
   src/labui.rs      Strategy Lab page state; ui/lab.slint
   src/wizard.rs     first-run setup wizard state machine; ui/wizard.slint
-  src/shortcut.rs   profile shortcuts: composed icon (logo + app), .lnk / .desktop / .app per OS
+  src/shortcut.rs   profile shortcuts: composed icon (logo + app), .lnk / .desktop / .app per OS;
+                    shortcuts.toml records them (replace on recreate, remove with the profile / "remove all")
   src/shortcutui.rs "Create shortcut" dialog state; ui/shortcut.slint
   src/launcher.rs   `dpimech --launch <id> [--open <app>]`: progress window, start profile, open app; ui/launch.slint
   src/prefs.rs      per-user GUI prefs (easy mode, onboarded) + elevated service install
   src/notify.rs     Windows notifications (own AppUserModelID), status-change detection
   src/single.rs     single GUI instance (Windows mutex + event, Unix socket)
-  src/logfile.rs    daily log files written by the GUI (user-chosen folder; never by the service)
+  src/logfile.rs    daily log files (opt-in) and error snapshots written by the GUI (never by the service)
   src/report.rs     "Report a problem": report text, GitHub issue / mailto links; ui/report.slint
   src/i18n.rs       translations for Rust-built text + language choice; lang/ holds the .po catalogs
   assets/           logo-source.png (master) → logo.png (UI), dpimech.ico/.png (exe, notifications),

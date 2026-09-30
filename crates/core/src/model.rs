@@ -346,6 +346,9 @@ pub struct ProfileState {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum LogLevel {
+    /// Only sent while a GUI has asked for the detailed log (`SetDetailedLog`), so older GUIs
+    /// that do not know this level never receive it.
+    Debug,
     Info,
     Warn,
     Error,

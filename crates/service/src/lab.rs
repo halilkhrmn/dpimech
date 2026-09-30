@@ -272,8 +272,19 @@ impl Lab {
             ),
         );
 
+        crate::dnscheck::log_mismatches(&self.logs, SOURCE, &hosts).await;
         let direct = direct_client()?;
         let baseline = check_sites(&direct, &hosts, repeats).await;
+        self.logs.info(
+            SOURCE,
+            format!(
+                "without a bypass: {}/{} site(s) open{}",
+                baseline.ok,
+                baseline.total,
+                failed_list(&baseline.failed_domains)
+            ),
+        );
+        let best: StdMutex<Option<LabResult>> = StdMutex::new(None);
         done += 1;
         self.emit(
             done,
@@ -296,6 +307,7 @@ impl Lab {
         if request.engine.is_proxy() {
             let queue = Arc::new(StdMutex::new(VecDeque::from(strategies)));
             let done = Arc::new(std::sync::atomic::AtomicU32::new(done));
+            let best = &best;
             let workers = (0..PARALLEL).map(|w| {
                 let queue = queue.clone();
                 let done = done.clone();
@@ -318,6 +330,7 @@ impl Lab {
                             )
                             .await;
                         let n = done.fetch_add(1, std::sync::atomic::Ordering::SeqCst) + 1;
+                        self.record(best, &result);
                         self.emit(n, total, result);
                     }
                 }
@@ -336,11 +349,61 @@ impl Lab {
                     )
                     .await;
                 done += 1;
+                self.record(&best, &result);
                 self.emit(done, total, result);
             }
         }
+        match best.into_inner().unwrap() {
+            Some(b) if b.ok > 0 => {
+                let strategy = b
+                    .strategy
+                    .as_ref()
+                    .map(|s| s.args.as_str())
+                    .unwrap_or_default();
+                let text = format!(
+                    "best strategy opens {}/{} site(s), {} ms: {strategy}{}",
+                    b.ok,
+                    b.total,
+                    b.avg_ms,
+                    failed_list(&b.failed_domains)
+                );
+                if b.ok < b.total {
+                    self.logs.warn(SOURCE, text);
+                } else {
+                    self.logs.info(SOURCE, text);
+                }
+            }
+            _ => self
+                .logs
+                .warn(SOURCE, "no strategy opened any of the sites"),
+        }
         self.logs.info(SOURCE, "test finished");
         Ok(())
+    }
+
+    /// Detailed log line for one strategy, and keeps the best result for the summary.
+    fn record(&self, best: &StdMutex<Option<LabResult>>, result: &LabResult) {
+        self.logs.debug(SOURCE, || {
+            let strategy = result
+                .strategy
+                .as_ref()
+                .map(|s| format!("{} ({})", s.name, s.args))
+                .unwrap_or_default();
+            match &result.error {
+                Some(e) => format!("{strategy}: could not start: {e}"),
+                None => format!(
+                    "{strategy}: {}/{} site(s), {} ms{}",
+                    result.ok,
+                    result.total,
+                    result.avg_ms,
+                    failed_list(&result.failed_domains)
+                ),
+            }
+        });
+        let mut best = best.lock().unwrap();
+        if best.as_ref().is_none_or(|b| result.score() > b.score()) {
+            *best = Some(result.clone());
+        }
     }
 
     fn emit(&self, done: u32, total: u32, result: LabResult) {
@@ -529,4 +592,13 @@ async fn wait_for_port(port: u16, child: &mut tokio::process::Child) -> bool {
         tokio::time::sleep(Duration::from_millis(100)).await;
     }
     false
+}
+
+/// ` — failed: a, b` or nothing.
+fn failed_list(domains: &[String]) -> String {
+    if domains.is_empty() {
+        String::new()
+    } else {
+        format!(" — failed: {}", domains.join(", "))
+    }
 }

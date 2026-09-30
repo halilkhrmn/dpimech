@@ -68,6 +68,9 @@ export component AppWindow inherits Window {
     in property <bool> shortcut-ok;
     in property <bool> shortcut-busy;
     callback open-shortcut(string);
+    in property <int> shortcut-count;
+    in property <string> shortcuts-removed;
+    callback remove-all-shortcuts;
     callback shortcut-app-changed(int);
     callback shortcut-create;
     in property <bool> picker-loading;
@@ -150,6 +153,8 @@ export component AppWindow inherits Window {
     in property <int> language-index;
     callback set-language(int);
     in property <bool> log-to-file;
+    in property <bool> detailed-log;
+    callback set-detailed-log(bool);
     in property <string> log-dir;
     callback set-log-to-file(bool);
     callback choose-log-dir;
@@ -367,6 +372,11 @@ export component AppWindow inherits Window {
                 language-index: language-index;
                 set-language(i) => { root.set-language(i); }
                 log-to-file: log-to-file;
+                detailed-log: detailed-log;
+                shortcut-count: shortcut-count;
+                shortcuts-removed: shortcuts-removed;
+                remove-all-shortcuts => { root.remove-all-shortcuts(); }
+                set-detailed-log(on) => { root.set-detailed-log(on); }
                 log-dir: log-dir;
                 set-log-to-file(on) => { root.set-log-to-file(on); }
                 choose-log-dir => { root.choose-log-dir(); }

@@ -34,6 +34,8 @@ const SOURCE: &str = "routing";
 const TABLE: &str = "dpimech_route";
 /// How often new processes of the chosen apps are looked for.
 const SCAN_EVERY: Duration = Duration::from_secs(1);
+/// When to point out that none of a profile's apps is running.
+const NOTHING_MATCHED_AFTER: Duration = Duration::from_secs(20);
 
 struct Active {
     routes: Vec<Route>,
@@ -152,14 +154,36 @@ impl PerAppRouter {
         if !targets.is_empty() {
             let cgroups = cgroups.clone();
             let moved = moved.clone();
+            let logs = self.logs.clone();
             tasks.push(tokio::spawn(async move {
+                let started = std::time::Instant::now();
+                let mut warned = false;
+                let wanted: Vec<String> = targets.iter().flat_map(|(apps, _)| apps.clone()).collect();
                 loop {
-                    let (cgroups, targets, moved) =
+                    let (cgroups, targets_now, moved_now) =
                         (cgroups.clone(), targets.clone(), moved.clone());
-                    let _ = tokio::task::spawn_blocking(move || {
-                        move_matching(&cgroups, &targets, &moved)
+                    let newly = tokio::task::spawn_blocking(move || {
+                        move_matching(&cgroups, &targets_now, &moved_now)
                     })
-                    .await;
+                    .await
+                    .unwrap_or_default();
+                    if !newly.is_empty() {
+                        logs.info(SOURCE, format!("now routed: {}", describe_moved(&newly)));
+                    }
+                    // An app that never shows up usually runs under another process name.
+                    if !warned
+                        && started.elapsed() > NOTHING_MATCHED_AFTER
+                        && moved.lock().unwrap().is_empty()
+                    {
+                        warned = true;
+                        logs.warn(
+                            SOURCE,
+                            format!(
+                                "no running process matches {} yet; start the app, or check its name in the profile",
+                                wanted.join(", ")
+                            ),
+                        );
+                    }
                     tokio::time::sleep(SCAN_EVERY).await;
                 }
             }));
@@ -279,15 +303,17 @@ fn app_key(name: &str) -> String {
     lower.strip_suffix(".exe").unwrap_or(&lower).to_owned()
 }
 
-/// Moves every process of a chosen app into its profile's cgroup.
+/// Moves every process of a chosen app into its profile's cgroup; returns the processes it
+/// moved this time as (name, pid).
 fn move_matching(
     cgroups: &Cgroups,
     targets: &[(Vec<String>, String)],
     moved: &StdMutex<HashMap<u32, String>>,
-) {
+) -> Vec<(String, u32)> {
     let me = std::process::id();
+    let mut newly = Vec::new();
     let Ok(entries) = std::fs::read_dir("/proc") else {
-        return;
+        return newly;
     };
     for entry in entries.flatten() {
         let Some(pid) = entry
@@ -302,7 +328,7 @@ fn move_matching(
         }
         let dir = entry.path();
         let names = process_names(&dir);
-        let Some((_, target)) = targets
+        let Some((apps, target)) = targets
             .iter()
             .find(|(apps, _)| names.iter().any(|n| apps.contains(n)))
         else {
@@ -316,8 +342,32 @@ fn move_matching(
         }
         if cgroups.move_pid(pid, target) {
             moved.lock().unwrap().entry(pid).or_insert(current);
+            let name = names
+                .iter()
+                .find(|n| apps.contains(n))
+                .cloned()
+                .unwrap_or_default();
+            newly.push((name, pid));
         }
     }
+    newly
+}
+
+/// "discord (pids 101, 102, 103)"; many processes of one app are grouped.
+fn describe_moved(moved: &[(String, u32)]) -> String {
+    let mut by_name: std::collections::BTreeMap<&str, Vec<u32>> = Default::default();
+    for (name, pid) in moved {
+        by_name.entry(name).or_default().push(*pid);
+    }
+    by_name
+        .into_iter()
+        .map(|(name, pids)| {
+            let list: Vec<String> = pids.iter().take(8).map(u32::to_string).collect();
+            let more = if pids.len() > 8 { ", …" } else { "" };
+            format!("{name} (pid {}{more})", list.join(", "))
+        })
+        .collect::<Vec<_>>()
+        .join("; ")
 }
 
 /// Executable file name and `comm`, lower-case: Electron apps often run as `electron` with
@@ -459,7 +509,7 @@ async fn relay(
             Ok((inbound, _)) => {
                 let logs = logs.clone();
                 tokio::spawn(async move {
-                    if let Err(e) = forward(inbound, socks_port).await {
+                    if let Err(e) = forward(inbound, socks_port, &logs).await {
                         tracing::debug!("relay connection: {e}");
                         if e.kind() == std::io::ErrorKind::ConnectionRefused {
                             logs.push(
@@ -479,12 +529,58 @@ async fn relay(
     }
 }
 
-async fn forward(mut inbound: TcpStream, socks_port: u16) -> std::io::Result<()> {
+/// A stuck engine must not keep the app's connections hanging forever.
+const ENGINE_HANDSHAKE: Duration = Duration::from_secs(15);
+
+/// Opens the SOCKS5 tunnel to `target` through the engine.
+async fn open_tunnel(socks_port: u16, target: SocketAddr) -> std::io::Result<TcpStream> {
+    tokio::time::timeout(ENGINE_HANDSHAKE, async {
+        let mut outbound = TcpStream::connect(("127.0.0.1", socks_port)).await?;
+        socks5_connect(&mut outbound, target).await?;
+        Ok(outbound)
+    })
+    .await
+    .unwrap_or_else(|_| {
+        Err(std::io::Error::new(
+            std::io::ErrorKind::TimedOut,
+            "the engine did not answer",
+        ))
+    })
+}
+
+async fn forward(mut inbound: TcpStream, socks_port: u16, logs: &LogBus) -> std::io::Result<()> {
     let target = original_destination(&inbound)?;
-    let mut outbound = TcpStream::connect(("127.0.0.1", socks_port)).await?;
-    socks5_connect(&mut outbound, target).await?;
-    tokio::io::copy_bidirectional(&mut inbound, &mut outbound).await?;
-    Ok(())
+    if !logs.detailed() {
+        let mut outbound = open_tunnel(socks_port, target).await?;
+        tokio::io::copy_bidirectional(&mut inbound, &mut outbound).await?;
+        return Ok(());
+    }
+    // Detailed log: name the site (TLS SNI) and say how the connection ended. peek() leaves
+    // the bytes in place; apps where the server talks first just get no name.
+    let started = std::time::Instant::now();
+    let mut first = [0u8; 2048];
+    let name =
+        match tokio::time::timeout(Duration::from_millis(300), inbound.peek(&mut first)).await {
+            Ok(Ok(n)) => crate::sni::server_name(&first[..n]),
+            _ => None,
+        };
+    let what = match &name {
+        Some(name) => format!("{name} ({target})"),
+        None => target.to_string(),
+    };
+    let result = async {
+        let mut outbound = open_tunnel(socks_port, target).await?;
+        tokio::io::copy_bidirectional(&mut inbound, &mut outbound).await
+    }
+    .await;
+    let secs = started.elapsed().as_secs_f32();
+    logs.debug(SOURCE, || match &result {
+        Ok((up, down)) => {
+            format!("{what}: sent {up} B, received {down} B, closed after {secs:.1} s")
+        }
+        Err(e) => format!("{what}: {e} after {secs:.1} s"),
+    });
+    result.map(drop)
 }
 
 /// Where a redirected connection was originally going (netfilter's `SO_ORIGINAL_DST`).

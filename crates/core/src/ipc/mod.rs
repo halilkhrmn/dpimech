@@ -72,6 +72,10 @@ pub enum Request {
     CheckProfile {
         id: String,
     },
+    /// Turns the detailed (troubleshooting) log on or off until the service restarts.
+    SetDetailedLog {
+        on: bool,
+    },
     /// Other DPI bypass tools running outside DPIMech (they clash with its engines).
     ForeignTools,
 }

@@ -347,6 +347,7 @@ pub fn log_item(line: &LogLine) -> LogItem {
         source: line.source.as_str().into(),
         text: line.text.as_str().into(),
         level: match line.level {
+            LogLevel::Debug => "debug",
             LogLevel::Info => "info",
             LogLevel::Warn => "warn",
             LogLevel::Error => "error",
