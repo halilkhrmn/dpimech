@@ -724,27 +724,27 @@ msgstr "Не удалось загрузить стратегии: {}"
 msgid "ISP lookup failed: {}"
 msgstr "Не удалось определить провайдера: {}"
 
-#: src/bridge.rs:368
+#: src/bridge.rs:369
 msgid "DPIMech {} is downloaded. Restart DPIMech to update."
 msgstr "DPIMech {} загружен. Перезапустите DPIMech, чтобы обновить."
 
-#: src/bridge.rs:382
+#: src/bridge.rs:383
 msgid "Version {} is available."
 msgstr "Доступна версия {}."
 
-#: src/bridge.rs:397
+#: src/bridge.rs:398
 msgid "Downloading DPIMech {}…"
 msgstr "Загрузка DPIMech {}…"
 
-#: src/bridge.rs:429
+#: src/bridge.rs:430
 msgid "Saved the log to {}"
 msgstr "Журнал сохранён: {}"
 
-#: src/bridge.rs:463
+#: src/bridge.rs:470
 msgid "Looking up…"
 msgstr "Поиск…"
 
-#: src/bridge.rs:465
+#: src/bridge.rs:472
 msgid "This needs the background service."
 msgstr "Для этого нужна фоновая служба."
 
@@ -845,6 +845,10 @@ msgid "Restarting did not help. This setting may have stopped working on your co
 msgstr "Перезапуск не помог. Возможно, эта настройка перестала работать на вашем подключении — запустите лабораторию стратегий."
 
 #: src/i18n.rs (EXTRA_TEXTS)
+msgid "This setting does not open this profile's sites on your connection. Find a working one in the Strategy Lab, or try another engine."
+msgstr "С этой настройкой сайты профиля на вашем подключении не открываются. Найдите рабочую в Лаборатории стратегий или попробуйте другой движок."
+
+#: src/i18n.rs (EXTRA_TEXTS)
 msgid "Per-app"
 msgstr "По приложениям"
 
@@ -900,23 +904,23 @@ msgstr "Без обхода все тестовые сайты уже работ
 msgid "Without any bypass only {}/{} requests succeed. Blocked: {}."
 msgstr "Без обхода успешны только {}/{} запросов. Заблокированы: {}."
 
-#: src/labui.rs:240
+#: src/labui.rs:244
 msgid "Cancelled."
 msgstr "Отменено."
 
-#: src/labui.rs:241
+#: src/labui.rs:245
 msgid "Stopped: {}"
 msgstr "Остановлено: {}"
 
-#: src/labui.rs:242
-msgid "Done — {} strategies work on every site. Press “Use” on the top one."
-msgstr "Готово — стратегий, работающих на всех сайтах: {}. Нажмите «Использовать» у верхней."
-
 #: src/labui.rs:246
-msgid "Done — none worked on every site. Try more tries per site, another engine, or updated online lists."
-msgstr "Готово — ни одна не сработала на всех сайтах. Попробуйте больше попыток на сайт, другой движок или обновлённые онлайн-списки."
+msgid "Done — {} strategies opened every site in every round. Press “Use” on the top one."
+msgstr "Готово — {} стратегий открыли все сайты в каждом раунде. Нажмите «Использовать» у верхней."
 
-#: src/labui.rs:276
+#: src/labui.rs:250
+msgid "Done — none opened every site in every round. Try another engine, more tries per site, or updated online lists."
+msgstr "Готово — ни одна не открыла все сайты в каждом раунде. Попробуйте другой движок, больше попыток на сайт или обновлённые онлайн-списки."
+
+#: src/labui.rs:280
 msgid "No bypass"
 msgstr "Без обхода"
 
@@ -1056,15 +1060,15 @@ msgstr "Обновите через менеджер пакетов (Fedora: sud
 msgid "Download it from the releases page."
 msgstr "Скачайте со страницы релизов."
 
-#: src/selfupdate.rs:72
+#: src/selfupdate.rs:73
 msgid "No update has been downloaded yet."
 msgstr "Обновление ещё не загружено."
 
-#: src/selfupdate.rs:74
+#: src/selfupdate.rs:75
 msgid "This copy is not an AppImage."
 msgstr "Эта копия — не AppImage."
 
-#: src/selfupdate.rs:156
+#: src/selfupdate.rs:165
 msgid "Installing the update…"
 msgstr "Установка обновления…"
 
@@ -1148,66 +1152,70 @@ msgstr "Фоновая служба DPIMech не запущена. Вернит�
 msgid "Installing {} failed: {}"
 msgstr "Не удалось установить {}: {}"
 
-#: src/wizard.rs:397
+#: src/wizard.rs:401
 msgid "The test was cancelled."
 msgstr "Проверка отменена."
 
-#: src/wizard.rs:401
+#: src/wizard.rs:405
 msgid "The test failed: {}"
 msgstr "Проверка не удалась: {}"
 
-#: src/wizard.rs:409
+#: src/wizard.rs:413
 msgid "Good news: these sites already open normally on your connection, so nothing needs to be changed."
 msgstr "Хорошие новости: эти сайты уже нормально открываются на вашем подключении, ничего менять не нужно."
 
-#: src/wizard.rs:448
+#: src/wizard.rs:452
 msgid "My sites"
 msgstr "Мои сайты"
 
-#: src/wizard.rs:469
+#: src/wizard.rs:473
 msgid "Could not create the profile: {}"
 msgstr "Не удалось создать профиль: {}"
 
-#: src/wizard.rs:475
+#: src/wizard.rs:479
 msgid "“{}” is on and starts automatically with the computer."
 msgstr "«{}» включён и будет запускаться вместе с компьютером."
 
-#: src/wizard.rs:481
+#: src/wizard.rs:485
 msgid "{}/{} test requests worked ({} ms on average)."
 msgstr "Успешных проверочных запросов: {}/{} (в среднем {} мс)."
 
-#: src/wizard.rs:491
+#: src/wizard.rs:493
+msgid "No setting worked every time, so this one may be unreliable. If the connection fails, try “The whole computer” (zapret) or the Strategy Lab."
+msgstr "Ни одна настройка не сработала каждый раз, поэтому эта может быть ненадёжной. Если подключение не работает, попробуйте «Весь компьютер» (zapret) или Лабораторию стратегий."
+
+#: src/wizard.rs:501
 msgid "Set your browser or app to use the SOCKS5 proxy 127.0.0.1:{}."
 msgstr "Укажите в браузере или приложении SOCKS5-прокси 127.0.0.1:{}."
 
-#: src/wizard.rs:498
+#: src/wizard.rs:508
 msgid "Restart the chosen apps if they were already open."
 msgstr "Перезапустите выбранные приложения, если они уже были открыты."
 
-#: src/wizard.rs:524
+#: src/wizard.rs:534
 msgid "The engine could not run on this computer: {}."
 msgstr "Движок не смог запуститься на этом компьютере: {}."
 
-#: src/wizard.rs:530
+#: src/wizard.rs:540
 msgid "Try again later, add other sites, or run the Strategy Lab from the full interface to test more settings."
 msgstr "Попробуйте позже, добавьте другие сайты или запустите лабораторию стратегий из полного интерфейса, чтобы проверить больше настроек."
 
-#: src/wizard.rs:534
+#: src/wizard.rs:544
 msgid "Try “The whole computer” (zapret) or run the Strategy Lab from the full interface."
 msgstr "Попробуйте «Весь компьютер» (zapret) или запустите лабораторию стратегий из полного интерфейса."
 
-#: src/wizard.rs:539
+#: src/wizard.rs:549
 msgid "No setting worked on your connection for these sites."
 msgstr "Ни одна настройка не сработала на вашем подключении для этих сайтов."
 
-#: src/wizard.rs:605
+#: src/wizard.rs:615
 msgid "Install {}"
 msgstr "Установить {}"
 
-#: src/wizard.rs:621
+#: src/wizard.rs:631
 msgid "Find a setting that works on your connection"
 msgstr "Найти настройку, которая работает на вашем подключении"
 
-#: src/wizard.rs:630
+#: src/wizard.rs:640
 msgid "Create the profile and turn it on"
 msgstr "Создать профиль и включить его"

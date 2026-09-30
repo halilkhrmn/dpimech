@@ -246,3 +246,14 @@ own release), a launchd service and an unsigned universal `.dmg`. The wizard hid
   package manager stays in charge; the app only says how.
 - **Safety:** only versions newer than the running one, only files with a GitHub digest, the installer is
   hashed again right before it runs, and the client cannot name a file or URL.
+
+## 41. A strategy "works" only when data flows, every time (2026-09-30)
+- **Problem:** the Lab counted any HTTP response header as success and trusted a single round. DPI boxes
+  often let the handshake through and reset the connection once data flows, or let one connection in and
+  reset the next; the owner's Discord profile through ByeDPI failed although the Lab had picked a strategy.
+- **Decision:** a site is open only when its page starts loading (the first 64 KB, or the whole page when
+  shorter) — used by the Lab and the connection monitor alike. After the quick round the 5 best strategies get
+  3 more rounds, one engine at a time; only one that never missed is `confirmed` and ranks above the rest.
+  Profiles check their sites 4 s after start and log which ones failed right away.
+- **Cost:** a Lab run takes up to ~5 × 3 rounds longer (seconds per candidate); the page download is capped
+  so big sites do not slow the check down.

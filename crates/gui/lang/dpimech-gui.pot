@@ -721,27 +721,27 @@ msgstr ""
 msgid "ISP lookup failed: {}"
 msgstr ""
 
-#: src/bridge.rs:368
+#: src/bridge.rs:369
 msgid "DPIMech {} is downloaded. Restart DPIMech to update."
 msgstr ""
 
-#: src/bridge.rs:382
+#: src/bridge.rs:383
 msgid "Version {} is available."
 msgstr ""
 
-#: src/bridge.rs:397
+#: src/bridge.rs:398
 msgid "Downloading DPIMech {}…"
 msgstr ""
 
-#: src/bridge.rs:429
+#: src/bridge.rs:430
 msgid "Saved the log to {}"
 msgstr ""
 
-#: src/bridge.rs:463
+#: src/bridge.rs:470
 msgid "Looking up…"
 msgstr ""
 
-#: src/bridge.rs:465
+#: src/bridge.rs:472
 msgid "This needs the background service."
 msgstr ""
 
@@ -842,6 +842,10 @@ msgid "Restarting did not help. This setting may have stopped working on your co
 msgstr ""
 
 #: src/i18n.rs (EXTRA_TEXTS)
+msgid "This setting does not open this profile's sites on your connection. Find a working one in the Strategy Lab, or try another engine."
+msgstr ""
+
+#: src/i18n.rs (EXTRA_TEXTS)
 msgid "Per-app"
 msgstr ""
 
@@ -897,23 +901,23 @@ msgstr ""
 msgid "Without any bypass only {}/{} requests succeed. Blocked: {}."
 msgstr ""
 
-#: src/labui.rs:240
+#: src/labui.rs:244
 msgid "Cancelled."
 msgstr ""
 
-#: src/labui.rs:241
+#: src/labui.rs:245
 msgid "Stopped: {}"
 msgstr ""
 
-#: src/labui.rs:242
-msgid "Done — {} strategies work on every site. Press “Use” on the top one."
-msgstr ""
-
 #: src/labui.rs:246
-msgid "Done — none worked on every site. Try more tries per site, another engine, or updated online lists."
+msgid "Done — {} strategies opened every site in every round. Press “Use” on the top one."
 msgstr ""
 
-#: src/labui.rs:276
+#: src/labui.rs:250
+msgid "Done — none opened every site in every round. Try another engine, more tries per site, or updated online lists."
+msgstr ""
+
+#: src/labui.rs:280
 msgid "No bypass"
 msgstr ""
 
@@ -1053,15 +1057,15 @@ msgstr ""
 msgid "Download it from the releases page."
 msgstr ""
 
-#: src/selfupdate.rs:72
+#: src/selfupdate.rs:73
 msgid "No update has been downloaded yet."
 msgstr ""
 
-#: src/selfupdate.rs:74
+#: src/selfupdate.rs:75
 msgid "This copy is not an AppImage."
 msgstr ""
 
-#: src/selfupdate.rs:156
+#: src/selfupdate.rs:165
 msgid "Installing the update…"
 msgstr ""
 
@@ -1145,66 +1149,70 @@ msgstr ""
 msgid "Installing {} failed: {}"
 msgstr ""
 
-#: src/wizard.rs:397
+#: src/wizard.rs:401
 msgid "The test was cancelled."
 msgstr ""
 
-#: src/wizard.rs:401
+#: src/wizard.rs:405
 msgid "The test failed: {}"
 msgstr ""
 
-#: src/wizard.rs:409
+#: src/wizard.rs:413
 msgid "Good news: these sites already open normally on your connection, so nothing needs to be changed."
 msgstr ""
 
-#: src/wizard.rs:448
+#: src/wizard.rs:452
 msgid "My sites"
 msgstr ""
 
-#: src/wizard.rs:469
+#: src/wizard.rs:473
 msgid "Could not create the profile: {}"
 msgstr ""
 
-#: src/wizard.rs:475
+#: src/wizard.rs:479
 msgid "“{}” is on and starts automatically with the computer."
 msgstr ""
 
-#: src/wizard.rs:481
+#: src/wizard.rs:485
 msgid "{}/{} test requests worked ({} ms on average)."
 msgstr ""
 
-#: src/wizard.rs:491
+#: src/wizard.rs:493
+msgid "No setting worked every time, so this one may be unreliable. If the connection fails, try “The whole computer” (zapret) or the Strategy Lab."
+msgstr ""
+
+#: src/wizard.rs:501
 msgid "Set your browser or app to use the SOCKS5 proxy 127.0.0.1:{}."
 msgstr ""
 
-#: src/wizard.rs:498
+#: src/wizard.rs:508
 msgid "Restart the chosen apps if they were already open."
 msgstr ""
 
-#: src/wizard.rs:524
+#: src/wizard.rs:534
 msgid "The engine could not run on this computer: {}."
 msgstr ""
 
-#: src/wizard.rs:530
+#: src/wizard.rs:540
 msgid "Try again later, add other sites, or run the Strategy Lab from the full interface to test more settings."
 msgstr ""
 
-#: src/wizard.rs:534
+#: src/wizard.rs:544
 msgid "Try “The whole computer” (zapret) or run the Strategy Lab from the full interface."
 msgstr ""
 
-#: src/wizard.rs:539
+#: src/wizard.rs:549
 msgid "No setting worked on your connection for these sites."
 msgstr ""
 
-#: src/wizard.rs:605
+#: src/wizard.rs:615
 msgid "Install {}"
 msgstr ""
 
-#: src/wizard.rs:621
+#: src/wizard.rs:631
 msgid "Find a setting that works on your connection"
 msgstr ""
 
-#: src/wizard.rs:630
+#: src/wizard.rs:640
 msgid "Create the profile and turn it on"
 msgstr ""

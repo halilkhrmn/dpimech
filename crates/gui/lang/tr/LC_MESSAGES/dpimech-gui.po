@@ -724,27 +724,27 @@ msgstr "Stratejiler yüklenemedi: {}"
 msgid "ISP lookup failed: {}"
 msgstr "İnternet sağlayıcısı bulunamadı: {}"
 
-#: src/bridge.rs:368
+#: src/bridge.rs:369
 msgid "DPIMech {} is downloaded. Restart DPIMech to update."
 msgstr "DPIMech {} indirildi. Güncellemek için DPIMech'i yeniden başlat."
 
-#: src/bridge.rs:382
+#: src/bridge.rs:383
 msgid "Version {} is available."
 msgstr "{} sürümü çıktı."
 
-#: src/bridge.rs:397
+#: src/bridge.rs:398
 msgid "Downloading DPIMech {}…"
 msgstr "DPIMech {} indiriliyor…"
 
-#: src/bridge.rs:429
+#: src/bridge.rs:430
 msgid "Saved the log to {}"
 msgstr "Kayıtlar şuraya kaydedildi: {}"
 
-#: src/bridge.rs:463
+#: src/bridge.rs:470
 msgid "Looking up…"
 msgstr "Aranıyor…"
 
-#: src/bridge.rs:465
+#: src/bridge.rs:472
 msgid "This needs the background service."
 msgstr "Bunun için arka plan servisi gerekli."
 
@@ -845,6 +845,10 @@ msgid "Restarting did not help. This setting may have stopped working on your co
 msgstr "Yeniden başlatmak işe yaramadı. Bu ayar bağlantında artık çalışmıyor olabilir — Strateji Laboratuvarı'nı çalıştır."
 
 #: src/i18n.rs (EXTRA_TEXTS)
+msgid "This setting does not open this profile's sites on your connection. Find a working one in the Strategy Lab, or try another engine."
+msgstr "Bu ayar, bağlantınızda bu profilin sitelerini açmıyor. Strateji Laboratuvarı'nda çalışan bir ayar bulun ya da başka bir motor deneyin."
+
+#: src/i18n.rs (EXTRA_TEXTS)
 msgid "Per-app"
 msgstr "Uygulama bazlı"
 
@@ -900,23 +904,23 @@ msgstr "Hiçbir aşma yöntemi olmadan da tüm test siteleri çalışıyor — b
 msgid "Without any bypass only {}/{} requests succeed. Blocked: {}."
 msgstr "Aşma yöntemi olmadan sadece {}/{} istek başarılı. Engelli: {}."
 
-#: src/labui.rs:240
+#: src/labui.rs:244
 msgid "Cancelled."
 msgstr "İptal edildi."
 
-#: src/labui.rs:241
+#: src/labui.rs:245
 msgid "Stopped: {}"
 msgstr "Durdu: {}"
 
-#: src/labui.rs:242
-msgid "Done — {} strategies work on every site. Press “Use” on the top one."
-msgstr "Bitti — {} strateji her sitede çalışıyor. En üsttekinde “Kullan”a bas."
-
 #: src/labui.rs:246
-msgid "Done — none worked on every site. Try more tries per site, another engine, or updated online lists."
-msgstr "Bitti — hiçbiri her sitede çalışmadı. Site başına daha fazla deneme, başka bir motor ya da güncel çevrimiçi listeler dene."
+msgid "Done — {} strategies opened every site in every round. Press “Use” on the top one."
+msgstr "Bitti — {} strateji her turda tüm siteleri açtı. En üsttekinde “Kullan”a basın."
 
-#: src/labui.rs:276
+#: src/labui.rs:250
+msgid "Done — none opened every site in every round. Try another engine, more tries per site, or updated online lists."
+msgstr "Bitti — hiçbiri her turda tüm siteleri açmadı. Başka bir motor, site başına daha fazla deneme ya da güncel çevrim içi listeler deneyin."
+
+#: src/labui.rs:280
 msgid "No bypass"
 msgstr "Aşma yok"
 
@@ -1056,15 +1060,15 @@ msgstr "Paket yöneticinle güncelle (Fedora: sudo dnf upgrade) ya da indir."
 msgid "Download it from the releases page."
 msgstr "Sürümler sayfasından indir."
 
-#: src/selfupdate.rs:72
+#: src/selfupdate.rs:73
 msgid "No update has been downloaded yet."
 msgstr "Henüz indirilmiş bir güncelleme yok."
 
-#: src/selfupdate.rs:74
+#: src/selfupdate.rs:75
 msgid "This copy is not an AppImage."
 msgstr "Bu kopya bir AppImage değil."
 
-#: src/selfupdate.rs:156
+#: src/selfupdate.rs:165
 msgid "Installing the update…"
 msgstr "Güncelleme kuruluyor…"
 
@@ -1148,66 +1152,70 @@ msgstr "DPIMech arka plan servisi çalışmıyor. Geri dön ve “Servisi kur”
 msgid "Installing {} failed: {}"
 msgstr "{} kurulamadı: {}"
 
-#: src/wizard.rs:397
+#: src/wizard.rs:401
 msgid "The test was cancelled."
 msgstr "Test iptal edildi."
 
-#: src/wizard.rs:401
+#: src/wizard.rs:405
 msgid "The test failed: {}"
 msgstr "Test başarısız oldu: {}"
 
-#: src/wizard.rs:409
+#: src/wizard.rs:413
 msgid "Good news: these sites already open normally on your connection, so nothing needs to be changed."
 msgstr "İyi haber: bu siteler bağlantında zaten normal açılıyor, değiştirilecek bir şey yok."
 
-#: src/wizard.rs:448
+#: src/wizard.rs:452
 msgid "My sites"
 msgstr "Sitelerim"
 
-#: src/wizard.rs:469
+#: src/wizard.rs:473
 msgid "Could not create the profile: {}"
 msgstr "Profil oluşturulamadı: {}"
 
-#: src/wizard.rs:475
+#: src/wizard.rs:479
 msgid "“{}” is on and starts automatically with the computer."
 msgstr "“{}” açık ve bilgisayarla birlikte otomatik başlar."
 
-#: src/wizard.rs:481
+#: src/wizard.rs:485
 msgid "{}/{} test requests worked ({} ms on average)."
 msgstr "{}/{} test isteği başarılı (ortalama {} ms)."
 
-#: src/wizard.rs:491
+#: src/wizard.rs:493
+msgid "No setting worked every time, so this one may be unreliable. If the connection fails, try “The whole computer” (zapret) or the Strategy Lab."
+msgstr "Hiçbir ayar her seferinde çalışmadı, bu yüzden bu ayar güvenilir olmayabilir. Bağlantı kurulamazsa “Tüm bilgisayar” (zapret) seçeneğini ya da Strateji Laboratuvarı'nı deneyin."
+
+#: src/wizard.rs:501
 msgid "Set your browser or app to use the SOCKS5 proxy 127.0.0.1:{}."
 msgstr "Tarayıcını ya da uygulamanı SOCKS5 proxy 127.0.0.1:{} kullanacak şekilde ayarla."
 
-#: src/wizard.rs:498
+#: src/wizard.rs:508
 msgid "Restart the chosen apps if they were already open."
 msgstr "Seçtiğin uygulamalar zaten açıksa onları yeniden başlat."
 
-#: src/wizard.rs:524
+#: src/wizard.rs:534
 msgid "The engine could not run on this computer: {}."
 msgstr "Motor bu bilgisayarda çalışamadı: {}."
 
-#: src/wizard.rs:530
+#: src/wizard.rs:540
 msgid "Try again later, add other sites, or run the Strategy Lab from the full interface to test more settings."
 msgstr "Daha sonra tekrar dene, başka siteler ekle ya da daha fazla ayar denemek için tam arayüzden Strateji Laboratuvarı'nı çalıştır."
 
-#: src/wizard.rs:534
+#: src/wizard.rs:544
 msgid "Try “The whole computer” (zapret) or run the Strategy Lab from the full interface."
 msgstr "“Tüm bilgisayar” (zapret) seçeneğini dene ya da tam arayüzden Strateji Laboratuvarı'nı çalıştır."
 
-#: src/wizard.rs:539
+#: src/wizard.rs:549
 msgid "No setting worked on your connection for these sites."
 msgstr "Bu siteler için bağlantında hiçbir ayar çalışmadı."
 
-#: src/wizard.rs:605
+#: src/wizard.rs:615
 msgid "Install {}"
 msgstr "{} kur"
 
-#: src/wizard.rs:621
+#: src/wizard.rs:631
 msgid "Find a setting that works on your connection"
 msgstr "Bağlantında çalışan bir ayar bul"
 
-#: src/wizard.rs:630
+#: src/wizard.rs:640
 msgid "Create the profile and turn it on"
 msgstr "Profili oluştur ve aç"

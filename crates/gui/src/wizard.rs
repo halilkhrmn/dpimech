@@ -382,7 +382,11 @@ pub fn on_lab_progress(ui: &AppWindow, done: u32, total: u32, result: &LabResult
             s.baseline_ok = result.total > 0 && result.ok == result.total;
         } else if result.error.is_none()
             && result.ok > 0
-            && s.best.as_ref().is_none_or(|b| result.score() > b.score())
+            // The extra rounds re-report a strategy; their verdict replaces the quick one.
+            && s
+                .best
+                .as_ref()
+                .is_none_or(|b| b.same_strategy(result) || result.score() > b.score())
         {
             s.best = Some(result.clone());
         }
@@ -484,6 +488,12 @@ pub fn on_profile_saved(ui: &AppWindow, result: Result<(), String>) {
             best.total,
             best.avg_ms
         ));
+        if !best.confirmed {
+            text.push(' ');
+            text.push_str(&tr(
+                "No setting worked every time, so this one may be unreliable. If the connection fails, try “The whole computer” (zapret) or the Strategy Lab.",
+            ));
+        }
     }
     match where_ {
         Where::Proxy => {

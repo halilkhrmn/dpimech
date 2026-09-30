@@ -134,7 +134,15 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
   window started. Windows cross clippy clean; unit tests for SpoofDPI assets/policy/strategies, SOCKS
   requests by name, colour stripping.
 - **Not verified:** the Windows silent install + relaunch (needs a real Windows and a newer release).
-- **Owner's Discord log:** still from a pre-0.2.2 build (no "strategy:" / "best strategy" lines).
+- **Owner's report (Linux, 0.2.2):** Discord through ByeDPI stuck on start ("recv: Connection reset by peer")
+  although the Lab had picked a strategy; zapret worked. Stricter checks, all in this release (DECISIONS #41):
+  a site counts as open only when its page starts loading (up to 64 KB read), not on response headers;
+  the Lab gives its 5 best strategies 3 more rounds one at a time and only a strategy that never missed is
+  "confirmed" (ranked first; the wizard warns when nothing was); a profile's sites are checked 4 s after
+  start and a failure is logged at once with the sites that failed (card shows advice when most failed).
+- **Verified (container):** real ByeDPI Lab, 8 strategies on discord.com + github.com: 5 candidates re-run,
+  8/8 each, confirmed; profile with two unreachable check sites logged "only 1/3 site(s) open through ByeDPI
+  — failed: …" 4 s after start. Unit tests for merging and candidate choice.
 
 ### 2026-09-30 (28) — Windows hand tests, plan brought up to date
 - **Hand tests (owner, Windows 11):** profile shortcut works (profile on, then the app opens); tray right-click

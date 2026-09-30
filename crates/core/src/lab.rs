@@ -42,13 +42,24 @@ pub struct LabResult {
     /// Set when the engine itself could not start with this strategy.
     #[serde(default)]
     pub error: Option<String>,
+    /// Passed the extra rounds run for the best candidates (every site, every time); a single
+    /// lucky round is not enough to call a strategy working.
+    #[serde(default)]
+    pub confirmed: bool,
 }
 
 impl LabResult {
-    /// Higher is better: success rate first, then speed.
-    pub fn score(&self) -> (u32, i64) {
+    /// Higher is better: confirmed first, then success rate, then speed.
+    pub fn score(&self) -> (bool, u32, i64) {
         let rate = (self.ok * 1000).checked_div(self.total).unwrap_or(0);
-        (rate, -(self.avg_ms as i64))
+        (self.confirmed, rate, -(self.avg_ms as i64))
+    }
+
+    pub fn same_strategy(&self, other: &LabResult) -> bool {
+        match (&self.strategy, &other.strategy) {
+            (Some(a), Some(b)) => a.args == b.args && a.name == b.name,
+            _ => false,
+        }
     }
 }
 
