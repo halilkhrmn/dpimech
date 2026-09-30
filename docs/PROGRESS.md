@@ -105,6 +105,9 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
   COPR webhook step failed (curl exit 3: malformed URL in the secret). Now `tools/copr-webhook.sh` trims
   whitespace, rejects placeholders / non-COPR URLs with a clear message and reports COPR's HTTP answer; the
   release step no longer fails the run; `copr.yml` runs it by hand to test the secret.
+- **COPR:** the project was created as `halilkahraman/DPIMech` (COPR names are case-sensitive): all install
+  commands and links use that name; the webhook is the *custom* one (`/webhooks/custom/…/<package>/`), not
+  the GitHub one.
 - **Also:** four Python wheels (47 MB) had been committed by mistake (a `pip download` in the repo root);
   removed from the whole history before the release, `*.whl` ignored.
 

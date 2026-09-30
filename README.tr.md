@@ -93,14 +93,14 @@ saniye sonra yakalanır.
 | Sistemin | Dosya | Kurulum |
 |---|---|---|
 | Ubuntu, Debian, Mint, Pop!_OS | `dpimech_<sürüm>_amd64.deb` | `sudo apt install ./dpimech_*_amd64.deb` |
-| Fedora | indirmeye gerek yok: [COPR deposu](https://copr.fedorainfracloud.org/coprs/halilkahraman/dpimech/) | aşağıya bak |
+| Fedora | indirmeye gerek yok: [COPR deposu](https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/) | aşağıya bak |
 | openSUSE, RHEL | `dpimech-<sürüm>-1.x86_64.rpm` | `sudo dnf install ./dpimech-*.x86_64.rpm` |
 | Diğer tüm dağıtımlar | `DPIMech-<sürüm>-x86_64.AppImage` | `chmod +x DPIMech-*.AppImage`, sonra çalıştır |
 
 **Fedora** — depoyu bir kez ekle, sonra güncellemeler sistemle birlikte gelir (`sudo dnf upgrade`):
 
 ```sh
-sudo dnf copr enable halilkahraman/dpimech
+sudo dnf copr enable halilkahraman/DPIMech
 sudo dnf install dpimech
 ```
 

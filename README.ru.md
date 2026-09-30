@@ -96,14 +96,14 @@ UDP (например, голос) идёт напрямую. Трафик пр�
 | Ваша система | Файл | Установка |
 |---|---|---|
 | Ubuntu, Debian, Mint, Pop!_OS | `dpimech_<версия>_amd64.deb` | `sudo apt install ./dpimech_*_amd64.deb` |
-| Fedora | скачивать не нужно: [репозиторий COPR](https://copr.fedorainfracloud.org/coprs/halilkahraman/dpimech/) | см. ниже |
+| Fedora | скачивать не нужно: [репозиторий COPR](https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/) | см. ниже |
 | openSUSE, RHEL | `dpimech-<версия>-1.x86_64.rpm` | `sudo dnf install ./dpimech-*.x86_64.rpm` |
 | Любой другой дистрибутив | `DPIMech-<версия>-x86_64.AppImage` | `chmod +x DPIMech-*.AppImage`, затем запустите |
 
 **Fedora** — добавьте репозиторий один раз, дальше обновления приходят вместе с системой (`sudo dnf upgrade`):
 
 ```sh
-sudo dnf copr enable halilkahraman/dpimech
+sudo dnf copr enable halilkahraman/DPIMech
 sudo dnf install dpimech
 ```
 

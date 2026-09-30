@@ -12,7 +12,8 @@ case "$url" in
     https://copr.fedorainfracloud.org/webhooks/github/*)
         echo "::error::COPR_WEBHOOK_URL is COPR's GitHub webhook; use the custom one on the same page: .../webhooks/custom/<number>/<secret>/dpimech/"
         exit 1 ;;
-    https://copr.fedorainfracloud.org/webhooks/custom/*/*/dpimech/ | https://copr.fedorainfracloud.org/webhooks/custom/*/*/dpimech) ;;
+    # The last part is the COPR package name (dpimech), exactly as spelled in COPR.
+    https://copr.fedorainfracloud.org/webhooks/custom/*/*/?* | https://copr.fedorainfracloud.org/webhooks/custom/*/*/?*/) ;;
     '')
         echo "::error::COPR_WEBHOOK_URL is not set"
         exit 1 ;;

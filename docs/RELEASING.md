@@ -22,13 +22,13 @@ A dry run without publishing: push the commit to the `release-check` branch.
 
 ## Fedora COPR (one-time setup)
 
-Fedora users install from the COPR repository `halilkahraman/dpimech`:
-`sudo dnf copr enable halilkahraman/dpimech && sudo dnf install dpimech`.
+Fedora users install from the COPR repository `halilkahraman/DPIMech`:
+`sudo dnf copr enable halilkahraman/DPIMech && sudo dnf install dpimech`.
 COPR builds the RPM from source: `.copr/Makefile` → `packaging/fedora/make-srpm.sh` makes a source
 RPM from the **newest `v*` tag** (all crates vendored), and COPR builds it without network.
 
 1. On <https://copr.fedorainfracloud.org>, **New project**:
-   - Project name: `dpimech`
+   - Project name: `DPIMech` (the existing project; COPR project names are case-sensitive and cannot be renamed)
    - Chroots: the supported Fedora releases, `x86_64` and `aarch64` (e.g. `fedora-42`, `fedora-43`).
      Fedora must ship Rust 1.85 or newer, which all current releases do.
    - Other settings can stay as they are (internet access during the build is **not** needed).
@@ -40,8 +40,9 @@ RPM from the **newest `v*` tag** (all crates vendored), and COPR builds it witho
    - SRPM build method: **make_srpm**
    - Leave "Auto-rebuild" off: builds should follow releases, not every push to `main`.
 3. Press **Rebuild** on the package once to check that it builds.
-4. **Settings → Integrations** shows a *custom webhook* URL. Add the package name to its end
-   (`…/webhooks/custom/<id>/<secret>/dpimech/`) and save it on GitHub:
+4. **Settings → Integrations** lists several webhooks; take the first one under **Custom webhook(s)**
+   and replace `<PACKAGE_NAME>` with the package name: `…/webhooks/custom/<id>/<secret>/dpimech/`
+   (not the GitHub one: it expects GitHub's payload) and save it on GitHub:
    **Settings → Secrets and variables → Actions → New repository secret**,
    name `COPR_WEBHOOK_URL`. From then on every published release starts a COPR build.
    (If a POST to the URL does not start a build, turn on "Auto-rebuild" for the package.)

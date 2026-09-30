@@ -184,7 +184,7 @@ own release), a launchd service and an unsigned universal `.dmg`. The wizard hid
   .app bundle with a shell script and an .icns. Icon files carry a timestamp because shells cache icons by path.
 
 ## 35. Fedora through COPR, built from source (2026-09-30)
-- **Decision:** Fedora users get DPIMech from the COPR repository `halilkahraman/dpimech`
+- **Decision:** Fedora users get DPIMech from the COPR repository `halilkahraman/DPIMech`
   (`dnf copr enable`), so updates arrive with `dnf upgrade`. COPR builds from source: `make_srpm`
   (`.copr/Makefile` → `packaging/fedora/make-srpm.sh`) packs the newest `v*` tag with every crate
   vendored, and the RPM build runs offline. The release workflow triggers COPR through its custom
