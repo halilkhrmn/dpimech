@@ -61,7 +61,7 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 - [x] dpimngr update check (GitHub releases) + notification; Windows Security exclusion button (opt-in)
 - [x] Single GUI instance (second launch shows the running window)
 - [x] Translations (tr, ru): 291 strings, bundled .po catalogs shared by Slint and Rust, language from the system or Settings
-- [ ] Tray right-click menu toggles — not exercised (the user was using the app; would need mouse automation)
+- [x] Tray right-click menu toggles — profiles switch on and off (owner's hand test, Windows 11, 0.2.x)
 - [ ] Windows Packet Filter driver upgrade and Defender exclusion — skipped at the user's request
 ### Priority 1 (PLAN.md → Priorities) · *done*
 - [x] DPIMech rename + migration · [x] UI polish (cursor, avg. ping, refresh icon, editor latency)
@@ -69,7 +69,8 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 - [x] README per OS in en/tr/ru, "not a VPN", "AI-assisted, tested by hand"
 - [x] Priority 2: profile shortcuts — card ⋯ / right-click menu and editor button, icon = logo + app icon,
   desktop / menu entries per OS, `dpimech --launch` progress window; replaced on recreate, removed with the
-  profile, Settings → "Remove all shortcuts" (Linux tested in the container; Windows/macOS not yet by hand)
+  profile, Settings → "Remove all shortcuts" (Linux tested in the container; Windows by the owner: the
+  shortcut turns the profile on and opens the app)
 
 ### Diagnostics · *done, waiting for field logs*
 - [x] Default log: strategy + port on start, Lab baseline / best strategy / failed sites, routed processes,
@@ -103,7 +104,7 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 - [x] GUI on Linux: tray on its own GTK thread, single instance (socket in `$XDG_RUNTIME_DIR`), XDG autostart entry, `notify-send`, service install via `pkexec`, `xdg-open` for links; wizard hides per-app and uses nfqws for "whole computer"
 - [x] Linux app discovery for per-app routing (`/proc` + `.desktop` files, Flatpak/Snap)
 - [x] Packaging: .deb, .rpm, AppImage via `tools/build-linux-packages.sh`, built by the release workflow on Ubuntu 22.04 (Flatpak skipped, DECISIONS #29)
-### Phase 7 — macOS · *foundation*
+### Phase 7 — macOS · *foundation; the rest on hold (owner's decision, 2026-09-30)*
 - [x] Service: launchd install/uninstall (`/Library/PrivilegedHelperTools`, LaunchDaemon, KeepAlive), socket in `/var/run/dpimech`, data dir hardening
 - [x] Engines: zapret's universal `binaries/mac64/tpws` as a local SOCKS proxy (ByeDPI: if its release has a macOS build)
 - [x] GUI: tray created inside the event loop, LaunchAgent autostart, osascript notifications and admin prompt, macOS folders for prefs/logs, AppleLanguages
@@ -112,6 +113,15 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 - [ ] Whole computer (pf + tpws) and per-app routing
 
 ## Work log
+
+### 2026-09-30 (28) — Windows hand tests, plan brought up to date
+- **Hand tests (owner, Windows 11):** profile shortcut works (profile on, then the app opens); tray right-click
+  menu switches profiles on and off.
+- **Decided:** macOS work beyond the foundation is on hold.
+- **Docs:** PLAN.md — Priority 2 marked done with what it contains, Priority 3 turned into a list of
+  candidates (Discord follow-up, SpoofDPI, strategy repo, self-update, macOS on hold), license settled.
+- **Found:** SpoofDPI is in the engine model but has no package, so it cannot be installed or used.
+- **Next:** Discord logs from 0.2.2; the owner picks Priority 3.
 
 ### 2026-09-30 (27) — Status after the switch to pull requests
 - **Done:** PR #1 merged by the owner; the owner turned on the `main` ruleset and deleted the old `release`

@@ -116,7 +116,8 @@ trait Engine {
 4b. **Setup wizard + Easy mode:** first launch asks "do you know what DPI/engines are?". Easy mode: pick (or auto-detect) ISP → automatically find which of the common sites are blocked → choose "only these apps / whole computer / proxy" → the wizard installs the needed engines in order, runs the Lab and creates a ready profile. Easy mode shows a reduced UI (big on/off, fewer menus); Advanced mode is today's UI. Switchable in Settings.
 5. **Updates & polish:** update notifications, rollback, self-update, Defender guidance, MSI/installer.
 6. **Linux:** systemd service, nfqws/tpws/ByeDPI/SpoofDPI, nftables & cgroup routing, AppImage/deb.
-7. **macOS:** launchd daemon, tpws/ByeDPI/SpoofDPI, pf, signed .dmg.
+7. **macOS:** launchd daemon, tpws/ByeDPI/SpoofDPI, pf, signed .dmg. *(Foundation done; the rest is
+   on hold by the owner's decision, 2026-09-30.)*
 
 ## Priorities (set 2026-09-30)
 
@@ -128,11 +129,22 @@ trait Engine {
 5. Game (anti-cheat) warning and a warning when another DPI tool is running.
 6. README split per OS; "not a VPN"; "AI-assisted, tested by hand".
 
-**Priority 2 — shortcuts and quick launch.** Details to be written down.
+**Priority 2 — shortcuts and quick launch** (done 2026-09-30, see PROGRESS.md)
+- Profile shortcut from the card menu / editor: desktop or menu entry, icon = DPIMech logo + the app's icon;
+  it turns the profile on, then opens the app, with a small progress window.
+- Recreating replaces the old shortcut; deleting a profile removes its shortcuts; Settings → "Remove all".
 
-**Priority 3 — later work.** Details to be written down.
+**Priority 3 — not decided yet.** Candidates, for the owner to pick from:
+- Fix what the Discord-on-Linux logs show (waiting for the detailed log from 0.2.2).
+- SpoofDPI: it is in the engine list of the model, but has no download package or argument policy yet,
+  so it cannot be used.
+- Strategy repository: domain packs and strategy lists in their own GitHub repo, updated without an
+  app release (see Open items).
+- App self-update: download and run the new installer / package from the app instead of opening the
+  releases page (phase 5 left this at "notify").
+- macOS: whole computer (pf) and per-app routing, signing and notarization — on hold for now.
 
 ## Open items
 - ~~Final app name~~ → **DPIMech** (2026-09-30; 0.1.x installs migrate automatically, see DECISIONS #28).
 - Where our strategy/domain-pack repo lives (new GitHub repo, e.g. `<you>/dpimech-strategies`).
-- License (upstream engines are MIT/GPL — we download them at runtime rather than bundling, which keeps our license free).
+- ~~License~~ → **GPL-3.0-or-later** (DECISIONS #33); engines are downloaded at run time, not bundled.
