@@ -9,6 +9,9 @@ case "$url" in
     *'<'* | *'>'*)
         echo "::error::COPR_WEBHOOK_URL still contains a placeholder like <PACKAGE_NAME>: replace it with dpimech"
         exit 1 ;;
+    https://copr.fedorainfracloud.org/webhooks/github/*)
+        echo "::error::COPR_WEBHOOK_URL is COPR's GitHub webhook; use the custom one on the same page: .../webhooks/custom/<number>/<secret>/dpimech/"
+        exit 1 ;;
     https://copr.fedorainfracloud.org/webhooks/custom/*/*/dpimech/ | https://copr.fedorainfracloud.org/webhooks/custom/*/*/dpimech) ;;
     '')
         echo "::error::COPR_WEBHOOK_URL is not set"
