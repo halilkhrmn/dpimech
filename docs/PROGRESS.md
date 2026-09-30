@@ -108,6 +108,8 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
   shows "installed" or the error from that log; update check and provider lookup no longer hang on
   "Checking…" / "Looking up…" without the service. Version 0.2.1.
 - **Verified:** Windows cross clippy, Linux tests; the Windows path itself needs the hand test with 0.2.1.
+- **Release chain verified:** pushing to `release` published v0.2.1 (all 7 files) and the COPR webhook started the
+  Fedora build of 0.2.1 by itself (confirmed on COPR by the owner).
 
 ### 2026-09-30 (23) — Releases without pushing tags
 - **Done:** pushing to the `release` branch runs the release workflow, which creates the tag `v<version>`
