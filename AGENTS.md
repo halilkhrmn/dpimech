@@ -102,9 +102,9 @@ packaging/linux/  .desktop entry, service-setup.sh (deb postinst / rpm %post), d
                   package metadata lives in crates/gui/Cargo.toml ([package.metadata.deb / generate-rpm])
 packaging/fedora/ dpimech.spec + make-srpm.sh (source RPM with vendored crates) for Fedora COPR;
                   .copr/Makefile is COPR's entry point (see docs/RELEASING.md)
-.github/workflows ci.yml (fmt, clippy, tests), release.yml (tag v* → GitHub release),
+.github/workflows ci.yml (fmt, clippy, tests), release.yml (new version on main or tag v* → GitHub release),
                   pages.yml (site/ → GitHub Pages), copr.yml (manual COPR build / webhook test)
-site/             landing page (plain HTML, no build step)
+site/             landing page (plain HTML, no build step; reads the newest release via the GitHub API)
 docs/             PLAN, PROGRESS, DECISIONS, RELEASING (release steps, COPR setup)
 ```
 
@@ -150,6 +150,8 @@ sh packaging/fedora/make-srpm.sh target/srpm
 ## Conventions
 
 - **Commits:** no AI/Claude attribution anywhere (no `Co-Authored-By` trailers, no "generated with" lines). Author is the repo owner.
+- **Branches:** `main` is protected: work on a branch and open a pull request; never push to `main`.
+  Merging a PR that raises the version publishes a release (docs/RELEASING.md).
 - **Language:** code, comments, UI strings and docs in English. Every user-visible string is translatable:
   `@tr(...)` in Slint, `tr("...")` / `trf!("… {} …", x)` in Rust (`src/i18n.rs`; texts that arrive in variables go
   into `EXTRA_TEXTS`). After changing UI text run `python tools/i18n.py` and translate the new entries in

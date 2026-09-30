@@ -39,19 +39,25 @@
     font-size: 12px;
   }
   #nav a { margin-right: 10px; }
-  #news {
+  #nav img { width: 16px; height: 11px; vertical-align: -1px; margin-right: 3px; border: 1px solid #999; }
+  #get {
     background: #ffffe1;
     border-bottom: 1px dashed #c0a000;
-    padding: 4px 10px;
-    font-size: 12px;
-    white-space: nowrap;
-    overflow: hidden;
+    padding: 12px 16px;
+    text-align: center;
   }
-  #news span { display: inline-block; padding-left: 100%; animation: scroll 18s linear -7s infinite; }
-  @keyframes scroll { to { transform: translateX(-100%); } }
-  @media (prefers-reduced-motion: reduce) { #news span { animation: none; padding-left: 0; } }
-  .blink { color: #c00; font-weight: bold; animation: blink 1s steps(1) infinite; }
-  @keyframes blink { 50% { visibility: hidden; } }
+  #get-main {
+    display: inline-block;
+    padding: 8px 22px;
+    background: linear-gradient(#4f9a3a, #2f7a1f);
+    border: 2px outset #7cc36a;
+    color: #fff !important;
+    font: bold 16px Tahoma, Verdana, sans-serif;
+    text-decoration: none;
+  }
+  #get-main:active { border-style: inset; }
+  #get-info { display: block; font-size: 11px; color: #555; margin-top: 5px; }
+  #get-other { font-size: 12px; }
   main { padding: 6px 16px 16px; }
   h2 {
     font: bold 15px Tahoma, Verdana, sans-serif;
@@ -134,11 +140,17 @@
   <a href="#safe">Is it safe?</a>
   <a href="#credits">Credits</a>
   <a href="https://github.com/halilkhrmn/dpimech">Source code</a>
-  | <a href="https://github.com/halilkhrmn/dpimech/blob/main/README.tr.md">Türkçe</a>
-  <a href="https://github.com/halilkhrmn/dpimech/blob/main/README.ru.md">Русский</a>
+  | <a href="https://github.com/halilkhrmn/dpimech/blob/main/README.md"><img src="flags/gb.svg" alt="">English</a>
+  <a href="https://github.com/halilkhrmn/dpimech/blob/main/README.tr.md"><img src="flags/tr.svg" alt="">Türkçe</a>
+  <a href="https://github.com/halilkhrmn/dpimech/blob/main/README.ru.md"><img src="flags/ru.svg" alt="">Русский</a>
 </div>
 
-<div id="news"><span><span class="blink">NEW!</span> Version 0.2.0: Linux packages, per-app routing on Linux, a first macOS build, Turkish and Russian.</span></div>
+<!-- Filled in by the script at the end: newest release, file for the visitor's system. -->
+<div id="get">
+  <a id="get-main" href="https://github.com/halilkhrmn/dpimech/releases/latest">Download DPIMech</a>
+  <span id="get-info">Free, for Windows, Linux and macOS.</span>
+  <a id="get-other" href="https://github.com/halilkhrmn/dpimech/releases">Other systems and versions</a>
+</div>
 
 <main>
 
@@ -147,12 +159,12 @@
   <div class="dl">
     <b>Windows</b> 10 / 11
     <small>Installer (.exe)</small>
-    <a class="button" href="https://github.com/halilkhrmn/dpimech/releases/latest">Download</a>
+    <a class="button" id="dl-windows" href="https://github.com/halilkhrmn/dpimech/releases/latest">Download</a>
   </div>
   <div class="dl">
     <b>Linux</b> <em>(preview)</em>
     <small>.deb, .rpm or AppImage</small>
-    <a class="button" href="https://github.com/halilkhrmn/dpimech/releases/latest">Download</a>
+    <a class="button" id="dl-linux" href="https://github.com/halilkhrmn/dpimech/releases/latest">Download</a>
   </div>
   <div class="dl">
     <b>Fedora</b>
@@ -162,7 +174,7 @@
   <div class="dl">
     <b>macOS</b> <em>(early preview)</em>
     <small>.dmg, not signed yet</small>
-    <a class="button" href="https://github.com/halilkhrmn/dpimech/releases/latest">Download</a>
+    <a class="button" id="dl-mac" href="https://github.com/halilkhrmn/dpimech/releases/latest">Download</a>
   </div>
 </div>
 <p><small>All files are on the GitHub releases page, with SHA-256 checksums.</small></p>
@@ -233,5 +245,62 @@ sudo dnf install dpimech</pre>
 </footer>
 
 </div>
+<script>
+// Newest release from the GitHub API, and the file that fits the visitor's system. Without the
+// API (offline, rate limit) the links simply open the releases page.
+(async function () {
+  var repo = "halilkhrmn/dpimech";
+  var ua = navigator.userAgent;
+  var os = /Windows/.test(ua) ? "windows"
+    : /Android|iPhone|iPad|iPod/.test(ua) ? "mobile"
+    : /Macintosh|Mac OS X/.test(ua) ? "mac"
+    : /Linux|X11|CrOS/.test(ua) ? "linux" : "other";
+  var main = document.getElementById("get-main");
+  var info = document.getElementById("get-info");
+  var rel;
+  try {
+    var r = await fetch("https://api.github.com/repos/" + repo + "/releases/latest");
+    if (!r.ok) return;
+    rel = await r.json();
+  } catch (e) {
+    return;
+  }
+  var version = String(rel.tag_name || "").replace(/^v/, "");
+  var find = function (re) {
+    return (rel.assets || []).filter(function (a) { return re.test(a.name); })[0];
+  };
+  var win = find(/^dpimech-setup-.*\.exe$/i);
+  var mac = find(/\.dmg$/i);
+  var deb = find(/_amd64\.deb$/i);
+  var appimage = find(/\.AppImage$/i);
+  var set = function (id, asset) { if (asset) document.getElementById(id).href = asset.browser_download_url; };
+  set("dl-windows", win);
+  set("dl-mac", mac);
+  set("dl-linux", appimage);
+  var date = rel.published_at ? new Date(rel.published_at).toLocaleDateString() : "";
+  var mb = function (a) { return (a.size / 1048576).toFixed(0) + " MB"; };
+  var offer = function (label, asset, note) {
+    main.textContent = "Download DPIMech " + version + " for " + label;
+    main.href = asset.browser_download_url;
+    info.textContent = asset.name + " · " + mb(asset) + (date ? " · released " + date : "") + (note ? " · " + note : "");
+  };
+  if (os === "windows" && win) {
+    offer("Windows", win);
+  } else if (os === "mac" && mac) {
+    offer("macOS", mac, "not signed yet: right-click → Open the first time");
+  } else if (os === "linux" && /Fedora/i.test(ua)) {
+    main.textContent = "Install DPIMech " + version + " on Fedora";
+    main.href = "#fedora";
+    info.textContent = "from the COPR repository, updates with dnf";
+  } else if (os === "linux" && /Ubuntu|Debian|Mint/i.test(ua) && deb) {
+    offer("Ubuntu / Debian", deb);
+  } else if (os === "linux" && appimage) {
+    offer("Linux", appimage, "AppImage, runs on most distributions");
+  } else {
+    main.textContent = "Download DPIMech " + version;
+    info.textContent = "For Windows, Linux and macOS computers" + (date ? " · released " + date : "");
+  }
+})();
+</script>
 </body>
 </html>

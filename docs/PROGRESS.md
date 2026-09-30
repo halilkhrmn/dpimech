@@ -97,6 +97,18 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-09-30 (26) — PR-only main, releases on merge, landing page download box
+- **Done:** Release workflow: a `plan` job publishes when `main` has an untagged version (or a tag is pushed),
+  dry run via "Run workflow"; `release` / `release-check` branches removed. Landing page: marquee gone; a
+  download box reads the newest release from the GitHub API and offers the file for the visitor's OS (plus
+  "Other systems and versions"); the Windows/Linux/macOS cards link straight to the files; small flags
+  (GB/TR/RU) next to the README languages. AGENTS.md: work on branches, PRs only.
+- **Verified:** workflow YAML parses and jobs chain plan → builds → publish; page rendered in Chromium with
+  Windows / macOS / Fedora / Linux / iPhone user agents against the live API (0.2.2): exe, dmg, COPR link,
+  AppImage, generic button respectively.
+- **Open:** the owner turns on the `main` ruleset (docs/RELEASING.md) — the cloud session may not change
+  repository settings.
+
 ### 2026-09-30 (25) — 0.2.2: better logs, DNS check, shortcut housekeeping
 - **Report (owner, Linux):** wizard set up Discord per-app with ByeDPI; engine logged "recv: Connection reset by
   peer" and Discord did not open. The routing worked (the reset comes from ByeDPI), but the log could not tell
