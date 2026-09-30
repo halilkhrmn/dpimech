@@ -2,3 +2,6 @@
 /.dev-data
 *.log
 CLAUDE.md
+
+# Python wheels from local tooling (never part of the project)
+*.whl

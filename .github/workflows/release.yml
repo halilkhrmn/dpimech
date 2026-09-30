@@ -1,13 +1,14 @@
 name: Release
 
-# Push a tag like v0.1.0 (matching `version` in Cargo.toml) to publish a release:
-#   git tag v0.1.0 && git push origin v0.1.0
+# Two ways to publish version X.Y.Z (the `version` in Cargo.toml):
+#   git push origin main:release          (the workflow creates the tag vX.Y.Z itself)
+#   git tag vX.Y.Z && git push origin vX.Y.Z
 # Pushing the branch `release-check` runs every build without publishing, to try the
-# packaging before tagging.
+# packaging first. See docs/RELEASING.md.
 on:
   push:
     tags: ["v*"]
-    branches: [release-check]
+    branches: [release, release-check]
 
 permissions:
   contents: write
@@ -120,13 +121,25 @@ jobs:
 
   publish:
     needs: [windows, linux, macos]
-    if: startsWith(github.ref, 'refs/tags/')
+    if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/release'
     runs-on: ubuntu-latest
     env:
       # Fedora packages are built by COPR from the tag (see docs/RELEASING.md). Optional secret:
       # the "custom webhook" URL of the dpimech package in COPR.
       COPR_WEBHOOK_URL: ${{ secrets.COPR_WEBHOOK_URL }}
     steps:
+      - uses: actions/checkout@v4
+      - name: Choose the tag
+        # From the `release` branch the tag is created by the release below; refuse to publish a
+        # version twice (bump Cargo.toml first).
+        run: |
+          version=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -1)
+          tag="v$version"
+          if [ "${{ github.ref_type }}" = "branch" ] && git ls-remote --exit-code --tags origin "refs/tags/$tag" >/dev/null; then
+            echo "::error::$tag is already released. Raise the version in Cargo.toml first."
+            exit 1
+          fi
+          echo "TAG=$tag" >> "$GITHUB_ENV"
       - uses: actions/download-artifact@v4
         with:
           path: dist
@@ -137,7 +150,9 @@ jobs:
       - name: Publish GitHub release
         uses: softprops/action-gh-release@v2
         with:
-          name: DPIMech ${{ github.ref_name }}
+          tag_name: ${{ env.TAG }}
+          target_commitish: ${{ github.sha }}
+          name: DPIMech ${{ env.TAG }}
           generate_release_notes: true
           files: dist/*
       - name: Start the Fedora COPR build

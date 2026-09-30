@@ -97,6 +97,12 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-09-30 (23) — Releases without pushing tags
+- **Done:** pushing to the `release` branch runs the release workflow, which creates the tag `v<version>`
+  with the GitHub release (tag pushes are refused from cloud sessions); a version that already has a tag is
+  refused. Tags pushed by hand still work. Published 0.2.0 this way.
+- **Verified:** see the release run on `release` (below / next entry if it failed).
+
 ### 2026-09-30 (22) — Fedora COPR
 - **Done:** `packaging/fedora/dpimech.spec` (from source, vendored crates, service in /usr/libexec),
   `packaging/fedora/make-srpm.sh` + `.copr/Makefile` (COPR make_srpm, newest v* tag), release workflow

@@ -5,12 +5,14 @@
 1. Set `version` in `Cargo.toml` (workspace) and the default `AppVersion` in `installer/dpimech.iss`,
    add a line to `%changelog` in `packaging/fedora/dpimech.spec`, and add a work-log entry to `docs/PROGRESS.md`.
 2. Commit and push to `main`; wait for CI to pass.
-3. Tag and push the tag (the tag must match `Cargo.toml`):
+3. Push `main` to the `release` branch; the workflow creates the tag `v<version>` itself:
 
    ```sh
-   git tag v0.2.0
-   git push origin v0.2.0
+   git push origin main:release
    ```
+
+   (Pushing a tag `v<version>` by hand works too; it must match `Cargo.toml`. A version that is
+   already released is refused: raise it first.)
 
 4. The `release` workflow builds the Windows installer, the Linux `.deb` / `.rpm` / AppImage and the
    macOS `.dmg`, publishes them with `SHA256SUMS.txt` as a GitHub release, and then starts the Fedora
