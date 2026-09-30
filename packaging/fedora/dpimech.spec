@@ -83,6 +83,8 @@ install -Dm644 crates/gui/assets/dpimech.png %{buildroot}%{_datadir}/icons/hicol
 %{_datadir}/icons/hicolor/256x256/apps/dpimech.png
 
 %changelog
+* Wed Sep 30 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.2.5-1
+- Standard strategies come from strategies/default.json and update without a release
 * Wed Sep 30 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.2.4-1
 - Stricter connection checks: the Strategy Lab confirms its best strategies, profiles check their sites at start
 * Wed Sep 30 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.2.3-1

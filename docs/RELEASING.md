@@ -58,3 +58,11 @@ RPM from the **newest `v*` tag** (all crates vendored), and COPR builds it witho
 
 Build locally: `sh packaging/fedora/make-srpm.sh target/srpm` (needs `cargo`, `git`, `rpm-build`),
 then `rpmbuild --rebuild target/srpm/dpimech-*.src.rpm` on Fedora, or `mock` for a clean chroot.
+
+## Changing the standard strategies
+
+`strategies/default.json` holds the Strategy Lab's standard set per engine (`zapret_winws` is also used for
+nfqws on Linux). Change it in a pull request; once it is merged, running services pick it up within a day
+(daily update check) or at once with "Update online lists" in the Lab — no version bump needed. Keep `"format": 1`:
+a build ignores a file with a format it does not know. `cargo test` checks that the file parses and that
+ByeDPI, tpws and SpoofDPI strategies pass the argument policy; the policy checks every strategy again at launch.

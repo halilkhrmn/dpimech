@@ -84,7 +84,7 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
   per-app routing by TLS name (DECISIONS #39)
 - [x] In-app updates: background download + SHA-256 check by the service, "Restart and update"; Windows
   silent installer, AppImage swap, package managers left in charge (DECISIONS #40)
-- [ ] Windows silent update by hand (needs 0.2.3 installed and a 0.2.4 to update to)
+- [x] Windows silent update by hand (owner: 0.2.3 → 0.2.4 on Windows)
 
 ### Releases and distribution · *done*
 - [x] GPL-3.0-or-later; repository `halilkhrmn/dpimech` (fresh history, commits under the owner's GitHub identity)
@@ -121,11 +121,23 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-09-30 (32) — 0.2.5: standard strategies as a JSON file in the repository
+- **Done:** the standard strategies moved from Rust tables to `strategies/default.json` (DECISIONS #42). The app
+  embeds it and the service fetches the newest one from `main` with the daily update check and on "Update
+  online lists" in the Lab; a file it cannot read (newer format, empty, blank entries) is ignored. The owner chose
+  this over a separate strategy repository.
+- **Verified (container):** service lists the 12 embedded ByeDPI strategies; a valid file in
+  `<data>/strategies/default.json` replaces them (13, new one first); a file with an unknown format falls back
+  to the embedded set; the daily check hits the raw URL (404 until this is merged). Unit tests: every engine
+  has strategies, ByeDPI/tpws/SpoofDPI strategies pass the argument policy, bad files are rejected.
+- **Next:** after the merge, the service log should say "standard strategies updated" only when the file on
+  `main` differs from the stored copy.
+
 ### 2026-09-30 (31) — In-app update tested by the owner
 - **Done:** PR #5 merged, v0.2.4 published (21:32 UTC).
-- **Verified (owner):** in-app update from 0.2.3 to 0.2.4 worked ("Restart and update").
+- **Verified (owner):** in-app update from 0.2.3 to 0.2.4 on Windows worked ("Restart and update", silent
+  installer run by the service).
 - **Verified (owner):** Discord through ByeDPI works on the owner's Linux with 0.2.4.
-- **Open:** which system the update was tested on decides whether "Windows silent update by hand" is ticked.
 
 ### 2026-09-30 (30) — 0.2.4: stricter connection checks
 - **Owner's report (Linux, 0.2.2):** Discord through ByeDPI stuck on start ("recv: Connection reset by peer")

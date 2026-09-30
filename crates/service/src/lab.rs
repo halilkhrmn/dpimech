@@ -12,7 +12,7 @@ use std::sync::{Arc, Mutex as StdMutex};
 use std::time::{Duration, Instant};
 
 use anyhow::{Context, bail};
-use dpimech_core::catalog::{self, SourceFormat};
+use dpimech_core::catalog::{self, SourceFormat, StrategyFile};
 use dpimech_core::ipc::Event;
 use dpimech_core::lab::{IspInfo, LabRequest, LabResult, LabStrategy};
 use dpimech_core::model::EngineKind;
@@ -80,11 +80,13 @@ impl Lab {
 
     /// Built-in strategies plus the cached online lists, ISP presets first.
     pub fn strategies(&self, engine: EngineKind) -> Vec<LabStrategy> {
-        let mut out: Vec<LabStrategy> = catalog::builtin_strategies(engine)
+        let standard = self.standard_strategies();
+        let mut out: Vec<LabStrategy> = standard
+            .for_engine(engine)
             .iter()
             .map(|s| LabStrategy {
                 name: s.name.to_owned(),
-                args: catalog::adapt_args(engine, s.args),
+                args: catalog::adapt_args(engine, &s.args),
                 source: catalog::STANDARD_SET.to_owned(),
                 origin: String::new(),
                 recommended: false,
@@ -116,7 +118,51 @@ impl Lab {
         out
     }
 
+    /// The newest standard set fetched from the repository, or the one built into this binary.
+    fn standard_strategies(&self) -> StrategyFile {
+        std::fs::read_to_string(self.standard_file())
+            .ok()
+            .and_then(|text| StrategyFile::parse(&text).ok())
+            .unwrap_or_else(|| StrategyFile::embedded().clone())
+    }
+
+    fn standard_file(&self) -> std::path::PathBuf {
+        self.data.root.join("strategies").join("default.json")
+    }
+
+    /// Fetches `strategies/default.json` from the repository's `main` branch, so strategy fixes
+    /// reach users without an app release. A file this build cannot read is not stored.
+    pub async fn update_standard_strategies(&self) -> anyhow::Result<()> {
+        let text = self
+            .http
+            .get(catalog::STRATEGIES_URL)
+            .send()
+            .await
+            .and_then(|r| r.error_for_status())
+            .context("downloading the standard strategies")?
+            .text()
+            .await?;
+        StrategyFile::parse(&text).context("the downloaded standard strategies")?;
+        let file = self.standard_file();
+        if std::fs::read_to_string(&file).is_ok_and(|old| old == text) {
+            return Ok(());
+        }
+        if let Some(dir) = file.parent() {
+            std::fs::create_dir_all(dir)?;
+        }
+        let tmp = file.with_extension("json.tmp");
+        std::fs::write(&tmp, &text)?;
+        std::fs::rename(&tmp, &file)?;
+        self.logs
+            .info(SOURCE, "standard strategies updated from the repository");
+        Ok(())
+    }
+
     pub async fn refresh(&self, engine: EngineKind) -> anyhow::Result<Vec<LabStrategy>> {
+        // Not fatal: the online lists below are still worth having.
+        if let Err(e) = self.update_standard_strategies().await {
+            self.logs.warn(SOURCE, format!("{e:#}"));
+        }
         let mut fetched = Vec::new();
         for source in catalog::online_sources(engine) {
             let text = self

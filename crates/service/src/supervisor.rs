@@ -138,12 +138,16 @@ impl Supervisor {
             }
         });
         let packages = self.packages.clone();
+        let lab = self.lab.clone();
         let events = self.events.clone();
         tokio::spawn(async move {
             tokio::time::sleep(Duration::from_secs(10)).await;
             loop {
                 if let Err(e) = packages.check_updates().await {
                     tracing::warn!("update check failed: {e:#}");
+                }
+                if let Err(e) = lab.update_standard_strategies().await {
+                    tracing::warn!("{e:#}");
                 }
                 if let Ok(Some(version)) = packages.check_app_update().await {
                     let _ = events.send(Event::AppUpdateAvailable {

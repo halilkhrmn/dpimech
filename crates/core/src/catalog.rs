@@ -6,6 +6,11 @@
 //! - `{lists}`    – DPIMech's lists folder
 //! - `{sni}`      – a harmless SNI for ByeDPI fake packets
 
+use std::collections::HashMap;
+use std::sync::OnceLock;
+
+use serde::Deserialize;
+
 use crate::model::EngineKind;
 
 pub struct DomainPack {
@@ -115,220 +120,76 @@ pub const SUPPORT_EMAIL: &str = "halilkahraman@yandex.com";
 /// Label shown for strategies that ship inside DPIMech.
 pub const STANDARD_SET: &str = "DPIMech standard set";
 
-pub struct BuiltinStrategy {
-    pub name: &'static str,
-    pub args: &'static str,
+/// The standard strategies, from `strategies/default.json` in the repository. The service also
+/// fetches that file from `main` ([`STRATEGIES_URL`]), so a change there reaches every user
+/// without a release; this copy is the fallback when it cannot.
+pub const EMBEDDED_STRATEGIES: &str = include_str!("../../../strategies/default.json");
+pub const STRATEGIES_URL: &str =
+    "https://raw.githubusercontent.com/halilkhrmn/dpimech/main/strategies/default.json";
+/// The file format this build understands; a newer one is ignored until the app is updated.
+const STRATEGY_FORMAT: u32 = 1;
+
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+pub struct StrategyEntry {
+    pub name: String,
+    pub args: String,
 }
 
-/// Well-known ByeDPI strategies (public forum/README examples). Larger, frequently updated
-/// lists are fetched at runtime by the Strategy Lab instead of being bundled.
-const BYEDPI: &[BuiltinStrategy] = &[
-    BuiltinStrategy {
-        name: "TLS record split",
-        args: "-r 1+s",
-    },
-    BuiltinStrategy {
-        name: "Disorder SNI",
-        args: "-d1 -s1+s",
-    },
-    BuiltinStrategy {
-        name: "OOB + disorder",
-        args: "-o1 -d1",
-    },
-    BuiltinStrategy {
-        name: "Split + TLS record",
-        args: "-s1 -r1+s",
-    },
-    BuiltinStrategy {
-        name: "Split SNI + OOB",
-        args: "-s1+s -o1+s",
-    },
-    BuiltinStrategy {
-        name: "Fake + TTL",
-        args: "-f1 -t6 -n {sni}",
-    },
-    BuiltinStrategy {
-        name: "Fake modified CH",
-        args: "-f-1 -Qr -n {sni} -t8",
-    },
-    BuiltinStrategy {
-        name: "Disorder multi",
-        args: "-d1 -d3+s -s6+s -d9+s -s12+s",
-    },
-    BuiltinStrategy {
-        name: "Auto: disorder → split",
-        args: "-d1 -a1 -At,r,s -s1+s -r1+s",
-    },
-    BuiltinStrategy {
-        name: "Auto: TLS rec → fake",
-        args: "-r1+s -a1 -At,r,s -f-1 -n {sni} -t6",
-    },
-    BuiltinStrategy {
-        name: "HTTP host mixcase + split",
-        args: "-Mh,d,r -s1 -r1+s",
-    },
-    BuiltinStrategy {
-        name: "OOB SNI + TLS rec",
-        args: "-q1+s -r1+s",
-    },
-];
+#[derive(Debug, Clone, Deserialize)]
+pub struct StrategyFile {
+    format: u32,
+    /// Keyed by the engine's config name (`bye_dpi`, …). Unknown engines are ignored, so a newer
+    /// file with an extra engine still works in older builds.
+    engines: HashMap<String, Vec<StrategyEntry>>,
+}
 
-/// winws strategies adapted from the zapret docs and popular community presets.
-/// Every one is scoped to `{hostlist}` so only the chosen domains are touched.
-const WINWS: &[BuiltinStrategy] = &[
-    BuiltinStrategy {
-        name: "multisplit seqovl (Google CH) + QUIC fake",
-        args: "--wf-tcp=80,443 --wf-udp=443 --filter-udp=443 --hostlist={hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic={fake}/quic_initial_www_google_com.bin --new --filter-tcp=80,443 --hostlist={hostlist} --dpi-desync=multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern={fake}/tls_clienthello_www_google_com.bin",
-    },
-    BuiltinStrategy {
-        name: "fake + multidisorder (badseq)",
-        args: "--wf-tcp=80,443 --wf-udp=443 --filter-udp=443 --hostlist={hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic={fake}/quic_initial_www_google_com.bin --new --filter-tcp=80,443 --hostlist={hostlist} --dpi-desync=fake,multidisorder --dpi-desync-split-pos=1,midsld --dpi-desync-repeats=8 --dpi-desync-fooling=badseq --dpi-desync-fake-tls={fake}/tls_clienthello_www_google_com.bin",
-    },
-    BuiltinStrategy {
-        name: "fake + multisplit (md5sig)",
-        args: "--wf-tcp=80,443 --wf-udp=443 --filter-udp=443 --hostlist={hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic={fake}/quic_initial_www_google_com.bin --new --filter-tcp=80,443 --hostlist={hostlist} --dpi-desync=fake,multisplit --dpi-desync-split-pos=1 --dpi-desync-fooling=md5sig --dpi-desync-fake-tls={fake}/tls_clienthello_www_google_com.bin",
-    },
-    BuiltinStrategy {
-        name: "fakedsplit (autottl)",
-        args: "--wf-tcp=80,443 --wf-udp=443 --filter-udp=443 --hostlist={hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic={fake}/quic_initial_www_google_com.bin --new --filter-tcp=80,443 --hostlist={hostlist} --dpi-desync=fake,fakedsplit --dpi-desync-split-pos=1 --dpi-desync-autottl --dpi-desync-fooling=badseq --dpi-desync-repeats=8",
-    },
-    BuiltinStrategy {
-        name: "multisplit sniext",
-        args: "--wf-tcp=80,443 --filter-tcp=80,443 --hostlist={hostlist} --dpi-desync=multisplit --dpi-desync-split-pos=1,sniext+1",
-    },
-    BuiltinStrategy {
-        name: "multidisorder midsld",
-        args: "--wf-tcp=80,443 --filter-tcp=80,443 --hostlist={hostlist} --dpi-desync=multidisorder --dpi-desync-split-pos=1,midsld",
-    },
-    BuiltinStrategy {
-        name: "fake (ttl 4) + split",
-        args: "--wf-tcp=80,443 --filter-tcp=80,443 --hostlist={hostlist} --dpi-desync=fake,split2 --dpi-desync-ttl=4 --dpi-desync-fake-tls={fake}/tls_clienthello_iana_org.bin",
-    },
-    BuiltinStrategy {
-        name: "hostfakesplit",
-        args: "--wf-tcp=80,443 --filter-tcp=80,443 --hostlist={hostlist} --dpi-desync=hostfakesplit --dpi-desync-fooling=badseq --dpi-desync-repeats=4",
-    },
-    BuiltinStrategy {
-        name: "Discord voice (UDP) + TLS multisplit",
-        args: "--wf-tcp=80,443 --wf-udp=443,50000-50100 --filter-udp=50000-50100 --filter-l7=discord,stun --dpi-desync=fake --dpi-desync-repeats=6 --new --filter-udp=443 --hostlist={hostlist} --dpi-desync=fake --dpi-desync-repeats=6 --dpi-desync-fake-quic={fake}/quic_initial_www_google_com.bin --new --filter-tcp=80,443 --hostlist={hostlist} --dpi-desync=multisplit --dpi-desync-split-seqovl=681 --dpi-desync-split-pos=1 --dpi-desync-split-seqovl-pattern={fake}/tls_clienthello_www_google_com.bin",
-    },
-];
-
-/// tpws strategies (zapret docs). tpws works on the TCP stream, so these are split, disorder
-/// and TLS record tricks; it has no fake packets.
-const TPWS: &[BuiltinStrategy] = &[
-    BuiltinStrategy {
-        name: "split SNI (midsld) + disorder",
-        args: "--split-pos=1,midsld --disorder",
-    },
-    BuiltinStrategy {
-        name: "TLS record split at SNI",
-        args: "--tlsrec=sniext",
-    },
-    BuiltinStrategy {
-        name: "TLS record + split",
-        args: "--tlsrec=sniext --split-pos=1,midsld",
-    },
-    BuiltinStrategy {
-        name: "split + OOB",
-        args: "--split-pos=1 --oob",
-    },
-    BuiltinStrategy {
-        name: "disorder only",
-        args: "--split-pos=2 --disorder",
-    },
-    BuiltinStrategy {
-        name: "HTTP host case + split",
-        args: "--hostcase --split-pos=method+2,midsld",
-    },
-    BuiltinStrategy {
-        name: "small MSS (split by the network)",
-        args: "--mss=88",
-    },
-    BuiltinStrategy {
-        name: "TLS record + disorder + OOB",
-        args: "--tlsrec=sniext --split-pos=1,midsld --disorder --oob",
-    },
-];
-
-/// GoodbyeDPI presets. `-9` is the modern default; the DNS variant also defeats DNS spoofing.
-const GOODBYEDPI: &[BuiltinStrategy] = &[
-    BuiltinStrategy {
-        name: "-9 (recommended)",
-        args: "-9 --blacklist {hostlist}",
-    },
-    BuiltinStrategy {
-        name: "-9 + DNS redirect",
-        args: "-9 --blacklist {hostlist} --dns-addr 77.88.8.8 --dns-port 1253 --dnsv6-addr 2a02:6b8::feed:0ff --dnsv6-port 1253",
-    },
-    BuiltinStrategy {
-        name: "-5 (auto TTL)",
-        args: "-5 --blacklist {hostlist}",
-    },
-    BuiltinStrategy {
-        name: "-6 (wrong seq)",
-        args: "-6 --blacklist {hostlist}",
-    },
-    BuiltinStrategy {
-        name: "-7 (wrong checksum)",
-        args: "-7 --blacklist {hostlist}",
-    },
-    BuiltinStrategy {
-        name: "fragment by SNI + TTL 5",
-        args: "-e2 --frag-by-sni --set-ttl 5 --blacklist {hostlist}",
-    },
-    BuiltinStrategy {
-        name: "native frag + wrong seq",
-        args: "-e1 -q --native-frag --wrong-seq --blacklist {hostlist}",
-    },
-];
-
-/// SpoofDPI 1.5. Most resolve names over HTTPS (DoH), which also gets past providers that
-/// block by DNS; the last ones use the system's DNS for networks where DoH is blocked.
-const SPOOFDPI: &[BuiltinStrategy] = &[
-    BuiltinStrategy {
-        name: "split at SNI + DoH",
-        args: "--dns-mode https",
-    },
-    BuiltinStrategy {
-        name: "split at SNI + disorder + DoH",
-        args: "--dns-mode https --https-disorder",
-    },
-    BuiltinStrategy {
-        name: "first byte + DoH",
-        args: "--dns-mode https --https-split-mode first-byte",
-    },
-    BuiltinStrategy {
-        name: "1-byte chunks + DoH",
-        args: "--dns-mode https --https-split-mode chunk --https-chunk-size 1",
-    },
-    BuiltinStrategy {
-        name: "random split + disorder + DoH",
-        args: "--dns-mode https --https-split-mode random --https-disorder",
-    },
-    BuiltinStrategy {
-        name: "fake packets + DoH",
-        args: "--dns-mode https --https-fake-count 3",
-    },
-    BuiltinStrategy {
-        name: "split at SNI (system DNS)",
-        args: "--dns-mode system",
-    },
-    BuiltinStrategy {
-        name: "split at SNI + disorder (system DNS)",
-        args: "--dns-mode system --https-disorder",
-    },
-];
-
-pub fn builtin_strategies(engine: EngineKind) -> &'static [BuiltinStrategy] {
-    match engine {
-        EngineKind::ByeDpi => BYEDPI,
-        // nfqws gets the same set; `adapt_args` drops the WinDivert filters.
-        EngineKind::ZapretWinws | EngineKind::ZapretNfqws => WINWS,
-        EngineKind::GoodbyeDpi => GOODBYEDPI,
-        EngineKind::ZapretTpws => TPWS,
-        EngineKind::SpoofDpi => SPOOFDPI,
+impl StrategyFile {
+    /// Parses and sanity-checks a strategy file. Arguments are not trusted here: the argument
+    /// policy checks them again at every launch.
+    pub fn parse(text: &str) -> anyhow::Result<Self> {
+        let file: StrategyFile = serde_json::from_str(text)?;
+        if file.format != STRATEGY_FORMAT {
+            anyhow::bail!("unsupported strategy file format {}", file.format);
+        }
+        let mut count = 0;
+        for (engine, list) in &file.engines {
+            for s in list {
+                if s.name.trim().is_empty() || s.args.trim().is_empty() {
+                    anyhow::bail!("{engine}: a strategy without name or arguments");
+                }
+                if s.name.len() > 200 || s.args.len() > 4000 {
+                    anyhow::bail!("{engine}: strategy \"{}\" is too long", s.name);
+                }
+            }
+            count += list.len();
+        }
+        if count == 0 {
+            anyhow::bail!("the strategy file has no strategies");
+        }
+        Ok(file)
     }
+
+    /// The copy built into this binary.
+    pub fn embedded() -> &'static StrategyFile {
+        static FILE: OnceLock<StrategyFile> = OnceLock::new();
+        FILE.get_or_init(|| StrategyFile::parse(EMBEDDED_STRATEGIES).expect("valid default.json"))
+    }
+
+    pub fn for_engine(&self, engine: EngineKind) -> &[StrategyEntry] {
+        // nfqws gets the winws set; `adapt_args` drops the WinDivert filters.
+        let key = match engine {
+            EngineKind::ByeDpi => "bye_dpi",
+            EngineKind::ZapretWinws | EngineKind::ZapretNfqws => "zapret_winws",
+            EngineKind::ZapretTpws => "zapret_tpws",
+            EngineKind::GoodbyeDpi => "goodbye_dpi",
+            EngineKind::SpoofDpi => "spoof_dpi",
+        };
+        self.engines.get(key).map(Vec::as_slice).unwrap_or_default()
+    }
+}
+
+pub fn builtin_strategies(engine: EngineKind) -> &'static [StrategyEntry] {
+    StrategyFile::embedded().for_engine(engine)
 }
 
 /// Turns a strategy written for winws into one for `engine`. On Linux nftables decides what
@@ -514,7 +375,7 @@ mod tests {
     #[test]
     fn nfqws_strategies_lose_only_the_windivert_filters() {
         for s in builtin_strategies(EngineKind::ZapretNfqws) {
-            let args = adapt_args(EngineKind::ZapretNfqws, s.args);
+            let args = adapt_args(EngineKind::ZapretNfqws, &s.args);
             assert!(!args.contains("--wf-"), "{}", s.name);
             assert!(args.contains("--dpi-desync"), "{}", s.name);
         }
@@ -534,9 +395,13 @@ mod tests {
     #[test]
     fn proxy_strategies_pass_the_argument_policy() {
         let dir = std::env::temp_dir();
-        for engine in [EngineKind::ZapretTpws, EngineKind::SpoofDpi] {
+        for engine in [
+            EngineKind::ByeDpi,
+            EngineKind::ZapretTpws,
+            EngineKind::SpoofDpi,
+        ] {
             for s in builtin_strategies(engine) {
-                let args = crate::args::split_args(s.args);
+                let args = crate::args::split_args(&s.args);
                 assert!(
                     crate::argpolicy::check_engine_args(engine, &args, &[&dir]).is_ok(),
                     "{}: {}",
@@ -545,5 +410,33 @@ mod tests {
                 );
             }
         }
+    }
+
+    #[test]
+    fn strategy_file_covers_every_engine_and_rejects_bad_files() {
+        for engine in [
+            EngineKind::ByeDpi,
+            EngineKind::ZapretWinws,
+            EngineKind::ZapretNfqws,
+            EngineKind::ZapretTpws,
+            EngineKind::GoodbyeDpi,
+            EngineKind::SpoofDpi,
+        ] {
+            assert!(
+                !builtin_strategies(engine).is_empty(),
+                "{}",
+                engine.display_name()
+            );
+        }
+        let newer = r#"{"format": 2, "engines": {"bye_dpi": [{"name": "a", "args": "-s1"}]}}"#;
+        assert!(StrategyFile::parse(newer).is_err());
+        assert!(StrategyFile::parse(r#"{"format": 1, "engines": {}}"#).is_err());
+        let blank = r#"{"format": 1, "engines": {"bye_dpi": [{"name": "a", "args": " "}]}}"#;
+        assert!(StrategyFile::parse(blank).is_err());
+        // An engine this build does not know is skipped, not an error.
+        let extra = r#"{"format": 1, "engines": {"future": [{"name": "a", "args": "-x"}],
+            "bye_dpi": [{"name": "b", "args": "-s1"}]}}"#;
+        let file = StrategyFile::parse(extra).unwrap();
+        assert_eq!(file.for_engine(EngineKind::ByeDpi).len(), 1);
     }
 }
