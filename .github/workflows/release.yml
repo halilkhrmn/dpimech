@@ -1,20 +1,62 @@
 name: Release
 
-# Two ways to publish version X.Y.Z (the `version` in Cargo.toml):
-#   git push origin main:release          (the workflow creates the tag vX.Y.Z itself)
-#   git tag vX.Y.Z && git push origin vX.Y.Z
-# Pushing the branch `release-check` runs every build without publishing, to try the
-# packaging first. See docs/RELEASING.md.
+# A new version is published when `main` gets a `version` in Cargo.toml that has no tag yet
+# (merge a pull request that raises it); the workflow creates the tag vX.Y.Z itself. Pushing a
+# tag by hand works too. Actions → Release → Run workflow builds everything without publishing
+# (a dry run). See docs/RELEASING.md.
 on:
   push:
+    branches: [main]
     tags: ["v*"]
-    branches: [release, release-check]
+  workflow_dispatch:
 
 permissions:
   contents: write
 
+# Two quick merges must not publish the same version twice.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
+  plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.plan.outputs.version }}
+      build: ${{ steps.plan.outputs.build }}
+      publish: ${{ steps.plan.outputs.publish }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Decide what to do
+        id: plan
+        run: |
+          version=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -1)
+          tag="v$version"
+          build=false
+          publish=false
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            build=true
+          elif [ "${{ github.ref_type }}" = "tag" ]; then
+            if [ "$tag" != "${{ github.ref_name }}" ]; then
+              echo "::error::Tag ${{ github.ref_name }} does not match Cargo.toml version $version"
+              exit 1
+            fi
+            build=true
+            publish=true
+          elif git ls-remote --exit-code --tags origin "refs/tags/$tag" >/dev/null; then
+            echo "$tag is already released; nothing to publish (raise the version to release)"
+          else
+            build=true
+            publish=true
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "build=$build" >> "$GITHUB_OUTPUT"
+          echo "publish=$publish" >> "$GITHUB_OUTPUT"
+
   windows:
+    needs: plan
+    if: needs.plan.outputs.build == 'true'
     runs-on: windows-latest
     # A stuck apt or cargo download otherwise holds the runner for six hours.
     timeout-minutes: 60
@@ -23,14 +65,9 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
 
-      - name: Read the version (and check it matches the tag)
+      - name: Read the version
         shell: pwsh
-        run: |
-          $version = (Select-String -Path Cargo.toml -Pattern '^version = "(.+)"' | Select-Object -First 1).Matches.Groups[1].Value
-          if ("${{ github.ref_type }}" -eq "tag" -and "v$version" -ne "${{ github.ref_name }}") {
-            throw "Tag ${{ github.ref_name }} does not match Cargo.toml version $version"
-          }
-          "VERSION=$version" >> $env:GITHUB_ENV
+        run: '"VERSION=${{ needs.plan.outputs.version }}" >> $env:GITHUB_ENV'
 
       - name: Install Inno Setup (if the runner lacks it)
         shell: pwsh
@@ -57,6 +94,8 @@ jobs:
   # Built on the oldest supported Ubuntu so the binaries run on newer glibc versions too
   # (Ubuntu 22.04+, Debian 12+, Fedora 36+).
   linux:
+    needs: plan
+    if: needs.plan.outputs.build == 'true'
     runs-on: ubuntu-22.04
     # A stuck apt or cargo download otherwise holds the runner for six hours.
     timeout-minutes: 60
@@ -64,12 +103,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
-
-      - name: Check the tag matches Cargo.toml
-        if: startsWith(github.ref, 'refs/tags/')
-        run: |
-          version=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -1)
-          test "v$version" = "${{ github.ref_name }}" || { echo "Tag ${{ github.ref_name }} does not match Cargo.toml version $version"; exit 1; }
 
       - name: Build dependencies and packaging tools
         run: |
@@ -89,6 +122,8 @@ jobs:
             target/linux/*.AppImage
 
   macos:
+    needs: plan
+    if: needs.plan.outputs.build == 'true'
     runs-on: macos-latest
     # A stuck apt or cargo download otherwise holds the runner for six hours.
     timeout-minutes: 60
@@ -96,12 +131,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
-
-      - name: Check the tag matches Cargo.toml
-        if: startsWith(github.ref, 'refs/tags/')
-        run: |
-          version=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -1)
-          test "v$version" = "${{ github.ref_name }}" || { echo "Tag ${{ github.ref_name }} does not match Cargo.toml version $version"; exit 1; }
 
       - name: Build DPIMech.app and .dmg (universal, unsigned)
         # On failure the last log lines become an annotation, readable without the raw log.
@@ -120,26 +149,16 @@ jobs:
           path: target/macos/*.dmg
 
   publish:
-    needs: [windows, linux, macos]
-    if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/release'
+    needs: [plan, windows, linux, macos]
+    if: needs.plan.outputs.publish == 'true'
     runs-on: ubuntu-latest
     env:
+      TAG: v${{ needs.plan.outputs.version }}
       # Fedora packages are built by COPR from the tag (see docs/RELEASING.md). Optional secret:
       # the "custom webhook" URL of the dpimech package in COPR.
       COPR_WEBHOOK_URL: ${{ secrets.COPR_WEBHOOK_URL }}
     steps:
       - uses: actions/checkout@v4
-      - name: Choose the tag
-        # From the `release` branch the tag is created by the release below; refuse to publish a
-        # version twice (bump Cargo.toml first).
-        run: |
-          version=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -1)
-          tag="v$version"
-          if [ "${{ github.ref_type }}" = "branch" ] && git ls-remote --exit-code --tags origin "refs/tags/$tag" >/dev/null; then
-            echo "::error::$tag is already released. Raise the version in Cargo.toml first."
-            exit 1
-          fi
-          echo "TAG=$tag" >> "$GITHUB_ENV"
       - uses: actions/download-artifact@v4
         with:
           path: dist

@@ -2,23 +2,29 @@
 
 ## A new version
 
-1. Set `version` in `Cargo.toml` (workspace) and the default `AppVersion` in `installer/dpimech.iss`,
-   add a line to `%changelog` in `packaging/fedora/dpimech.spec`, and add a work-log entry to `docs/PROGRESS.md`.
-2. Commit and push to `main`; wait for CI to pass.
-3. Push `main` to the `release` branch; the workflow creates the tag `v<version>` itself:
+`main` only changes through pull requests. A release is a pull request that raises the version:
 
-   ```sh
-   git push origin main:release
-   ```
+1. On a branch: set `version` in `Cargo.toml` (workspace) and the default `AppVersion` in
+   `installer/dpimech.iss`, add a line to `%changelog` in `packaging/fedora/dpimech.spec`, and add a
+   work-log entry to `docs/PROGRESS.md`.
+2. Open the pull request; merge it when CI is green.
+3. On the merge, the `Release` workflow sees a version without a tag and publishes it: it builds the
+   Windows installer, the Linux `.deb` / `.rpm` / AppImage and the macOS `.dmg`, creates the tag
+   `v<version>` with a GitHub release (files + `SHA256SUMS.txt`), and starts the Fedora COPR build
+   (below). Merges that keep the version publish nothing.
 
-   (Pushing a tag `v<version>` by hand works too; it must match `Cargo.toml`. A version that is
-   already released is refused: raise it first.)
+Pushing a tag `v<version>` by hand also publishes (it must match `Cargo.toml`).
+A dry run without publishing: **Actions → Release → Run workflow**.
 
-4. The `release` workflow builds the Windows installer, the Linux `.deb` / `.rpm` / AppImage and the
-   macOS `.dmg`, publishes them with `SHA256SUMS.txt` as a GitHub release, and then starts the Fedora
-   COPR build (below).
+The landing page (GitHub Pages) needs no change per release: it reads the newest release from the
+GitHub API and offers the file for the visitor's system.
 
-A dry run without publishing: push the commit to the `release-check` branch.
+## Protecting `main` (one-time)
+
+**Settings → Rules → Rulesets → New ruleset → New branch ruleset**: name `main`, enforcement
+**Active**, target **Include default branch**, and turn on **Restrict deletions**, **Require a pull
+request before merging** (0 approvals is fine for a one-person project) and **Block force pushes**.
+Optionally **Require status checks to pass** with the CI jobs.
 
 ## Fedora COPR (one-time setup)
 

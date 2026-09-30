@@ -214,3 +214,14 @@ own release), a launchd service and an unsigned universal `.dmg`. The wizard hid
   shortcuts; Settings has "Remove all shortcuts".
 - Removal only deletes files that really are ours (a .lnk / .desktop / .app whose command contains
   `--launch`), because the list is a user-writable file and must not be able to point at anything else.
+
+## 38. Releases come from merged pull requests (2026-09-30)
+- **Decision:** `main` is protected and changes only through pull requests. The Release workflow runs on
+  every push to `main` and publishes only when Cargo.toml has a version without a tag; it creates the tag
+  itself. Tags pushed by hand still publish; "Run workflow" is a dry run.
+- **Why:** the earlier `release` / `release-check` branches existed only because tag pushes are refused from
+  the cloud sessions; with PR-only `main`, "merge the version bump" is the natural release button and needs
+  no extra branches.
+- **Landing page:** the version is no longer written into `site/index.html`; a small script reads
+  `releases/latest` from the GitHub API and offers the right file (Windows .exe, macOS .dmg, Fedora → COPR,
+  Ubuntu/Debian .deb, other Linux AppImage). Without the API every link opens the releases page.
