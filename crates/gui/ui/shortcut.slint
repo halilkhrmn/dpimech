@@ -1,0 +1,97 @@
+import { Button, LineEdit, ComboBox, CheckBox, Spinner } from "std-widgets.slint";
+import { Theme, Icons } from "theme.slint";
+import { Glyph } from "components.slint";
+
+/// "Create shortcut": a desktop / menu entry that turns one profile on and opens an app.
+export component ShortcutDialog inherits Rectangle {
+    in property <string> profile-name;
+    in-out property <string> name;
+    in property <[string]> apps; // last entry is "nothing, only start the profile"
+    in-out property <int> app-index;
+    in property <image> preview;
+    in property <bool> loading;
+    in-out property <bool> on-desktop: true;
+    in-out property <bool> in-menu;
+    in property <string> menu-label;
+    in property <string> status;
+    in property <bool> status-ok;
+    in property <bool> busy;
+    callback app-changed(int);
+    callback create;
+    callback close;
+
+    background: #00000080;
+    TouchArea { }
+
+    Rectangle {
+        width: min(520px, root.width - 48px);
+        height: layout.preferred-height;
+        border-radius: 10px;
+        background: Theme.content;
+        border-width: 1px;
+        border-color: Theme.border;
+        TouchArea { }
+
+        layout := VerticalLayout {
+            padding: 20px;
+            spacing: 12px;
+            Text { text: @tr("Create a shortcut"); font-size: 20px; font-weight: 700; }
+            Text {
+                text: @tr("One click turns \"{}\" on and then opens the app you choose.", profile-name);
+                font-size: 12px;
+                color: Theme.muted;
+                wrap: word-wrap;
+            }
+            HorizontalLayout {
+                spacing: 16px;
+                Rectangle {
+                    width: 96px;
+                    height: 96px;
+                    border-radius: 8px;
+                    background: Theme.card;
+                    Image { source: preview; width: 80px; height: 80px; }
+                }
+                VerticalLayout {
+                    spacing: 6px;
+                    Text { text: @tr("Name"); font-size: 12px; color: Theme.muted; }
+                    LineEdit { text <=> root.name; }
+                    Text { text: @tr("Then open"); font-size: 12px; color: Theme.muted; }
+                    if loading: HorizontalLayout {
+                        spacing: 8px;
+                        Spinner { indeterminate: true; width: 20px; height: 20px; }
+                        Text { text: @tr("Looking for your apps…"); vertical-alignment: center; color: Theme.muted; }
+                    }
+                    if !loading: ComboBox {
+                        model: apps;
+                        current-index <=> root.app-index;
+                        selected => { root.app-changed(self.current-index); }
+                    }
+                }
+            }
+            HorizontalLayout {
+                spacing: 16px;
+                CheckBox { text: @tr("Desktop"); checked <=> root.on-desktop; }
+                CheckBox { text: menu-label; checked <=> root.in-menu; }
+            }
+            if status != "": HorizontalLayout {
+                spacing: 8px;
+                Glyph {
+                    source: status-ok ? Icons.done : Icons.warning;
+                    color: status-ok ? Theme.running : Theme.error;
+                }
+                Text { text: status; wrap: word-wrap; horizontal-stretch: 1; vertical-alignment: center; }
+            }
+            HorizontalLayout {
+                spacing: 8px;
+                alignment: end;
+                Button {
+                    text: @tr("Create");
+                    primary: true;
+                    enabled: !busy && !loading && name != "" && (on-desktop || in-menu);
+                    clicked => { root.create(); }
+                }
+                Button { text: status-ok ? @tr("Done") : @tr("Cancel"); clicked => { root.close(); } }
+            }
+        }
+    }
+}

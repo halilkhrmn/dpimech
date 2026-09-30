@@ -1,0 +1,434 @@
+import { Palette, Button, ComboBox, LineEdit, SpinBox, Switch, TextEdit, ListView, ScrollView } from "std-widgets.slint";
+import { Theme, Icons } from "theme.slint";
+import { PageHeader, Glyph, Badge, Note } from "components.slint";
+
+export struct ProfileDraft {
+    id: string,
+    name: string,
+    engine-index: int,
+    routing-index: int,
+    port: int,
+    args: string,
+    autostart: bool,
+    auto-restart: bool,
+    restart-hours: int, // 0 = off
+    check-index: int, // index into Off / 1 / 3 / 5 / 10 minutes
+    slow-warn-only: bool,
+    check-sites: string, // comma separated
+    tcp-only: bool,
+    domains: string, // system-wide: one domain per line
+    health: string, // last connection check of the running profile, or empty
+}
+
+export struct AppItem {
+    title: string,
+    exe: string, // name ProxiFyre matches on
+    path: string,
+    running: bool,
+    icon: image,
+    has-icon: bool,
+    letter: string, // shown when there is no icon
+}
+
+component AppIcon inherits Rectangle {
+    in property <image> icon;
+    in property <bool> has-icon;
+    in property <string> letter;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: has-icon ? transparent : Theme.border;
+    if has-icon: Image { source: icon; width: parent.width; height: parent.height; }
+    if !has-icon: Text {
+        text: letter;
+        font-weight: 700;
+        horizontal-alignment: center;
+        vertical-alignment: center;
+    }
+}
+
+component AppRow inherits Rectangle {
+    in property <AppItem> app;
+    in property <bool> removable;
+    callback clicked;
+    callback remove;
+
+    height: 44px;
+    border-radius: 6px;
+    background: touch.has-hover && !removable ? Theme.card-hover : transparent;
+    touch := TouchArea { mouse-cursor: pointer; clicked => { root.clicked(); } }
+
+    HorizontalLayout {
+        padding-left: 8px;
+        padding-right: 8px;
+        spacing: 12px;
+        VerticalLayout {
+            alignment: center;
+            AppIcon { icon: app.icon; has-icon: app.has-icon; letter: app.letter; }
+        }
+        VerticalLayout {
+            alignment: center;
+            horizontal-stretch: 1;
+            Text { text: app.title; overflow: elide; }
+            if app.path != "": Text { text: app.path; font-size: 11px; color: Theme.muted; overflow: elide; }
+        }
+        if app.running && !removable: VerticalLayout {
+            alignment: center;
+            Badge { text: @tr("running"); }
+        }
+        if removable: Rectangle {
+            width: 28px;
+            del-touch := TouchArea { mouse-cursor: pointer; clicked => { root.remove(); } }
+            border-radius: 4px;
+            background: del-touch.has-hover ? Theme.error.transparentize(0.8) : transparent;
+            Glyph { source: Icons.delete; size: 13px; color: del-touch.has-hover ? Theme.error : Theme.muted; }
+        }
+    }
+}
+
+/// Modal list of discovered apps with search, manual entry and file browse.
+export component AppPicker inherits Rectangle {
+    in property <[AppItem]> apps;
+    in property <bool> loading;
+    callback search(string);
+    callback pick(AppItem);
+    callback add-manual(string);
+    callback browse;
+    callback close;
+
+    background: #00000080;
+    TouchArea { clicked => { root.close(); } } // click outside closes
+
+    Rectangle {
+        width: min(560px, root.width - 48px);
+        height: min(560px, root.height - 48px);
+        border-radius: 10px;
+        background: Theme.content;
+        border-width: 1px;
+        border-color: Theme.border;
+        TouchArea { } // swallow clicks inside the dialog
+
+        VerticalLayout {
+            padding: 20px;
+            spacing: 12px;
+            HorizontalLayout {
+                Text { text: @tr("Add application"); font-size: 20px; font-weight: 600; horizontal-stretch: 1; }
+                Button { text: @tr("Close"); clicked => { root.close(); } }
+            }
+            search := LineEdit {
+                placeholder-text: @tr("Search running and installed apps…");
+                edited(t) => { root.search(t); }
+            }
+            Rectangle {
+                vertical-stretch: 1;
+                border-radius: Theme.radius;
+                border-width: 1px;
+                border-color: Theme.border;
+                background: Theme.card;
+                clip: true;
+                if loading: Text {
+                    text: @tr("Looking for apps…");
+                    color: Theme.muted;
+                    horizontal-alignment: center;
+                    vertical-alignment: center;
+                }
+                if !loading: ListView {
+                    for app in apps: AppRow {
+                        app: app;
+                        clicked => { root.pick(app); }
+                    }
+                }
+            }
+            HorizontalLayout {
+                spacing: 8px;
+                manual := LineEdit {
+                    placeholder-text: @tr("Or type a name (discord) or path…");
+                    accepted(t) => { root.add-manual(t); self.text = ""; }
+                }
+                Button {
+                    text: @tr("Add");
+                    enabled: manual.text != "";
+                    clicked => { root.add-manual(manual.text); manual.text = ""; }
+                }
+                Button { text: @tr("Browse…"); clicked => { root.browse(); } }
+            }
+        }
+    }
+}
+
+export component ProfileEditorPage inherits VerticalLayout {
+    in-out property <ProfileDraft> draft;
+    in property <[string]> engine-names;
+    in property <[string]> routing-names;
+    in property <int> per-app-index: -1;
+    in property <int> system-wide-index: -1;
+    in property <bool> is-windows;
+    in property <[AppItem]> draft-apps;
+    in property <string> error;
+    callback engine-changed(int);
+    callback open-picker;
+    in property <[string]> domain-pack-names;
+    callback add-domain-pack(int);
+    callback remove-app(int);
+    callback save(ProfileDraft);
+    callback cancel;
+    callback delete(string);
+    callback shortcut(string);
+
+    property <bool> per-app: draft.routing-index == per-app-index;
+
+    padding: Theme.page-padding;
+    spacing: 20px;
+
+    PageHeader {
+        title: draft.id == "" ? @tr("New profile") : @tr("Edit profile");
+        Button {
+            text: @tr("Back");
+            clicked => { root.cancel(); }
+        }
+    }
+
+    ScrollView {
+        VerticalLayout {
+            spacing: 16px;
+            alignment: start;
+            padding-right: 12px;
+
+            GridLayout {
+                spacing-horizontal: 16px;
+                spacing-vertical: 12px;
+
+                Row {
+                    Text { text: @tr("Name"); vertical-alignment: center; }
+                    LineEdit {
+                        text: draft.name;
+                        placeholder-text: @tr("e.g. Discord");
+                        edited(t) => { draft.name = t; }
+                    }
+                }
+                Row {
+                    Text { text: @tr("Engine"); vertical-alignment: center; }
+                    ComboBox {
+                        model: engine-names;
+                        current-index: draft.engine-index;
+                        selected => {
+                            draft.engine-index = self.current-index;
+                            draft.routing-index = 0;
+                            root.engine-changed(self.current-index);
+                        }
+                    }
+                }
+                Row {
+                    Text { text: @tr("Routing"); vertical-alignment: center; }
+                    ComboBox {
+                        model: routing-names;
+                        current-index: draft.routing-index;
+                        selected => { draft.routing-index = self.current-index; }
+                    }
+                }
+                if draft.routing-index != system-wide-index: Row {
+                    Text { text: @tr("Local proxy port"); vertical-alignment: center; }
+                    SpinBox {
+                        minimum: 1024;
+                        maximum: 65535;
+                        value: draft.port;
+                        edited(v) => { draft.port = v; }
+                    }
+                }
+                Row {
+                    Text { text: @tr("Start with service"); vertical-alignment: center; }
+                    Switch {
+                        checked: draft.autostart;
+                        toggled => { draft.autostart = self.checked; }
+                    }
+                }
+            }
+
+            if draft.routing-index == system-wide-index: VerticalLayout {
+                spacing: 8px;
+                if is-windows: Note { text: @tr("Games with strict anti-cheat (for example Valorant or FACEIT) may refuse to start or disconnect you while a packet driver is active. Turn this off before playing, or unblock only the apps you need."); }
+                Text { text: @tr("Sites to unblock"); font-weight: 600; }
+                Text {
+                    text: @tr("The engine only touches these domains. One per line; subdomains are included.");
+                    font-size: 12px;
+                    color: Theme.muted;
+                    wrap: word-wrap;
+                }
+                HorizontalLayout {
+                    spacing: 6px;
+                    alignment: start;
+                    for pack[i] in domain-pack-names: Button {
+                        text: "+ " + pack;
+                        clicked => { root.add-domain-pack(i); }
+                    }
+                }
+                TextEdit {
+                    text: draft.domains;
+                    height: 110px;
+                    font-size: 13px;
+                    edited(t) => { draft.domains = t; }
+                }
+            }
+
+            if per-app: VerticalLayout {
+                spacing: 8px;
+                HorizontalLayout {
+                    Text { text: @tr("Applications"); font-weight: 600; vertical-alignment: center; horizontal-stretch: 1; }
+                    Button { text: @tr("Add app"); clicked => { root.open-picker(); } }
+                }
+                Rectangle {
+                    border-radius: Theme.radius;
+                    border-width: 1px;
+                    border-color: Theme.border;
+                    background: Theme.card;
+                    min-height: 56px;
+                    VerticalLayout {
+                        padding: 6px;
+                        if draft-apps.length == 0: Text {
+                            text: @tr("Only the apps listed here will go through the engine.");
+                            color: Theme.muted;
+                            horizontal-alignment: center;
+                            vertical-alignment: center;
+                            min-height: 44px;
+                        }
+                        for app[i] in draft-apps: AppRow {
+                            app: app;
+                            removable: true;
+                            remove => { root.remove-app(i); }
+                        }
+                    }
+                }
+            }
+
+            Text { text: @tr("Connection check"); font-weight: 600; }
+            Text {
+                text: @tr("DPIMech opens these sites through the engine every few minutes. If they get much slower than usual or stop answering, it can restart the engine for you.");
+                font-size: 12px;
+                color: Theme.muted;
+                wrap: word-wrap;
+            }
+            if draft.health != "": Text {
+                text: draft.health;
+                font-size: 12px;
+                wrap: word-wrap;
+            }
+            GridLayout {
+                spacing-horizontal: 16px;
+                spacing-vertical: 12px;
+                Row {
+                    Text { text: @tr("Check every"); vertical-alignment: center; }
+                    ComboBox {
+                        model: [@tr("Off"), @tr("1 minute"), @tr("3 minutes"), @tr("5 minutes"), @tr("10 minutes")];
+                        current-index: draft.check-index;
+                        selected => { draft.check-index = self.current-index; }
+                    }
+                }
+                Row {
+                    Text { text: @tr("When it gets slow"); vertical-alignment: center; }
+                    ComboBox {
+                        model: [@tr("Restart the engine automatically"), @tr("Only warn me")];
+                        current-index: draft.slow-warn-only ? 1 : 0;
+                        selected => { draft.slow-warn-only = self.current-index == 1; }
+                    }
+                }
+                Row {
+                    Text { text: @tr("Sites to check"); vertical-alignment: center; }
+                    LineEdit {
+                        text: draft.check-sites;
+                        placeholder-text: draft.routing-index == system-wide-index ? @tr("Empty = the sites above") : @tr("e.g. discord.com, gateway.discord.gg");
+                        edited(t) => { draft.check-sites = t; }
+                    }
+                }
+            }
+
+            Text { text: @tr("Reliability"); font-weight: 600; }
+            GridLayout {
+                spacing-horizontal: 16px;
+                spacing-vertical: 12px;
+                Row {
+                    VerticalLayout {
+                        Text { text: @tr("Auto-restart when stuck or crashed"); vertical-alignment: center; }
+                        Text {
+                            text: @tr("Fixes the “ping jumps to thousands after a few hours” problem without touching other profiles.");
+                            font-size: 12px;
+                            color: Theme.muted;
+                            wrap: word-wrap;
+                        }
+                    }
+                    Switch {
+                        checked: draft.auto-restart;
+                        toggled => { draft.auto-restart = self.checked; }
+                    }
+                }
+                Row {
+                    VerticalLayout {
+                        Text { text: @tr("Preventive restart every (hours)"); vertical-alignment: center; }
+                        Text { text: @tr("0 = never. Takes well under a second."); font-size: 12px; color: Theme.muted; }
+                    }
+                    SpinBox {
+                        minimum: 0;
+                        maximum: 168;
+                        value: draft.restart-hours;
+                        edited(v) => { draft.restart-hours = v; }
+                    }
+                }
+                if per-app: Row {
+                    VerticalLayout {
+                        Text { text: @tr("TCP only"); vertical-alignment: center; }
+                        Text {
+                            text: @tr("Voice/UDP goes direct. Fewer connections through the engine.");
+                            font-size: 12px;
+                            color: Theme.muted;
+                            wrap: word-wrap;
+                        }
+                    }
+                    Switch {
+                        checked: draft.tcp-only;
+                        toggled => { draft.tcp-only = self.checked; }
+                    }
+                }
+            }
+
+            Text { text: @tr("Strategy arguments"); font-weight: 600; }
+            TextEdit {
+                text: draft.args;
+                height: 80px;
+                font-size: 13px;
+                edited(t) => { draft.args = t; }
+            }
+            Text {
+                text: @tr("Tip: the Strategy Lab finds working arguments for your connection.");
+                color: Theme.muted;
+                font-size: 12px;
+            }
+
+            if error != "": HorizontalLayout {
+                spacing: 8px;
+                Glyph { source: Icons.warning; color: Theme.error; }
+                Text { text: error; color: Theme.error; wrap: word-wrap; horizontal-stretch: 1; }
+            }
+
+            HorizontalLayout {
+                spacing: 8px;
+                alignment: start;
+                Button {
+                    text: @tr("Save");
+                    primary: true;
+                    clicked => { root.save(draft); }
+                }
+                Button {
+                    text: @tr("Cancel");
+                    clicked => { root.cancel(); }
+                }
+                if draft.id != "": Button {
+                    text: @tr("Delete");
+                    clicked => { root.delete(draft.id); }
+                }
+                if draft.id != "": Button {
+                    text: @tr("Create shortcut…");
+                    clicked => { root.shortcut(draft.id); }
+                }
+            }
+        }
+    }
+}

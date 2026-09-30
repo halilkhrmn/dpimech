@@ -1,0 +1,39 @@
+[package]
+name = "dpimech-service"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "dpimech-service"
+path = "src/main.rs"
+
+[dependencies]
+anyhow.workspace = true
+dpimech-core.workspace = true
+futures-util = "0.3.34"
+hex = "0.4.3"
+reqwest = { version = "0.13.5", default-features = false, features = ["native-tls", "json", "stream", "socks"] }
+serde.workspace = true
+serde_json.workspace = true
+sha2 = "0.11.0"
+tokio.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+zip = { version = "7.2.0", default-features = false, features = ["deflate"] }
+# Linux/macOS engine releases ship as .tar.gz.
+flate2 = "1.1.10"
+tar = { version = "0.4.46", default-features = false }
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2.189"
+
+[target.'cfg(windows)'.dependencies]
+windows-service.workspace = true
+windows-sys.workspace = true
+winreg = "0.56.0"
+
+[build-dependencies]
+winresource = "0.1.31"

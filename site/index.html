@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DPIMech - open the sites your provider blocks</title>
+<meta name="description" content="DPIMech opens sites and apps that your internet provider blocks with DPI. Free, open source, not a VPN. Windows, Linux, macOS.">
+<link rel="icon" href="favicon.ico">
+<style>
+  /* Deliberately old-school: one column, grey bevels, Verdana, blue links. */
+  body {
+    margin: 0;
+    padding: 12px;
+    background: #c0c0c0 repeating-linear-gradient(45deg, #c8c8c8 0 2px, #c0c0c0 2px 6px);
+    font: 13px/1.5 Verdana, Tahoma, Geneva, sans-serif;
+    color: #000;
+  }
+  #page {
+    max-width: 760px;
+    margin: 0 auto;
+    background: #fff;
+    border: 2px outset #eee;
+  }
+  #top {
+    background: linear-gradient(#0a246a, #3a6ea5);
+    color: #fff;
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  #top img { width: 72px; height: 72px; }
+  #top h1 { margin: 0; font: bold 28px Tahoma, Verdana, sans-serif; letter-spacing: 1px; }
+  #top p { margin: 2px 0 0; color: #dde6ff; }
+  #nav {
+    background: #ece9d8;
+    border-bottom: 1px solid #808080;
+    padding: 4px 10px;
+    font-size: 12px;
+  }
+  #nav a { margin-right: 10px; }
+  #news {
+    background: #ffffe1;
+    border-bottom: 1px dashed #c0a000;
+    padding: 4px 10px;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  #news span { display: inline-block; padding-left: 100%; animation: scroll 18s linear -7s infinite; }
+  @keyframes scroll { to { transform: translateX(-100%); } }
+  @media (prefers-reduced-motion: reduce) { #news span { animation: none; padding-left: 0; } }
+  .blink { color: #c00; font-weight: bold; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { visibility: hidden; } }
+  main { padding: 6px 16px 16px; }
+  h2 {
+    font: bold 15px Tahoma, Verdana, sans-serif;
+    background: #d4d0c8;
+    border: 1px solid #808080;
+    padding: 3px 8px;
+    margin: 18px 0 8px;
+  }
+  a { color: #0000ee; }
+  a:visited { color: #551a8b; }
+  .downloads { display: flex; flex-wrap: wrap; gap: 10px; }
+  .dl {
+    flex: 1 1 200px;
+    border: 2px outset #eee;
+    background: #f4f4f4;
+    padding: 8px 10px;
+  }
+  .dl b { font-size: 14px; }
+  .dl small { color: #555; display: block; }
+  .button {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 3px 12px;
+    background: #d4d0c8;
+    border: 2px outset #fff;
+    color: #000 !important;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  .button:active { border-style: inset; }
+  .note {
+    border: 1px solid #c0a000;
+    background: #ffffe1;
+    padding: 6px 10px;
+  }
+  ul { padding-left: 22px; margin: 6px 0; }
+  table { border-collapse: collapse; width: 100%; }
+  td { border: 1px solid #a0a0a0; padding: 4px 6px; vertical-align: top; }
+  td:first-child { background: #ece9d8; white-space: nowrap; font-weight: bold; }
+  hr { border: 0; border-top: 1px solid #808080; }
+  footer { text-align: center; font-size: 11px; color: #444; padding: 8px 12px 14px; }
+  .badge {
+    display: inline-block;
+    border: 1px solid #000;
+    font: 10px/1 Verdana, sans-serif;
+    margin: 3px 2px;
+  }
+  .badge i { font-style: normal; display: inline-block; padding: 3px 5px; background: #000; color: #fff; }
+  .badge u { text-decoration: none; display: inline-block; padding: 3px 5px; background: #ff0; }
+  @media (max-width: 520px) {
+    body { padding: 0; }
+    #page { border: 0; }
+    #top { flex-direction: column; text-align: center; }
+    td:first-child { white-space: normal; }
+  }
+</style>
+</head>
+<body>
+<div id="page">
+
+<header id="top">
+  <img src="logo.png" alt="DPIMech logo">
+  <div>
+    <h1>DPIMech</h1>
+    <p>Open the sites and apps your internet provider blocks. Free &amp; open source.</p>
+  </div>
+</header>
+
+<div id="nav">
+  <a href="#download">Download</a>
+  <a href="#what">What is it?</a>
+  <a href="#safe">Is it safe?</a>
+  <a href="#credits">Credits</a>
+  <a href="https://github.com/halilkhrmn/dpimech">Source code</a>
+  | <a href="https://github.com/halilkhrmn/dpimech/blob/main/README.tr.md">Türkçe</a>
+  <a href="https://github.com/halilkhrmn/dpimech/blob/main/README.ru.md">Русский</a>
+</div>
+
+<div id="news"><span><span class="blink">NEW!</span> Version 0.2.0: Linux packages, per-app routing on Linux, a first macOS build, Turkish and Russian.</span></div>
+
+<main>
+
+<h2 id="download">Download</h2>
+<div class="downloads">
+  <div class="dl">
+    <b>Windows</b> 10 / 11
+    <small>Installer (.exe)</small>
+    <a class="button" href="https://github.com/halilkhrmn/dpimech/releases/latest">Download</a>
+  </div>
+  <div class="dl">
+    <b>Linux</b> <em>(preview)</em>
+    <small>.deb, .rpm or AppImage</small>
+    <a class="button" href="https://github.com/halilkhrmn/dpimech/releases/latest">Download</a>
+  </div>
+  <div class="dl">
+    <b>macOS</b> <em>(early preview)</em>
+    <small>.dmg, not signed yet</small>
+    <a class="button" href="https://github.com/halilkhrmn/dpimech/releases/latest">Download</a>
+  </div>
+</div>
+<p><small>All files are on the GitHub releases page, with SHA-256 checksums.</small></p>
+
+<h2 id="what">What is it?</h2>
+<p>
+  Some internet providers block sites and apps with <b>DPI</b> (deep packet inspection).
+  Well-known open-source tools such as <b>zapret</b>, <b>ByeDPI</b> and <b>GoodbyeDPI</b> get around it,
+  but they are command-line programs with lots of options.
+  DPIMech installs them for you, finds settings that work on your connection and runs them in the background.
+</p>
+<p class="note">
+  <b>Not a VPN.</b> Your traffic still goes straight to the sites. Nothing is sent through another server,
+  so it stays fast, and nobody in the middle sees what you do.
+</p>
+<ul>
+  <li>Setup wizard: pick what you want to open (Discord, YouTube, ...), it tests and saves a working setup.</li>
+  <li>Only for chosen apps, or for the whole computer.</li>
+  <li>Strategy Lab: tries many settings against real sites and ranks them.</li>
+  <li>Tray icon, notifications, start with the computer.</li>
+  <li>Small and native: no browser engine inside.</li>
+  <li>English, Türkçe, Русский.</li>
+</ul>
+
+<h2>Which system can do what?</h2>
+<table>
+  <tr><td>Windows</td><td>Per app (ByeDPI + ProxiFyre) or whole computer (zapret, GoodbyeDPI).</td></tr>
+  <tr><td>Linux</td><td>Per app or whole computer (zapret nfqws / tpws, ByeDPI) with systemd and nftables.</td></tr>
+  <tr><td>macOS</td><td>Local proxy (tpws, ByeDPI) for apps and browsers you point at it.</td></tr>
+</table>
+
+<h2 id="safe">Is it safe?</h2>
+<ul>
+  <li>All code is open. Engines are downloaded from their official GitHub releases and checked against pinned SHA-256 hashes.</li>
+  <li>The background service only starts programs from its own protected folder and checks every engine option against an allowlist.</li>
+  <li>No accounts, no ads, no tracking.</li>
+  <li>Antivirus programs sometimes flag DPI tools because they work on network packets. The app can add an exclusion for its engine folder if you ask it to.</li>
+</ul>
+
+<h2 id="credits">Credits</h2>
+<p>
+  DPIMech only manages these projects; the real work is theirs:
+  <a href="https://github.com/bol-van/zapret">zapret</a>,
+  <a href="https://github.com/hufrea/byedpi">ByeDPI</a>,
+  <a href="https://github.com/ValdikSS/GoodbyeDPI">GoodbyeDPI</a>,
+  <a href="https://github.com/basil00/WinDivert">WinDivert</a>,
+  <a href="https://github.com/wiresock/proxifyre">ProxiFyre</a>.
+  Made with <a href="https://slint.dev">Slint</a> and Rust. Developed with AI assistance and tested by hand.
+</p>
+<p>
+  Found a bug? <a href="https://github.com/halilkhrmn/dpimech/issues">Open an issue</a>
+  or use <i>Report a problem</i> in the app.
+</p>
+
+</main>
+
+<hr>
+<footer>
+  <span class="badge"><i>LICENSE</i><u>GPL v3</u></span>
+  <span class="badge"><i>MADE WITH</i><u>RUST</u></span>
+  <span class="badge"><i>BEST VIEWED</i><u>ANY BROWSER</u></span>
+  <br>
+  DPIMech &middot; free software under the <a href="https://github.com/halilkhrmn/dpimech/blob/main/LICENSE">GNU GPL v3 or later</a>
+</footer>
+
+</div>
+</body>
+</html>

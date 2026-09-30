@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=DPIMech
+GenericName=DPI bypass manager
+Comment=Open sites and apps that your internet provider blocks
+Exec=dpimech
+Icon=dpimech
+Terminal=false
+Categories=Network;
+Keywords=DPI;bypass;zapret;ByeDPI;Discord;

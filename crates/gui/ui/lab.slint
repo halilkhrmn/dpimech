@@ -1,0 +1,277 @@
+import { Palette, Button, ComboBox, LineEdit, SpinBox, ProgressIndicator, ListView } from "std-widgets.slint";
+import { Theme, Icons } from "theme.slint";
+import { PageHeader, Badge, Glyph } from "components.slint";
+
+export struct LabPack {
+    name: string,
+    selected: bool,
+}
+
+export struct LabRow {
+    name: string,
+    source: string,
+    args: string,
+    ok: int,
+    total: int,
+    ms: int,
+    error: string,
+    recommended: bool,
+}
+
+component Chip inherits Rectangle {
+    in property <string> text;
+    in property <bool> selected;
+    callback clicked;
+    height: 30px;
+    border-radius: 15px;
+    border-width: 1px;
+    border-color: selected ? Palette.accent-background : Theme.border;
+    background: selected ? Palette.accent-background.transparentize(0.8) : touch.has-hover ? Theme.card-hover : Theme.card;
+    accessible-role: checkbox;
+    accessible-label: text;
+    accessible-checked: selected;
+    accessible-action-default => { root.clicked(); }
+    touch := TouchArea { mouse-cursor: pointer; clicked => { root.clicked(); } }
+    HorizontalLayout {
+        padding-left: 12px;
+        padding-right: 12px;
+        Text { text: (selected ? "✓ " : "") + root.text; vertical-alignment: center; font-size: 13px; }
+    }
+}
+
+component ResultRow inherits Rectangle {
+    in property <LabRow> item;
+    in property <bool> can-use;
+    callback use;
+    property <float> rate: item.total == 0 ? 0 : item.ok / item.total;
+    height: 58px;
+    border-radius: 6px;
+    background: touch.has-hover ? Theme.card-hover : transparent;
+    touch := TouchArea { }
+
+    HorizontalLayout {
+        padding-left: 10px;
+        padding-right: 10px;
+        spacing: 12px;
+        VerticalLayout {
+            alignment: center;
+            Rectangle {
+                width: 10px; height: 10px; border-radius: 5px;
+                background: item.error != "" ? Theme.stopped : rate >= 1 ? Theme.running : rate > 0 ? Theme.starting : Theme.error;
+            }
+        }
+        VerticalLayout {
+            alignment: center;
+            width: 90px;
+            Text {
+                text: item.error != "" ? "—" : item.ok + "/" + item.total;
+                font-size: 15px;
+                font-weight: 600;
+            }
+            Text {
+                text: item.ms > 0 ? item.ms + " ms" : "";
+                font-size: 11px;
+                color: Theme.muted;
+            }
+        }
+        VerticalLayout {
+            alignment: center;
+            horizontal-stretch: 1;
+            spacing: 2px;
+            HorizontalLayout {
+                spacing: 8px;
+                Text {
+                    text: (item.recommended ? "★ " : "") + item.name;
+                    overflow: elide;
+                    font-weight: item.recommended ? 600 : 400;
+                    horizontal-stretch: 0;
+                }
+                Text {
+                    text: "· " + item.source;
+                    font-size: 11px;
+                    color: Theme.muted;
+                    vertical-alignment: center;
+                    overflow: elide;
+                    horizontal-stretch: 1;
+                }
+            }
+            Text {
+                text: item.error != "" ? item.error : item.args;
+                font-family: Theme.mono;
+                font-size: 11px;
+                color: item.error != "" ? Theme.error : Theme.muted;
+                overflow: elide;
+            }
+        }
+        VerticalLayout {
+            alignment: center;
+            Button {
+                text: @tr("Use");
+                enabled: can-use && item.ok > 0 && item.error == "";
+                clicked => { root.use(); }
+            }
+        }
+    }
+}
+
+export component LabPage inherits VerticalLayout {
+    in property <[string]> engines;
+    in-out property <int> engine-index;
+    in property <[LabPack]> packs;
+    in-out property <string> custom-domains;
+    in property <string> isp-text;
+    in property <string> strategy-summary;
+    in property <string> sources-note;
+    in-out property <int> repeats: 1;
+    in property <bool> running;
+    in property <float> progress;
+    in property <string> status;
+    in property <string> baseline;
+    in property <[LabRow]> results;
+    callback engine-changed(int);
+    callback toggle-pack(int);
+    callback detect-isp;
+    callback refresh-strategies;
+    callback start-test;
+    callback cancel;
+    callback use-result(int);
+
+    padding: Theme.page-padding;
+    spacing: 14px;
+
+    PageHeader {
+        title: @tr("Strategy Lab");
+        subtitle: @tr("Finds the settings that work on your connection by trying them on real sites.");
+    }
+
+    // Setup card
+    Rectangle {
+        border-radius: Theme.radius;
+        border-width: 1px;
+        border-color: Theme.border;
+        background: Theme.card;
+        VerticalLayout {
+            padding: 16px;
+            spacing: 12px;
+
+            HorizontalLayout {
+                spacing: 12px;
+                Text { text: @tr("Engine"); vertical-alignment: center; width: 90px; }
+                ComboBox {
+                    model: engines;
+                    current-index: engine-index;
+                    enabled: !running;
+                    width: 220px;
+                    selected => { engine-index = self.current-index; root.engine-changed(self.current-index); }
+                }
+                Rectangle { horizontal-stretch: 1; }
+                Text { text: isp-text; color: Theme.muted; vertical-alignment: center; overflow: elide; }
+                Button {
+                    text: @tr("Detect my ISP");
+                    enabled: !running;
+                    clicked => { root.detect-isp(); }
+                }
+            }
+
+            HorizontalLayout {
+                spacing: 12px;
+                Text { text: @tr("Sites"); vertical-alignment: center; width: 90px; }
+                HorizontalLayout {
+                    spacing: 6px;
+                    alignment: start;
+                    for pack[i] in packs: Chip {
+                        text: pack.name;
+                        selected: pack.selected;
+                        clicked => { root.toggle-pack(i); }
+                    }
+                }
+            }
+            HorizontalLayout {
+                spacing: 12px;
+                Text { text: ""; width: 90px; }
+                LineEdit {
+                    text: custom-domains;
+                    enabled: !running;
+                    placeholder-text: @tr("Other sites, e.g. example.com, another.org");
+                    edited(t) => { custom-domains = t; }
+                }
+            }
+
+            HorizontalLayout {
+                spacing: 12px;
+                Text { text: @tr("Strategies"); vertical-alignment: center; width: 90px; }
+                Text { text: strategy-summary; vertical-alignment: center; color: Theme.muted; horizontal-stretch: 1; wrap: word-wrap; font-size: 12px; }
+                Button {
+                    text: @tr("Update online lists");
+                    enabled: !running;
+                    clicked => { root.refresh-strategies(); }
+                }
+                Text { text: @tr("Tries per site"); vertical-alignment: center; }
+                SpinBox {
+                    minimum: 1;
+                    maximum: 5;
+                    value: repeats;
+                    enabled: !running;
+                    width: 110px;
+                    edited(v) => { repeats = v; }
+                }
+            }
+
+            HorizontalLayout {
+                spacing: 12px;
+                if !running: Button {
+                    text: @tr("Start test");
+                    primary: true;
+                    clicked => { root.start-test(); }
+                }
+                if running: Button {
+                    text: @tr("Cancel");
+                    clicked => { root.cancel(); }
+                }
+                VerticalLayout {
+                    alignment: center;
+                    horizontal-stretch: 1;
+                    spacing: 4px;
+                    if running: ProgressIndicator { progress: progress; }
+                    Text { text: status; font-size: 12px; color: Theme.muted; overflow: elide; }
+                }
+            }
+        }
+    }
+
+    Text {
+        text: sources-note;
+        font-size: 11px;
+        color: Theme.muted;
+        wrap: word-wrap;
+    }
+
+    if baseline != "": HorizontalLayout {
+        spacing: 8px;
+        Glyph { source: Icons.warning; color: Theme.starting; }
+        Text { text: baseline; wrap: word-wrap; horizontal-stretch: 1; }
+    }
+
+    // Results
+    Rectangle {
+        vertical-stretch: 1;
+        border-radius: Theme.radius;
+        border-width: 1px;
+        border-color: Theme.border;
+        background: Theme.card;
+        clip: true;
+        if results.length == 0: Text {
+            text: @tr("Results appear here, best first.");
+            color: Theme.muted;
+            horizontal-alignment: center;
+            vertical-alignment: center;
+        }
+        if results.length > 0: ListView {
+            for result[i] in results: ResultRow {
+                item: result;
+                can-use: !running;
+                use => { root.use-result(i); }
+            }
+        }
+    }
+}

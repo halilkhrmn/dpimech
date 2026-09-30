@@ -1,0 +1,1120 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8\n"
+
+#: ui/app.slint:195
+msgid "Profiles"
+msgstr ""
+
+#: ui/app.slint:200
+msgid "Strategy Lab"
+msgstr ""
+
+#: ui/app.slint:205
+msgid "Engines"
+msgstr ""
+
+#: ui/app.slint:211
+msgid "Logs"
+msgstr ""
+
+#: ui/app.slint:217
+msgid "Settings"
+msgstr ""
+
+#: ui/app.slint:260
+msgid "Another DPI tool is running: {}. Two tools on the same traffic break connections — close it, or turn DPIMech's profiles off."
+msgstr ""
+
+#: ui/app.slint:276
+msgid "Background service is not running. Engines can't be started until it is."
+msgstr ""
+
+#: ui/components.slint:126
+msgid "Edit"
+msgstr ""
+
+#: ui/components.slint:127
+msgid "Create shortcut…"
+msgstr ""
+
+#: ui/components.slint:149
+msgid "More actions"
+msgstr ""
+
+#: ui/components.slint:192
+msgid "Check the connection now"
+msgstr ""
+
+#: ui/editor.slint:77
+msgid "running"
+msgstr ""
+
+#: ui/editor.slint:115
+msgid "Add application"
+msgstr ""
+
+#: ui/editor.slint:116
+msgid "Close"
+msgstr ""
+
+#: ui/editor.slint:119
+msgid "Search running and installed apps…"
+msgstr ""
+
+#: ui/editor.slint:130
+msgid "Looking for apps…"
+msgstr ""
+
+#: ui/editor.slint:145
+msgid "Or type a name (discord) or path…"
+msgstr ""
+
+#: ui/editor.slint:149
+msgid "Add"
+msgstr ""
+
+#: ui/editor.slint:153
+msgid "Browse…"
+msgstr ""
+
+#: ui/editor.slint:184
+msgid "New profile"
+msgstr ""
+
+#: ui/editor.slint:184
+msgid "Edit profile"
+msgstr ""
+
+#: ui/editor.slint:186
+msgid "Back"
+msgstr ""
+
+#: ui/editor.slint:202
+msgid "Name"
+msgstr ""
+
+#: ui/editor.slint:205
+msgid "e.g. Discord"
+msgstr ""
+
+#: ui/editor.slint:210
+msgid "Engine"
+msgstr ""
+
+#: ui/editor.slint:222
+msgid "Routing"
+msgstr ""
+
+#: ui/editor.slint:230
+msgid "Local proxy port"
+msgstr ""
+
+#: ui/editor.slint:239
+msgid "Start with service"
+msgstr ""
+
+#: ui/editor.slint:249
+msgid "Games with strict anti-cheat (for example Valorant or FACEIT) may refuse to start or disconnect you while a packet driver is active. Turn this off before playing, or unblock only the apps you need."
+msgstr ""
+
+#: ui/editor.slint:250
+msgid "Sites to unblock"
+msgstr ""
+
+#: ui/editor.slint:252
+msgid "The engine only touches these domains. One per line; subdomains are included."
+msgstr ""
+
+#: ui/editor.slint:276
+msgid "Applications"
+msgstr ""
+
+#: ui/editor.slint:277
+msgid "Add app"
+msgstr ""
+
+#: ui/editor.slint:288
+msgid "Only the apps listed here will go through the engine."
+msgstr ""
+
+#: ui/editor.slint:303
+msgid "Connection check"
+msgstr ""
+
+#: ui/editor.slint:305
+msgid "DPIMech opens these sites through the engine every few minutes. If they get much slower than usual or stop answering, it can restart the engine for you."
+msgstr ""
+
+#: ui/editor.slint:319
+msgid "Check every"
+msgstr ""
+
+#: ui/editor.slint:321
+msgid "Off"
+msgstr ""
+
+#: ui/editor.slint:321
+msgid "1 minute"
+msgstr ""
+
+#: ui/editor.slint:321
+msgid "3 minutes"
+msgstr ""
+
+#: ui/editor.slint:321
+msgid "5 minutes"
+msgstr ""
+
+#: ui/editor.slint:321
+msgid "10 minutes"
+msgstr ""
+
+#: ui/editor.slint:327
+msgid "When it gets slow"
+msgstr ""
+
+#: ui/editor.slint:329
+msgid "Restart the engine automatically"
+msgstr ""
+
+#: ui/editor.slint:329
+msgid "Only warn me"
+msgstr ""
+
+#: ui/editor.slint:335
+msgid "Sites to check"
+msgstr ""
+
+#: ui/editor.slint:338
+msgid "Empty = the sites above"
+msgstr ""
+
+#: ui/editor.slint:338
+msgid "e.g. discord.com, gateway.discord.gg"
+msgstr ""
+
+#: ui/editor.slint:344
+msgid "Reliability"
+msgstr ""
+
+#: ui/editor.slint:350
+msgid "Auto-restart when stuck or crashed"
+msgstr ""
+
+#: ui/editor.slint:352
+msgid "Fixes the “ping jumps to thousands after a few hours” problem without touching other profiles."
+msgstr ""
+
+#: ui/editor.slint:365
+msgid "Preventive restart every (hours)"
+msgstr ""
+
+#: ui/editor.slint:366
+msgid "0 = never. Takes well under a second."
+msgstr ""
+
+#: ui/editor.slint:377
+msgid "TCP only"
+msgstr ""
+
+#: ui/editor.slint:379
+msgid "Voice/UDP goes direct. Fewer connections through the engine."
+msgstr ""
+
+#: ui/editor.slint:392
+msgid "Strategy arguments"
+msgstr ""
+
+#: ui/editor.slint:400
+msgid "Tip: the Strategy Lab finds working arguments for your connection."
+msgstr ""
+
+#: ui/editor.slint:415
+msgid "Save"
+msgstr ""
+
+#: ui/editor.slint:420
+msgid "Cancel"
+msgstr ""
+
+#: ui/editor.slint:424
+msgid "Delete"
+msgstr ""
+
+#: ui/engines.slint:53
+msgid "{} available"
+msgstr ""
+
+#: ui/engines.slint:68
+msgid "Install"
+msgstr ""
+
+#: ui/engines.slint:74
+msgid "Update"
+msgstr ""
+
+#: ui/engines.slint:80
+msgid "Remove"
+msgstr ""
+
+#: ui/engines.slint:95
+msgid "Installing…"
+msgstr ""
+
+#: ui/engines.slint:95
+msgid "Downloading… {}%"
+msgstr ""
+
+#: ui/engines.slint:110
+msgid "Hide what's new"
+msgstr ""
+
+#: ui/engines.slint:110
+msgid "What's new in {}"
+msgstr ""
+
+#: ui/engines.slint:142
+msgid "Downloaded from the official GitHub releases and verified with SHA-256."
+msgstr ""
+
+#: ui/engines.slint:144
+msgid "Checking…"
+msgstr ""
+
+#: ui/engines.slint:144
+msgid "Check for updates"
+msgstr ""
+
+#: ui/engines.slint:159
+msgid "zapret and GoodbyeDPI use WinDivert, a legitimate packet driver that some antivirus programs flag by mistake. If Windows Security deletes it, add an exclusion for DPIMech's engine folder (only administrators can write there)."
+msgstr ""
+
+#: ui/engines.slint:167
+msgid "Add Windows Security exclusion"
+msgstr ""
+
+#: ui/engines.slint:171
+msgid "Working…"
+msgstr ""
+
+#: ui/engines.slint:179
+msgid "Exclusion added"
+msgstr ""
+
+#: ui/lab.slint:109
+msgid "Use"
+msgstr ""
+
+#: ui/lab.slint:144
+msgid "Finds the settings that work on your connection by trying them on real sites."
+msgstr ""
+
+#: ui/lab.slint:170
+msgid "Detect my ISP"
+msgstr ""
+
+#: ui/lab.slint:178
+msgid "Sites"
+msgstr ""
+
+#: ui/lab.slint:195
+msgid "Other sites, e.g. example.com, another.org"
+msgstr ""
+
+#: ui/lab.slint:202
+msgid "Strategies"
+msgstr ""
+
+#: ui/lab.slint:205
+msgid "Update online lists"
+msgstr ""
+
+#: ui/lab.slint:209
+msgid "Tries per site"
+msgstr ""
+
+#: ui/lab.slint:223
+msgid "Start test"
+msgstr ""
+
+#: ui/lab.slint:264
+msgid "Results appear here, best first."
+msgstr ""
+
+#: ui/launch.slint:62
+msgid "Open DPIMech"
+msgstr ""
+
+#: ui/pages.slint:20
+msgid "Each profile runs one engine with one strategy."
+msgstr ""
+
+#: ui/pages.slint:23
+msgid "Set up something new"
+msgstr ""
+
+#: ui/pages.slint:23
+msgid "Quick setup"
+msgstr ""
+
+#: ui/pages.slint:36
+msgid "No profiles yet"
+msgstr ""
+
+#: ui/pages.slint:37
+msgid "Create a profile to pick an engine, a strategy and what to route through it."
+msgstr ""
+
+#: ui/pages.slint:70
+msgid "Newest first. Engine output and service events."
+msgstr ""
+
+#: ui/pages.slint:71
+msgid "Clear"
+msgstr ""
+
+#: ui/pages.slint:115
+msgid "Coming soon"
+msgstr ""
+
+#: ui/pages.slint:164
+msgid "Interface"
+msgstr ""
+
+#: ui/pages.slint:171
+msgid "Easy mode"
+msgstr ""
+
+#: ui/pages.slint:173
+msgid "Fewer menus; the setup wizard does the work. Turn off for engines, the Strategy Lab and logs."
+msgstr ""
+
+#: ui/pages.slint:186
+msgid "Language"
+msgstr ""
+
+#: ui/pages.slint:194
+msgid "Run the setup wizard again"
+msgstr ""
+
+#: ui/pages.slint:195
+msgid "Open wizard"
+msgstr ""
+
+#: ui/pages.slint:201
+msgid "Startup"
+msgstr ""
+
+#: ui/pages.slint:208
+msgid "Start DPIMech when I sign in"
+msgstr ""
+
+#: ui/pages.slint:210
+msgid "The background service always starts with the computer; this brings back the tray icon."
+msgstr ""
+
+#: ui/pages.slint:223
+msgid "Start minimized to the tray"
+msgstr ""
+
+#: ui/pages.slint:235
+msgid "Log files"
+msgstr ""
+
+#: ui/pages.slint:242
+msgid "Save the log to daily files"
+msgstr ""
+
+#: ui/pages.slint:244
+msgid "One file per day while DPIMech is open; files older than 14 days are deleted. Useful when asking for help."
+msgstr ""
+
+#: ui/pages.slint:267
+msgid "Change folder…"
+msgstr ""
+
+#: ui/pages.slint:268
+msgid "Open folder"
+msgstr ""
+
+#: ui/pages.slint:275
+msgid "Background service"
+msgstr ""
+
+#: ui/pages.slint:278
+msgid "Connected"
+msgstr ""
+
+#: ui/pages.slint:278
+msgid "Not running"
+msgstr ""
+
+#: ui/pages.slint:282
+msgid "Install the service"
+msgstr ""
+
+#: ui/pages.slint:288
+msgid "About"
+msgstr ""
+
+#: ui/pages.slint:293
+msgid "Opens sites and apps that your internet provider blocks by running well-known open-source DPI bypass tools on your computer. It is not a VPN: your traffic still goes straight to the sites, nothing is sent through another server."
+msgstr ""
+
+#: ui/pages.slint:297
+msgid "Platform: {}"
+msgstr ""
+
+#: ui/pages.slint:298
+msgid "Free software under the GNU GPL v3 or later."
+msgstr ""
+
+#: ui/pages.slint:302
+msgid "Source code"
+msgstr ""
+
+#: ui/pages.slint:303
+msgid "Report a problem"
+msgstr ""
+
+#: ui/pages.slint:310
+msgid "Download"
+msgstr ""
+
+#: ui/pages.slint:316
+msgid "Thanks"
+msgstr ""
+
+#: ui/pages.slint:320
+msgid "DPIMech only manages these projects; the real work is theirs."
+msgstr ""
+
+#: ui/report.slint:33
+msgid "What happened? A sentence or two helps a lot (optional)."
+msgstr ""
+
+#: ui/report.slint:39
+msgid "e.g. Discord stopped working after an hour"
+msgstr ""
+
+#: ui/report.slint:42
+msgid "This is what will be shared. It contains your DPIMech settings and the recent log (site names, your internet provider if you detected it) — no passwords or browsing history."
+msgstr ""
+
+#: ui/report.slint:54
+msgid "Full report saved as {}"
+msgstr ""
+
+#: ui/report.slint:60
+msgid "Have a GitHub account? Open an issue and drag the saved file into it. No account? Send it by e-mail to {} and attach the saved file."
+msgstr ""
+
+#: ui/report.slint:67
+msgid "Show file"
+msgstr ""
+
+#: ui/report.slint:68
+msgid "Send by e-mail"
+msgstr ""
+
+#: ui/report.slint:69
+msgid "Open a GitHub issue"
+msgstr ""
+
+#: ui/shortcut.slint:38
+msgid "Create a shortcut"
+msgstr ""
+
+#: ui/shortcut.slint:40
+msgid "One click turns \"{}\" on and then opens the app you choose."
+msgstr ""
+
+#: ui/shortcut.slint:58
+msgid "Then open"
+msgstr ""
+
+#: ui/shortcut.slint:62
+msgid "Looking for your apps…"
+msgstr ""
+
+#: ui/shortcut.slint:73
+msgid "Desktop"
+msgstr ""
+
+#: ui/shortcut.slint:88
+msgid "Create"
+msgstr ""
+
+#: ui/shortcut.slint:93
+msgid "Done"
+msgstr ""
+
+#: ui/wizard.slint:113
+msgid "Welcome!"
+msgstr ""
+
+#: ui/wizard.slint:115
+msgid "DPIMech opens sites and apps that your internet provider blocks, without a VPN. How would you like to start?"
+msgstr ""
+
+#: ui/wizard.slint:120
+msgid "Just make it work"
+msgstr ""
+
+#: ui/wizard.slint:121
+msgid "Answer three simple questions; DPIMech installs what it needs, finds settings that work on your connection and turns them on. You can switch to the full interface later in Settings."
+msgstr ""
+
+#: ui/wizard.slint:125
+msgid "I know what I'm doing"
+msgstr ""
+
+#: ui/wizard.slint:126
+msgid "Open the full interface: engines, profiles, strategy arguments and the Strategy Lab."
+msgstr ""
+
+#: ui/wizard.slint:134
+msgid "What do you want to open?"
+msgstr ""
+
+#: ui/wizard.slint:135
+msgid "Pick one or more. You can add other sites too."
+msgstr ""
+
+#: ui/wizard.slint:147
+msgid "Other sites, e.g. example.com"
+msgstr ""
+
+#: ui/wizard.slint:155
+msgid "Where should it work?"
+msgstr ""
+
+#: ui/wizard.slint:157
+msgid "Only in some apps (recommended)"
+msgstr ""
+
+#: ui/wizard.slint:158
+msgid "For example only Discord. Everything else stays exactly as it is."
+msgstr ""
+
+#: ui/wizard.slint:176
+msgid "The whole computer"
+msgstr ""
+
+#: ui/wizard.slint:177
+msgid "Every app, including games and voice. Uses zapret and needs the DPIMech service."
+msgstr ""
+
+#: ui/wizard.slint:183
+msgid "Only when I choose (proxy)"
+msgstr ""
+
+#: ui/wizard.slint:184
+msgid "Creates a local proxy (127.0.0.1) you can set in a browser or app."
+msgstr ""
+
+#: ui/wizard.slint:193
+msgid "Your internet provider"
+msgstr ""
+
+#: ui/wizard.slint:195
+msgid "Knowing your provider lets DPIMech try settings made for it first. This sends your public IP address to ipwho.is. You can skip it."
+msgstr ""
+
+#: ui/wizard.slint:202
+msgid "Detect my provider"
+msgstr ""
+
+#: ui/wizard.slint:208
+msgid "DPIMech's background service is not installed yet. It is needed to run the engines. Your computer asks for administrator permission once."
+msgstr ""
+
+#: ui/wizard.slint:222
+msgid "Setting things up…"
+msgstr ""
+
+#: ui/wizard.slint:249
+msgid "Details"
+msgstr ""
+
+#: ui/wizard.slint:277
+msgid "All set!"
+msgstr ""
+
+#: ui/wizard.slint:287
+msgid "Start"
+msgstr ""
+
+#: ui/wizard.slint:287
+msgid "Next"
+msgstr ""
+
+#: ui/wizard.slint:291
+msgid "Report this problem"
+msgstr ""
+
+#: ui/wizard.slint:293
+msgid "Try again"
+msgstr ""
+
+#: ui/wizard.slint:294
+msgid "Finish"
+msgstr ""
+
+#: src/bridge.rs:56
+msgid "Start it with: dpimech-service run"
+msgstr ""
+
+#: src/bridge.rs:72
+msgid "Version {} · data in {}"
+msgstr ""
+
+#: src/bridge.rs:99
+msgid "Version {} is available."
+msgstr ""
+
+#: src/bridge.rs:141
+msgid "Version {} is available (you have {})."
+msgstr ""
+
+#: src/bridge.rs:145
+msgid "You have the latest version ({})."
+msgstr ""
+
+#: src/bridge.rs:148
+msgid "Could not check for updates: {}"
+msgstr ""
+
+#: src/bridge.rs:210
+msgid "Could not load strategies: {}"
+msgstr ""
+
+#: src/bridge.rs:222
+msgid "ISP lookup failed: {}"
+msgstr ""
+
+#: src/convert.rs:142
+msgid "Give the profile a name."
+msgstr ""
+
+#: src/convert.rs:147
+msgid "Choose an engine."
+msgstr ""
+
+#: src/convert.rs:151
+msgid "Choose a routing mode."
+msgstr ""
+
+#: src/convert.rs:155
+msgid "Port must be between 1024 and 65535."
+msgstr ""
+
+#: src/convert.rs:163
+msgid "Add at least one application for per-app routing."
+msgstr ""
+
+#: src/convert.rs:204
+msgid "{} · port {}"
+msgstr ""
+
+#: src/convert.rs:213
+msgid "All matching traffic"
+msgstr ""
+
+#: src/convert.rs:214
+msgid "{} site(s): {}"
+msgstr ""
+
+#: src/convert.rs:227
+msgid "Stopped"
+msgstr ""
+
+#: src/convert.rs:228
+msgid "Starting…"
+msgstr ""
+
+#: src/convert.rs:236
+msgid "1 auto-restart"
+msgstr ""
+
+#: src/convert.rs:237
+msgid "{} auto-restarts"
+msgstr ""
+
+#: src/convert.rs:246
+msgid "Sites not answering ({}/{})"
+msgstr ""
+
+#: src/convert.rs:248
+msgid "Slow: avg. {} ms (usually {} ms)"
+msgstr ""
+
+#: src/convert.rs:250
+msgid "Only {}/{} sites answer"
+msgstr ""
+
+#: src/convert.rs:257
+msgid "Running · {}"
+msgstr ""
+
+#: src/convert.rs:258
+msgid "avg. {} ms"
+msgstr ""
+
+#: src/convert.rs:365
+msgid "just now"
+msgstr ""
+
+#: src/convert.rs:366
+msgid "{} min"
+msgstr ""
+
+#: src/convert.rs:367
+msgid "{} h {} min"
+msgstr ""
+
+#: src/convert.rs:379
+msgid "Last check: {}/{} sites answered"
+msgstr ""
+
+#: src/convert.rs:385
+msgid "(usually {} ms)"
+msgstr ""
+
+#: src/i18n.rs (EXTRA_TEXTS)
+msgid "Automatic"
+msgstr ""
+
+#: src/i18n.rs (EXTRA_TEXTS)
+msgid "Restarting did not help. This setting may have stopped working on your connection — run the Strategy Lab."
+msgstr ""
+
+#: src/i18n.rs (EXTRA_TEXTS)
+msgid "Per-app"
+msgstr ""
+
+#: src/i18n.rs (EXTRA_TEXTS)
+msgid "System-wide"
+msgstr ""
+
+#: src/i18n.rs (EXTRA_TEXTS)
+msgid "Local proxy"
+msgstr ""
+
+#: src/labui.rs:50
+msgid "ISP not detected"
+msgstr ""
+
+#: src/labui.rs:51
+msgid "Pick sites and press Start."
+msgstr ""
+
+#: src/labui.rs:94
+msgid "{} to try: {} from the DPIMech standard set"
+msgstr ""
+
+#: src/labui.rs:109
+msgid "{} from {}"
+msgstr ""
+
+#: src/labui.rs:113
+msgid "“Update online lists” adds more"
+msgstr ""
+
+#: src/labui.rs:117
+msgid "★ {} made for your ISP"
+msgstr ""
+
+#: src/labui.rs:121
+msgid "Standard set: well-known settings that ship with DPIMech."
+msgstr ""
+
+#: src/labui.rs:124
+msgid "{}: downloaded from {}."
+msgstr ""
+
+#: src/labui.rs:191
+msgid "Testing {} strategies… engines run briefly in the background."
+msgstr ""
+
+#: src/labui.rs:204
+msgid "Without any bypass every test site already works — nothing to fix on this network for these sites."
+msgstr ""
+
+#: src/labui.rs:208
+msgid "Without any bypass only {}/{} requests succeed. Blocked: {}."
+msgstr ""
+
+#: src/labui.rs:240
+msgid "Cancelled."
+msgstr ""
+
+#: src/labui.rs:241
+msgid "Stopped: {}"
+msgstr ""
+
+#: src/labui.rs:242
+msgid "Done — {} strategies work on every site. Press “Use” on the top one."
+msgstr ""
+
+#: src/labui.rs:246
+msgid "Done — none worked on every site. Try more tries per site, another engine, or updated online lists."
+msgstr ""
+
+#: src/labui.rs:276
+msgid "No bypass"
+msgstr ""
+
+#: src/launcher.rs:46
+msgid "Connecting to the DPIMech service…"
+msgstr ""
+
+#: src/launcher.rs:67
+msgid "Opening {}…"
+msgstr ""
+
+#: src/launcher.rs:70
+msgid "Could not open {}: {}"
+msgstr ""
+
+#: src/launcher.rs:76
+msgid "{} is on"
+msgstr ""
+
+#: src/launcher.rs:84
+msgid "Could not start"
+msgstr ""
+
+#: src/launcher.rs:102
+msgid "The DPIMech service is not running. Open DPIMech to set it up."
+msgstr ""
+
+#: src/launcher.rs:108
+msgid "The profile of this shortcut no longer exists."
+msgstr ""
+
+#: src/launcher.rs:110
+msgid "Starting {}"
+msgstr ""
+
+#: src/launcher.rs:115
+msgid "Turning the profile on…"
+msgstr ""
+
+#: src/launcher.rs:131
+msgid "The profile stopped right after starting. The Logs page in DPIMech shows why."
+msgstr ""
+
+#: src/launcher.rs:136
+msgid "The profile is taking too long to start. The Logs page in DPIMech shows why."
+msgstr ""
+
+#: src/launcher.rs:232
+msgid "the menu entry has no command"
+msgstr ""
+
+#: src/main.rs:349
+msgid "Folder for DPIMech log files"
+msgstr ""
+
+#: src/main.rs:511
+msgid "Looking up…"
+msgstr ""
+
+#: src/main.rs:520
+msgid "Installing… confirm the prompt. DPIMech connects by itself when the service is ready."
+msgstr ""
+
+#: src/main.rs:521
+msgid "Could not start the installer: {}"
+msgstr ""
+
+#: src/main.rs:577
+msgid "Downloading online lists…"
+msgstr ""
+
+#: src/notify.rs:46
+msgid "{} stopped"
+msgstr ""
+
+#: src/notify.rs:54
+msgid "{} needs attention"
+msgstr ""
+
+#: src/notify.rs:60
+msgid "the sites stopped answering"
+msgstr ""
+
+#: src/notify.rs:62
+msgid "{} ms instead of the usual {} ms"
+msgstr ""
+
+#: src/notify.rs:64
+msgid "only {}/{} sites answer"
+msgstr ""
+
+#: src/notify.rs:67
+msgid "{} is slow"
+msgstr ""
+
+#: src/notify.rs:68
+msgid "Connection check: {}."
+msgstr ""
+
+#: src/notify.rs:74
+msgid "{} was restarted"
+msgstr ""
+
+#: src/notify.rs:75
+msgid "DPIMech restarted the engine to fix the connection."
+msgstr ""
+
+#: src/notify.rs:160
+msgid "DPIMech update available"
+msgstr ""
+
+#: src/notify.rs:161
+msgid "Version {} is ready. Open Settings to download it."
+msgstr ""
+
+#: src/picker.rs:92
+msgid "Choose an application"
+msgstr ""
+
+#: src/shortcut.rs:129
+msgid "Choose where to put the shortcut."
+msgstr ""
+
+#: src/shortcut.rs:133
+msgid "Give the shortcut a name."
+msgstr ""
+
+#: src/shortcut.rs:444
+msgid "Starts the DPIMech profile \"{}\""
+msgstr ""
+
+#: src/shortcutui.rs:24
+msgid "Start menu"
+msgstr ""
+
+#: src/shortcutui.rs:26
+msgid "Applications folder"
+msgstr ""
+
+#: src/shortcutui.rs:28
+msgid "Applications menu"
+msgstr ""
+
+#: src/shortcutui.rs:107
+msgid ""
+"Shortcut created:\n"
+"{}"
+msgstr ""
+
+#: src/shortcutui.rs:111
+msgid "Could not create the shortcut: {}"
+msgstr ""
+
+#: src/shortcutui.rs:126
+msgid "Nothing, only turn the profile on"
+msgstr ""
+
+#: src/tray.rs:137
+msgid "idle"
+msgstr ""
+
+#: src/tray.rs:138
+msgid "{} profile(s) running"
+msgstr ""
+
+#: src/tray.rs:147
+msgid "Show DPIMech"
+msgstr ""
+
+#: src/tray.rs:162
+msgid "Report a problem…"
+msgstr ""
+
+#: src/tray.rs:166
+msgid "Quit"
+msgstr ""
+
+#: src/wizard.rs:216
+msgid "Pick at least one site."
+msgstr ""
+
+#: src/wizard.rs:227
+msgid "Add at least one app (for example Discord)."
+msgstr ""
+
+#: src/wizard.rs:283
+msgid "The DPIMech background service is not running. Go back and press “Install the service”."
+msgstr ""
+
+#: src/wizard.rs:328
+msgid "Installing {} failed: {}"
+msgstr ""
+
+#: src/wizard.rs:397
+msgid "The test was cancelled."
+msgstr ""
+
+#: src/wizard.rs:401
+msgid "The test failed: {}"
+msgstr ""
+
+#: src/wizard.rs:409
+msgid "Good news: these sites already open normally on your connection, so nothing needs to be changed."
+msgstr ""
+
+#: src/wizard.rs:448
+msgid "My sites"
+msgstr ""
+
+#: src/wizard.rs:469
+msgid "Could not create the profile: {}"
+msgstr ""
+
+#: src/wizard.rs:475
+msgid "“{}” is on and starts automatically with the computer."
+msgstr ""
+
+#: src/wizard.rs:481
+msgid "{}/{} test requests worked ({} ms on average)."
+msgstr ""
+
+#: src/wizard.rs:491
+msgid "Set your browser or app to use the SOCKS5 proxy 127.0.0.1:{}."
+msgstr ""
+
+#: src/wizard.rs:498
+msgid "Restart the chosen apps if they were already open."
+msgstr ""
+
+#: src/wizard.rs:524
+msgid "The engine could not run on this computer: {}."
+msgstr ""
+
+#: src/wizard.rs:530
+msgid "Try again later, add other sites, or run the Strategy Lab from the full interface to test more settings."
+msgstr ""
+
+#: src/wizard.rs:534
+msgid "Try “The whole computer” (zapret) or run the Strategy Lab from the full interface."
+msgstr ""
+
+#: src/wizard.rs:539
+msgid "No setting worked on your connection for these sites."
+msgstr ""
+
+#: src/wizard.rs:605
+msgid "Install {}"
+msgstr ""
+
+#: src/wizard.rs:621
+msgid "Find a setting that works on your connection"
+msgstr ""
+
+#: src/wizard.rs:630
+msgid "Create the profile and turn it on"
+msgstr ""

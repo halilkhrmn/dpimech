@@ -1,0 +1,279 @@
+# Progress
+
+Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated log entry at the end of each session.
+
+## Phase checklist
+
+### Phase 1 — Foundation (Windows) · *mostly done*
+- [x] Cargo workspace (`core`, `service`, `gui`)
+- [x] Domain model: engines, routing modes, profiles, statuses (OS-aware engine/mode matrix)
+- [x] Config persistence (TOML, atomic save)
+- [x] IPC protocol + named-pipe transport with DACL + async client
+- [x] Service: profile CRUD, engine process supervision, log bus, conflict detection (port / WinDivert / same app)
+- [x] Service: Windows SCM `install` / `uninstall` / `service` (builds; **not yet tested elevated**)
+- [x] GUI shell: sidebar, dashboard with profile cards, profile editor, logs, settings, placeholders
+- [x] Tray icon (show / quit), close-to-tray
+- [x] Software renderer; RAM measured (see DECISIONS #4)
+- [x] Engines die with the service (Windows job object, DECISIONS #10)
+- [x] Real Windows service: install/upgrade/uninstall tested elevated (Program Files copy, recovery actions)
+- [x] Start with Windows / start minimized settings (GUI, HKCU Run)
+- [x] Per-engine argument validation (`core::argpolicy`)
+- [x] Data dir ACL hardening; firewall rule for ProxiFyre
+- [ ] Verify SCM recovery by killing the service (needs an elevated shell)
+- [x] App icon in the .exe resources (done in Phase 5)
+
+### Phase 2 — ByeDPI + ProxiFyre MVP · *mostly done*
+- [x] Package installer: ByeDPI, ProxiFyre, Windows Packet Filter driver from GitHub Releases, SHA-256 verified, versioned dirs
+- [x] Engines page: install / update / remove, "what's new", update badge in the sidebar, daily update check
+- [x] Per-app routing via one shared ProxiFyre (config generation, lifecycle, failure → profiles marked failed)
+- [x] App picker: running processes + Start Menu apps with icons, search, manual name/path, browse
+- [x] Tray menu: per-profile toggles, tooltip with running count
+- [x] Global hotkey Ctrl+Alt+D (stop all / restore last set)
+- [x] Guards: can't remove a package a running profile uses; reinstall of an in-use version keeps locked files
+- [x] Stale "engine not installed" errors clear after install
+- [x] **Engine health watchdog**: SOCKS probe + stall markers + crash restart with backoff + scheduled restart, `-c 4096` default for ByeDPI, "TCP only" per-app option, restart count on cards
+- [ ] Install the driver from the Engines page as a real (elevated) service — only detection tested
+
+### Phase 3 — zapret winws + GoodbyeDPI (system-wide) · *done*
+- [x] Packages: official zapret (Windows binaries + fake payloads), GoodbyeDPI (pinned SHA-256)
+- [x] winws / GoodbyeDPI argument allowlists
+- [x] System-wide profiles with a domain list → `{hostlist}`; editor "Sites to unblock" with domain packs
+- [x] Friendly "needs administrator rights" error in dev mode
+- [x] Installed both through the SYSTEM service; winws and GoodbyeDPI profiles unblock discord.com directly
+### Phase 4 — Strategy Lab · *done*
+- [x] Baseline run, parallel ByeDPI runner (4 engines), sequential WinDivert runner, scoring
+- [x] Standard set + online lists (Community list, Turkey ISP presets) with clear labels and origins
+- [x] ISP detection (ipwho.is, opt-in) and ★ presets for the detected ISP
+- [x] "Use" creates a prefilled profile
+- [x] Lab runs for winws (15 strategies) and GoodbyeDPI (32) through the SYSTEM service
+### Phase 4b — Setup wizard + Easy mode · *done for ByeDPI paths*
+- [x] First-run question ("Just make it work" / "I know what I'm doing"), Easy mode switch + "Open wizard" in Settings (prefs in `%APPDATA%\dpimngr\gui.toml`)
+- [x] Wizard: sites → where (apps / whole computer / proxy) → ISP (optional) → install engines in order → Lab → profile saved + started (autostart on, free port picked)
+- [x] "Install the service" button (ShellExecute runas → one UAC prompt) in the wizard and Settings
+- [x] Easy mode UI: sidebar only Profiles + Settings, "Set up something new" opens the wizard
+- [x] Wizard "whole computer" path end to end on the installed build (winws Lab → system-wide profile, discord.com 200 directly)
+### Phase 5 — Updates, installer, polish · *done (translations moved later)*
+- [x] Connection monitor per profile (interval, restart/warn, loop protection, "Check now", latency on cards)
+- [x] Windows notifications under dpimngr's own identity; tray icon colour by state
+- [x] App icon embedded in both executables
+- [x] Inno Setup installer (install/upgrade/uninstall), `tools/build-installer.ps1`
+- [x] GitHub Actions: CI (fmt, clippy, tests) and tag-triggered releases with installer + zip + SHA256SUMS
+- [x] dpimngr update check (GitHub releases) + notification; Windows Security exclusion button (opt-in)
+- [x] Single GUI instance (second launch shows the running window)
+- [x] Translations (tr, ru): 246 strings, bundled .po catalogs shared by Slint and Rust, language from the system or Settings
+- [ ] Tray right-click menu toggles — not exercised (the user was using the app; would need mouse automation)
+- [ ] Windows Packet Filter driver upgrade and Defender exclusion — skipped at the user's request
+### Priority 1 (PLAN.md → Priorities) · *done*
+- [x] DPIMech rename + migration · [x] UI polish (cursor, avg. ping, refresh icon, editor latency)
+- [x] Wizard percent + live log, daily log files · [x] About + Thanks · [x] Anti-cheat and other-tool warnings
+- [x] README per OS in en/tr/ru, "not a VPN", "AI-assisted, tested by hand"
+- [ ] Priority 2: shortcuts and quick launch (details to be written down)
+
+### Phase 6 — Linux · *in progress*
+- [x] Service builds and runs on Linux; Unix socket open to local users (0666), second instance refused
+- [x] Engines die with the service (`PR_SET_PDEATHSIG`; systemd `KillMode=control-group`), clean stop on SIGTERM
+- [x] `install` / `uninstall` via systemd (binary in `/usr/local/lib/dpimngr`, unit in `/etc/systemd/system`)
+- [x] Data dir hardening: root-owned, no group/other write, planted symlinks removed
+- [x] `.tar.gz` packages (exec bits kept, setuid dropped, links skipped); `<stem>-<arch>` binary names
+- [ ] Real ByeDPI Linux release installed from GitHub (asset/binary names unverified — no GitHub access in the dev container)
+- [ ] systemd install on a real systemd machine (only tested with a stand-in `systemctl`)
+- [x] zapret on Linux: nfqws + tpws from the same package (per-CPU binaries, exec bits), argument allowlists
+- [x] nfqws system-wide: `inet dpimngr` nftables table (queue 200, `bypass`, ports from `--filter-tcp/udp`) for as long as the engine runs; stale table removed at start
+- [x] tpws as a local SOCKS proxy (127.0.0.1, managed port) with the SOCKS health probe
+- [x] Strategy Lab for nfqws: standard winws set without the `--wf-*` filters, sequential runner with the queue rules
+- [ ] nfqws with a real kernel queue (this container lacks `nft_queue`; rules only syntax-checked)
+- [x] tpws system-wide and per-app (same relay; tpws standard set in the Strategy Lab)
+- [x] Per-app routing (cgroup v2 + nftables + transparent→SOCKS relay in the service)
+- [x] GUI on Linux: tray on its own GTK thread, single instance (socket in `$XDG_RUNTIME_DIR`), XDG autostart entry, `notify-send`, service install via `pkexec`, `xdg-open` for links; wizard hides per-app and uses nfqws for "whole computer"
+- [x] Linux app discovery for per-app routing (`/proc` + `.desktop` files, Flatpak/Snap)
+- [x] Packaging: .deb, .rpm, AppImage via `tools/build-linux-packages.sh`, built by the release workflow on Ubuntu 22.04 (Flatpak skipped, DECISIONS #29)
+### Phase 7 — macOS · *foundation*
+- [x] Service: launchd install/uninstall (`/Library/PrivilegedHelperTools`, LaunchDaemon, KeepAlive), socket in `/var/run/dpimech`, data dir hardening
+- [x] Engines: zapret's universal `binaries/mac64/tpws` as a local SOCKS proxy (ByeDPI: if its release has a macOS build)
+- [x] GUI: tray created inside the event loop, LaunchAgent autostart, osascript notifications and admin prompt, macOS folders for prefs/logs, AppleLanguages
+- [x] `tools/build-macos-app.sh` (universal .app + .dmg, unsigned), macOS in CI and in the release workflow
+- [ ] Hand test on a Mac; code signing / notarization
+- [ ] Whole computer (pf + tpws) and per-app routing
+
+## Work log
+
+### 2026-09-30 (21) — Repo moved to halilkhrmn/dpimech
+- **Done:** every link, `APP_REPO` (update check, issue links), installer, landing page and Cargo metadata point at
+  `github.com/halilkhrmn/dpimech`. The new repo starts fresh: one commit with the 0.2.0 tree on top of its
+  initial LICENSE commit (same GPL-3 text); the old history stays in the old repo.
+- **Note:** 0.1.x installs look for updates in the old repo; once it is deleted they will not see new versions
+  (a GitHub rename would have kept a redirect).
+- **Open:** enable Pages (Settings → Pages → Source: GitHub Actions) and push tag `v0.2.0` from a local clone.
+
+### 2026-09-30 (20) — Profile shortcuts
+- **Done:** profile card ⋯ button + right-click menu (Edit, Create shortcut…), "Create shortcut…" in the editor;
+  dialog with name, "then open" app, desktop / menu choice and a live icon preview (logo + app icon top-right);
+  `dpimech --launch` progress window (DECISIONS #34); tr/ru translations.
+- **Verified (Linux, Xvfb + dev service):** dialog found the apps and composed the icon from a hicolor theme icon;
+  Create wrote both .desktop files with correct Exec quoting; running the shortcut started a stopped tpws
+  profile, opened the app and closed with "tpws test is on"; unknown profile shows the error with
+  "Open DPIMech"; right click and ⋯ open the menu, left click still opens the editor. Unit tests for icon
+  composition, ICO/ICNS headers, Exec quoting, user-dirs parsing and argument parsing.
+- **Not verified:** Windows .lnk creation and icon (PowerShell, PrivateExtractIconsW) and the macOS bundle —
+  need hand tests on those systems.
+
+### 2026-09-30 (19) — Licence and landing page
+- **Done:** GPL-3.0-or-later (`LICENSE`, manifests, rpm/deb, installer ships LICENSE.txt, About line; DECISIONS #33);
+  `site/index.html` landing page (deliberately 2000s look) deployed by `.github/workflows/pages.yml`.
+- **Verified:** page rendered in Chromium at 1100 px and as a 375 px phone (no horizontal scroll); release dry run
+  on `release-check` green on Windows, Linux and macOS after adding job timeouts.
+- **Open:** enable Pages once (Settings → Pages → Source: GitHub Actions); push tag `v0.2.0` from a local clone
+  (tag pushes are refused from the cloud session).
+
+### 2026-09-30 (18) — v0.2.0
+- **Done:** pinned `tray-icon` 0.24 (0.25 pulled a second `muda` next to Slint's and the macOS LTO link failed); version 0.2.0 in `Cargo.toml` and the installer; tag `v0.2.0`.
+- **Verified:** release dry run on `release-check` built the Windows installer, the Linux deb/rpm/AppImage and the macOS .dmg.
+- **Open:** hand tests on real Windows / Linux / macOS machines; licence choice (rpm has a placeholder); update `APP_REPO` after the repo rename.
+
+### 2026-09-30 (17) — macOS foundation
+- **Done:** `launchd.rs`, macOS socket path, zapret tpws package for macOS, wizard offers only what the OS supports (macOS: proxy via tpws), GUI macOS pieces (tray timing, LaunchAgent, notifications, admin prompt, folders, language), app/dmg build script, CI + release jobs.
+- **Verified:** `cargo clippy --workspace --all-targets --target aarch64-apple-darwin -D warnings` clean in the Linux container (type-check only, no linking); Linux build and tests unchanged. The macOS CI job is the first real build.
+- **Not verified:** anything at runtime on a Mac.
+
+### 2026-09-30 (16) — Turkish and Russian
+- **Done:** Slint bundled translations (`lang/<lang>/LC_MESSAGES/dpimech-gui.po`, no default context) plus `i18n.rs` for text built in Rust (status lines, wizard, Lab, notifications, tray, dialogs) reading the same catalogs; `trf!` with `{}` / `{n}` placeholders; `tools/i18n.py` extracts and merges; Settings → Language (Automatic / English / Türkçe / Русский) applies immediately and is saved; system language from `LANG`/`LC_*` or the Windows locale. Fixed while testing: the .po parser dropped a trailing escaped quote. Wizard "done" text no longer says "with Windows" on Linux.
+- **Verified:** tests (placeholders equal in every entry, EXTRA_TEXTS translated, parser); GUI under `LANG=tr_TR.UTF-8` fully Turkish incl. Rust-built status ("Çalışıyor · az önce", "Uygulama bazlı"); switching to Русский in Settings changed the running window and saved `language = "ru"`; Russian sidebar label shortened and nav labels elide.
+- **Not verified:** Windows locale detection (registry `LocaleName`), right-to-left or other languages.
+
+### 2026-09-30 (15) — Linux per-app routing and tpws for the whole computer
+- **Done:** `perapp_linux.rs`: apps (matched by executable name / comm) are moved into `dpimech/app-<port>` cgroups; an nftables `nat output` table sends their TCP to a relay in the service, which reads `SO_ORIGINAL_DST` and connects through the engine's SOCKS port. tpws "whole computer" = the same relay for all TCP to the strategy's ports, excluding the service's own cgroup (outside systemd the service moves itself and its engines into `dpimech/service`). Private/loopback addresses never redirected; TCP only. Supervisor: `engine_port` (fixed 10880 for a whole-computer proxy), `is_routed`, `takes_all_traffic`. Strategy Lab runs any proxy engine in parallel; tpws standard set (8). GUI: Linux app discovery (.desktop incl. Flatpak/Snap + running processes), wizard offers "only some apps" on Linux (needs only ByeDPI).
+- **Verified (container, cgroup v2 hybrid, real nft NAT, SOCKS5 stand-in that really connects):** a process named `curl` moved into `dpimech/app-18090` and its connection reached the engine (`CONNECT 93.184.215.14:80`) with the reply coming back; a `wget` next to it stayed direct; tpws whole computer: `wget` went through the engine and back without looping; nfqws refused while tpws whole computer runs; tables and cgroups removed on stop. Lab with tpws: 4 strategies in parallel, 1/1 each. Picker lists .desktop apps and running processes; wizard shows "Only in some apps" with Discord suggested.
+- **Not verified:** a real desktop with systemd (cgroup of a user session app, Flatpak apps), IPv6 path (no ::1 in the container), real tpws/ByeDPI binaries.
+
+### 2026-09-30 (14) — Problem reports, Linux packages, Defender check mark
+- **Done:** "Report a problem" (`report.rs`, `ui/report.slint`; Settings, wizard failure, tray) → prefilled GitHub issue or e-mail to the support address with the saved full report (DECISIONS #30). Linux packages: `.deb`/`.rpm` metadata in `crates/gui/Cargo.toml`, `packaging/linux/`, `dpimech-service unit`, AppImage-aware service install and autostart, `tools/build-linux-packages.sh`; release workflow builds Windows + Linux and publishes one SHA256SUMS; CI now also runs on Ubuntu 22.04. Windows Security exclusion: green check, then after 5 s the whole yellow hint fades away; the hint is not shown at all when the service reports the exclusion already exists (`DefenderStatus`, asked from Get-MpPreference, so a removed exclusion brings it back); errors stay, button disabled while working.
+- **Verified:** report dialog with a typed note → GitHub URL (2 233 chars, note as title) and mailto (1 633 chars) decoded, full report file carries the note; `.deb` installed with apt in the container (old `/etc` unit + `/usr/local/lib/dpimech` removed), removed (data kept) and purged (data gone); `.rpm` contents, requires and scriptlets inspected; AppImage built and started (APPIMAGE/APPDIR set); Defender hint: check mark at 1 s, whole hint gone at 6 s and the engine list moved up (success path forced on Linux for the screenshots, then reverted). `DefenderStatus` on Windows not run yet. All checks pass (fmt, clippy for Linux and the Windows target, tests).
+- **Not verified:** rpm install on Fedora, packages on a real desktop with systemd, pkexec from the AppImage, a real release run.
+- **Open:** project licence (rpm carries `LicenseRef-not-yet-chosen`); Priority 2 details.
+
+### 2026-09-30 (13) — Priority 1: polish, logs, About, warnings, README
+- **Done:** embedded Fluent SVG icons (the Windows 11 icon font was missing on Windows 10/Linux); pointer cursor, refresh icon on cards, "avg." latency, last check in the editor; wizard one-bar progress in % with a live log panel, clearer failures (✕ on the failed step, advice per mode, real cause when every setting failed the same way); daily log files written by the GUI (`logfile.rs`, 14 days, folder in Settings); About ("not a VPN", source/issue links) and Thanks (+ Made with Slint); service-side scan for other DPI tools (`foreign.rs`, `ForeignTools` request) with a GUI banner and a profile-log warning; anti-cheat note (Windows) in the wizard and editor; READMEs rewritten per OS in three languages; priority list in PLAN.md.
+- **Verified (Linux, Xvfb, stand-in engines):** screenshots of sidebar icons, card refresh button, editor "Last check: 0/1 sites answered", wizard 90 % with log panel and "The engine could not run on this computer: this kernel cannot queue packets…", Settings log folder and About/Thanks; log file `dpimech-2026-09-30.log` written; foreign scan: a compiled `tpws` in /tmp reported, the same binary under `<data>/engines` ignored, and a leftover `dpimngr-service` from an earlier test was found for real; anti-cheat note rendered (forced on for the screenshot). fmt/clippy/tests clean on Linux and for the Windows target.
+- **Not verified:** everything Windows-only at runtime (Toolhelp scan as SYSTEM, notifications, installer migration).
+- **Release note:** bump `version` in Cargo.toml before tagging (the `v0.1.2` run failed on the tag/version check).
+- **Next:** Priority 2 (shortcuts and quick launch) once its details are written down; a Windows test pass of the rename migration; Linux per-app routing.
+
+### 2026-09-30 (12) — New logo, rename to DPIMech with migration
+- **Done:** octopus logo in the UI (window, sidebar, top bar, wizard) and in the tray with a status dot; installer icon; `ikon.jpg` removed. Renamed everything user- or OS-visible to DPIMech/`dpimech` (crates `dpimech-*`, env `DPIMECH_*`); migration in `install` (service `migrate.rs`, `winsvc.rs`, `systemd.rs`), GUI prefs/autostart migration, installer `[InstallDelete]` + `UsePreviousAppDir=no` (DECISIONS #28). Fixed: GUI prefs were not saved on Linux without `$XDG_CONFIG_HOME`; Linux notifications/autostart now have an icon (`~/.local/share/icons/hicolor/256x256/apps/dpimech.png`).
+- **Verified:** Linux `install` over a fake 0.1.x install (old unit, binary, `/var/lib/dpimngr` with a profile and a user-owned file) → old service disabled and removed, data moved and re-owned by root, new unit enabled; a second `install` only upgrades. GUI with old prefs (`onboarded = true`) and an old `dpimngr.desktop --minimized` → no first-run question, `dpimech.desktop` with `--minimized`, "DPIMech" and the logo shown. Workspace fmt/clippy/tests clean on Linux; service and GUI clippy clean for the Windows target.
+- **Not verified:** the Windows upgrade path (old service removal, ProgramData move, Inno `[InstallDelete]`) — needs a Windows machine with 0.1.0 installed.
+- **Release note:** the `v0.1.2` release run failed because the tag did not match `Cargo.toml` (0.1.0); bump the version before tagging.
+- **Noticed:** sidebar icons render as garbage on Linux (Windows icon font).
+
+### 2026-09-30 (11) — GUI on Linux
+- **Done:** `tray.rs` GTK thread (gtk::init + main loop there, profile lists sent over a channel; a missing tray no longer blocks the window), `single.rs` Unix socket, `autostart.rs` XDG entry with spec-compliant `Exec` quoting, `notify.rs` via `notify-send`, `prefs.rs` `pkexec dpimngr-service install`, `open_url` (explorer / open / xdg-open), wizard offers only what the OS supports.
+- **Verified (Xvfb, fake engines):** before the fix the GUI panicked in GTK menu creation on Linux; now it opens, the wizard shows "The whole computer" (default) and "proxy" only; a second launch exits in 0.05 s and the first stays alone; clippy `-D warnings` clean for the GUI on Linux.
+- **Not verified:** tray icon and notifications in a real desktop session (no D-Bus session in the container).
+
+### 2026-09-30 (10) — zapret on Linux: nfqws + nftables, tpws proxy
+- **Done:** `EngineKind::intercepts_packets` (WinDivert or NFQUEUE, one at a time), zapret package on Linux (`extract_rules(os, arch)`, `nfqws` main binary, `Packages::engine_path`, exec bits for the package's engines), argpolicy split into `ZAPRET_COMMON` + `WINWS_FILTERS` / `NFQWS_ONLY`, new `TPWS` table, `nfqueue.rs` (ruleset from the strategy's ports, guard removes the table), `launch::engine_rules` used by profiles and the Lab, `catalog::adapt_args` for nfqws. Linux routing modes trimmed to what works today (ByeDPI/tpws: local proxy; nfqws: system-wide).
+- **Verified:** tests (argpolicy nfqws/tpws, port parsing refuses anything but ports, nfqws strategy adaptation, exec bits); clippy clean for Linux and for the Windows target (`cargo check`/`clippy --target x86_64-pc-windows-gnu` with a stub `windres`). Live with stand-in binaries: tpws profile launched as `--bind-addr=127.0.0.1 --port=18081 --socks <strategy>` and passed the SOCKS probe for 50 s without restarts; nfqws profile wrote the hostlist, failed cleanly with "this kernel cannot queue packets…" (no `nft_queue` here) and left no table; `--qnum` and per-app tpws refused on save.
+- **Open:** a real Linux box with GitHub access: install zapret, check `nfqws --help`/`tpws --help` against the tables, run the nfqws Lab.
+- **Next:** GUI on Linux (tray needs GTK; Win32-only modules), then per-app routing.
+
+### 2026-09-30 (9) — Phase 6 start: Linux service foundation
+- **Done:** `job::contain` (PR_SET_PDEATHSIG, applied in `launch::build`), Unix socket mode 0666 + refuse to steal a live socket, `systemd.rs` (install/uninstall/service, hardened unit), `acl.rs` Unix hardening, SIGTERM shutdown, tar.gz extraction with safe modes, `find_binary` accepts `ciadpi-x86_64`. Fixed the `defender.rs` unused-import warning on non-Windows.
+- **Verified (Linux container, root, no systemd, no GitHub):**
+  - Tests: tar keeps 0755 / drops setuid, skips symlinks, rejects `../`, applies extract rules; unit file quoting. clippy clean.
+  - Live with a Python stand-in for ciadpi: profile started over the socket (`-i 127.0.0.1 -p 18080 -c 4096 -s 1`); `kill -9` of the service → engine gone; SIGTERM → engine stopped and logged; second service instance → "another service is already listening".
+  - `install` with a stand-in `systemctl`: binary 755 root, unit 644, stop → daemon-reload → enable → restart; data dir with a uid-1000 file, a 4777 file and a symlink to `/etc/shadow` → all root:root, 755/644, link removed. `uninstall` removes unit and binary.
+- **Not done:** real downloads (GitHub blocked by the container's network policy), real systemd.
+- **Next:** check ByeDPI's Linux asset/binary names on a machine with GitHub; zapret nfqws/tpws + nftables; then the GUI on Linux.
+
+### 2026-09-30 (8) — Connection monitor, installer, releases, full test pass
+- **Done:** connection monitor (`health.rs` monitor, `MonitorHistory`, `Restart::Slow`), notifications (`notify.rs`, own AppUserModelID `dpimngr.app`), tray colours, app icon (`tools/make_icon.py` → `crates/gui/assets`), installer (`installer/dpimngr.iss`), CI + release workflows, app update check, Defender exclusion endpoint, single-instance GUI (`single.rs`). READMEs now point to the installer and the wizard.
+- **Verified:**
+  - Monitor: healthy profile reported ~235–323 ms, learned "usual" after 2 checks; broken profile (no strategy) → 0/2 sites → confirmed after 30 s → restart ×2 → paused with "run the Strategy Lab" advice. Cards show latency / warning, "Check now" works, toasts "is slow" / "was restarted" shown, and they appear under "dpimngr" (Action Center history for `dpimngr.app`).
+  - Installer (silent, elevated): service installed from Program Files, autostart profile started; killing the service ended the engine (job object) and SCM restarted the service within 12 s, which restarted the autostart profile.
+  - Wizard "whole computer" on the installed build: ~70 s, winws profile 8/8 (166 ms), discord.com 200 directly.
+  - Ctrl+Alt+D stops both running profiles and restores them.
+  - Lab cancel: cancelled after 9/73, the four lab engines were killed immediately.
+  - App update check: "You have the latest version (0.1.0)" (no public release yet).
+  - Found and fixed: two GUI instances could run at once (two tray icons) → single-instance guard; second launch exits with 0.
+- **Not done:** tray right-click menu (user was using the app), driver upgrade and Defender exclusion (skipped on request).
+- **Next:** v0.1.0 release via tag; then Phase 6 (Linux) or more UX items from the suggestions list.
+
+### 2026-09-30 (7) — Elevated verification, Easy mode layout, history cleanup
+- **Done:** Easy mode has no sidebar (slim top bar + settings button); "Quick setup" (wizard) always next to "New profile". Lab names made unique when a source repeats a name. Remote history replaced with the rewritten local one (`--force-with-lease`, same content, no attribution trailers); `main` is in sync with `origin/main`.
+- **Verified with the upgraded SYSTEM service:**
+  - zapret v72.13 (Windows binaries + 31 fake payloads only) and GoodbyeDPI 0.2.2 (pinned hash) installed.
+  - winws profile: hostlist loaded, WinDivert started, unrelated sites untouched. The first standard strategy was reset by Superonline's DPI (curl 35) — exactly what the Lab is for.
+  - winws Lab (Superonline, Discord): baseline 3/8; **★ SuperOnline preset 8/8** (173 ms) and standard "fake + multisplit (md5sig)" 8/8; Türk Telekom/Vodafone presets 3/8 — the ISP match mattered.
+  - GoodbyeDPI Lab: 8 of 32 strategies 8/8 (best "Alternatif 15", 168 ms; standard "-5" 172 ms).
+  - Real profiles with the winners: discord.com 200 directly through winws (0.28 s) and GoodbyeDPI (0.25 s). Test profiles removed, no engines left running.
+- **Next:** Phase 5 — single installer (GUI + service, Start menu shortcut, uninstall), update notifications/self-update, Defender guidance; translations (tr, ru).
+
+### 2026-09-30 (6) — Setup wizard + Easy mode
+- **Done:** `wizard.slint` + `wizard.rs` (event-driven state machine fed by package updates, strategy lists, Lab events and a new `SaveAndStart` command), `prefs.rs` (GUI prefs, elevated service install), Easy mode sidebar/dashboard/settings.
+- **Verified (dev service, temp APPDATA so the real prefs were untouched):** welcome → "Just make it work" → Discord → only apps (Discord suggested automatically) → provider detected → Start: engines already present, Lab ran, best strategy picked, profile "Discord" saved and started on port 1081 (1080 was taken) in ~35 s; "All set!" reported 8/8, 169 ms. The test profile was deleted afterwards.
+- **Next:** the elevated batch (upgrade the installed service; zapret/GoodbyeDPI profiles, Lab and the wizard's "whole computer" path); then Phase 5 (installer bundling GUI + service, update notifications).
+
+### 2026-09-30 (5) — Phase 3 + Strategy Lab, repo docs
+- **Done:** zapret/GoodbyeDPI packages and policies, system-wide domain lists, `launch.rs` shared by profiles and the Lab, Strategy Lab (service `lab.rs`, GUI `lab.slint`/`labui.rs`), ISP detection, online lists with honest labels, pack probes, `DPIMNGR_PIPE` for dev next to the installed service. README in English/Turkish/Russian, CONTRIBUTING.md; `CLAUDE.md` untracked (kept locally, ignored).
+- **Verified (dev service, unelevated):** ISP detected as Superonline AS34984 TR; 72 ByeDPI strategies (12 standard + 60 community); baseline 3/8 Discord probes, 25 strategies 8/8 (fastest ~171 ms), run takes ~40 s; "Use" opens a prefilled per-app profile. Argument policy tests for all three engines pass.
+- **Not verified yet:** anything that needs admin (winws/GoodbyeDPI profiles and Lab runs) — the UAC prompt for upgrading the installed service was cancelled; the installed service is still the previous build.
+- **Next:** one elevated session: upgrade service, install zapret + GoodbyeDPI, run a winws and a GoodbyeDPI profile and a Lab run for each; then Phase 4b (wizard + Easy mode).
+
+### 2026-09-30 (4) — Daily-driver readiness: real service, security, autostart
+- **Done:**
+  - `core::argpolicy`: ByeDPI option table parsed like getopt (unique long prefixes, `--opt=value`, clustered short flags). Blocks `--cache-dump <path>` (file write as SYSTEM), file forms of `-H/-j/-l` outside `<data>/lists` (arbitrary file read, fake-data would even send the file to the network), `-i/-p` (would expose the proxy on the LAN), unknown options and stray arguments. Checked on save and again at launch.
+  - `acl.rs`: `takeown /A /R` + `icacls` with SIDs → SYSTEM/Admins full, Users RX, OWNER RIGHTS limited to read-control, inheritance from ProgramData removed, children reset. Applied at install and on every service start.
+  - `install` copies the service to `C:\Program Files\dpimngr`, stops/upgrades an existing service, sets recovery (restart after 5 s ×3).
+  - `firewall.rs`: inbound allow rule for the installed `ProxiFyre.exe`, rewritten when the path changes, removed with the package.
+  - GUI Settings → Startup: "Start dpimngr when I sign in" / "Start minimized to the tray" (HKCU Run, `--minimized` keeps the window hidden).
+- **Verified:**
+  - Elevated `install` (UAC) → service Running/Automatic from Program Files; `icacls` shows the intended ACL; as the normal user, creating a file or folder in `C:\ProgramData\dpimngr` → access denied; unelevated IPC `hello` to the SYSTEM service works.
+  - Engines installed into ProgramData by the service; per-app profile for `curl` under SYSTEM: first attempt timed out. Root cause: no firewall rule for the new ProxiFyre path and session 0 cannot show the allow prompt (rules existed only for paths the user had approved interactively). After adding `firewall.rs` and upgrading: `example.com` 200, `discord.com` 200 through the SYSTEM ProxiFyre.
+  - Autostart toggles via UI Automation wrote/removed the Run value correctly (restored afterwards); `--minimized` launch keeps the main window hidden.
+  - argpolicy unit tests (allowed strategies, dangerous forms incl. prefixes/clusters/`..` escape).
+- **State left behind:** the real service is installed and running (ByeDPI + ProxiFyre installed in ProgramData, no profiles). The dev service is stopped (same pipe name).
+- **Next:** Phase 3 (zapret winws / GoodbyeDPI system-wide) or Phase 4 (Strategy Lab). Packaging (single installer for GUI + service) is part of Phase 5.
+
+### 2026-09-30 (3) — Engine watchdog (fix for Discord ping spikes)
+- **Done:**
+  - `Profile.reliability { auto_restart (default on), restart_every_hours }`, `Routing::PerApp.tcp_only`, `ProfileStatus::Running.restarts` (all `serde(default)`, old configs load unchanged).
+  - `run_process` is now a restart loop: crash → restart with 1 s, 2 s, … backoff, give up after 5 crashes in 5 min; stall → kill + respawn; scheduled restart. ProxiFyre is not touched on restart (same port).
+  - `health.rs`: every 20 s a SOCKS5 greeting to the engine port; 2 failures in a row → restart. 30 s grace after each start.
+  - Engine output: identical lines are collapsed ("previous line repeated N×"); `pool is full` is also treated as a stall signal.
+  - ByeDPI gets `-c 4096` unless the user sets `-c`/`--max-conn`.
+  - Editor "Reliability" section; card shows "· N auto-restarts".
+- **Verified:**
+  - ciadpi command lines: user profile without `-c` → `... -p 1080 -c 4096`; test profile with `-c 8` kept as is.
+  - Stall reproduced with `-c 8` + 20 slow concurrent downloads: health probe failed twice (`os error 10053`, ciadpi closes accepted sockets when full) → engine restarted after 28 s, new PID, `restarts=1`; afterwards `example.com` through the proxy → 200.
+  - Found why log-based detection alone is unreliable: ciadpi's stderr is block-buffered (4 KB) when piped. Running it directly with a tiny pool and killing it produced 0 bytes of stderr; the user's ByeDPI Manager log shows the same 4 KB bursts ending in a truncated `pool is f`.
+  - `cargo clippy --all-targets` clean; tests pass (arg splitter, versions, assets, `-c` detection).
+- **Noticed:** the user's "test1" profile has empty strategy arguments, so it proxies without bypassing (Discord fails); needs e.g. `-r 1+s`.
+- **Next:** elevated Windows service install test, Start with Windows, argument allowlist; then Phase 3 (zapret winws / GoodbyeDPI) or Phase 4 (Strategy Lab) depending on the user's priority.
+
+### 2026-09-30 (2) — Phase 2: packages, per-app routing, picker, tray
+- **Done:** `core::packages` catalog; service `packages.rs` (GitHub API, streamed download, digest check, zip-slip-safe extract, `installed.json`, keep previous version), `perapp.rs` (ProxiFyre router), `job.rs` (job object); GUI Engines page, app picker (`apps.rs`, `picker.rs`), tray profile toggles, hotkey, local-time logs, accessibility labels.
+- **Verified:**
+  - Installed ByeDPI v0.17.3 and ProxiFyre v2.6.1 over IPC; SHA-256 matched GitHub digests; driver 3.6.1.1 detected, v3.6.2 flagged as update.
+  - Per-app profile routing `curl`: curl's TLS connection seen on ciadpi (`Get-NetTCPConnection`), `curl https://discord.com` → 200, while unrouted PowerShell timed out (Discord is DPI-blocked here) → routing is selective.
+  - Toggled the profile from the GUI via UI Automation (`tools/uia.ps1`): ciadpi + ProxiFyre start, card shows Running; toggling off stops both.
+  - Hard-killing the service now kills ciadpi and ProxiFyre (job object). Before the fix they were orphaned.
+  - Remove guard: "ByeDPI is in use by: test1 — stop those profiles first".
+  - Release: GUI 34 MB working set with the icon cache warm, service 20 MB; exes 12.6 MB / 2.9 MB.
+- **Diagnosed user issue** (`bdmanager_27-09-2026.log`, ByeDPI Manager): every few hours Discord ping jumps to ~5000 ms until ByeDPI is restarted. The log shows a burst of `recv: 10054` (connection resets) followed by hundreds of `add_event: pool is full`. That message comes from ciadpi's `conev.c` when its event pool reaches `--max-conn` (default 512 events ≈ 256 proxied connections). New connections then stall until restart. Cause is ciadpi's connection limit plus dead connections piling up, not ByeDPI Manager.
+- **Next (planned fix for the above):**
+  1. Default `-c/--max-conn` to a higher value (e.g. 4096) for ByeDPI profiles, overridable.
+  2. Watchdog in the supervisor: detect `pool is full` in engine output (and optionally a periodic SOCKS probe with latency threshold) → auto-restart only the engine (ProxiFyre keeps pointing at the same port, so the gap is sub-second). Rate-limit restarts and log them.
+  3. Optional per-profile scheduled restart (every N hours) and a "TCP only" option for per-app routing to keep UDP flows out of ciadpi.
+  4. Then: elevated service install test, Start-with-Windows, argument allowlist.
+- **Dev notes:** `DPIMNGR_DEBUG_PAGE=engines|logs|editor|picker` (+ `DPIMNGR_DEBUG_PROFILE=<id>`) opens the debug GUI on a page for screenshots. `tools/ipc.ps1` sends raw IPC requests; `tools/uia.ps1` clicks/toggles via UI Automation.
+
+### 2026-09-30 — Phase 1 scaffolding
+- Installed Rust 1.98.1 (rustup) and VS 2022 C++ Build Tools via winget.
+- Built the workspace: `core` (model, config, paths, IPC), `service` (supervisor, pipe server, Windows service glue), `gui` (Slint Fluent UI, tray).
+- **Verified:**
+  - Started the service with `.dev-data`, drove it over the named pipe from PowerShell: `hello` → `start_profile` → ByeDPI (`ciadpi.exe -i 127.0.0.1 -p 1090 -r 1+s`) listening; `curl --socks5-hostname 127.0.0.1:1090 https://discord.com` → HTTP 200 in 0.36 s; `stop_profile` → engine exits, status/log events are pushed.
+  - GUI connects to the service and shows the profile card; screenshots checked.
+  - Memory: GUI 26 MB working set (release, software renderer); service ~13 MB.
+  - `cargo test -p dpimngr-core` passes (arg splitter).
+- **Not yet verified:** toggling from the GUI and the profile editor save flow by clicking (only via IPC); Windows service install; tray behaviour.
+- **Next:** test the service install elevated, then Phase 2 (engine downloader + ProxiFyre per-app routing).

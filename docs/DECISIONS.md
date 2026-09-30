@@ -1,0 +1,184 @@
+# Decisions
+
+Numbered, never renumbered. Superseded decisions stay, marked **Superseded by #N**.
+
+## 1. Rust + Slint for the app (2026-09-30)
+Wanted: native feel, small footprint, cross-platform. Compared Tauri 2 (WebView2, 50–90 MB RAM when visible),
+Qt 6/QML (30–60 MB, 40 MB+ distribution), Avalonia (60–120 MB). Slint renders natively, is small and has a Fluent style.
+
+## 2. Privileged service + unprivileged GUI (2026-09-30)
+System-wide engines (WinDivert, NFQUEUE, pf) need admin/root. A service avoids a UAC prompt on every launch,
+lets profiles keep running when the GUI is closed, and maps cleanly to systemd/launchd for Linux/macOS.
+
+## 3. Line-delimited JSON over named pipe / Unix socket (2026-09-30)
+Human-readable, trivial to debug from PowerShell or `socat`, no extra dependencies. Volume is tiny.
+
+## 4. Slint software renderer instead of femtovg/OpenGL (2026-09-30)
+Measured on Windows 11, release build, dashboard visible:
+femtovg → 127 MB working set / 196 MB private; software → 26 MB working set / 8 MB private.
+The UI is simple enough that software rendering is smooth. Revisit only if animations stutter.
+
+## 5. Update policy: notify, then one-click install (2026-09-30)
+Engine and strategy updates show a notification with changelog. Auto-install is an opt-in setting.
+
+## 6. English-only UI for now, i18n-ready (2026-09-30)
+All Slint strings go through `@tr()` (gettext). Turkish/Russian can be added as `.po` files later.
+
+## 7. Engine binaries are downloaded at runtime, not bundled (2026-09-30)
+Keeps the installer small, lets engines update independently, and avoids mixing upstream licenses (MIT/GPL) into our distribution.
+
+## 8. One shared ProxiFyre for all per-app profiles (2026-09-30)
+ProxiFyre drives a single kernel filter, and its config already supports several rules (one per SOCKS endpoint).
+Running one instance per profile would fight over the driver. The service regenerates `app-config.json` and
+restarts ProxiFyre whenever the set of running per-app profiles changes; engine binaries are always in `excludes`.
+
+## 9. Refuse unverified downloads (2026-09-30)
+Packages are installed only if the GitHub release asset carries a `sha256:` digest and the download matches it.
+No digest → no install. Files are extracted into a staging dir, zip entries with unsafe paths abort the install.
+
+## 10. Windows job object for engine processes (2026-09-30)
+`kill_on_drop` only runs on a clean shutdown. Engines are assigned to a job with KILL_ON_JOB_CLOSE so the kernel
+terminates them if the service crashes or is killed. Verified: hard-killing the service now also ends ciadpi/ProxiFyre.
+
+## 11. Store the executable name for per-app rules (2026-09-30)
+ProxiFyre matches a bare name against the whole executable name and a value with a slash as a path substring.
+The picker stores the exe stem (e.g. `Discord`) so rules survive app updates that change the install path;
+Squirrel shortcuts (`Update.exe --processStart X.exe`) are resolved to the real executable.
+
+## 12. Active health probe instead of trusting engine logs (2026-09-30)
+ByeDPI's `pool is full` would be the natural stall signal, but its stderr is block-buffered (4 KB) when piped, so the
+line arrives only after ~170 rejected connections, or never. The service therefore probes each ByeDPI port with a
+SOCKS5 greeting every 20 s and restarts the engine after two failures; log markers remain a secondary signal.
+The connection limit is also raised to 4096 by default (Windows build uses WSAPoll, no FD_SETSIZE cap).
+
+## 13. Argument allowlist per engine (2026-09-30)
+Profiles reach a SYSTEM process from any local user, so arguments are parsed like the engine's getopt and every option
+is classified (allow / managed by dpimngr / inline-or-lists-dir file / stdout only). Unknown options are rejected rather
+than passed through, so a new engine release cannot silently add an unsafe flag.
+
+## 14. Service data dir ACL via takeown/icacls with SIDs (2026-09-30)
+ProgramData lets users create files in new subfolders, which would let them plant `installed.json` and get code run as
+SYSTEM. The service resets the tree (owner Administrators, no inherited or explicit user write) at install and on every
+start. The built-in tools handle ownership privileges; SIDs avoid localisation issues (Turkish "Kullanıcılar").
+
+## 15. The service manages ProxiFyre's firewall rule (2026-09-30)
+ProxiFyre's redirected connections count as inbound. Interactive runs get a firewall prompt, the session-0 service does not,
+so traffic silently failed. One named inbound rule scoped to the installed ProxiFyre.exe is (re)written before start.
+
+## 16. zapret from the official releases, not a third-party bundle (2026-09-30)
+Community bundles (e.g. zapret-discord-youtube) are popular, but winws runs as SYSTEM, so binaries come from
+`bol-van/zapret` releases only. The zip ships every platform; the installer keeps just the Windows binaries and
+`files/fake`. Ideas from community presets are adapted into our own strategy set using `{fake}` payloads.
+
+## 17. Pinned SHA-256 for releases without GitHub digests (2026-09-30)
+GoodbyeDPI 0.2.2 (2022) predates GitHub asset digests. Its hash is pinned in the catalog; any other asset without a
+digest is still refused (DECISIONS #9 stands).
+
+## 18. Online strategy lists are fetched, labelled and credited, never bundled (2026-09-30)
+ByeDPI Manager's list is GPL-3.0 and SplitWire-Turkey's presets are MIT; both are downloaded at runtime when the user
+presses "Update online lists" and cached in the data dir. The UI never presents a source as an engine: strategies are
+labelled "dpimngr standard set", "Community list" or "Turkey ISP presets", and the origin repo is named.
+
+## 19. ISP lookup is opt-in (2026-09-30)
+Detecting the provider sends the public IP to a third party (`ipwho.is`), so it only happens when the user presses
+"Detect my ISP". Known ISPs are matched by ASN, then by name, to highlight presets made for them.
+
+## 20. Lab probes a reachable subset of each domain pack (2026-09-30)
+Hostlists need apex domains such as `discordapp.net`, but several have no A record, so requesting them always fails
+and made every strategy look worse (best was 9/10). Each pack now has separate `probes` that answer HTTPS on `/`.
+
+## 21. Connection monitor learns each line's normal latency (2026-09-30)
+A fixed threshold would be wrong for most users (Discord answers in 150 ms on one line and 600 ms on another). The monitor
+uses the median of the last 10 healthy checks as "usual", calls a check bad when most sites fail or latency exceeds
+max(3× usual, usual + 500 ms), confirms after 30 s, and only then acts. Two restarts in 30 minutes without improvement
+stop the restarts and advise the Strategy Lab, so a strategy that stopped working does not cause a restart loop.
+
+## 22. Own AppUserModelID for notifications (2026-09-30)
+Unpackaged apps must borrow an identity or register one. Borrowing PowerShell's made toasts look like they came from
+PowerShell. The GUI registers `dpimngr.app` under HKCU\Software\Classes\AppUserModelId (name + icon, no admin) and the
+installer's Start menu shortcut carries the same ID.
+
+## 23. Inno Setup for the installer, GitHub Actions for releases (2026-09-30)
+Inno Setup is small, scriptable, preinstalled on GitHub's Windows runners and supports AppUserModelID shortcuts and
+multilingual setup pages. Releases are created only from `v*` tags whose version matches Cargo.toml.
+
+## 24. The Unix socket is open to all local users (2026-09-30)
+Same trust model as the Windows pipe (authenticated users may connect): the socket is 0666 and every request is
+validated as if it came from an unprivileged user. A `dpimngr` group would add an install step per user for little gain,
+since the service already treats clients as untrusted. Binding refuses to replace a socket that still answers.
+
+## 25. Linux engines are tied to the service twice (2026-09-30)
+`PR_SET_PDEATHSIG(SIGKILL)` kills an engine when the service dies, including in `run` mode without systemd. It fires on
+the death of the forking *thread*, which is fine because engines are spawned from tokio worker threads that live as long
+as the runtime. Under systemd `KillMode=control-group` covers the same case independently.
+
+## 26. nfqws gets its traffic from one service-owned nftables table (2026-09-30)
+`inet dpimngr` exists only while an nfqws engine runs (profile or Lab test) and is removed at service start. Only the first
+packets of a connection are queued (`ct original packets 1-6`), packets nfqws sent itself are skipped by its mark
+`0x40000000`, and `queue ... bypass` lets traffic flow if nfqws is gone, so a crash never cuts the network. Ports come from
+the strategy's `--filter-tcp/--filter-udp` (default 80,443 / 443) and are parsed as numbers before they reach the root
+firewall script. The queue number and mark are managed options users cannot set.
+
+## 27. Linux strategies reuse the winws set (2026-09-30)
+nfqws and winws share the desync engine; only the WinDivert `--wf-*` filters differ, and on Linux nftables does that job.
+`catalog::adapt_args` strips them, so one tested set serves both OSes instead of two copies drifting apart.
+
+## 28. Renamed to DPIMech; 0.1.x installs migrate on upgrade (2026-09-30)
+The working name "dpimngr" became **DPIMech**. Everything a user or the OS sees changed: executables (`dpimech`,
+`dpimech-service`), service/unit `dpimech`, pipe `\\.\pipe\dpimech`, socket `/run/dpimech/dpimech.sock`, data dirs
+`C:\ProgramData\dpimech` / `/var/lib/dpimech`, AppUserModelID `dpimech.app`, nftables table `inet dpimech`. `install`
+removes the old `dpimngr` service, binary, firewall rule and nftables table and *moves* the old data dir (profiles and
+verified engines survive; a custom `--data-dir` is left alone). The GUI copies old prefs and re-creates the autostart
+entry. The installer keeps the same AppId, so Windows shows one app, but sets `UsePreviousAppDir=no` and deletes the old
+Program Files folder and shortcuts. The GitHub repository keeps its name; GitHub redirects if it is ever renamed.
+
+## 29. Linux ships as .deb, .rpm and AppImage; no Flatpak for now (2026-09-30)
+deb and rpm install the service as a packaged systemd unit (`/usr/lib/dpimech`, unit text printed by
+`dpimech-service unit`, so packages and `install` cannot drift) and remove a source install that would shadow it.
+The AppImage carries both binaries; the window installs the service through pkexec after copying the service
+binary out of the FUSE mount (root cannot read another user's FUSE mount). Packages are built on Ubuntu 22.04 so
+they run on newer glibc. Flatpak is left out: its sandbox is built to keep apps away from exactly what DPIMech
+needs (a root service, nftables, a socket in /run), so it would need `flatpak-spawn --host` — a sandbox escape
+that also rules out Flathub.
+
+## 30. Problem reports are reviewed by the user and sent by the user (2026-09-30)
+The report (version, OS, service, engines, profiles, recent log) is shown in full before anything is sent, and
+leaves only through the user's browser (GitHub issue) or mail program (`mailto:` to the support address). Links
+are length-limited, so they carry the summary plus the newest log lines that fit; the full report is saved next
+to the log files for attaching. DPIMech itself never uploads anything.
+
+## 31. Linux per-app routing: cgroups + nftables + a relay in the service (2026-09-30)
+nftables cannot match a process name, but it can match a socket's cgroup. The service moves the chosen apps into a
+cgroup per profile and redirects their new TCP connections to a relay that forwards them through the engine's SOCKS
+port (like ProxiFyre does on Windows), so the engines stay unmodified and the health probe and connection monitor keep
+working. Processes are found by a 1 s /proc scan, so the very first connection of an app that finishes in under a
+second can go direct; long-running apps (Discord, browsers) are caught at start. Only TCP is routed. The same relay
+gives tpws a whole-computer mode by redirecting all TCP to the strategy's ports except the service's own cgroup.
+
+## 32. macOS starts as local-proxy only (2026-09-30)
+macOS has neither WinDivert nor NFQUEUE; a whole-computer mode needs `pf` redirection plus tpws, and per-app needs a
+network extension. The first macOS build therefore offers the local SOCKS proxy (tpws, universal binary from zapret's
+own release), a launchd service and an unsigned universal `.dmg`. The wizard hides options an OS cannot do.
+
+## 33. Licence: GPL-3.0-or-later (2026-09-30)
+- **Decision:** DPIMech is licensed under the GNU GPL v3.0 or later (`LICENSE`, `license` in the workspace manifest, rpm/deb metadata).
+- **Why:** it keeps forks open, so nobody can repackage the app as a closed or paid "unblocker" (a real risk for this kind of tool).
+  It also matches Slint's GPLv3 option, so the app does not depend on the terms of Slint's royalty-free licence. All Rust dependencies
+  (MIT / Apache-2.0 / BSD / Zlib / MPL) are GPL-3 compatible.
+- **Engines are not affected:** ByeDPI, zapret, GoodbyeDPI, ProxiFyre etc. are separate programs downloaded at run time and started as
+  processes, not linked, so each keeps its own licence.
+
+## 34. Profile shortcuts run a separate launcher process (2026-09-30)
+- **Decision:** a shortcut runs `dpimech --launch <profile> [--open <app>]`. That process shows a small
+  frameless window (bottom-right on Windows), starts the profile over IPC, waits until it runs (polling,
+  60 s limit), opens the app, shows "… is on" and closes. It does not take the single-instance lock, so
+  it works whether or not the main window / tray is running.
+- **Why a window, not only a notification:** starting can take a few seconds and can fail; a window can
+  show progress and offer "Open DPIMech" on errors, and it disappears by itself on success.
+- **What gets opened:** the app's Start Menu shortcut / .desktop entry when there is one (survives app
+  updates that move the .exe, e.g. Discord's versioned folders), otherwise the executable. The target is
+  stored in the shortcut itself; nothing new is sent to the service, which stays unaware of shortcuts.
+- **How the files are made:** Windows .lnk through PowerShell's WScript.Shell (values passed in
+  environment variables, never inside the script), icon as a PNG-in-ICO in `%LOCALAPPDATA%\DPIMech\shortcuts`;
+  Linux .desktop in the applications dir and/or the XDG desktop dir (marked trusted for GNOME); macOS a tiny
+  .app bundle with a shell script and an .icns. Icon files carry a timestamp because shells cache icons by path.

@@ -1,0 +1,354 @@
+import { Palette, Button, ListView, GroupBox, Switch, AboutSlint, ScrollView, ComboBox } from "std-widgets.slint";
+import { Theme, Icons } from "theme.slint";
+import { ProfileItem, LogItem, ProfileCard, EmptyState, PageHeader } from "components.slint";
+
+export component DashboardPage inherits VerticalLayout {
+    in property <[ProfileItem]> profiles;
+    in property <bool> easy-mode;
+    callback new-profile;
+    callback quick-setup;
+    callback open-profile(string);
+    callback toggle-profile(string, bool);
+    callback check-profile(string);
+    callback shortcut-profile(string);
+
+    padding: Theme.page-padding;
+    spacing: 20px;
+
+    PageHeader {
+        title: @tr("Profiles");
+        subtitle: @tr("Each profile runs one engine with one strategy.");
+        // The wizard is the quick way to a working profile; "New profile" is the manual one.
+        Button {
+            text: easy-mode ? @tr("Set up something new") : @tr("Quick setup");
+            primary: easy-mode;
+            clicked => { root.quick-setup(); }
+        }
+        if !easy-mode: Button {
+            text: @tr("New profile");
+            primary: true;
+            clicked => { root.new-profile(); }
+        }
+    }
+
+    if profiles.length == 0: EmptyState {
+        icon: Icons.shield;
+        title: @tr("No profiles yet");
+        subtitle: @tr("Create a profile to pick an engine, a strategy and what to route through it.");
+    }
+
+    if profiles.length > 0: Flickable {
+        property <length> gap: 12px;
+        property <length> card-h: 150px;
+        property <int> cols: max(1, floor((self.width + gap) / (300px + gap)));
+        property <length> card-w: (self.width - (cols - 1) * gap) / cols;
+        content-height: ceil(profiles.length / cols) * (card-h + gap);
+
+        for p[i] in profiles: ProfileCard {
+            item: p;
+            x: mod(i, cols) * (card-w + gap);
+            y: floor(i / cols) * (card-h + gap);
+            width: card-w;
+            height: card-h;
+            clicked => { root.open-profile(p.id); }
+            toggled(on) => { root.toggle-profile(p.id, on); }
+            check => { root.check-profile(p.id); }
+            shortcut => { root.shortcut-profile(p.id); }
+        }
+    }
+}
+
+export component LogsPage inherits VerticalLayout {
+    in property <[LogItem]> logs;
+    callback clear;
+
+    padding: Theme.page-padding;
+    spacing: 16px;
+
+    PageHeader {
+        title: @tr("Logs");
+        subtitle: @tr("Newest first. Engine output and service events.");
+        Button { text: @tr("Clear"); clicked => { root.clear(); } }
+    }
+
+    Rectangle {
+        border-radius: Theme.radius;
+        border-width: 1px;
+        border-color: Theme.border;
+        background: Theme.card;
+        clip: true;
+
+        ListView {
+            for line in logs: HorizontalLayout {
+                padding-left: 12px;
+                padding-right: 12px;
+                padding-top: 3px;
+                padding-bottom: 3px;
+                spacing: 10px;
+                Text { text: line.time; font-family: Theme.mono; font-size: 12px; color: Theme.muted; }
+                Text {
+                    text: line.source;
+                    font-family: Theme.mono;
+                    font-size: 12px;
+                    width: 110px;
+                    overflow: elide;
+                    color: line.level == "error" ? Theme.error : line.level == "warn" ? Theme.starting : Palette.accent-background;
+                }
+                Text {
+                    text: line.text;
+                    font-family: Theme.mono;
+                    font-size: 12px;
+                    wrap: word-wrap;
+                    horizontal-stretch: 1;
+                }
+            }
+        }
+    }
+}
+
+export component PlaceholderPage inherits VerticalLayout {
+    in property <string> title;
+    in property <image> icon;
+    in property <string> message;
+    padding: Theme.page-padding;
+    PageHeader { title: root.title; }
+    EmptyState { icon: root.icon; title: @tr("Coming soon"); subtitle: root.message; }
+}
+
+export component SettingsPage inherits VerticalLayout {
+    in property <bool> service-connected;
+    in property <string> service-info;
+    in property <string> os-name;
+    in property <bool> start-with-windows;
+    in property <bool> start-minimized;
+    in property <bool> easy-mode;
+    callback set-autostart(bool, bool); // enabled, minimized
+    in property <[string]> language-names;
+    in property <int> language-index;
+    callback set-language(int);
+    in property <bool> log-to-file;
+    in property <string> log-dir;
+    callback set-log-to-file(bool);
+    callback choose-log-dir;
+    callback open-log-dir;
+    callback open-link(string);
+    callback report-problem;
+    callback set-easy-mode(bool);
+    callback open-wizard;
+    callback install-service;
+    callback back;
+    in property <string> app-version;
+    in property <string> app-update-text;
+    in property <bool> app-update-available;
+    callback check-app-update;
+    callback download-app-update;
+
+    padding: Theme.page-padding;
+    spacing: 20px;
+
+    PageHeader {
+        title: @tr("Settings");
+        if easy-mode: Button {
+            text: @tr("Back");
+            clicked => { root.back(); }
+        }
+    }
+
+    // Header stays put; the groups scroll (the page is taller than a small window).
+    ScrollView {
+        VerticalLayout {
+            spacing: 20px;
+            padding-right: 12px; // room for the scrollbar
+            alignment: start;
+            GroupBox {
+                title: @tr("Interface");
+                GridLayout {
+                    spacing-horizontal: 16px;
+                    spacing-vertical: 12px;
+                    Row {
+                        VerticalLayout {
+                            horizontal-stretch: 1;
+                            Text { text: @tr("Easy mode"); }
+                            Text {
+                                text: @tr("Fewer menus; the setup wizard does the work. Turn off for engines, the Strategy Lab and logs.");
+                                font-size: 12px;
+                                color: Theme.muted;
+                                wrap: word-wrap;
+                            }
+                        }
+                        Switch {
+                            accessible-label: @tr("Easy mode");
+                            checked: easy-mode;
+                            toggled => { root.set-easy-mode(self.checked); }
+                        }
+                    }
+                    Row {
+                        Text { text: @tr("Language"); vertical-alignment: center; }
+                        ComboBox {
+                            model: root.language-names;
+                            current-index: root.language-index;
+                            selected => { root.set-language(self.current-index); }
+                        }
+                    }
+                    Row {
+                        Text { text: @tr("Run the setup wizard again"); vertical-alignment: center; }
+                        Button { text: @tr("Open wizard"); clicked => { root.open-wizard(); } }
+                    }
+                }
+            }
+
+            GroupBox {
+                title: @tr("Startup");
+                GridLayout {
+                    spacing-horizontal: 16px;
+                    spacing-vertical: 12px;
+                    Row {
+                        VerticalLayout {
+                            horizontal-stretch: 1;
+                            Text { text: @tr("Start DPIMech when I sign in"); }
+                            Text {
+                                text: @tr("The background service always starts with the computer; this brings back the tray icon.");
+                                font-size: 12px;
+                                color: Theme.muted;
+                                wrap: word-wrap;
+                            }
+                        }
+                        Switch {
+                            accessible-label: @tr("Start DPIMech when I sign in");
+                            checked: start-with-windows;
+                            toggled => { root.set-autostart(self.checked, start-minimized); }
+                        }
+                    }
+                    Row {
+                        Text { text: @tr("Start minimized to the tray"); vertical-alignment: center; }
+                        Switch {
+                            accessible-label: @tr("Start minimized to the tray");
+                            enabled: start-with-windows;
+                            checked: start-minimized;
+                            toggled => { root.set-autostart(start-with-windows, self.checked); }
+                        }
+                    }
+                }
+            }
+
+            GroupBox {
+                title: @tr("Log files");
+                GridLayout {
+                    spacing-horizontal: 16px;
+                    spacing-vertical: 12px;
+                    Row {
+                        VerticalLayout {
+                            horizontal-stretch: 1;
+                            Text { text: @tr("Save the log to daily files"); }
+                            Text {
+                                text: @tr("One file per day while DPIMech is open; files older than 14 days are deleted. Useful when asking for help.");
+                                font-size: 12px;
+                                color: Theme.muted;
+                                wrap: word-wrap;
+                            }
+                        }
+                        Switch {
+                            accessible-label: @tr("Save the log to daily files");
+                            checked: log-to-file;
+                            toggled => { root.set-log-to-file(self.checked); }
+                        }
+                    }
+                    Row {
+                        Text {
+                            text: log-dir;
+                            color: Theme.muted;
+                            font-size: 12px;
+                            wrap: word-wrap;
+                            vertical-alignment: center;
+                            horizontal-stretch: 1;
+                        }
+                        HorizontalLayout {
+                            spacing: 8px;
+                            Button { text: @tr("Change folder…"); clicked => { root.choose-log-dir(); } }
+                            Button { text: @tr("Open folder"); clicked => { root.open-log-dir(); } }
+                        }
+                    }
+                }
+            }
+
+            GroupBox {
+                title: @tr("Background service");
+                VerticalLayout {
+                    spacing: 6px;
+                    Text { text: service-connected ? @tr("Connected") : @tr("Not running"); color: service-connected ? Theme.running : Theme.error; }
+                    Text { text: service-info; color: Theme.muted; wrap: word-wrap; }
+                    if !service-connected: HorizontalLayout {
+                        alignment: start;
+                        Button { text: @tr("Install the service"); primary: true; clicked => { root.install-service(); } }
+                    }
+                }
+            }
+
+            GroupBox {
+                title: @tr("About");
+                VerticalLayout {
+                    spacing: 6px;
+                    Text { text: "DPIMech " + app-version; font-weight: 600; }
+                    Text {
+                        text: @tr("Opens sites and apps that your internet provider blocks by running well-known open-source DPI bypass tools on your computer. It is not a VPN: your traffic still goes straight to the sites, nothing is sent through another server.");
+                        wrap: word-wrap;
+                        font-size: 12px;
+                    }
+                    Text { text: @tr("Platform: {}", os-name); color: Theme.muted; }
+                    Text { text: @tr("Free software under the GNU GPL v3 or later."); color: Theme.muted; wrap: word-wrap; }
+                    HorizontalLayout {
+                        spacing: 8px;
+                        alignment: start;
+                        Button { text: @tr("Source code"); clicked => { root.open-link("https://github.com/halilkhrmn/dpimech"); } }
+                        Button { text: @tr("Report a problem"); clicked => { root.report-problem(); } }
+                    }
+                    if app-update-text != "": Text { text: app-update-text; wrap: word-wrap; color: app-update-available ? Palette.accent-background : Theme.muted; }
+                    HorizontalLayout {
+                        spacing: 8px;
+                        alignment: start;
+                        Button { text: @tr("Check for updates"); clicked => { root.check-app-update(); } }
+                        if app-update-available: Button { text: @tr("Download"); primary: true; clicked => { root.download-app-update(); } }
+                    }
+                }
+            }
+
+            GroupBox {
+                title: @tr("Thanks");
+                VerticalLayout {
+                    spacing: 6px;
+                    Text {
+                        text: @tr("DPIMech only manages these projects; the real work is theirs.");
+                        wrap: word-wrap;
+                        font-size: 12px;
+                        color: Theme.muted;
+                    }
+                    for c in [
+                        { name: "ByeDPI", by: "hufrea", url: "https://github.com/hufrea/byedpi" },
+                        { name: "zapret", by: "bol-van", url: "https://github.com/bol-van/zapret" },
+                        { name: "GoodbyeDPI", by: "ValdikSS", url: "https://github.com/ValdikSS/GoodbyeDPI" },
+                        { name: "ProxiFyre · Windows Packet Filter", by: "wiresock", url: "https://github.com/wiresock/proxifyre" },
+                        { name: "WinDivert", by: "basil00", url: "https://github.com/basil00/WinDivert" },
+                        { name: "ByeDPI Manager (strategy list)", by: "romanvht", url: "https://github.com/romanvht/ByeDPIManager" },
+                        { name: "SplitWire-Turkey (ISP presets)", by: "cagritaskn", url: "https://github.com/cagritaskn/SplitWire-Turkey" },
+                        { name: "Fluent UI System Icons", by: "Microsoft", url: "https://github.com/microsoft/fluentui-system-icons" },
+                    ]: HorizontalLayout {
+                        spacing: 6px;
+                        Text {
+                            text: c.name;
+                            color: link-touch.has-hover ? Palette.accent-background.darker(0.2) : Palette.accent-background;
+                            link-touch := TouchArea { mouse-cursor: pointer; clicked => { root.open-link(c.url); } }
+                            accessible-role: button;
+                            accessible-label: c.name;
+                            accessible-action-default => { root.open-link(c.url); }
+                        }
+                        Text { text: "— " + c.by; color: Theme.muted; horizontal-stretch: 1; }
+                    }
+                    HorizontalLayout {
+                        alignment: start;
+                        AboutSlint { }
+                    }
+                }
+            }
+        }
+    }
+}

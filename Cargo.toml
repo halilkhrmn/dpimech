@@ -1,0 +1,38 @@
+[workspace]
+resolver = "3"
+members = ["crates/core", "crates/service", "crates/gui"]
+
+[workspace.package]
+version = "0.2.0"
+edition = "2024"
+rust-version = "1.85"
+license = "GPL-3.0-or-later"
+repository = "https://github.com/halilkhrmn/dpimech"
+
+[workspace.dependencies]
+dpimech-core = { path = "crates/core" }
+
+anyhow = "1.0"
+directories = "6.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+# Software renderer only: GPU (femtovg) costs ~90 MB extra RAM through the graphics driver.
+slint = { version = "1.18", default-features = false, features = ["std", "compat-1-2", "backend-winit", "renderer-software", "accessibility"] }
+slint-build = "1.18"
+thiserror = "2.0"
+tokio = { version = "1.53", features = ["rt-multi-thread", "macros", "sync", "time", "io-util", "net", "process", "signal"] }
+toml = "1.1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+# 0.24 shares muda 0.19 with Slint's winit backend; two muda versions define the same
+# Objective-C class and break the macOS link (LTO). Move together with Slint.
+tray-icon = "0.24.2"
+uuid = { version = "1.26", features = ["v4", "serde"] }
+windows-service = "0.8"
+windows-sys = { version = "0.61", features = ["Win32_Foundation", "Win32_Security", "Win32_Security_Authorization", "Win32_System_Threading", "Win32_UI_Shell", "Win32_Graphics_Gdi", "Win32_System_Com", "Win32_System_Diagnostics_ToolHelp", "Win32_UI_WindowsAndMessaging", "Win32_System_JobObjects"] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+strip = true

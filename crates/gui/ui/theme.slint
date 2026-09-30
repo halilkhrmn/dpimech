@@ -1,0 +1,42 @@
+import { Palette } from "std-widgets.slint";
+
+// Fluent UI System Icons, embedded as SVG so every OS shows the same set (icons/README.md).
+export global Icons {
+    out property <image> home: @image-url("icons/home.svg");
+    out property <image> lab: @image-url("icons/lab.svg");
+    out property <image> engines: @image-url("icons/engines.svg");
+    out property <image> logs: @image-url("icons/logs.svg");
+    out property <image> settings: @image-url("icons/settings.svg");
+    out property <image> add: @image-url("icons/add.svg");
+    out property <image> back: @image-url("icons/back.svg");
+    out property <image> delete: @image-url("icons/delete.svg");
+    out property <image> warning: @image-url("icons/warning.svg");
+    out property <image> shield: @image-url("icons/shield.svg");
+    out property <image> refresh: @image-url("icons/refresh.svg");
+    out property <image> info: @image-url("icons/info.svg");
+    out property <image> done: @image-url("icons/done.svg");
+    out property <image> more: @image-url("icons/more.svg");
+}
+
+export global Theme {
+    out property <length> radius: 8px;
+    out property <length> page-padding: 24px;
+    out property <color> muted: Palette.foreground.transparentize(0.4);
+    out property <color> card: Palette.color-scheme == ColorScheme.dark ? #2b2b2b : #ffffff;
+    out property <color> card-hover: Palette.color-scheme == ColorScheme.dark ? #323232 : #f7f7f7;
+    out property <color> sidebar: Palette.color-scheme == ColorScheme.dark ? #1c1c1c : #f0f0f0;
+    out property <color> content: Palette.color-scheme == ColorScheme.dark ? #202020 : #f9f9f9;
+    out property <color> border: Palette.border;
+    out property <color> running: #2ea043;
+    out property <color> starting: #d29922;
+    out property <color> error: #e5534b;
+    out property <color> stopped: #8b949e;
+    out property <string> mono: "Cascadia Mono";
+
+    public pure function status-color(status: string) -> color {
+        if status == "running" { return running; }
+        if status == "starting" { return starting; }
+        if status == "error" { return error; }
+        return stopped;
+    }
+}

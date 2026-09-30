@@ -1,0 +1,196 @@
+import { Palette, Button, ProgressIndicator } from "std-widgets.slint";
+import { Theme, Icons } from "theme.slint";
+import { PageHeader, Badge, Glyph } from "components.slint";
+
+export struct PackageItem {
+    id: string,
+    name: string,
+    description: string,
+    installed: string, // empty = not installed
+    latest: string,
+    published: string,
+    notes: string,
+    state: string, // idle | downloading | installing | failed
+    percent: int,
+    message: string,
+    update-available: bool,
+    removable: bool,
+}
+
+component PackageCard inherits Rectangle {
+    in property <PackageItem> item;
+    callback install;
+    callback remove;
+    property <bool> busy: item.state == "downloading" || item.state == "installing";
+    property <bool> show-notes;
+
+    border-radius: Theme.radius;
+    border-width: 1px;
+    border-color: item.update-available ? Palette.accent-background : Theme.border;
+    background: Theme.card;
+
+    VerticalLayout {
+        padding: 16px;
+        spacing: 10px;
+
+        HorizontalLayout {
+            spacing: 10px;
+            VerticalLayout {
+                horizontal-stretch: 1;
+                spacing: 4px;
+                HorizontalLayout {
+                    spacing: 8px;
+                    alignment: start;
+                    Text { text: item.name; font-size: 16px; font-weight: 600; vertical-alignment: center; }
+                    if item.installed != "": Badge { text: item.installed; }
+                    if item.update-available: Rectangle {
+                        border-radius: 4px;
+                        height: 22px;
+                        background: Palette.accent-background;
+                        HorizontalLayout {
+                            padding-left: 8px; padding-right: 8px;
+                            Text {
+                                text: @tr("{} available", item.latest);
+                                font-size: 12px;
+                                color: Palette.accent-foreground;
+                                vertical-alignment: center;
+                            }
+                        }
+                    }
+                }
+                Text { text: item.description; color: Theme.muted; wrap: word-wrap; }
+            }
+            VerticalLayout {
+                alignment: center;
+                HorizontalLayout {
+                    spacing: 8px;
+                    if item.installed == "": Button {
+                        text: @tr("Install");
+                        primary: true;
+                        enabled: !busy;
+                        clicked => { root.install(); }
+                    }
+                    if item.update-available: Button {
+                        text: @tr("Update");
+                        primary: true;
+                        enabled: !busy;
+                        clicked => { root.install(); }
+                    }
+                    if item.installed != "" && item.removable: Button {
+                        text: @tr("Remove");
+                        enabled: !busy;
+                        clicked => { root.remove(); }
+                    }
+                }
+            }
+        }
+
+        if busy: VerticalLayout {
+            spacing: 4px;
+            ProgressIndicator {
+                progress: item.state == "installing" ? 1.0 : item.percent / 100;
+                indeterminate: item.state == "installing";
+            }
+            Text {
+                text: item.state == "installing" ? @tr("Installing…") : @tr("Downloading… {}%", item.percent);
+                font-size: 12px;
+                color: Theme.muted;
+            }
+        }
+
+        if item.state == "failed": HorizontalLayout {
+            spacing: 8px;
+            Glyph { source: Icons.warning; color: Theme.error; }
+            Text { text: item.message; color: Theme.error; wrap: word-wrap; horizontal-stretch: 1; font-size: 12px; }
+        }
+
+        if item.notes != "" && item.update-available: VerticalLayout {
+            spacing: 6px;
+            Text {
+                text: show-notes ? @tr("Hide what's new") : @tr("What's new in {}", item.latest);
+                color: Palette.accent-background;
+                font-size: 12px;
+                TouchArea { mouse-cursor: pointer; clicked => { show-notes = !show-notes; } }
+            }
+            if show-notes: Text {
+                text: item.notes;
+                wrap: word-wrap;
+                font-size: 12px;
+                color: Theme.muted;
+            }
+        }
+    }
+}
+
+export component EnginesPage inherits VerticalLayout {
+    in property <[PackageItem]> packages;
+    in property <bool> checking;
+    callback check-updates;
+    callback install(string);
+    callback remove(string);
+    in property <bool> show-defender-note;
+    in property <string> defender-status;
+    in property <string> defender-state; // "" | working | done | hiding | error
+    in property <bool> defender-excluded;
+    callback add-defender-exclusion;
+
+    padding: Theme.page-padding;
+    spacing: 20px;
+
+    PageHeader {
+        title: @tr("Engines");
+        subtitle: @tr("Downloaded from the official GitHub releases and verified with SHA-256.");
+        Button {
+            text: checking ? @tr("Checking…") : @tr("Check for updates");
+            enabled: !checking;
+            clicked => { root.check-updates(); }
+        }
+    }
+
+    if show-defender-note && !defender-excluded: Rectangle {
+        border-radius: Theme.radius;
+        background: Theme.starting.transparentize(0.85);
+        opacity: defender-state == "hiding" ? 0 : 1;
+        animate opacity { duration: 400ms; }
+        VerticalLayout {
+            padding: 14px;
+            spacing: 8px;
+            Text {
+                text: @tr("zapret and GoodbyeDPI use WinDivert, a legitimate packet driver that some antivirus programs flag by mistake. If Windows Security deletes it, add an exclusion for DPIMech's engine folder (only administrators can write there).");
+                wrap: word-wrap;
+                font-size: 12px;
+            }
+            HorizontalLayout {
+                spacing: 8px;
+                alignment: start;
+                Button {
+                    text: @tr("Add Windows Security exclusion");
+                    enabled: defender-state != "working";
+                    clicked => { root.add-defender-exclusion(); }
+                }
+                if defender-state == "working": Text { text: @tr("Working…"); vertical-alignment: center; font-size: 12px; color: Theme.muted; }
+                if defender-state == "error": Text { text: defender-status; vertical-alignment: center; font-size: 12px; color: Theme.error; wrap: word-wrap; horizontal-stretch: 1; }
+                // Stays in the layout and fades, so the row does not jump when it goes away.
+                HorizontalLayout {
+                    spacing: 6px;
+                    opacity: defender-state == "done" || defender-state == "hiding" ? 1 : 0;
+                    animate opacity { duration: 400ms; }
+                    VerticalLayout { alignment: center; Glyph { source: Icons.done; color: Theme.running; } }
+                    Text { text: @tr("Exclusion added"); vertical-alignment: center; font-size: 12px; color: Theme.running; }
+                }
+            }
+        }
+    }
+
+    Flickable {
+        VerticalLayout {
+            spacing: 12px;
+            alignment: start;
+            for p in packages: PackageCard {
+                item: p;
+                install => { root.install(p.id); }
+                remove => { root.remove(p.id); }
+            }
+        }
+    }
+}

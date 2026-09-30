@@ -1,0 +1,248 @@
+import { Switch, Palette } from "std-widgets.slint";
+import { Theme, Icons } from "theme.slint";
+
+export struct ProfileItem {
+    id: string,
+    name: string,
+    engine: string,
+    routing: string,
+    detail: string,
+    status: string, // stopped | starting | running | error
+    status-text: string,
+    on: bool,
+    can-check: bool, // running and has sites to check
+}
+
+export struct LogItem {
+    time: string,
+    source: string,
+    text: string,
+    level: string, // info | warn | error
+}
+
+/// A monochrome icon tinted like text.
+export component Glyph inherits Image {
+    in property <brush> color: Palette.foreground;
+    in property <length> size: 16px;
+    width: size;
+    height: size;
+    colorize: color;
+    image-fit: contain;
+}
+
+/// A highlighted hint with a warning icon, e.g. about games and anti-cheat.
+export component Note inherits Rectangle {
+    in property <string> text;
+    border-radius: 6px;
+    background: Theme.starting.transparentize(0.85);
+    HorizontalLayout {
+        padding: 10px;
+        spacing: 10px;
+        VerticalLayout { alignment: start; Glyph { source: Icons.warning; color: Theme.starting; } }
+        Text { text: root.text; wrap: word-wrap; font-size: 12px; horizontal-stretch: 1; }
+    }
+}
+
+export component NavItem inherits Rectangle {
+    in property <image> icon;
+    in property <string> label;
+    in property <bool> selected;
+    in property <bool> badge; // e.g. updates available
+    callback clicked;
+
+    height: 40px;
+    border-radius: 6px;
+    accessible-role: button;
+    accessible-label: label;
+    accessible-action-default => { root.clicked(); }
+    background: selected ? Theme.card : touch.has-hover ? Theme.card-hover : transparent;
+    animate background { duration: 120ms; }
+
+    touch := TouchArea { mouse-cursor: pointer; clicked => { root.clicked(); } }
+
+    // Accent pill on the selected item, like Windows 11 navigation views.
+    Rectangle {
+        x: 0; width: 3px; height: selected ? 16px : 0px;
+        y: (parent.height - self.height) / 2;
+        border-radius: 1.5px;
+        background: Palette.accent-background;
+        animate height { duration: 150ms; easing: ease-out; }
+    }
+
+    HorizontalLayout {
+        padding-left: 14px;
+        spacing: 12px;
+        VerticalLayout {
+            alignment: center;
+            Glyph { source: icon; size: 18px; }
+        }
+        Text { text: label; vertical-alignment: center; font-size: 14px; horizontal-stretch: 1; overflow: elide; }
+        if badge: VerticalLayout {
+            alignment: center;
+            padding-right: 12px;
+            Rectangle { width: 8px; height: 8px; border-radius: 4px; background: Palette.accent-background; }
+        }
+    }
+}
+
+export component Badge inherits Rectangle {
+    in property <string> text;
+    border-radius: 4px;
+    background: Theme.border.transparentize(0.6);
+    height: 22px;
+    HorizontalLayout {
+        padding-left: 8px; padding-right: 8px;
+        Text { text: root.text; font-size: 12px; vertical-alignment: center; color: Theme.muted; }
+    }
+}
+
+export component StatusDot inherits Rectangle {
+    in property <string> status;
+    width: 8px; height: 8px;
+    border-radius: 4px;
+    background: Theme.status-color(status);
+}
+
+export component ProfileCard inherits Rectangle {
+    in property <ProfileItem> item;
+    callback toggled(bool);
+    callback clicked;
+    callback check;
+    callback shortcut;
+
+    border-radius: Theme.radius;
+    border-width: 1px;
+    border-color: Theme.border;
+    background: touch.has-hover ? Theme.card-hover : Theme.card;
+    animate background { duration: 120ms; }
+
+    touch := TouchArea { mouse-cursor: pointer; clicked => { root.clicked(); } }
+    // Right click anywhere on the card, or the ⋯ button, opens the same menu. It sits above
+    // the TouchArea, which would otherwise swallow the right button too.
+    menu := ContextMenuArea {
+        width: 100%;
+        height: 100%;
+        Menu {
+            MenuItem { title: @tr("Edit"); activated => { root.clicked(); } }
+            MenuItem { title: @tr("Create shortcut…"); activated => { root.shortcut(); } }
+        }
+    }
+
+    VerticalLayout {
+        padding: 16px;
+        spacing: 10px;
+        HorizontalLayout {
+            spacing: 8px;
+            Text {
+                text: item.name;
+                font-size: 16px;
+                font-weight: 600;
+                vertical-alignment: center;
+                overflow: elide;
+                horizontal-stretch: 1;
+            }
+            more := Rectangle {
+                width: 28px;
+                border-radius: 4px;
+                background: more-touch.has-hover ? Theme.border : transparent;
+                accessible-role: button;
+                accessible-label: @tr("More actions");
+                accessible-action-default => { menu.show({ x: more.x + 16px, y: more.y + more.height + 16px }); }
+                Glyph { source: Icons.more; size: 16px; }
+                more-touch := TouchArea {
+                    mouse-cursor: pointer;
+                    clicked => { menu.show({ x: more.x + 16px, y: more.y + more.height + 16px }); }
+                }
+            }
+            Switch {
+                accessible-label: item.name;
+                checked: item.on;
+                toggled => { root.toggled(self.checked); }
+            }
+        }
+        HorizontalLayout {
+            spacing: 6px;
+            alignment: start;
+            Badge { text: item.engine; }
+            Badge { text: item.routing; }
+        }
+        Text {
+            text: item.detail;
+            color: Theme.muted;
+            font-size: 12px;
+            overflow: elide;
+        }
+        HorizontalLayout {
+            spacing: 8px;
+            VerticalLayout { alignment: center; StatusDot { status: item.status; } }
+            Text {
+                text: item.status-text;
+                font-size: 12px;
+                color: item.status == "error" ? Theme.error : item.status == "starting" ? Theme.starting : Theme.muted;
+                overflow: elide;
+                vertical-alignment: center;
+                horizontal-stretch: 1;
+            }
+            if item.can-check: Rectangle {
+                width: 24px;
+                height: 24px;
+                border-radius: 4px;
+                background: check-touch.has-hover ? Theme.card-hover : transparent;
+                accessible-role: button;
+                accessible-label: @tr("Check the connection now");
+                accessible-action-default => { root.check(); }
+                Glyph {
+                    source: Icons.refresh;
+                    size: 16px;
+                    color: Palette.accent-background;
+                }
+                check-touch := TouchArea { mouse-cursor: pointer; clicked => { root.check(); } }
+            }
+        }
+    }
+}
+
+export component EmptyState inherits VerticalLayout {
+    in property <image> icon;
+    in property <string> title;
+    in property <string> subtitle;
+    alignment: center;
+    spacing: 10px;
+    vertical-stretch: 1;
+    HorizontalLayout {
+        alignment: center;
+        Glyph { source: icon; size: 40px; color: Theme.muted; }
+    }
+    Text { text: title; font-size: 18px; font-weight: 600; horizontal-alignment: center; }
+    HorizontalLayout {
+        alignment: center;
+        Text {
+            text: subtitle;
+            color: Theme.muted;
+            horizontal-alignment: center;
+            wrap: word-wrap;
+            max-width: 440px;
+        }
+    }
+}
+
+export component PageHeader inherits HorizontalLayout {
+    in property <string> title;
+    in property <string> subtitle;
+    spacing: 8px;
+    VerticalLayout {
+        spacing: 2px;
+        horizontal-stretch: 1;
+        Text { text: title; font-size: 26px; font-weight: 600; }
+        if subtitle != "": Text { text: subtitle; color: Theme.muted; }
+    }
+    // Actions stay compact and vertically centred next to the title.
+    VerticalLayout {
+        alignment: center;
+        horizontal-stretch: 0;
+        HorizontalLayout {
+            spacing: 8px;
+            @children
+        }
+    }
+}

@@ -1,0 +1,458 @@
+import { Palette } from "std-widgets.slint";
+import { Theme, Icons } from "theme.slint";
+import { ProfileItem, LogItem, NavItem, Glyph } from "components.slint";
+import { DashboardPage, LogsPage, PlaceholderPage, SettingsPage } from "pages.slint";
+import { ProfileDraft, AppItem, ProfileEditorPage, AppPicker } from "editor.slint";
+import { ReportDialog } from "report.slint";
+import { ShortcutDialog } from "shortcut.slint";
+import { LaunchWindow } from "launch.slint";
+import { PackageItem, EnginesPage } from "engines.slint";
+import { LabPack, LabRow, LabPage } from "lab.slint";
+import { WizardTask, Wizard } from "wizard.slint";
+
+export { ProfileItem, LogItem, ProfileDraft, AppItem, PackageItem, LabPack, LabRow, WizardTask, LaunchWindow }
+
+export enum Page { dashboard, editor, lab, engines, logs, settings }
+
+export component AppWindow inherits Window {
+    title: "DPIMech";
+    icon: @image-url("../assets/logo.png");
+    preferred-width: 1000px;
+    preferred-height: 660px;
+    min-width: 760px;
+    min-height: 480px;
+    background: Theme.content;
+
+    in-out property <Page> page: Page.dashboard;
+    in property <bool> service-connected;
+    in property <string> service-info;
+    in property <string> os-name;
+
+    // Dashboard & logs
+    in property <[ProfileItem]> profiles;
+    in property <[LogItem]> logs;
+
+    // Profile editor
+    in property <[string]> engine-names;
+    in property <[string]> routing-names;
+    in property <int> per-app-index: -1;
+    in property <int> system-wide-index: -1;
+    in-out property <ProfileDraft> draft;
+    in property <[AppItem]> draft-apps;
+    in-out property <string> editor-error;
+
+    // App picker
+    in-out property <bool> picker-open;
+    in-out property <bool> report-open;
+    in property <string> report-text;
+    in property <string> report-saved;
+    in property <string> report-email;
+    in-out property <string> report-note;
+    callback open-report;
+    callback report-github;
+    callback report-email-send;
+    callback report-folder;
+
+    // Profile shortcut dialog
+    in-out property <bool> shortcut-open;
+    in property <string> shortcut-profile-name;
+    in-out property <string> shortcut-name;
+    in property <[string]> shortcut-apps;
+    in-out property <int> shortcut-app-index;
+    in property <image> shortcut-preview;
+    in property <bool> shortcut-loading;
+    in-out property <bool> shortcut-desktop: true;
+    in-out property <bool> shortcut-menu;
+    in property <string> shortcut-menu-label;
+    in property <string> shortcut-status;
+    in property <bool> shortcut-ok;
+    in property <bool> shortcut-busy;
+    callback open-shortcut(string);
+    callback shortcut-app-changed(int);
+    callback shortcut-create;
+    in property <bool> picker-loading;
+    in property <[AppItem]> picker-apps;
+
+    // Engines
+    in property <[PackageItem]> packages;
+    in property <bool> checking-updates;
+    in property <bool> updates-available;
+
+    // Strategy Lab
+    in property <[string]> lab-engines;
+    in-out property <int> lab-engine-index;
+    in property <[LabPack]> lab-packs;
+    in-out property <string> lab-custom-domains;
+    in property <string> lab-isp-text;
+    in property <string> lab-strategy-summary;
+    in property <string> lab-sources-note;
+    in-out property <int> lab-repeats: 1;
+    in property <bool> lab-running;
+    in property <float> lab-progress;
+    in property <string> lab-status;
+    in property <string> lab-baseline;
+    in property <[LabRow]> lab-results;
+    callback lab-engine-changed(int);
+    callback lab-toggle-pack(int);
+    callback lab-detect-isp;
+    callback lab-refresh;
+    callback lab-start;
+    callback lab-cancel;
+    callback lab-use(int);
+
+    // Easy mode + setup wizard
+    in property <bool> easy-mode;
+    in-out property <bool> wizard-open;
+    in property <int> wizard-step;
+    in property <[LabPack]> wizard-packs;
+    in-out property <string> wizard-custom-sites;
+    in property <int> wizard-where;
+    in property <bool> wizard-apps-supported: true;
+    in property <bool> wizard-whole-supported: true;
+    in property <string> wizard-isp-text;
+    in property <[WizardTask]> wizard-tasks;
+    in property <float> wizard-progress;
+    in property <string> wizard-message;
+    in property <bool> wizard-busy;
+    callback wizard-choose-easy;
+    callback wizard-choose-advanced;
+    callback wizard-toggle-pack(int);
+    callback wizard-set-where(int);
+    callback wizard-detect-isp;
+    callback install-service;
+    callback wizard-next;
+    callback wizard-back;
+    callback wizard-retry;
+    callback wizard-finish;
+    callback wizard-close;
+    callback open-wizard;
+    callback set-easy-mode(bool);
+
+    // Updates + antivirus
+    in property <string> app-version;
+    in property <string> app-update-text;
+    in property <bool> app-update-available;
+    callback check-app-update;
+    callback download-app-update;
+    in property <bool> show-defender-note;
+    in property <string> defender-status;
+    in property <string> defender-state;
+    in property <bool> defender-excluded;
+    callback add-defender-exclusion;
+
+    // Settings
+    in property <bool> start-with-windows;
+    in property <bool> start-minimized;
+    callback set-autostart(bool, bool);
+    /// Other DPI tools running outside DPIMech, comma separated; empty when none.
+    in property <string> foreign-tools;
+    in property <[string]> language-names;
+    in property <int> language-index;
+    callback set-language(int);
+    in property <bool> log-to-file;
+    in property <string> log-dir;
+    callback set-log-to-file(bool);
+    callback choose-log-dir;
+    callback open-log-dir;
+    callback open-link(string);
+
+    callback new-profile;
+    callback open-profile(string);
+    callback toggle-profile(string, bool);
+    callback check-profile(string);
+    callback engine-changed(int);
+    callback save-profile(ProfileDraft);
+    callback delete-profile(string);
+    callback open-picker;
+    in property <[string]> domain-pack-names;
+    callback add-domain-pack(int);
+    callback picker-search(string);
+    callback picker-pick(AppItem);
+    callback picker-add-manual(string);
+    callback picker-browse;
+    callback remove-app(int);
+    callback clear-logs;
+    callback check-updates;
+    callback install-package(string);
+    callback remove-package(string);
+
+    HorizontalLayout {
+        // Sidebar (advanced mode only; Easy mode uses the slim top bar below)
+        if !easy-mode: Rectangle {
+            width: 220px;
+            background: Theme.sidebar;
+            VerticalLayout {
+                padding: 12px;
+                spacing: 4px;
+                HorizontalLayout {
+                    padding: 8px;
+                    padding-bottom: 20px;
+                    spacing: 10px;
+                    Image { source: @image-url("../assets/logo.png"); width: 24px; height: 24px; }
+                    Text { text: "DPIMech"; font-size: 18px; font-weight: 700; vertical-alignment: center; }
+                }
+                NavItem {
+                    icon: Icons.home; label: @tr("Profiles");
+                    selected: page == Page.dashboard || page == Page.editor;
+                    clicked => { page = Page.dashboard; }
+                }
+                if !easy-mode: NavItem {
+                    icon: Icons.lab; label: @tr("Strategy Lab");
+                    selected: page == Page.lab;
+                    clicked => { page = Page.lab; }
+                }
+                if !easy-mode: NavItem {
+                    icon: Icons.engines; label: @tr("Engines");
+                    selected: page == Page.engines;
+                    badge: updates-available;
+                    clicked => { page = Page.engines; }
+                }
+                if !easy-mode: NavItem {
+                    icon: Icons.logs; label: @tr("Logs");
+                    selected: page == Page.logs;
+                    clicked => { page = Page.logs; }
+                }
+                Rectangle { vertical-stretch: 1; }
+                NavItem {
+                    icon: Icons.settings; label: @tr("Settings");
+                    selected: page == Page.settings;
+                    clicked => { page = Page.settings; }
+                }
+            }
+        }
+
+        // Content
+        VerticalLayout {
+            horizontal-stretch: 1;
+
+            if easy-mode: Rectangle {
+                height: 56px;
+                background: Theme.sidebar;
+                HorizontalLayout {
+                    padding-left: 24px;
+                    padding-right: 16px;
+                    spacing: 10px;
+                    Image { source: @image-url("../assets/logo.png"); width: 24px; height: 24px; y: (parent.height - 24px) / 2; }
+                    Text { text: "DPIMech"; font-size: 18px; font-weight: 700; vertical-alignment: center; horizontal-stretch: 1; }
+                    Rectangle {
+                        width: 40px;
+                        border-radius: 6px;
+                        accessible-role: button;
+                        accessible-label: @tr("Settings");
+                        accessible-action-default => { page = Page.settings; }
+                        background: gear.has-hover ? Theme.card-hover : transparent;
+                        gear := TouchArea { mouse-cursor: pointer; clicked => { page = Page.settings; } }
+                        Glyph { source: Icons.settings; size: 18px; }
+                    }
+                }
+            }
+
+            if service-connected && foreign-tools != "": Rectangle {
+                background: Theme.error.transparentize(0.85);
+                HorizontalLayout {
+                    padding-left: 24px;
+                    padding-right: 24px;
+                    padding-top: 8px;
+                    padding-bottom: 8px;
+                    spacing: 10px;
+                    VerticalLayout { alignment: center; Glyph { source: Icons.warning; color: Theme.error; } }
+                    Text {
+                        text: @tr("Another DPI tool is running: {}. Two tools on the same traffic break connections — close it, or turn DPIMech's profiles off.", foreign-tools);
+                        wrap: word-wrap;
+                        vertical-alignment: center;
+                        horizontal-stretch: 1;
+                    }
+                }
+            }
+
+            if !service-connected: Rectangle {
+                height: 40px;
+                background: Theme.starting.transparentize(0.8);
+                HorizontalLayout {
+                    padding-left: 24px;
+                    spacing: 10px;
+                    Glyph { source: Icons.warning; color: Theme.starting; }
+                    Text {
+                        text: @tr("Background service is not running. Engines can't be started until it is.");
+                        vertical-alignment: center;
+                    }
+                }
+            }
+
+            if page == Page.dashboard: DashboardPage {
+                profiles: profiles;
+                easy-mode: easy-mode;
+                new-profile => { root.new-profile(); }
+                quick-setup => { root.open-wizard(); }
+                open-profile(id) => { root.open-profile(id); }
+                toggle-profile(id, on) => { root.toggle-profile(id, on); }
+                check-profile(id) => { root.check-profile(id); }
+                shortcut-profile(id) => { root.open-shortcut(id); }
+            }
+            if page == Page.editor: ProfileEditorPage {
+                draft <=> root.draft;
+                engine-names: engine-names;
+                routing-names: routing-names;
+                per-app-index: per-app-index;
+                system-wide-index: system-wide-index;
+                is-windows: os-name == "Windows";
+                draft-apps: draft-apps;
+                error: editor-error;
+                engine-changed(i) => { root.engine-changed(i); }
+                open-picker => { root.open-picker(); }
+                domain-pack-names: domain-pack-names;
+                add-domain-pack(i) => { root.add-domain-pack(i); }
+                remove-app(i) => { root.remove-app(i); }
+                save(d) => { root.save-profile(d); }
+                cancel => { page = Page.dashboard; }
+                delete(id) => { root.delete-profile(id); }
+                shortcut(id) => { root.open-shortcut(id); }
+            }
+            if page == Page.lab: LabPage {
+                engines: lab-engines;
+                engine-index <=> root.lab-engine-index;
+                packs: lab-packs;
+                custom-domains <=> root.lab-custom-domains;
+                isp-text: lab-isp-text;
+                strategy-summary: lab-strategy-summary;
+                sources-note: lab-sources-note;
+                repeats <=> root.lab-repeats;
+                running: lab-running;
+                progress: lab-progress;
+                status: lab-status;
+                baseline: lab-baseline;
+                results: lab-results;
+                engine-changed(i) => { root.lab-engine-changed(i); }
+                toggle-pack(i) => { root.lab-toggle-pack(i); }
+                detect-isp => { root.lab-detect-isp(); }
+                refresh-strategies => { root.lab-refresh(); }
+                start-test => { root.lab-start(); }
+                cancel => { root.lab-cancel(); }
+                use-result(i) => { root.lab-use(i); }
+            }
+            if page == Page.engines: EnginesPage {
+                packages: packages;
+                checking: checking-updates;
+                check-updates => { root.check-updates(); }
+                install(id) => { root.install-package(id); }
+                remove(id) => { root.remove-package(id); }
+                show-defender-note: show-defender-note;
+                defender-status: defender-status;
+                defender-state: defender-state;
+                defender-excluded: defender-excluded;
+                add-defender-exclusion => { root.add-defender-exclusion(); }
+            }
+            if page == Page.logs: LogsPage {
+                logs: logs;
+                clear => { root.clear-logs(); }
+            }
+            if page == Page.settings: SettingsPage {
+                service-connected: service-connected;
+                service-info: service-info;
+                os-name: os-name;
+                start-with-windows: start-with-windows;
+                start-minimized: start-minimized;
+                set-autostart(on, min) => { root.set-autostart(on, min); }
+                easy-mode: easy-mode;
+                set-easy-mode(on) => { root.set-easy-mode(on); }
+                open-wizard => { root.open-wizard(); }
+                install-service => { root.install-service(); }
+                back => { page = Page.dashboard; }
+                app-version: app-version;
+                app-update-text: app-update-text;
+                app-update-available: app-update-available;
+                check-app-update => { root.check-app-update(); }
+                download-app-update => { root.download-app-update(); }
+                language-names: language-names;
+                language-index: language-index;
+                set-language(i) => { root.set-language(i); }
+                log-to-file: log-to-file;
+                log-dir: log-dir;
+                set-log-to-file(on) => { root.set-log-to-file(on); }
+                choose-log-dir => { root.choose-log-dir(); }
+                open-log-dir => { root.open-log-dir(); }
+                open-link(url) => { root.open-link(url); }
+                report-problem => { root.open-report(); }
+            }
+        }
+    }
+
+    if wizard-open: Wizard {
+        width: root.width;
+        height: root.height;
+        step: wizard-step;
+        packs: wizard-packs;
+        custom-sites <=> root.wizard-custom-sites;
+        where: wizard-where;
+        report-problem => { root.open-report(); }
+        apps-supported: wizard-apps-supported;
+        whole-supported: wizard-whole-supported;
+        is-windows: os-name == "Windows";
+        apps: draft-apps;
+        isp-text: wizard-isp-text;
+        tasks: wizard-tasks;
+        progress: wizard-progress;
+        logs: logs;
+        message: wizard-message;
+        busy: wizard-busy;
+        service-connected: service-connected;
+        choose-easy => { root.wizard-choose-easy(); }
+        choose-advanced => { root.wizard-choose-advanced(); }
+        toggle-pack(i) => { root.wizard-toggle-pack(i); }
+        set-where(i) => { root.wizard-set-where(i); }
+        add-app => { root.open-picker(); }
+        remove-app(i) => { root.remove-app(i); }
+        detect-isp => { root.wizard-detect-isp(); }
+        install-service => { root.install-service(); }
+        next => { root.wizard-next(); }
+        back => { root.wizard-back(); }
+        retry => { root.wizard-retry(); }
+        finish => { root.wizard-finish(); }
+        close => { root.wizard-close(); }
+    }
+
+    if picker-open: AppPicker {
+        width: root.width;
+        height: root.height;
+        apps: picker-apps;
+        loading: picker-loading;
+        search(t) => { root.picker-search(t); }
+        pick(app) => { root.picker-pick(app); }
+        add-manual(t) => { root.picker-add-manual(t); }
+        browse => { root.picker-browse(); }
+        close => { picker-open = false; }
+    }
+
+    if report-open: ReportDialog {
+        width: root.width;
+        height: root.height;
+        report: report-text;
+        saved-path: report-saved;
+        email: report-email;
+        note <=> root.report-note;
+        github => { root.report-github(); }
+        email-report => { root.report-email-send(); }
+        open-folder => { root.report-folder(); }
+        close => { report-open = false; }
+    }
+
+    if shortcut-open: ShortcutDialog {
+        width: root.width;
+        height: root.height;
+        profile-name: shortcut-profile-name;
+        name <=> root.shortcut-name;
+        apps: shortcut-apps;
+        app-index <=> root.shortcut-app-index;
+        preview: shortcut-preview;
+        loading: shortcut-loading;
+        on-desktop <=> root.shortcut-desktop;
+        in-menu <=> root.shortcut-menu;
+        menu-label: shortcut-menu-label;
+        status: shortcut-status;
+        status-ok: shortcut-ok;
+        busy: shortcut-busy;
+        app-changed(i) => { root.shortcut-app-changed(i); }
+        create => { root.shortcut-create(); }
+        close => { shortcut-open = false; }
+    }
+}

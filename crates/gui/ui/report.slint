@@ -1,0 +1,74 @@
+import { Button, LineEdit, TextEdit } from "std-widgets.slint";
+import { Theme } from "theme.slint";
+
+/// "Report a problem": shows exactly what would be sent, then opens a GitHub issue or an
+/// e-mail. Nothing leaves the computer unless the user presses one of those buttons.
+export component ReportDialog inherits Rectangle {
+    in property <string> report;
+    in property <string> saved-path; // where the full report was written, if it was
+    in property <string> email;
+    in-out property <string> note;
+    callback github;
+    callback email-report;
+    callback open-folder;
+    callback close;
+
+    background: #00000080;
+    TouchArea { } // modal: clicks outside do nothing, so a half-written note is not lost
+
+    Rectangle {
+        width: min(720px, root.width - 48px);
+        height: min(620px, root.height - 48px);
+        border-radius: 10px;
+        background: Theme.content;
+        border-width: 1px;
+        border-color: Theme.border;
+        TouchArea { }
+
+        VerticalLayout {
+            padding: 20px;
+            spacing: 10px;
+            Text { text: @tr("Report a problem"); font-size: 20px; font-weight: 700; }
+            Text {
+                text: @tr("What happened? A sentence or two helps a lot (optional).");
+                font-size: 12px;
+                color: Theme.muted;
+            }
+            LineEdit {
+                text <=> root.note;
+                placeholder-text: @tr("e.g. Discord stopped working after an hour");
+            }
+            Text {
+                text: @tr("This is what will be shared. It contains your DPIMech settings and the recent log (site names, your internet provider if you detected it) — no passwords or browsing history.");
+                font-size: 12px;
+                color: Theme.muted;
+                wrap: word-wrap;
+            }
+            TextEdit {
+                text: root.report;
+                read-only: true;
+                font-size: 11px;
+                vertical-stretch: 1;
+            }
+            if saved-path != "": Text {
+                text: @tr("Full report saved as {}", saved-path);
+                font-size: 12px;
+                color: Theme.muted;
+                wrap: word-wrap;
+            }
+            Text {
+                text: @tr("Have a GitHub account? Open an issue and drag the saved file into it. No account? Send it by e-mail to {} and attach the saved file.", root.email);
+                font-size: 12px;
+                wrap: word-wrap;
+            }
+            HorizontalLayout {
+                spacing: 8px;
+                alignment: end;
+                Button { text: @tr("Show file"); clicked => { root.open-folder(); } }
+                Button { text: @tr("Send by e-mail"); clicked => { root.email-report(); } }
+                Button { text: @tr("Open a GitHub issue"); primary: true; clicked => { root.github(); } }
+                Button { text: @tr("Close"); clicked => { root.close(); } }
+            }
+        }
+    }
+}
