@@ -91,14 +91,15 @@ crates/gui/       dpimech binary (Slint)
   src/apps.rs       process + Start Menu discovery with icons (Win32)
   src/picker.rs     app picker logic; src/state.rs UI-thread state
 tools/            ipc.ps1 (raw IPC requests), uia.ps1 (drive the GUI via UI Automation),
-                  build-installer.ps1, build-linux-packages.sh, build-macos-app.sh, i18n.py, make_icon.py
+                  build-installer.ps1, build-linux-packages.sh, build-macos-app.sh, i18n.py, make_icon.py,
+                  copr-webhook.sh (starts a COPR build; used by release.yml and copr.yml)
 installer/        dpimech.iss (Inno Setup)
 packaging/linux/  .desktop entry, service-setup.sh (deb postinst / rpm %post), deb maintainer scripts;
                   package metadata lives in crates/gui/Cargo.toml ([package.metadata.deb / generate-rpm])
 packaging/fedora/ dpimech.spec + make-srpm.sh (source RPM with vendored crates) for Fedora COPR;
                   .copr/Makefile is COPR's entry point (see docs/RELEASING.md)
 .github/workflows ci.yml (fmt, clippy, tests), release.yml (tag v* → GitHub release),
-                  pages.yml (site/ → GitHub Pages)
+                  pages.yml (site/ → GitHub Pages), copr.yml (manual COPR build / webhook test)
 site/             landing page (plain HTML, no build step)
 docs/             PLAN, PROGRESS, DECISIONS, RELEASING (release steps, COPR setup)
 ```

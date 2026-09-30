@@ -1,0 +1,17 @@
+# Starts a Fedora COPR build by hand (Actions → COPR build → Run workflow), e.g. to test the
+# COPR_WEBHOOK_URL secret. COPR builds the newest v* tag. Releases trigger it automatically.
+name: COPR build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  copr:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start the Fedora COPR build
+        env:
+          COPR_WEBHOOK_URL: ${{ secrets.COPR_WEBHOOK_URL }}
+        run: ./tools/copr-webhook.sh

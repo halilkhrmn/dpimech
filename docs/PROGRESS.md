@@ -101,7 +101,12 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 - **Done:** pushing to the `release` branch runs the release workflow, which creates the tag `v<version>`
   with the GitHub release (tag pushes are refused from cloud sessions); a version that already has a tag is
   refused. Tags pushed by hand still work. Published 0.2.0 this way.
-- **Verified:** see the release run on `release` (below / next entry if it failed).
+- **Verified:** the run on `release` built all three systems and published v0.2.0 with every file; only the
+  COPR webhook step failed (curl exit 3: malformed URL in the secret). Now `tools/copr-webhook.sh` trims
+  whitespace, rejects placeholders / non-COPR URLs with a clear message and reports COPR's HTTP answer; the
+  release step no longer fails the run; `copr.yml` runs it by hand to test the secret.
+- **Also:** four Python wheels (47 MB) had been committed by mistake (a `pip download` in the repo root);
+  removed from the whole history before the release, `*.whl` ignored.
 
 ### 2026-09-30 (22) — Fedora COPR
 - **Done:** `packaging/fedora/dpimech.spec` (from source, vendored crates, service in /usr/libexec),

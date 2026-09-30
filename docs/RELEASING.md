@@ -45,6 +45,9 @@ RPM from the **newest `v*` tag** (all crates vendored), and COPR builds it witho
    **Settings → Secrets and variables → Actions → New repository secret**,
    name `COPR_WEBHOOK_URL`. From then on every published release starts a COPR build.
    (If a POST to the URL does not start a build, turn on "Auto-rebuild" for the package.)
+5. Test it: **Actions → COPR build → Run workflow**. The log says what COPR answered, or what is
+   wrong with the secret (placeholder left in, not a COPR URL, …). The same workflow starts a COPR
+   build by hand at any time; `tools/copr-webhook.sh` is shared with the release workflow.
 
 Build locally: `sh packaging/fedora/make-srpm.sh target/srpm` (needs `cargo`, `git`, `rpm-build`),
 then `rpmbuild --rebuild target/srpm/dpimech-*.src.rpm` on Fedora, or `mock` for a clean chroot.
