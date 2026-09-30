@@ -135,13 +135,11 @@ trait Engine {
 - Recreating replaces the old shortcut; deleting a profile removes its shortcuts; Settings → "Remove all".
 
 **Priority 3 — not decided yet.** Candidates, for the owner to pick from:
-- Fix what the Discord-on-Linux logs show (waiting for the detailed log from 0.2.2).
-- SpoofDPI: it is in the engine list of the model, but has no download package or argument policy yet,
-  so it cannot be used.
+- ~~Discord on Linux~~ → works with ByeDPI since 0.2.4 (stricter checks, DECISIONS #41).
+- ~~SpoofDPI~~ → Linux and macOS since 0.2.3 (DECISIONS #39).
 - Strategy repository: domain packs and strategy lists in their own GitHub repo, updated without an
   app release (see Open items).
-- App self-update: download and run the new installer / package from the app instead of opening the
-  releases page (phase 5 left this at "notify").
+- ~~App self-update~~ → since 0.2.3 (DECISIONS #40).
 - macOS: whole computer (pf) and per-app routing, signing and notarization — on hold for now.
 
 ## Open items

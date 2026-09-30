@@ -77,7 +77,7 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
   "no process matches", DNS vs 1.1.1.1 warning
 - [x] Detailed log (Settings, off by default): per-connection lines with the TLS site name (Linux), per-strategy
   Lab lines; daily log files opt-in; automatic error snapshot when a profile fails
-- [ ] Discord per-app on Linux resets connections (owner's report) — waiting for the detailed log from 0.2.2
+- [x] Discord per-app on Linux resets connections (owner's report) — works with ByeDPI since 0.2.4's stricter checks
 
 ### SpoofDPI and in-app updates · *done (0.2.3)*
 - [x] SpoofDPI 1.5 on Linux/macOS: package, argument policy, managed SOCKS5 launch, 8 built-in strategies,
@@ -124,8 +124,8 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 ### 2026-09-30 (31) — In-app update tested by the owner
 - **Done:** PR #5 merged, v0.2.4 published (21:32 UTC).
 - **Verified (owner):** in-app update from 0.2.3 to 0.2.4 worked ("Restart and update").
-- **Open:** which system it was tested on decides whether "Windows silent update by hand" is ticked; ByeDPI with
-  the stricter checks on the owner's Discord setup.
+- **Verified (owner):** Discord through ByeDPI works on the owner's Linux with 0.2.4.
+- **Open:** which system the update was tested on decides whether "Windows silent update by hand" is ticked.
 
 ### 2026-09-30 (30) — 0.2.4: stricter connection checks
 - **Owner's report (Linux, 0.2.2):** Discord through ByeDPI stuck on start ("recv: Connection reset by peer")
