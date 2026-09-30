@@ -17,7 +17,7 @@ Bazı internet sağlayıcıları trafiğinin içine bakıp belirli siteleri enge
 | | Durum |
 |---|---|
 | **Windows 10 / 11** | Hazır. Kurulum dosyası [Releases](https://github.com/halilkhrmn/dpimech/releases) sayfasında. |
-| **Linux** | Önizleme: Releases sayfasında `.deb`, `.rpm` ve AppImage (aşağıya bak). |
+| **Linux** | Önizleme: Releases sayfasında `.deb`, `.rpm` ve AppImage; Fedora için COPR (aşağıya bak). |
 | **macOS** | Erken önizleme: Releases sayfasında `.dmg`, sadece yerel proxy (aşağıya bak). |
 
 ## Ne işe yarar?
@@ -93,10 +93,18 @@ saniye sonra yakalanır.
 | Sistemin | Dosya | Kurulum |
 |---|---|---|
 | Ubuntu, Debian, Mint, Pop!_OS | `dpimech_<sürüm>_amd64.deb` | `sudo apt install ./dpimech_*_amd64.deb` |
-| Fedora, openSUSE, RHEL | `dpimech-<sürüm>-1.x86_64.rpm` | `sudo dnf install ./dpimech-*.x86_64.rpm` |
+| Fedora | indirmeye gerek yok: [COPR deposu](https://copr.fedorainfracloud.org/coprs/halilkahraman/dpimech/) | aşağıya bak |
+| openSUSE, RHEL | `dpimech-<sürüm>-1.x86_64.rpm` | `sudo dnf install ./dpimech-*.x86_64.rpm` |
 | Diğer tüm dağıtımlar | `DPIMech-<sürüm>-x86_64.AppImage` | `chmod +x DPIMech-*.AppImage`, sonra çalıştır |
 
-`.deb` ve `.rpm` arka plan servisini de kurar ve başlatır. AppImage kullanıyorsan DPIMech'i açıp bir
+**Fedora** — depoyu bir kez ekle, sonra güncellemeler sistemle birlikte gelir (`sudo dnf upgrade`):
+
+```sh
+sudo dnf copr enable halilkahraman/dpimech
+sudo dnf install dpimech
+```
+
+Paketler (`.deb`, `.rpm`, COPR) arka plan servisini de kurar ve başlatır. AppImage kullanıyorsan DPIMech'i açıp bir
 kez **Install the service**'e bas (şifreni sorar).
 
 ### Kaynak koddan derleme

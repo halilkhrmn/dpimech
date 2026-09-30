@@ -139,13 +139,19 @@ pub fn install_service_elevated() -> Result<(), String> {
 /// Runs `dpimech-service install` through polkit (`pkexec`), which asks for the admin
 /// password once. Not waited for, like the Windows prompt, so the window stays responsive;
 /// the GUI notices the service when it connects.
-/// With a deb/rpm the service is already installed and only needs to be started.
+/// With a deb/rpm the service is already installed and only needs to be started
+/// (/usr/lib: deb and the release rpm; /usr/libexec: the Fedora COPR package).
 #[cfg(all(unix, not(target_os = "macos")))]
-const PACKAGED_SERVICE: &str = "/usr/lib/dpimech/dpimech-service";
+const PACKAGED_SERVICE: [&str; 2] = [
+    "/usr/lib/dpimech/dpimech-service",
+    "/usr/libexec/dpimech/dpimech-service",
+];
 
 #[cfg(all(unix, not(target_os = "macos")))]
 pub fn install_service_elevated() -> Result<(), String> {
-    let (program, args): (PathBuf, Vec<&str>) = if std::path::Path::new(PACKAGED_SERVICE).is_file()
+    let (program, args): (PathBuf, Vec<&str>) = if PACKAGED_SERVICE
+        .iter()
+        .any(|p| std::path::Path::new(p).is_file())
     {
         (
             "systemctl".into(),

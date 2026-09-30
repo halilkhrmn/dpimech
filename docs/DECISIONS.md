@@ -182,3 +182,17 @@ own release), a launchd service and an unsigned universal `.dmg`. The wizard hid
   environment variables, never inside the script), icon as a PNG-in-ICO in `%LOCALAPPDATA%\DPIMech\shortcuts`;
   Linux .desktop in the applications dir and/or the XDG desktop dir (marked trusted for GNOME); macOS a tiny
   .app bundle with a shell script and an .icns. Icon files carry a timestamp because shells cache icons by path.
+
+## 35. Fedora through COPR, built from source (2026-09-30)
+- **Decision:** Fedora users get DPIMech from the COPR repository `halilkahraman/dpimech`
+  (`dnf copr enable`), so updates arrive with `dnf upgrade`. COPR builds from source: `make_srpm`
+  (`.copr/Makefile` → `packaging/fedora/make-srpm.sh`) packs the newest `v*` tag with every crate
+  vendored, and the RPM build runs offline. The release workflow triggers COPR through its custom
+  webhook (secret `COPR_WEBHOOK_URL`) only after a GitHub release is published.
+- **Why:** COPR expects packages built from source, and a repository gives automatic updates, which a
+  downloaded `.rpm` does not. Building the newest tag (not `main`) keeps COPR in step with releases even
+  when someone presses Rebuild later.
+- **Paths:** the Fedora package puts the service in `/usr/libexec/dpimech` (labelled `bin_t`, so SELinux
+  starts it as an ordinary unconfined service); the `.deb` and the release `.rpm` keep `/usr/lib/dpimech`.
+  The GUI accepts both when it offers to start a packaged service.
+- **Trade-off:** the source RPM is ~120 MB because `cargo vendor` includes the Windows crates.

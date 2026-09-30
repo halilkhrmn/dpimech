@@ -64,7 +64,7 @@
   a:visited { color: #551a8b; }
   .downloads { display: flex; flex-wrap: wrap; gap: 10px; }
   .dl {
-    flex: 1 1 200px;
+    flex: 1 1 150px;
     border: 2px outset #eee;
     background: #f4f4f4;
     padding: 8px 10px;
@@ -82,6 +82,14 @@
     font-weight: bold;
   }
   .button:active { border-style: inset; }
+  .cmd {
+    background: #000;
+    color: #0f0;
+    font: 12px/1.5 "Courier New", monospace;
+    padding: 8px 10px;
+    border: 2px inset #808080;
+    overflow-x: auto;
+  }
   .note {
     border: 1px solid #c0a000;
     background: #ffffe1;
@@ -147,12 +155,21 @@
     <a class="button" href="https://github.com/halilkhrmn/dpimech/releases/latest">Download</a>
   </div>
   <div class="dl">
+    <b>Fedora</b>
+    <small>COPR repository, updates with dnf</small>
+    <a class="button" href="#fedora">How to install</a>
+  </div>
+  <div class="dl">
     <b>macOS</b> <em>(early preview)</em>
     <small>.dmg, not signed yet</small>
     <a class="button" href="https://github.com/halilkhrmn/dpimech/releases/latest">Download</a>
   </div>
 </div>
 <p><small>All files are on the GitHub releases page, with SHA-256 checksums.</small></p>
+<p id="fedora"><b>Fedora:</b> add the <a href="https://copr.fedorainfracloud.org/coprs/halilkahraman/dpimech/">COPR repository</a> once;
+  after that DPIMech updates with the rest of the system (<code>sudo dnf upgrade</code>).</p>
+<pre class="cmd">sudo dnf copr enable halilkahraman/dpimech
+sudo dnf install dpimech</pre>
 
 <h2 id="what">What is it?</h2>
 <p>

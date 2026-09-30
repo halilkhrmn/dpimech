@@ -95,10 +95,12 @@ tools/            ipc.ps1 (raw IPC requests), uia.ps1 (drive the GUI via UI Auto
 installer/        dpimech.iss (Inno Setup)
 packaging/linux/  .desktop entry, service-setup.sh (deb postinst / rpm %post), deb maintainer scripts;
                   package metadata lives in crates/gui/Cargo.toml ([package.metadata.deb / generate-rpm])
+packaging/fedora/ dpimech.spec + make-srpm.sh (source RPM with vendored crates) for Fedora COPR;
+                  .copr/Makefile is COPR's entry point (see docs/RELEASING.md)
 .github/workflows ci.yml (fmt, clippy, tests), release.yml (tag v* → GitHub release),
                   pages.yml (site/ → GitHub Pages)
 site/             landing page (plain HTML, no build step)
-docs/             PLAN, PROGRESS, DECISIONS
+docs/             PLAN, PROGRESS, DECISIONS, RELEASING (release steps, COPR setup)
 ```
 
 ## Commands
@@ -135,6 +137,9 @@ sudo /usr/local/lib/dpimech/dpimech-service uninstall
 # Linux packages into target/linux/ (.deb, .rpm, AppImage); the release workflow runs the same script.
 cargo install cargo-deb cargo-generate-rpm   # once
 ./tools/build-linux-packages.sh
+
+# Fedora source RPM (what COPR builds): newest v* tag, or DPIMECH_REF=<ref>
+sh packaging/fedora/make-srpm.sh target/srpm
 ```
 
 ## Conventions

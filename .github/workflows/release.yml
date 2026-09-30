@@ -122,6 +122,10 @@ jobs:
     needs: [windows, linux, macos]
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
+    env:
+      # Fedora packages are built by COPR from the tag (see docs/RELEASING.md). Optional secret:
+      # the "custom webhook" URL of the dpimech package in COPR.
+      COPR_WEBHOOK_URL: ${{ secrets.COPR_WEBHOOK_URL }}
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -136,3 +140,6 @@ jobs:
           name: DPIMech ${{ github.ref_name }}
           generate_release_notes: true
           files: dist/*
+      - name: Start the Fedora COPR build
+        if: env.COPR_WEBHOOK_URL != ''
+        run: curl -fsS -X POST "$COPR_WEBHOOK_URL"

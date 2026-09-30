@@ -18,7 +18,7 @@
 | | Статус |
 |---|---|
 | **Windows 10 / 11** | Готово. Установщик на странице [Releases](https://github.com/halilkhrmn/dpimech/releases). |
-| **Linux** | Предварительная версия: `.deb`, `.rpm` и AppImage на странице Releases (см. ниже). |
+| **Linux** | Предварительная версия: `.deb`, `.rpm` и AppImage на странице Releases, для Fedora — COPR (см. ниже). |
 | **macOS** | Ранняя предварительная версия: `.dmg` на странице Releases, только локальный прокси (см. ниже). |
 
 ## Что умеет
@@ -96,10 +96,18 @@ UDP (например, голос) идёт напрямую. Трафик пр�
 | Ваша система | Файл | Установка |
 |---|---|---|
 | Ubuntu, Debian, Mint, Pop!_OS | `dpimech_<версия>_amd64.deb` | `sudo apt install ./dpimech_*_amd64.deb` |
-| Fedora, openSUSE, RHEL | `dpimech-<версия>-1.x86_64.rpm` | `sudo dnf install ./dpimech-*.x86_64.rpm` |
+| Fedora | скачивать не нужно: [репозиторий COPR](https://copr.fedorainfracloud.org/coprs/halilkahraman/dpimech/) | см. ниже |
+| openSUSE, RHEL | `dpimech-<версия>-1.x86_64.rpm` | `sudo dnf install ./dpimech-*.x86_64.rpm` |
 | Любой другой дистрибутив | `DPIMech-<версия>-x86_64.AppImage` | `chmod +x DPIMech-*.AppImage`, затем запустите |
 
-Пакеты `.deb` и `.rpm` сразу устанавливают и запускают фоновую службу. С AppImage откройте
+**Fedora** — добавьте репозиторий один раз, дальше обновления приходят вместе с системой (`sudo dnf upgrade`):
+
+```sh
+sudo dnf copr enable halilkahraman/dpimech
+sudo dnf install dpimech
+```
+
+Пакеты (`.deb`, `.rpm`, COPR) сразу устанавливают и запускают фоновую службу. С AppImage откройте
 DPIMech и один раз нажмите **Install the service** (спросит пароль).
 
 ### Сборка из исходников

@@ -97,6 +97,17 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-09-30 (22) — Fedora COPR
+- **Done:** `packaging/fedora/dpimech.spec` (from source, vendored crates, service in /usr/libexec),
+  `packaging/fedora/make-srpm.sh` + `.copr/Makefile` (COPR make_srpm, newest v* tag), release workflow
+  triggers COPR via the `COPR_WEBHOOK_URL` secret, `docs/RELEASING.md` (release steps + one-time COPR setup),
+  Fedora install instructions in the READMEs and on the landing page; GUI recognises /usr/libexec service.
+  Commit author on the new repo fixed to the GitHub identity (noreply address) so commits link to the account.
+- **Verified:** `make-srpm.sh` built `dpimech-0.2.0-1.src.rpm` (124 MB) in the container; `rpmbuild --rebuild`
+  of it (offline, vendored) — see below.
+- **Open:** create the COPR project/package and the webhook secret (docs/RELEASING.md); first COPR build on
+  real Fedora chroots; install test on Fedora (SELinux enforcing).
+
 ### 2026-09-30 (21) — Repo moved to halilkhrmn/dpimech
 - **Done:** every link, `APP_REPO` (update check, issue links), installer, landing page and Cargo metadata point at
   `github.com/halilkhrmn/dpimech`. The new repo starts fresh: one commit with the 0.2.0 tree on top of its
