@@ -104,7 +104,9 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
   Fedora install instructions in the READMEs and on the landing page; GUI recognises /usr/libexec service.
   Commit author on the new repo fixed to the GitHub identity (noreply address) so commits link to the account.
 - **Verified:** `make-srpm.sh` built `dpimech-0.2.0-1.src.rpm` (124 MB) in the container; `rpmbuild --rebuild`
-  of it (offline, vendored) — see below.
+  of it compiled everything offline from the vendored crates and produced `dpimech-0.2.0-1.x86_64.rpm` with the
+  expected files (service in /usr/libexec, unit ExecStart pointing there, %post runs service-setup.sh). The
+  container is Ubuntu, so Fedora's systemd macros were stubbed and BuildRequires not checked.
 - **Open:** create the COPR project/package and the webhook secret (docs/RELEASING.md); first COPR build on
   real Fedora chroots; install test on Fedora (SELinux enforcing).
 
