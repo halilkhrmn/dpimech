@@ -30,6 +30,9 @@ const SOURCE: &str = "lab";
 const PARALLEL: usize = 4;
 const FIRST_PORT: u16 = 30150;
 const REQUEST_TIMEOUT: Duration = Duration::from_secs(5);
+/// How many of the best strategies get extra rounds, and how many.
+const CONFIRM_TOP: usize = 5;
+const CONFIRM_ROUNDS: u32 = 3;
 /// WinDivert needs a moment to load its driver and start filtering.
 const WINDIVERT_WARMUP: Duration = Duration::from_millis(2000);
 
@@ -260,7 +263,8 @@ impl Lab {
             request.probes.clone()
         };
         let repeats = u32::from(request.repeats.clamp(1, 5));
-        let total = request.strategies.len() as u32 + 1;
+        let total =
+            request.strategies.len() as u32 + 1 + request.strategies.len().min(CONFIRM_TOP) as u32;
         let mut done = 0;
         self.logs.info(
             SOURCE,
@@ -284,7 +288,7 @@ impl Lab {
                 failed_list(&baseline.failed_domains)
             ),
         );
-        let best: StdMutex<Option<LabResult>> = StdMutex::new(None);
+        let results: StdMutex<Vec<LabResult>> = StdMutex::new(Vec::new());
         done += 1;
         self.emit(
             done,
@@ -306,11 +310,11 @@ impl Lab {
 
         if request.engine.is_proxy() {
             let queue = Arc::new(StdMutex::new(VecDeque::from(strategies)));
-            let done = Arc::new(std::sync::atomic::AtomicU32::new(done));
-            let best = &best;
+            let counter = Arc::new(std::sync::atomic::AtomicU32::new(done));
+            let results = &results;
             let workers = (0..PARALLEL).map(|w| {
                 let queue = queue.clone();
-                let done = done.clone();
+                let done = counter.clone();
                 let hosts = hosts.clone();
                 let domains = request.domains.clone();
                 async move {
@@ -330,12 +334,13 @@ impl Lab {
                             )
                             .await;
                         let n = done.fetch_add(1, std::sync::atomic::Ordering::SeqCst) + 1;
-                        self.record(best, &result);
+                        self.record(results, &result);
                         self.emit(n, total, result);
                     }
                 }
             });
             join_all(workers).await;
+            done = counter.load(std::sync::atomic::Ordering::SeqCst);
         } else {
             for strategy in strategies {
                 let result = self
@@ -349,29 +354,88 @@ impl Lab {
                     )
                     .await;
                 done += 1;
-                self.record(&best, &result);
+                self.record(&results, &result);
                 self.emit(done, total, result);
             }
         }
-        match best.into_inner().unwrap() {
+
+        // The quick round can be lucky: DPI boxes sometimes let a connection through and
+        // reset the next one. The best candidates get more rounds, one engine at a time.
+        let candidates = confirm_candidates(results.into_inner().unwrap());
+        let mut best: Option<LabResult> = None;
+        for quick in candidates {
+            let strategy = quick.strategy.clone().expect("candidates have a strategy");
+            let extra = if request.engine.is_proxy() {
+                self.try_proxy_strategy(
+                    request.engine,
+                    &strategy,
+                    FIRST_PORT,
+                    &request.domains,
+                    &hosts,
+                    CONFIRM_ROUNDS,
+                )
+                .await
+            } else {
+                self.try_packet_strategy(
+                    &strategy,
+                    request.engine,
+                    &request.domains,
+                    &hosts,
+                    &direct,
+                    CONFIRM_ROUNDS,
+                )
+                .await
+            };
+            let result = merge_confirmation(quick, extra);
+            self.logs.debug(SOURCE, || {
+                format!(
+                    "{} ({}): extra rounds {}, {}/{} requests in total{}",
+                    strategy.name,
+                    strategy.args,
+                    if result.confirmed { "passed" } else { "failed" },
+                    result.ok,
+                    result.total,
+                    failed_list(&result.failed_domains)
+                )
+            });
+            if best.as_ref().is_none_or(|b| result.score() > b.score()) {
+                best = Some(result.clone());
+            }
+            done += 1;
+            self.emit(done, total, result);
+        }
+
+        match best {
+            Some(b) if b.confirmed => {
+                let strategy = b
+                    .strategy
+                    .as_ref()
+                    .map(|s| s.args.as_str())
+                    .unwrap_or_default();
+                self.logs.info(
+                    SOURCE,
+                    format!(
+                        "best strategy opened every site in every round ({}/{}), {} ms: {strategy}",
+                        b.ok, b.total, b.avg_ms
+                    ),
+                );
+            }
             Some(b) if b.ok > 0 => {
                 let strategy = b
                     .strategy
                     .as_ref()
                     .map(|s| s.args.as_str())
                     .unwrap_or_default();
-                let text = format!(
-                    "best strategy opens {}/{} site(s), {} ms: {strategy}{}",
-                    b.ok,
-                    b.total,
-                    b.avg_ms,
-                    failed_list(&b.failed_domains)
+                self.logs.warn(
+                    SOURCE,
+                    format!(
+                        "no strategy opened every site reliably; best {}/{} requests, {} ms: {strategy}{}",
+                        b.ok,
+                        b.total,
+                        b.avg_ms,
+                        failed_list(&b.failed_domains)
+                    ),
                 );
-                if b.ok < b.total {
-                    self.logs.warn(SOURCE, text);
-                } else {
-                    self.logs.info(SOURCE, text);
-                }
             }
             _ => self
                 .logs
@@ -381,8 +445,8 @@ impl Lab {
         Ok(())
     }
 
-    /// Detailed log line for one strategy, and keeps the best result for the summary.
-    fn record(&self, best: &StdMutex<Option<LabResult>>, result: &LabResult) {
+    /// Detailed log line for one strategy; keeps the result for the extra rounds.
+    fn record(&self, results: &StdMutex<Vec<LabResult>>, result: &LabResult) {
         self.logs.debug(SOURCE, || {
             let strategy = result
                 .strategy
@@ -400,10 +464,7 @@ impl Lab {
                 ),
             }
         });
-        let mut best = best.lock().unwrap();
-        if best.as_ref().is_none_or(|b| result.score() > b.score()) {
-            *best = Some(result.clone());
-        }
+        results.lock().unwrap().push(result.clone());
     }
 
     fn emit(&self, done: u32, total: u32, result: LabResult) {
@@ -430,6 +491,7 @@ impl Lab {
             avg_ms: 0,
             failed_domains: hosts.to_vec(),
             error: Some(error),
+            confirmed: false,
         };
         let launch = Launch {
             engine,
@@ -480,6 +542,7 @@ impl Lab {
             avg_ms: 0,
             failed_domains: hosts.to_vec(),
             error: Some(error),
+            confirmed: false,
         };
         let launch = Launch {
             engine,
@@ -543,14 +606,46 @@ fn base_client() -> reqwest::ClientBuilder {
         .pool_max_idle_per_host(0)
 }
 
-/// Any HTTP response counts as success: it means the TLS handshake got past DPI.
+/// The best quick-round results worth extra rounds: those that opened every site, or failing
+/// that the ones that opened the most.
+fn confirm_candidates(mut results: Vec<LabResult>) -> Vec<LabResult> {
+    results.retain(|r| r.error.is_none() && r.ok > 0 && r.strategy.is_some());
+    results.sort_by_key(|r| std::cmp::Reverse(r.score()));
+    results.truncate(CONFIRM_TOP);
+    results
+}
+
+/// Adds the extra rounds to the quick result; confirmed only if every request succeeded.
+fn merge_confirmation(quick: LabResult, extra: LabResult) -> LabResult {
+    let confirmed = extra.error.is_none() && quick.ok == quick.total && extra.ok == extra.total;
+    let ok = quick.ok + extra.ok;
+    let ms = u64::from(quick.avg_ms) * u64::from(quick.ok)
+        + u64::from(extra.avg_ms) * u64::from(extra.ok);
+    let mut failed_domains = quick.failed_domains;
+    for d in extra.failed_domains {
+        if !failed_domains.contains(&d) {
+            failed_domains.push(d);
+        }
+    }
+    LabResult {
+        ok,
+        total: quick.total + extra.total,
+        avg_ms: ms.checked_div(u64::from(ok)).unwrap_or(0) as u32,
+        failed_domains,
+        error: extra.error,
+        confirmed,
+        ..quick
+    }
+}
+
+/// A site counts as open when its page starts loading (see [`crate::health::site_opens`]).
 async fn check_sites(client: &reqwest::Client, hosts: &[String], repeats: u32) -> LabResult {
     let per_host = hosts.iter().map(|host| async move {
         let mut ok = 0u32;
         let mut ms = 0u64;
         for _ in 0..repeats {
             let started = Instant::now();
-            if client.get(format!("https://{host}/")).send().await.is_ok() {
+            if crate::health::site_opens(client, host).await {
                 ok += 1;
                 ms += started.elapsed().as_millis() as u64;
             }
@@ -575,6 +670,7 @@ async fn check_sites(client: &reqwest::Client, hosts: &[String], repeats: u32) -
             .map(|r| r.0)
             .collect(),
         error: None,
+        confirmed: false,
     }
 }
 
@@ -600,5 +696,60 @@ fn failed_list(domains: &[String]) -> String {
         String::new()
     } else {
         format!(" — failed: {}", domains.join(", "))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn result(name: &str, ok: u32, total: u32, ms: u32) -> LabResult {
+        LabResult {
+            strategy: Some(LabStrategy {
+                name: name.to_owned(),
+                args: format!("--{name}"),
+                source: String::new(),
+                origin: String::new(),
+                recommended: false,
+            }),
+            ok,
+            total,
+            avg_ms: ms,
+            failed_domains: Vec::new(),
+            error: None,
+            confirmed: false,
+        }
+    }
+
+    #[test]
+    fn lucky_quick_round_is_not_confirmed() {
+        let flaky = merge_confirmation(result("a", 8, 8, 100), result("a", 10, 24, 300));
+        assert!(!flaky.confirmed);
+        assert_eq!((flaky.ok, flaky.total), (18, 32));
+        let steady = merge_confirmation(result("b", 7, 8, 200), result("b", 24, 24, 200));
+        // One miss in the quick round is already one too many.
+        assert!(!steady.confirmed);
+        let solid = merge_confirmation(result("c", 8, 8, 400), result("c", 24, 24, 400));
+        assert!(solid.confirmed);
+        // A confirmed strategy beats a faster one that only did well once.
+        assert!(solid.score() > flaky.score());
+        assert_eq!(solid.avg_ms, 400);
+    }
+
+    #[test]
+    fn candidates_skip_errors_and_zero_results() {
+        let mut broken = result("broken", 0, 8, 0);
+        broken.error = Some("did not start".into());
+        let list = vec![
+            broken,
+            result("none", 0, 8, 0),
+            result("half", 4, 8, 50),
+            result("all", 8, 8, 500),
+        ];
+        let names: Vec<String> = confirm_candidates(list)
+            .into_iter()
+            .map(|r| r.strategy.unwrap().name)
+            .collect();
+        assert_eq!(names, ["all", "half"]);
     }
 }

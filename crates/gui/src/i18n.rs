@@ -31,6 +31,7 @@ const CATALOGS: &[(&str, &str)] = &[
 pub const EXTRA_TEXTS: &[&str] = &[
     "Automatic",
     "Restarting did not help. This setting may have stopped working on your connection — run the Strategy Lab.",
+    "This setting does not open this profile's sites on your connection. Find a working one in the Strategy Lab, or try another engine.",
     "Per-app",
     "System-wide",
     "Local proxy",

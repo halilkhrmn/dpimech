@@ -62,6 +62,8 @@ use dpimech_core::model::ConnectionHealth;
 use tokio::sync::Notify;
 
 const SITE_TIMEOUT: Duration = Duration::from_secs(8);
+/// Long enough for the engine to open its port and per-app routes to be in place.
+const FIRST_CHECK: Duration = Duration::from_secs(4);
 /// After a bad check, look again soon instead of waiting a full interval.
 const CONFIRM_AFTER: Duration = Duration::from_secs(30);
 const USUAL_SAMPLES: usize = 10;
@@ -105,6 +107,8 @@ impl MonitorHistory {
 }
 
 pub enum MonitorEvent {
+    /// The check right after the engine started.
+    First(ConnectionHealth, Vec<String>),
     /// A normal (or first bad, still unconfirmed) check.
     Report(ConnectionHealth),
     /// Two bad checks in a row.
@@ -124,15 +128,17 @@ pub async fn monitor_sites(
     let Ok(client) = client(proxy_port) else {
         return;
     };
-    // First check shortly after start so the card shows a value quickly.
-    let mut wait = Duration::from_secs(20);
+    // First check right after start: a setting that does not work should say so at once.
+    let mut wait = FIRST_CHECK;
     let mut bad_streak = 0u32;
+    let mut first = true;
     loop {
         tokio::select! {
             _ = tokio::time::sleep(wait) => {}
             _ = check_now.notified() => {}
         }
-        let (latency_ms, ok) = measure(&client, &sites).await;
+        let (latency_ms, failed) = measure(&client, &sites).await;
+        let ok = (sites.len() - failed.len()) as u32;
         let total = sites.len() as u32;
         let usual_ms = history.lock().unwrap().usual_ms();
         let too_few = ok * 2 < total;
@@ -157,7 +163,9 @@ pub async fn monitor_sites(
             slow: bad,
             advice: None,
         };
-        let event = if bad_streak >= 2 {
+        let event = if std::mem::take(&mut first) {
+            MonitorEvent::First(health, failed)
+        } else if bad_streak >= 2 {
             bad_streak = 0;
             let reason = if too_few {
                 format!("only {ok}/{total} sites answered")
@@ -192,24 +200,46 @@ fn client(proxy_port: Option<u16>) -> reqwest::Result<reqwest::Client> {
     builder.build()
 }
 
-/// Median response time of the sites that answered, and how many answered.
-async fn measure(client: &reqwest::Client, sites: &[String]) -> (u32, u32) {
+/// Median response time of the sites that answered, and the sites that did not.
+async fn measure(client: &reqwest::Client, sites: &[String]) -> (u32, Vec<String>) {
     let checks = sites.iter().map(|site| async move {
         let started = Instant::now();
-        client
-            .get(format!("https://{site}/"))
-            .send()
-            .await
-            .ok()
-            .map(|_| started.elapsed().as_millis() as u32)
+        let opened = site_opens(client, site).await;
+        (site, opened.then(|| started.elapsed().as_millis() as u32))
     });
-    let times: Vec<u32> = futures_util::future::join_all(checks)
-        .await
-        .into_iter()
-        .flatten()
+    let results = futures_util::future::join_all(checks).await;
+    let times: Vec<u32> = results.iter().filter_map(|r| r.1).collect();
+    let failed = results
+        .iter()
+        .filter(|r| r.1.is_none())
+        .map(|r| r.0.clone())
         .collect();
-    let ok = times.len() as u32;
-    (if times.is_empty() { 0 } else { median(times) }, ok)
+    (if times.is_empty() { 0 } else { median(times) }, failed)
+}
+
+/// Enough of the page to know data keeps flowing; big pages would only slow the check down.
+const BODY_SAMPLE: usize = 64 * 1024;
+
+/// Requests `https://{host}/` and reads the start of the page. Response headers alone are not
+/// enough: DPI often lets the TLS handshake through and resets the connection once data flows,
+/// which is exactly the "connected but nothing loads" case.
+pub async fn site_opens(client: &reqwest::Client, host: &str) -> bool {
+    let Ok(mut response) = client.get(format!("https://{host}/")).send().await else {
+        return false;
+    };
+    let mut read = 0;
+    loop {
+        match response.chunk().await {
+            Ok(Some(chunk)) => {
+                read += chunk.len();
+                if read >= BODY_SAMPLE {
+                    return true;
+                }
+            }
+            Ok(None) => return true,
+            Err(_) => return false,
+        }
+    }
 }
 
 fn median(mut v: Vec<u32>) -> u32 {

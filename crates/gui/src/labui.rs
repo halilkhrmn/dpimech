@@ -216,7 +216,11 @@ pub fn progress(ui: &AppWindow, done: u32, total: u32, result: LabResult) {
         return;
     }
     let rows: Vec<LabRow> = STATE.with_borrow_mut(|s| {
-        s.results.push(result);
+        // The extra rounds for the best candidates report the same strategy again.
+        match s.results.iter_mut().find(|r| r.same_strategy(&result)) {
+            Some(existing) => *existing = result,
+            None => s.results.push(result),
+        }
         s.results.sort_by(|a, b| {
             b.error
                 .is_none()
@@ -230,21 +234,16 @@ pub fn progress(ui: &AppWindow, done: u32, total: u32, result: LabResult) {
 
 pub fn finished(ui: &AppWindow, cancelled: bool, error: Option<String>) {
     ui.set_lab_running(false);
-    let working = STATE.with_borrow(|s| {
-        s.results
-            .iter()
-            .filter(|r| r.error.is_none() && r.total > 0 && r.ok == r.total)
-            .count()
-    });
+    let working = STATE.with_borrow(|s| s.results.iter().filter(|r| r.confirmed).count());
     let status = match (cancelled, error) {
         (true, _) => tr("Cancelled."),
         (_, Some(e)) => trf!("Stopped: {}", e),
         _ if working > 0 => trf!(
-            "Done — {} strategies work on every site. Press “Use” on the top one.",
+            "Done — {} strategies opened every site in every round. Press “Use” on the top one.",
             working
         ),
         _ => tr(
-            "Done — none worked on every site. Try more tries per site, another engine, or updated online lists.",
+            "Done — none opened every site in every round. Try another engine, more tries per site, or updated online lists.",
         ),
     };
     ui.set_lab_progress(1.0);

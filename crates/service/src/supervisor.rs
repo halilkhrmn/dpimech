@@ -83,6 +83,9 @@ pub struct Supervisor {
     events: broadcast::Sender<Event>,
 }
 
+/// Shown on the card when the first check after start fails; translated by the GUI.
+const NOT_WORKING_ADVICE: &str = "This setting does not open this profile's sites on your connection. Find a working one in the Strategy Lab, or try another engine.";
+
 impl Supervisor {
     pub fn new(data: DataDir, events: broadcast::Sender<Event>) -> anyhow::Result<Self> {
         let config = ServiceConfig::load(&data.config_file())?;
@@ -655,6 +658,12 @@ impl Supervisor {
                     _ = &mut scheduled => break Restart::Scheduled,
                     Some(event) = monitor_rx.recv() => {
                         let (mut report, slow_reason) = match event {
+                            MonitorEvent::First(mut h, failed) => {
+                                if restarts == 0 {
+                                    self.log_first_check(name, profile.engine, &mut h, &failed);
+                                }
+                                (h, None)
+                            }
                             MonitorEvent::Report(h) => (h, None),
                             MonitorEvent::Slow(h, reason) => (h, Some(reason)),
                         };
@@ -774,6 +783,40 @@ impl Supervisor {
 
     /// Forwards engine output to the log, collapsing floods of identical lines, and reports
     /// lines that match a stall marker.
+    /// Says right after start whether the profile's sites open through the engine, so a setting
+    /// that does not work on this connection shows up at once instead of as a silent failure.
+    fn log_first_check(
+        &self,
+        name: &str,
+        engine: EngineKind,
+        health: &mut ConnectionHealth,
+        failed: &[String],
+    ) {
+        let engine = engine.display_name();
+        if failed.is_empty() {
+            self.logs.info(
+                name,
+                format!(
+                    "connection check: {}/{} site(s) open through {engine}, {} ms",
+                    health.ok, health.total, health.latency_ms
+                ),
+            );
+            return;
+        }
+        self.logs.warn(
+            name,
+            format!(
+                "connection check: only {}/{} site(s) open through {engine} — failed: {}",
+                health.ok,
+                health.total,
+                failed.join(", ")
+            ),
+        );
+        if health.ok * 2 < health.total {
+            health.advice = Some(NOT_WORKING_ADVICE.into());
+        }
+    }
+
     fn pipe_output(
         &self,
         source: &str,
