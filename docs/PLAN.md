@@ -137,12 +137,12 @@ trait Engine {
 **Priority 3 — not decided yet.** Candidates, for the owner to pick from:
 - ~~Discord on Linux~~ → works with ByeDPI since 0.2.4 (stricter checks, DECISIONS #41).
 - ~~SpoofDPI~~ → Linux and macOS since 0.2.3 (DECISIONS #39).
-- Strategy repository: domain packs and strategy lists in their own GitHub repo, updated without an
-  app release (see Open items).
+- ~~Strategy repository~~ → `strategies/default.json` in this repository, fetched from `main` by the
+  service (0.2.5, DECISIONS #42). Domain packs stay in the code for now.
 - ~~App self-update~~ → since 0.2.3 (DECISIONS #40).
 - macOS: whole computer (pf) and per-app routing, signing and notarization — on hold for now.
 
 ## Open items
 - ~~Final app name~~ → **DPIMech** (2026-09-30; 0.1.x installs migrate automatically, see DECISIONS #28).
-- Where our strategy/domain-pack repo lives (new GitHub repo, e.g. `<you>/dpimech-strategies`).
+- ~~Where our strategy/domain-pack repo lives~~ → no separate repo: `strategies/default.json` here (DECISIONS #42).
 - ~~License~~ → **GPL-3.0-or-later** (DECISIONS #33); engines are downloaded at run time, not bundled.

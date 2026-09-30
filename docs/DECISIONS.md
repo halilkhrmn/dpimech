@@ -257,3 +257,13 @@ own release), a launchd service and an unsigned universal `.dmg`. The wizard hid
   Profiles check their sites 4 s after start and log which ones failed right away.
 - **Cost:** a Lab run takes up to ~5 × 3 rounds longer (seconds per candidate); the page download is capped
   so big sites do not slow the check down.
+
+## 42. Standard strategies in a JSON file in this repository (2026-09-30)
+- **Decision:** the standard set lives in `strategies/default.json`, embedded with `include_str!` and fetched by
+  the service from `main` (raw.githubusercontent.com) with the daily update check and on "Update online lists". The
+  owner preferred this to a separate `dpimech-strategies` repository: one repo, one review flow.
+- **Safety:** the file only supplies names and argument strings; every strategy still goes through the argument
+  policy at launch, and a file this build cannot parse (or with another `format`) is ignored. It is stored in
+  the admin-only data folder, written atomically.
+- **Not moved:** domain packs and ISP presets stay in the code; they change together with UI and probes.
+
