@@ -345,6 +345,15 @@ fn set_connected(ui: &Weak<AppWindow>, connected: bool, info: String) {
         if !connected {
             crate::apply_profiles(&ui, Vec::new());
             apply_packages(&ui, &[]);
+            // Requests in flight when the connection dropped will never be answered.
+            ui.set_checking_updates(false);
+            let waiting = tr("Looking up…");
+            if ui.get_wizard_isp_text() == waiting.as_str() {
+                ui.set_wizard_isp_text(tr("This needs the background service.").into());
+            }
+            if ui.get_lab_isp_text() == waiting.as_str() {
+                ui.set_lab_isp_text(tr("This needs the background service.").into());
+            }
         }
     });
 }

@@ -249,8 +249,12 @@ fn main() -> anyhow::Result<()> {
         let weak = ui.as_weak();
         let tx = cmd_tx.clone();
         move || {
-            weak.unwrap().set_checking_updates(true);
-            let _ = tx.send(Command::CheckUpdates);
+            let ui = weak.unwrap();
+            // Offline the request would be dropped and the button would stay on "Checking…".
+            if ui.get_service_connected() {
+                ui.set_checking_updates(true);
+                let _ = tx.send(Command::CheckUpdates);
+            }
         }
     });
     ui.on_install_package({
@@ -508,7 +512,12 @@ fn main() -> anyhow::Result<()> {
         let weak = ui.as_weak();
         let tx = cmd_tx.clone();
         move || {
-            weak.unwrap().set_wizard_isp_text(tr("Looking up…").into());
+            let ui = weak.unwrap();
+            if !ui.get_service_connected() {
+                ui.set_wizard_isp_text(tr("This needs the background service.").into());
+                return;
+            }
+            ui.set_wizard_isp_text(tr("Looking up…").into());
             let _ = tx.send(Command::DetectIsp);
         }
     });
@@ -516,12 +525,27 @@ fn main() -> anyhow::Result<()> {
         let weak = ui.as_weak();
         move || {
             let ui = weak.unwrap();
-            let text = match prefs::install_service_elevated() {
-                Ok(()) => tr("Installing… confirm the prompt. DPIMech connects by itself when the service is ready."),
-                Err(e) => trf!("Could not start the installer: {}", e),
+            let show = |ui: &AppWindow, text: String| {
+                ui.set_wizard_message(text.clone().into());
+                ui.set_service_info(text.into());
             };
-            ui.set_wizard_message(text.clone().into());
-            ui.set_service_info(text.into());
+            let finished = {
+                let weak = ui.as_weak();
+                move |result: Result<(), String>| {
+                    let _ = weak.upgrade_in_event_loop(move |ui| {
+                        let text = match result {
+                            Ok(()) => tr("The service is installed. Connecting…"),
+                            Err(e) => trf!("Installing the service failed: {}", e),
+                        };
+                        ui.set_wizard_message(text.clone().into());
+                        ui.set_service_info(text.into());
+                    });
+                }
+            };
+            match prefs::install_service_elevated(finished) {
+                Ok(()) => show(&ui, tr("Installing… confirm the prompt. DPIMech connects by itself when the service is ready.")),
+                Err(e) => show(&ui, trf!("Could not start the installer: {}", e)),
+            }
         }
     });
     ui.on_wizard_next({
@@ -584,6 +608,10 @@ fn main() -> anyhow::Result<()> {
         let tx = cmd_tx.clone();
         move || {
             let ui = weak.unwrap();
+            if !ui.get_service_connected() {
+                ui.set_lab_isp_text(tr("This needs the background service.").into());
+                return;
+            }
             ui.set_lab_isp_text(tr("Looking up…").into());
             let _ = tx.send(Command::DetectIsp);
             // Reload so presets for the detected ISP get their star.

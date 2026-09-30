@@ -123,7 +123,9 @@ fn install_dir() -> PathBuf {
 fn install_binary() -> anyhow::Result<PathBuf> {
     let current = std::env::current_exe()?;
     let target = install_dir().join("dpimech-service.exe");
-    if current == target {
+    // The installer puts us in "C:\Program Files\DPIMech": the same folder, spelled differently.
+    // Copying a running exe onto itself fails, so compare what the paths point to.
+    if same_file(&current, &target) {
         return Ok(target);
     }
     std::fs::create_dir_all(install_dir())?;
@@ -137,6 +139,16 @@ fn install_binary() -> anyhow::Result<PathBuf> {
         std::thread::sleep(Duration::from_millis(250));
     }
     Err(last_err.unwrap().into())
+}
+
+/// Windows paths are case-insensitive; canonical paths carry the on-disk spelling.
+fn same_file(a: &std::path::Path, b: &std::path::Path) -> bool {
+    match (std::fs::canonicalize(a), std::fs::canonicalize(b)) {
+        (Ok(a), Ok(b)) => a == b,
+        _ => a
+            .to_string_lossy()
+            .eq_ignore_ascii_case(&b.to_string_lossy()),
+    }
 }
 
 fn stop_and_wait(service: &windows_service::service::Service) -> anyhow::Result<()> {

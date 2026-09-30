@@ -97,6 +97,18 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-09-30 (24) — 0.2.1: Windows service would not install
+- **Bug (hand test on Windows 11):** after installing 0.2.0 over 0.1.x the service was never registered; "Install
+  the service" asked for UAC and then nothing happened, so ISP detection and the engine list waited forever.
+  Cause: the installer puts the files in `C:\Program Files\DPIMech`, `dpimech-service install` wants
+  `C:\Program Files\dpimech` and compared the paths case-sensitively, so it tried to copy its own running exe
+  onto itself and gave up after 20 tries (hidden window, no message).
+- **Fixed:** same-file check via canonical paths (case-insensitive fallback); `install` writes
+  `<data>/logs/install.log`; the GUI waits for the elevated installer (ShellExecuteEx / pkexec / osascript) and
+  shows "installed" or the error from that log; update check and provider lookup no longer hang on
+  "Checking…" / "Looking up…" without the service. Version 0.2.1.
+- **Verified:** Windows cross clippy, Linux tests; the Windows path itself needs the hand test with 0.2.1.
+
 ### 2026-09-30 (23) — Releases without pushing tags
 - **Done:** pushing to the `release` branch runs the release workflow, which creates the tag `v<version>`
   with the GitHub release (tag pushes are refused from cloud sessions); a version that already has a tag is

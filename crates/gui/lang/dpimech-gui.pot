@@ -693,6 +693,14 @@ msgstr ""
 msgid "ISP lookup failed: {}"
 msgstr ""
 
+#: src/bridge.rs:350
+msgid "Looking up…"
+msgstr ""
+
+#: src/bridge.rs:352
+msgid "This needs the background service."
+msgstr ""
+
 #: src/convert.rs:142
 msgid "Give the profile a name."
 msgstr ""
@@ -865,71 +873,75 @@ msgstr ""
 msgid "No bypass"
 msgstr ""
 
-#: src/launcher.rs:46
+#: src/launcher.rs:45
 msgid "Connecting to the DPIMech service…"
 msgstr ""
 
-#: src/launcher.rs:67
+#: src/launcher.rs:66
 msgid "Opening {}…"
 msgstr ""
 
-#: src/launcher.rs:70
+#: src/launcher.rs:69
 msgid "Could not open {}: {}"
 msgstr ""
 
-#: src/launcher.rs:76
+#: src/launcher.rs:75
 msgid "{} is on"
 msgstr ""
 
-#: src/launcher.rs:84
+#: src/launcher.rs:83
 msgid "Could not start"
 msgstr ""
 
-#: src/launcher.rs:102
+#: src/launcher.rs:101
 msgid "The DPIMech service is not running. Open DPIMech to set it up."
 msgstr ""
 
-#: src/launcher.rs:108
+#: src/launcher.rs:107
 msgid "The profile of this shortcut no longer exists."
 msgstr ""
 
-#: src/launcher.rs:110
+#: src/launcher.rs:109
 msgid "Starting {}"
 msgstr ""
 
-#: src/launcher.rs:115
+#: src/launcher.rs:114
 msgid "Turning the profile on…"
 msgstr ""
 
-#: src/launcher.rs:131
+#: src/launcher.rs:130
 msgid "The profile stopped right after starting. The Logs page in DPIMech shows why."
 msgstr ""
 
-#: src/launcher.rs:136
+#: src/launcher.rs:135
 msgid "The profile is taking too long to start. The Logs page in DPIMech shows why."
 msgstr ""
 
-#: src/launcher.rs:232
+#: src/launcher.rs:231
 msgid "the menu entry has no command"
 msgstr ""
 
-#: src/main.rs:349
+#: src/main.rs:353
 msgid "Folder for DPIMech log files"
 msgstr ""
 
-#: src/main.rs:511
-msgid "Looking up…"
+#: src/main.rs:537
+msgid "The service is installed. Connecting…"
 msgstr ""
 
-#: src/main.rs:520
+#: src/main.rs:538
+msgid "Installing the service failed: {}"
+msgstr ""
+
+#: src/main.rs:546
 msgid "Installing… confirm the prompt. DPIMech connects by itself when the service is ready."
 msgstr ""
 
-#: src/main.rs:521
+#: src/main.rs:547
 msgid "Could not start the installer: {}"
 msgstr ""
 
-#: src/main.rs:577
+#: src/main.rs:601
 msgid "Downloading online lists…"
 msgstr ""
 
@@ -981,15 +993,15 @@ msgstr ""
 msgid "Choose an application"
 msgstr ""
 
-#: src/shortcut.rs:129
+#: src/shortcut.rs:130
 msgid "Choose where to put the shortcut."
 msgstr ""
 
-#: src/shortcut.rs:133
+#: src/shortcut.rs:134
 msgid "Give the shortcut a name."
 msgstr ""
 
-#: src/shortcut.rs:444
+#: src/shortcut.rs:446
 msgid "Starts the DPIMech profile \"{}\""
 msgstr ""
 

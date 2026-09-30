@@ -696,6 +696,14 @@ msgstr "Stratejiler yüklenemedi: {}"
 msgid "ISP lookup failed: {}"
 msgstr "İnternet sağlayıcısı bulunamadı: {}"
 
+#: src/bridge.rs:350
+msgid "Looking up…"
+msgstr "Aranıyor…"
+
+#: src/bridge.rs:352
+msgid "This needs the background service."
+msgstr "Bunun için arka plan servisi gerekli."
+
 #: src/convert.rs:142
 msgid "Give the profile a name."
 msgstr "Profile bir ad ver."
@@ -868,71 +876,75 @@ msgstr "Bitti — hiçbiri her sitede çalışmadı. Site başına daha fazla de
 msgid "No bypass"
 msgstr "Aşma yok"
 
-#: src/launcher.rs:46
+#: src/launcher.rs:45
 msgid "Connecting to the DPIMech service…"
 msgstr "DPIMech hizmetine bağlanılıyor…"
 
-#: src/launcher.rs:67
+#: src/launcher.rs:66
 msgid "Opening {}…"
 msgstr "{} açılıyor…"
 
-#: src/launcher.rs:70
+#: src/launcher.rs:69
 msgid "Could not open {}: {}"
 msgstr "{} açılamadı: {}"
 
-#: src/launcher.rs:76
+#: src/launcher.rs:75
 msgid "{} is on"
 msgstr "{} açık"
 
-#: src/launcher.rs:84
+#: src/launcher.rs:83
 msgid "Could not start"
 msgstr "Başlatılamadı"
 
-#: src/launcher.rs:102
+#: src/launcher.rs:101
 msgid "The DPIMech service is not running. Open DPIMech to set it up."
 msgstr "DPIMech hizmeti çalışmıyor. Kurmak için DPIMech'i aç."
 
-#: src/launcher.rs:108
+#: src/launcher.rs:107
 msgid "The profile of this shortcut no longer exists."
 msgstr "Bu kısayolun profili artık yok."
 
-#: src/launcher.rs:110
+#: src/launcher.rs:109
 msgid "Starting {}"
 msgstr "{} başlatılıyor"
 
-#: src/launcher.rs:115
+#: src/launcher.rs:114
 msgid "Turning the profile on…"
 msgstr "Profil açılıyor…"
 
-#: src/launcher.rs:131
+#: src/launcher.rs:130
 msgid "The profile stopped right after starting. The Logs page in DPIMech shows why."
 msgstr "Profil başlar başlamaz durdu. Nedenini DPIMech'teki Kayıtlar sayfası gösterir."
 
-#: src/launcher.rs:136
+#: src/launcher.rs:135
 msgid "The profile is taking too long to start. The Logs page in DPIMech shows why."
 msgstr "Profilin başlaması çok uzun sürüyor. Nedenini DPIMech'teki Kayıtlar sayfası gösterir."
 
-#: src/launcher.rs:232
+#: src/launcher.rs:231
 msgid "the menu entry has no command"
 msgstr "menü girdisinde komut yok"
 
-#: src/main.rs:349
+#: src/main.rs:353
 msgid "Folder for DPIMech log files"
 msgstr "DPIMech kayıt dosyaları için klasör"
 
-#: src/main.rs:511
-msgid "Looking up…"
-msgstr "Aranıyor…"
+#: src/main.rs:537
+msgid "The service is installed. Connecting…"
+msgstr "Servis kuruldu. Bağlanılıyor…"
 
-#: src/main.rs:520
+#: src/main.rs:538
+msgid "Installing the service failed: {}"
+msgstr "Servis kurulamadı: {}"
+
+#: src/main.rs:546
 msgid "Installing… confirm the prompt. DPIMech connects by itself when the service is ready."
 msgstr "Kuruluyor… izin penceresini onayla. Servis hazır olunca DPIMech kendiliğinden bağlanır."
 
-#: src/main.rs:521
+#: src/main.rs:547
 msgid "Could not start the installer: {}"
 msgstr "Kurulum başlatılamadı: {}"
 
-#: src/main.rs:577
+#: src/main.rs:601
 msgid "Downloading online lists…"
 msgstr "Çevrimiçi listeler indiriliyor…"
 
@@ -984,15 +996,15 @@ msgstr "{} sürümü hazır. İndirmek için Ayarlar'ı aç."
 msgid "Choose an application"
 msgstr "Bir uygulama seç"
 
-#: src/shortcut.rs:129
+#: src/shortcut.rs:130
 msgid "Choose where to put the shortcut."
 msgstr "Kısayolun nereye konacağını seç."
 
-#: src/shortcut.rs:133
+#: src/shortcut.rs:134
 msgid "Give the shortcut a name."
 msgstr "Kısayola bir ad ver."
 
-#: src/shortcut.rs:444
+#: src/shortcut.rs:446
 msgid "Starts the DPIMech profile \"{}\""
 msgstr "DPIMech profili \"{}\" başlatır"
 

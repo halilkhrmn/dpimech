@@ -74,7 +74,7 @@ fn main() -> anyhow::Result<()> {
             run_until(data, shutdown_signal())
         }
         #[cfg(windows)]
-        "install" => winsvc::install(&data),
+        "install" => log_install(&data, winsvc::install(&data)),
         #[cfg(windows)]
         "uninstall" => winsvc::uninstall(),
         #[cfg(windows)]
@@ -84,11 +84,11 @@ fn main() -> anyhow::Result<()> {
             winsvc::run_dispatcher(data)
         }
         #[cfg(target_os = "linux")]
-        "install" => systemd::install(&data),
+        "install" => log_install(&data, systemd::install(&data)),
         #[cfg(target_os = "linux")]
         "uninstall" => systemd::uninstall(),
         #[cfg(target_os = "macos")]
-        "install" => launchd::install(&data),
+        "install" => log_install(&data, launchd::install(&data)),
         #[cfg(target_os = "macos")]
         "uninstall" => launchd::uninstall(),
         #[cfg(target_os = "macos")]
@@ -118,6 +118,20 @@ fn main() -> anyhow::Result<()> {
         }
         other => anyhow::bail!("unknown command: {other}"),
     }
+}
+
+/// `install` usually runs hidden behind an elevation prompt, so its outcome also goes to
+/// `<data>/logs/install.log`, where the GUI reads it to explain a failure.
+fn log_install(data: &DataDir, result: anyhow::Result<()>) -> anyhow::Result<()> {
+    let line = match &result {
+        Ok(()) => "ok".to_owned(),
+        Err(e) => format!("error: {e:#}"),
+    };
+    let dir = data.logs_dir();
+    if std::fs::create_dir_all(&dir).is_ok() {
+        let _ = std::fs::write(dir.join("install.log"), format!("{line}\n"));
+    }
+    result
 }
 
 /// Runs the service until `shutdown` resolves, then stops every engine.

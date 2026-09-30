@@ -98,11 +98,19 @@ pub fn save(prefs: &Prefs) {
     }
 }
 
-/// Starts `dpimech-service.exe install` elevated (one UAC prompt). The service binary ships
-/// next to the GUI.
+/// Starts `dpimech-service.exe install` elevated (one UAC prompt); the service binary ships
+/// next to the GUI. `done` runs on another thread once the installer has finished.
 #[cfg(windows)]
-pub fn install_service_elevated() -> Result<(), String> {
-    use windows_sys::Win32::UI::Shell::ShellExecuteW;
+pub fn install_service_elevated(
+    done: impl FnOnce(Result<(), String>) + Send + 'static,
+) -> Result<(), String> {
+    use windows_sys::Win32::Foundation::{CloseHandle, ERROR_CANCELLED, GetLastError};
+    use windows_sys::Win32::System::Threading::{
+        GetExitCodeProcess, INFINITE, WaitForSingleObject,
+    };
+    use windows_sys::Win32::UI::Shell::{
+        SEE_MASK_NOCLOSEPROCESS, SHELLEXECUTEINFOW, ShellExecuteExW,
+    };
     use windows_sys::Win32::UI::WindowsAndMessaging::SW_HIDE;
 
     let exe = std::env::current_exe()
@@ -111,34 +119,95 @@ pub fn install_service_elevated() -> Result<(), String> {
     if !exe.is_file() {
         return Err(format!("{} not found", exe.display()));
     }
+    let started = std::time::SystemTime::now();
     let wide = |s: &str| s.encode_utf16().chain(Some(0)).collect::<Vec<u16>>();
     let (verb, file, params) = (
         wide("runas"),
         wide(&exe.display().to_string()),
         wide("install"),
     );
-    // SAFETY: all strings are NUL-terminated UTF-16 that outlive the call.
-    let result = unsafe {
-        ShellExecuteW(
-            std::ptr::null_mut(),
-            verb.as_ptr(),
-            file.as_ptr(),
-            params.as_ptr(),
-            std::ptr::null(),
-            SW_HIDE,
-        )
+    // SAFETY: the struct is zero-initialised with its size set; all strings are NUL-terminated
+    // UTF-16 that outlive the call.
+    let process = unsafe {
+        let mut info: SHELLEXECUTEINFOW = std::mem::zeroed();
+        info.cbSize = size_of::<SHELLEXECUTEINFOW>() as u32;
+        info.fMask = SEE_MASK_NOCLOSEPROCESS;
+        info.lpVerb = verb.as_ptr();
+        info.lpFile = file.as_ptr();
+        info.lpParameters = params.as_ptr();
+        info.nShow = SW_HIDE;
+        if ShellExecuteExW(&mut info) == 0 {
+            return Err(if GetLastError() == ERROR_CANCELLED {
+                "the administrator prompt was declined".into()
+            } else {
+                std::io::Error::last_os_error().to_string()
+            });
+        }
+        info.hProcess as usize
     };
-    // Values above 32 mean success; the user may still decline the UAC prompt.
-    if result as isize > 32 {
-        Ok(())
-    } else {
-        Err("Windows did not start the installer (was the prompt declined?)".into())
-    }
+    std::thread::spawn(move || {
+        let mut code = 1u32;
+        // SAFETY: the handle came from ShellExecuteExW (NOCLOSEPROCESS) and is closed here.
+        unsafe {
+            WaitForSingleObject(process as _, INFINITE);
+            GetExitCodeProcess(process as _, &mut code);
+            CloseHandle(process as _);
+        }
+        done(if code == 0 {
+            Ok(())
+        } else {
+            Err(install_error(started))
+        });
+    });
+    Ok(())
+}
+
+/// Why `dpimech-service install` failed, from the log it writes (see the service's main.rs);
+/// a log older than this attempt belongs to an earlier one and is ignored.
+fn install_error(started: std::time::SystemTime) -> String {
+    let log = dpimech_core::paths::default_service_data_dir()
+        .join("logs")
+        .join("install.log");
+    let fresh = std::fs::metadata(&log)
+        .and_then(|m| m.modified())
+        .is_ok_and(|t| t >= started);
+    fresh
+        .then(|| std::fs::read_to_string(&log).ok())
+        .flatten()
+        .and_then(|t| {
+            t.lines()
+                .rev()
+                .find(|l| l.starts_with("error: "))
+                .map(str::to_owned)
+        })
+        .map(|l| l.trim_start_matches("error: ").to_owned())
+        .unwrap_or_else(|| "the installer stopped with an error".into())
+}
+
+/// Waits for a started installer (pkexec, osascript) on another thread and reports to `done`.
+#[cfg(unix)]
+fn wait_for(
+    mut child: std::process::Child,
+    done: impl FnOnce(Result<(), String>) + Send + 'static,
+) {
+    let started = std::time::SystemTime::now();
+    std::thread::spawn(move || {
+        let result = match child.wait() {
+            Ok(status) if status.success() => Ok(()),
+            // pkexec: 126 = dialog dismissed, 127 = not authorised; osascript: 1 on cancel.
+            Ok(status) if matches!(status.code(), Some(126 | 127)) => {
+                Err("the administrator prompt was declined".into())
+            }
+            Ok(_) => Err(install_error(started)),
+            Err(e) => Err(e.to_string()),
+        };
+        done(result);
+    });
 }
 
 /// Runs `dpimech-service install` through polkit (`pkexec`), which asks for the admin
-/// password once. Not waited for, like the Windows prompt, so the window stays responsive;
-/// the GUI notices the service when it connects.
+/// password once. `done` runs on another thread when it has finished; the GUI also notices
+/// the service by itself when it connects.
 /// With a deb/rpm the service is already installed and only needs to be started
 /// (/usr/lib: deb and the release rpm; /usr/libexec: the Fedora COPR package).
 #[cfg(all(unix, not(target_os = "macos")))]
@@ -148,7 +217,9 @@ const PACKAGED_SERVICE: [&str; 2] = [
 ];
 
 #[cfg(all(unix, not(target_os = "macos")))]
-pub fn install_service_elevated() -> Result<(), String> {
+pub fn install_service_elevated(
+    done: impl FnOnce(Result<(), String>) + Send + 'static,
+) -> Result<(), String> {
     let (program, args): (PathBuf, Vec<&str>) = if PACKAGED_SERVICE
         .iter()
         .any(|p| std::path::Path::new(p).is_file())
@@ -165,7 +236,7 @@ pub fn install_service_elevated() -> Result<(), String> {
         .args(&args)
         .stdin(std::process::Stdio::null())
         .spawn()
-        .map(drop)
+        .map(|child| wait_for(child, done))
         .map_err(|e| {
             format!(
                 "could not start pkexec ({e}); run: sudo {} {}",
@@ -206,7 +277,9 @@ fn service_binary_for_root() -> Result<PathBuf, String> {
 /// macOS: the standard administrator password prompt through AppleScript; the service
 /// binary ships next to the GUI inside DPIMech.app.
 #[cfg(target_os = "macos")]
-pub fn install_service_elevated() -> Result<(), String> {
+pub fn install_service_elevated(
+    done: impl FnOnce(Result<(), String>) + Send + 'static,
+) -> Result<(), String> {
     let exe = std::env::current_exe()
         .map_err(|e| e.to_string())?
         .with_file_name("dpimech-service");
@@ -226,7 +299,7 @@ pub fn install_service_elevated() -> Result<(), String> {
         .args(["-e", &script])
         .stdin(std::process::Stdio::null())
         .spawn()
-        .map(drop)
+        .map(|child| wait_for(child, done))
         .map_err(|e| {
             format!(
                 "could not ask for administrator rights ({e}); run: sudo '{}' install",

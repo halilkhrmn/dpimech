@@ -83,5 +83,7 @@ install -Dm644 crates/gui/assets/dpimech.png %{buildroot}%{_datadir}/icons/hicol
 %{_datadir}/icons/hicolor/256x256/apps/dpimech.png
 
 %changelog
+* Wed Sep 30 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.2.1-1
+- Windows: the service installs again after the upgrade from 0.1.x
 * Wed Sep 30 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.2.0-1
 - Release notes: https://github.com/halilkhrmn/dpimech/releases
