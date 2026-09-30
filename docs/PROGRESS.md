@@ -123,7 +123,8 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
   `<data>/logs/install.log`; the GUI waits for the elevated installer (ShellExecuteEx / pkexec / osascript) and
   shows "installed" or the error from that log; update check and provider lookup no longer hang on
   "Checking…" / "Looking up…" without the service. Version 0.2.1.
-- **Verified:** Windows cross clippy, Linux tests; the Windows path itself needs the hand test with 0.2.1.
+- **Verified:** Windows cross clippy, Linux tests; hand test by the owner on Windows 11: 0.2.1 installs and
+  the service runs.
 - **Release chain verified:** pushing to `release` published v0.2.1 (all 7 files) and the COPR webhook started the
   Fedora build of 0.2.1 by itself (confirmed on COPR by the owner).
 - **Hand test (owner, real Linux desktop):** 0.2.1 installed and ran without problems — the first test outside
