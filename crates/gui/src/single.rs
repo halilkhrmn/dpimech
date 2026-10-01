@@ -2,6 +2,33 @@
 //! asks the running one to show its window and exits, instead of adding a second tray icon
 //! and a second hotkey registration.
 
+/// Whether the main window already runs, without asking it to show itself.
+#[cfg(windows)]
+pub fn is_running() -> bool {
+    use windows_sys::Win32::Foundation::CloseHandle;
+    use windows_sys::Win32::System::Threading::OpenMutexW;
+    // The standard access right; windows-sys only exports it with the file-system feature.
+    const SYNCHRONIZE: u32 = 0x0010_0000;
+
+    let name: Vec<u16> = r"Local\dpimech-gui".encode_utf16().chain(Some(0)).collect();
+    // SAFETY: NUL-terminated name; the handle is closed right away.
+    unsafe {
+        let mutex = OpenMutexW(SYNCHRONIZE, 0, name.as_ptr());
+        if mutex.is_null() {
+            return false;
+        }
+        CloseHandle(mutex);
+    }
+    true
+}
+
+/// Whether the main window already runs. Connecting and closing without a byte does not make
+/// the running instance show its window.
+#[cfg(unix)]
+pub fn is_running() -> bool {
+    socket_path().is_some_and(|path| std::os::unix::net::UnixStream::connect(path).is_ok())
+}
+
 /// Returns `true` if this process is the first instance; `on_show` then runs whenever a
 /// later launch asks for the window. Returns `false` after signalling the existing instance.
 #[cfg(windows)]

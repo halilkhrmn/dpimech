@@ -380,7 +380,7 @@ fn safe_id(profile_id: &str) -> String {
 }
 
 /// The program a shortcut should start: the AppImage itself rather than its temporary mount.
-fn launcher_exe() -> anyhow::Result<PathBuf> {
+pub fn launcher_exe() -> anyhow::Result<PathBuf> {
     if let Some(appimage) = std::env::var_os("APPIMAGE") {
         return Ok(PathBuf::from(appimage));
     }
