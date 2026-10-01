@@ -39,6 +39,9 @@
     font-size: 12px;
   }
   #nav a { margin-right: 10px; }
+  #platforms { background: #d4d0c8; border-bottom: 1px solid #808080; padding: 3px 10px; font-size: 12px; }
+  #platforms b, #platforms a { display: inline-block; padding: 1px 8px; margin-right: 4px; border: 2px outset #fff; background: #ece9d8; color: #000; text-decoration: none; }
+  #platforms b { border-style: inset; background: #fff; }
   #nav img { width: 16px; height: 11px; vertical-align: -1px; margin-right: 3px; border: 1px solid #999; }
   #get {
     background: #ffffe1;
@@ -134,6 +137,12 @@
   </div>
 </header>
 
+<!-- The same switcher is on the Android page: one DPIMech, two repositories. -->
+<div id="platforms">
+  <b>&#128187; Desktop (Windows, Linux, macOS)</b>
+  <a href="https://halilkhrmn.github.io/dpimech-android/">&#128241; Android</a>
+</div>
+
 <div id="nav">
   <a href="#download">Download</a>
   <a href="#what">What is it?</a>
@@ -178,6 +187,8 @@
   </div>
 </div>
 <p><small>All files are on the GitHub releases page, with SHA-256 checksums.</small></p>
+<p class="note"><b>On a phone?</b> <a href="https://halilkhrmn.github.io/dpimech-android/">DPIMech for Android</a>
+  runs ByeDPI for the apps you choose, without root.</p>
 <p id="fedora"><b>Fedora:</b> add the <a href="https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/">COPR repository</a> once;
   after that DPIMech updates with the rest of the system (<code>sudo dnf upgrade</code>).</p>
 <pre class="cmd">sudo dnf copr enable halilkahraman/DPIMech
@@ -208,6 +219,7 @@ sudo dnf install dpimech</pre>
   <tr><td>Windows</td><td>Per app (ByeDPI + ProxiFyre) or whole computer (zapret, GoodbyeDPI).</td></tr>
   <tr><td>Linux</td><td>Per app or whole computer (zapret nfqws / tpws, ByeDPI) with systemd and nftables.</td></tr>
   <tr><td>macOS</td><td>Local proxy (tpws, ByeDPI) for apps and browsers you point at it.</td></tr>
+  <tr><td>Android</td><td>Per app through Android's VPN feature (ByeDPI), no root. <a href="https://halilkhrmn.github.io/dpimech-android/">DPIMech for Android</a>.</td></tr>
 </table>
 
 <h2 id="safe">Is it safe?</h2>
@@ -242,6 +254,7 @@ sudo dnf install dpimech</pre>
   <span class="badge"><i>BEST VIEWED</i><u>ANY BROWSER</u></span>
   <br>
   DPIMech &middot; free software under the <a href="https://github.com/halilkhrmn/dpimech/blob/main/LICENSE">GNU GPL v3 or later</a>
+  &middot; <a href="https://halilkhrmn.github.io/dpimech-android/">Android version</a>
 </footer>
 
 </div>
@@ -296,6 +309,10 @@ sudo dnf install dpimech</pre>
     offer("Ubuntu / Debian", deb);
   } else if (os === "linux" && appimage) {
     offer("Linux", appimage, "AppImage, runs on most distributions");
+  } else if (os === "mobile" && /Android/.test(ua)) {
+    main.textContent = "Get DPIMech for Android";
+    main.href = "https://halilkhrmn.github.io/dpimech-android/";
+    info.textContent = "This page is for computers; the Android version has its own page";
   } else {
     main.textContent = "Download DPIMech " + version;
     info.textContent = "For Windows, Linux and macOS computers" + (date ? " · released " + date : "");

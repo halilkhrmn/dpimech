@@ -136,6 +136,12 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 - **Verified:** unit tests for reading the profile from .lnk/.desktop/.app commands and for the MSI log
   line; Windows cross clippy clean. Not verified on Windows yet: the scan, the driver reinstall.
 - **Next (owner):** restart Windows, Engines → Windows Packet Filter → Install; per-app profiles need it.
+### 2026-10-01 (33) — Landing page links to the Android version
+- **Done:** `site/` gets a Desktop / Android switcher (same one on the Android page,
+  <https://halilkhrmn.github.io/dpimech-android/>), an "On a phone?" note, an Android row in the platform
+  table and a footer link. Android visitors get the main button pointed at the Android page.
+- **Verified (container):** page rendered in Chromium at 1000 px and 390 px: no script errors, no sideways scroll.
+- **Next:** the Android repository needs Pages set to "GitHub Actions" once, like this one.
 
 ### 2026-09-30 (32) — 0.2.5: standard strategies as a JSON file in the repository
 - **Done:** the standard strategies moved from Rust tables to `strategies/default.json` (DECISIONS #42). The app
