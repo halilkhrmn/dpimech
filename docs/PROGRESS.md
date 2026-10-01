@@ -121,6 +121,22 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-10-01 (33) — 0.2.6: shortcuts from older versions, driver update error
+- **Owner's reports (Windows, 0.2.4/0.2.5):** Settings said "0" shortcuts while "Discord wDPI" was on the desktop
+  (made with 0.2.1, before `shortcuts.toml` existed); the hint showed "(or  )" because the ⋯ glyph is not in
+  the text font. Updating Windows Packet Filter from the Engines page failed with msiexec 1603, labelled
+  "needs administrator rights?" (wrong: the service is SYSTEM), and the card then showed "Install" — the old
+  driver was gone.
+- **Done:** shortcuts are also found by scanning the desktop and menu folders (Windows known folders, so a
+  OneDrive desktop counts; Linux desktop + applications; macOS Desktop + Applications) for ones whose command
+  is `dpimech --launch <profile>`; they count, are replaced on recreate and removed with their profile.
+  Hint text without the glyph. Driver install refused while per-app profiles run (ProxiFyre holds the
+  driver); msiexec writes a verbose log to `<data>/logs/driver-install.log` and the error shows its first
+  "Error NNNN." line; 1603 now says to restart Windows and press Install again.
+- **Verified:** unit tests for reading the profile from .lnk/.desktop/.app commands and for the MSI log
+  line; Windows cross clippy clean. Not verified on Windows yet: the scan, the driver reinstall.
+- **Next (owner):** restart Windows, Engines → Windows Packet Filter → Install; per-app profiles need it.
+
 ### 2026-09-30 (32) — 0.2.5: standard strategies as a JSON file in the repository
 - **Done:** the standard strategies moved from Rust tables to `strategies/default.json` (DECISIONS #42). The app
   embeds it and the service fetches the newest one from `main` with the daily update check and on "Update

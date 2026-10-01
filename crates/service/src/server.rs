@@ -131,7 +131,7 @@ async fn dispatch(supervisor: &Supervisor, request: Request) -> anyhow::Result<R
             Reply::Ok
         }
         Request::InstallPackage { id } => {
-            supervisor.packages.install(id).await?;
+            supervisor.install_package(id).await?;
             Reply::Ok
         }
         Request::LabStrategies { engine } => Reply::LabStrategies {
