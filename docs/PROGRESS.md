@@ -121,6 +121,17 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-10-01 (38) — 0.2.9: profile shortcuts bring up the tray
+- **Owner's report:** opening a profile shortcut starts the profile and the app, but no main window or tray
+  appears, so there is nothing to switch the profile off with.
+- **Done:** the launcher starts `dpimech --minimized` (the main app, in the tray) when no main instance runs.
+  `single::is_running()` checks without making a running instance show its window (Windows: OpenMutexW;
+  Unix: connect without a byte). The main app is started from `$APPIMAGE`, not the launcher's AppImage mount,
+  which goes away when the launcher exits ("Open DPIMech" on the error page had the same problem).
+- **Verified (Linux, Xvfb):** shortcut with no main app: launcher window, then `dpimech --minimized` keeps
+  running with no window; shortcut again: no second instance, window stays hidden. fmt, clippy (Linux +
+  Windows), tests. Not run on Windows yet.
+
 ### 2026-10-01 (37) — 0.2.8: AppImage starts without libxdo
 - **Report (CachyOS, AppImage 0.2.7):** `error while loading shared libraries: libxdo.so.3`. The AppImage bundles
   no libraries, and tray-icon's default `libxdo` feature linked it (only for predefined Copy/Paste menu items,

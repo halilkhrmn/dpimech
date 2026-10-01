@@ -1156,7 +1156,7 @@ checksum = "d8b14ccef22fc6f5a8f4d7d768562a182c04ce9a3b3157b91390b52ddfdf1a76"
 
 [[package]]
 name = "dpimech-core"
-version = "0.2.8"
+version = "0.2.9"
 dependencies = [
  "anyhow",
  "serde",
@@ -1170,7 +1170,7 @@ dependencies = [
 
 [[package]]
 name = "dpimech-gui"
-version = "0.2.8"
+version = "0.2.9"
 dependencies = [
  "anyhow",
  "chrono",
@@ -1195,7 +1195,7 @@ dependencies = [
 
 [[package]]
 name = "dpimech-service"
-version = "0.2.8"
+version = "0.2.9"
 dependencies = [
  "anyhow",
  "dpimech-core",

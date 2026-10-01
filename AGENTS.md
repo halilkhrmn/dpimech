@@ -83,7 +83,8 @@ crates/gui/       dpimech binary (Slint)
   src/shortcut.rs   profile shortcuts: composed icon (logo + app), .lnk / .desktop / .app per OS;
                     shortcuts.toml records them (replace on recreate, remove with the profile / "remove all")
   src/shortcutui.rs "Create shortcut" dialog state; ui/shortcut.slint
-  src/launcher.rs   `dpimech --launch <id> [--open <app>]`: progress window, start profile, open app; ui/launch.slint
+  src/launcher.rs   `dpimech --launch <id> [--open <app>]`: progress window, start profile, open app, start the
+                    main app in the tray if it is not running; ui/launch.slint
   src/prefs.rs      per-user GUI prefs (easy mode, onboarded) + elevated service install
   src/selfupdate.rs in-app update: service downloads + verifies, Windows installer run silently by the
                     service, AppImage swapped by the GUI; banner "Restart and update"
