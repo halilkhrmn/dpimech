@@ -17,7 +17,7 @@ called *DPI* (deep packet inspection). DPIMech runs small, well-known open-sourc
 | | Status |
 |---|---|
 | **Windows 10 / 11** | Ready. Installer on the [Releases](https://github.com/halilkhrmn/dpimech/releases) page. |
-| **Linux** | Preview: `.deb`, `.rpm` and AppImage on the Releases page, Fedora via COPR (see below). |
+| **Linux** | Ready: `.deb`, `.rpm` and AppImage on the Releases page, Fedora via COPR (see below). |
 | **macOS** | Early preview: `.dmg` on the Releases page, local proxy only (see below). |
 
 <p align="center">
@@ -74,15 +74,7 @@ Tip: in **Settings** you can make DPIMech start when you sign in, hidden in the 
 Only **one** WinDivert engine (zapret or GoodbyeDPI) can run at a time. Some antivirus programs
 wrongly flag WinDivert; DPIMech downloads it only from the engines' official releases.
 
-### Upgrading from dpimngr 0.1.x
-
-DPIMech was called *dpimngr* before. Just run the new installer: it removes the old service and
-moves your profiles and engines over.
-
-## Linux (preview)
-
-The Linux version works but has only been tested in a development container so far, not yet on a
-real desktop. Feedback is welcome.
+## Linux
 
 ### Engines on Linux
 

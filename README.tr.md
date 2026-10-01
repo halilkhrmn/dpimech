@@ -17,7 +17,7 @@ Bazı internet sağlayıcıları trafiğinin içine bakıp belirli siteleri enge
 | | Durum |
 |---|---|
 | **Windows 10 / 11** | Hazır. Kurulum dosyası [Releases](https://github.com/halilkhrmn/dpimech/releases) sayfasında. |
-| **Linux** | Önizleme: Releases sayfasında `.deb`, `.rpm` ve AppImage; Fedora için COPR (aşağıya bak). |
+| **Linux** | Hazır: Releases sayfasında `.deb`, `.rpm` ve AppImage; Fedora için COPR (aşağıya bak). |
 | **macOS** | Erken önizleme: Releases sayfasında `.dmg`, sadece yerel proxy (aşağıya bak). |
 
 <p align="center">
@@ -75,15 +75,7 @@ Aynı anda sadece **bir** WinDivert motoru (zapret ya da GoodbyeDPI) çalışabi
 programları WinDivert'i yanlışlıkla zararlı sanar; DPIMech onu sadece motorların resmî
 sürümlerinden indirir.
 
-### dpimngr 0.1.x'ten yükseltme
-
-DPIMech'in eski adı *dpimngr* idi. Yeni kurulum dosyasını çalıştırman yeterli: eski servisi
-kaldırır, profillerini ve motorlarını taşır.
-
-## Linux (önizleme)
-
-Linux sürümü çalışıyor ama şimdiye kadar sadece bir geliştirme konteynerinde denendi, gerçek bir
-masaüstünde henüz test edilmedi. Geri bildirimlerini bekliyoruz.
+## Linux
 
 ### Linux'taki motorlar
 
