@@ -110,6 +110,10 @@
   td:first-child { background: #ece9d8; white-space: nowrap; font-weight: bold; }
   hr { border: 0; border-top: 1px solid #808080; }
   footer { text-align: center; font-size: 11px; color: #444; padding: 8px 12px 14px; }
+  .shots { display: flex; flex-wrap: wrap; gap: 10px; }
+  .shots figure { flex: 1 1 300px; margin: 0; border: 2px inset #808080; background: #f4f4f4; }
+  .shots img { display: block; width: 100%; height: auto; }
+  .shots figcaption { font-size: 11px; color: #444; padding: 3px 6px; border-top: 1px solid #a0a0a0; }
   .badge {
     display: inline-block;
     border: 1px solid #000;
@@ -146,6 +150,7 @@
 <div id="nav">
   <a href="#download">Download</a>
   <a href="#what">What is it?</a>
+  <a href="#screenshots">Screenshots</a>
   <a href="#safe">Is it safe?</a>
   <a href="#credits">Credits</a>
   <a href="https://github.com/halilkhrmn/dpimech">Source code</a>
@@ -213,6 +218,18 @@ sudo dnf install dpimech</pre>
   <li>Small and native: no browser engine inside.</li>
   <li>English, Türkçe, Русский.</li>
 </ul>
+
+<h2 id="screenshots">Screenshots</h2>
+<div class="shots">
+  <figure><a href="screenshots/windows-profiles.png"><img src="screenshots/windows-profiles.png" width="1246" height="858" loading="lazy" alt="DPIMech profiles page on Windows"></a>
+    <figcaption>Windows: a Discord profile running</figcaption></figure>
+  <figure><a href="screenshots/windows-editor.png"><img src="screenshots/windows-editor.png" width="1256" height="863" loading="lazy" alt="Editing a per-app Discord profile on Windows"></a>
+    <figcaption>Windows: only Discord goes through the engine</figcaption></figure>
+  <figure><a href="screenshots/linux-profiles.png"><img src="screenshots/linux-profiles.png" width="1000" height="660" loading="lazy" alt="DPIMech profiles page on Linux"></a>
+    <figcaption>Linux: profiles side by side</figcaption></figure>
+  <figure><a href="screenshots/linux-editor.png"><img src="screenshots/linux-editor.png" width="1000" height="660" loading="lazy" alt="Editing a profile on Linux"></a>
+    <figcaption>Linux: connection check and auto-restart</figcaption></figure>
+</div>
 
 <h2>Which system can do what?</h2>
 <table>

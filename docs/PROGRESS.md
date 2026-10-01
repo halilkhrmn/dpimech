@@ -121,6 +121,12 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-10-01 (34) — screenshots in the READMEs and on the site
+- **Done:** four screenshots in `site/screenshots/` (Windows ones from the owner, Linux ones taken under Xvfb
+  with a demo data dir), shown in README (en/tr/ru) under the status table and in a "Screenshots" section
+  on the site. One copy: the READMEs link into `site/`, which is what Pages publishes.
+- **Verified:** site rendered with Chromium at 1100 px and 375 px (no horizontal scroll).
+
 ### 2026-10-01 (33) — 0.2.6: shortcuts from older versions, driver update error
 - **Owner's reports (Windows, 0.2.4/0.2.5):** Settings said "0" shortcuts while "Discord wDPI" was on the desktop
   (made with 0.2.1, before `shortcuts.toml` existed); the hint showed "(or  )" because the ⋯ glyph is not in

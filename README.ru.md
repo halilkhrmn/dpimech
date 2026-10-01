@@ -21,6 +21,17 @@
 | **Linux** | Предварительная версия: `.deb`, `.rpm` и AppImage на странице Releases, для Fedora — COPR (см. ниже). |
 | **macOS** | Ранняя предварительная версия: `.dmg` на странице Releases, только локальный прокси (см. ниже). |
 
+<p align="center">
+  <a href="site/screenshots/windows-profiles.png"><img src="site/screenshots/windows-profiles.png" width="49%" alt="Страница профилей DPIMech в Windows"></a>
+  <a href="site/screenshots/windows-editor.png"><img src="site/screenshots/windows-editor.png" width="49%" alt="Редактирование профиля Discord в Windows"></a>
+  <br><sub>Windows: профили и профиль для Discord по приложениям</sub>
+</p>
+<p align="center">
+  <a href="site/screenshots/linux-profiles.png"><img src="site/screenshots/linux-profiles.png" width="49%" alt="Страница профилей DPIMech в Linux"></a>
+  <a href="site/screenshots/linux-editor.png"><img src="site/screenshots/linux-editor.png" width="49%" alt="Редактирование профиля в Linux"></a>
+  <br><sub>Linux: несколько профилей одновременно, редактор профиля</sub>
+</p>
+
 ## Что умеет
 
 - **Включение и выключение в один клик.** Каждый *профиль* — это готовая настройка, например
