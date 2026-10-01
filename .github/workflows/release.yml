@@ -148,8 +148,61 @@ jobs:
           name: macos
           path: target/macos/*.dmg
 
+  # Install each package on a clean system and start it before anything is published: a missing
+  # library (libxdo on CachyOS, 0.2.7) or a GUI that cannot start then stops the release.
+  smoke-linux:
+    needs: [plan, linux]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # A bare Arch: no libayatana-appindicator, no xdotool, like CachyOS out of the box.
+          - name: AppImage on Arch
+            image: archlinux:latest
+            kind: appimage
+            pattern: "*.AppImage"
+            setup: pacman -Syu --noconfirm gtk3 xorg-server-xvfb ttf-dejavu python
+          - name: .deb on Ubuntu 24.04
+            image: ubuntu:24.04
+            kind: deb
+            pattern: "*.deb"
+            setup: apt-get update && apt-get install -y xvfb python3
+          - name: .rpm on Fedora
+            image: fedora:latest
+            kind: rpm
+            pattern: "*.rpm"
+            setup: dnf install -y xorg-x11-server-Xvfb python3
+    name: Smoke test, ${{ matrix.name }}
+    container: ${{ matrix.image }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: linux
+          path: dist
+      - name: Prepare the system
+        run: ${{ matrix.setup }}
+      - name: Install and start
+        run: bash tools/smoke-linux.sh ${{ matrix.kind }} dist/${{ matrix.pattern }}
+
+  smoke-windows:
+    needs: [plan, windows]
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows
+          path: dist
+      - name: Install, start, uninstall
+        shell: pwsh
+        run: ./tools/smoke-windows.ps1 "dist/dpimech-setup-${{ needs.plan.outputs.version }}.exe"
+
   publish:
-    needs: [plan, windows, linux, macos]
+    needs: [plan, windows, linux, macos, smoke-linux, smoke-windows]
     if: needs.plan.outputs.publish == 'true'
     runs-on: ubuntu-latest
     env:

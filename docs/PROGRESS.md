@@ -144,6 +144,17 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
   area, but the Lab's engine and strategy rows are wider than the page (already so before; a window manager keeps
   the window at the layout's minimum, Xvfb does not).
 
+### 2026-10-01 (38b) — Priority 4 set; release smoke tests
+- **Decided (owner):** Priority 4 in PLAN.md: smoke tests, AUR, remote domain packs, encrypted DNS, then
+  self-repair or a troubleshooter; code signing once the owner applies to SignPath.
+- **Done:** `tools/smoke-linux.sh` (install a package, `ldd` for missing libraries, start the service and ask it
+  `hello`, run the GUI for 10 s under Xvfb; fail on exit, panic, missing library or "tray unavailable") and
+  `tools/smoke-windows.ps1` (silent install, service running and answering, GUI alive, silent uninstall removes
+  the service). release.yml runs them on Arch (AppImage, no appindicator/xdotool), Ubuntu 24.04 (.deb),
+  Fedora (.rpm) and windows-latest; `publish` waits for them.
+- **Verified:** here: AppImage and .deb 0.2.8 pass; the published 0.2.7 AppImage with libxdo hidden fails with
+  "libxdo.so.3 => not found" (the CachyOS report). The CI jobs themselves: see the dry run on the PR.
+
 ### 2026-10-01 (38) — 0.2.9: profile shortcuts bring up the tray
 - **Owner's report:** opening a profile shortcut starts the profile and the app, but no main window or tray
   appears, so there is nothing to switch the profile off with.
