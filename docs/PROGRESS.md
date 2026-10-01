@@ -152,6 +152,9 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
   `tools/smoke-windows.ps1` (silent install, service running and answering, GUI alive, silent uninstall removes
   the service). release.yml runs them on Arch (AppImage, no appindicator/xdotool), Ubuntu 24.04 (.deb),
   Fedora (.rpm) and windows-latest; `publish` waits for them.
+- **Done (AUR):** `packaging/aur` (PKGBUILD repackaging the release .deb, install hook = service-setup.sh like
+  deb/rpm) and `tools/aur-publish.sh`; release.yml job `aur` builds and installs it in a clean Arch on every run
+  and pushes it after a real release when `AUR_SSH_PRIVATE_KEY` is set (setup in RELEASING.md, owner's step).
 - **Verified:** here: AppImage and .deb 0.2.8 pass; the published 0.2.7 AppImage with libxdo hidden fails with
   "libxdo.so.3 => not found" (the CachyOS report). The CI jobs themselves: see the dry run on the PR.
 

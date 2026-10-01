@@ -237,3 +237,25 @@ jobs:
         # The release is already out; a COPR problem should be visible, not fail the release.
         continue-on-error: true
         run: ./tools/copr-webhook.sh
+
+  # Arch User Repository: dpimech-bin repackages the .deb (packaging/aur, tools/aur-publish.sh).
+  # Every run builds and installs it in a clean Arch; a real release also pushes it, after the
+  # GitHub release exists (the PKGBUILD downloads from there). Optional secret: AUR_SSH_PRIVATE_KEY.
+  aur:
+    needs: [plan, linux, smoke-linux, publish]
+    if: always() && needs.smoke-linux.result == 'success' && (needs.publish.result == 'success' || needs.plan.outputs.publish != 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    container: archlinux:latest
+    env:
+      VERSION: ${{ needs.plan.outputs.version }}
+      AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+      PUSH: ${{ needs.plan.outputs.publish == 'true' && secrets.AUR_SSH_PRIVATE_KEY != '' && '--push' || '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: linux
+          path: dist
+      - name: Build, install and publish dpimech-bin
+        run: bash tools/aur-publish.sh "$VERSION" "dist/dpimech_${VERSION}-1_amd64.deb" $PUSH

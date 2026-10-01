@@ -109,6 +109,8 @@ packaging/linux/  .desktop entry, service-setup.sh (deb postinst / rpm %post), d
                   package metadata lives in crates/gui/Cargo.toml ([package.metadata.deb / generate-rpm])
 packaging/fedora/ dpimech.spec + make-srpm.sh (source RPM with vendored crates) for Fedora COPR;
                   .copr/Makefile is COPR's entry point (see docs/RELEASING.md)
+packaging/aur/    PKGBUILD template + install hook for `dpimech-bin` (repackages the release .deb);
+                  tools/aur-publish.sh builds, installs and (in release.yml) pushes it
 .github/workflows ci.yml (fmt, clippy, tests), release.yml (new version on main or tag v* → GitHub release),
                   pages.yml (site/ → GitHub Pages), copr.yml (manual COPR build / webhook test)
 strategies/       default.json: the standard strategies per engine; embedded in the app and fetched from
