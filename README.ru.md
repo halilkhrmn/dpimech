@@ -114,9 +114,9 @@ sudo dnf install dpimech
 ```
 
 Пакеты (`.deb`, `.rpm`, COPR) сразу устанавливают и запускают фоновую службу. С AppImage откройте
-DPIMech и один раз нажмите **Install the service** (спросит пароль). Для значка в трее нужен
-`libayatana-appindicator` (Arch / CachyOS: `sudo pacman -S libayatana-appindicator`); без него DPIMech
-работает без значка в трее, а закрытие окна завершает программу.
+DPIMech и один раз нажмите **Install the service** (спросит пароль). Библиотека для трея уже
+внутри AppImage. В GNOME для значка в трее нужно расширение *AppIndicator and KStatusNotifierItem Support*
+(в Ubuntu оно уже есть).
 
 ### Сборка из исходников
 

@@ -109,9 +109,9 @@ sudo dnf install dpimech
 ```
 
 The packages (`.deb`, `.rpm`, COPR) also install and start the background service. With the AppImage, open
-DPIMech and press **Install the service** once (it asks for your password). The tray icon needs
-`libayatana-appindicator` (Arch / CachyOS: `sudo pacman -S libayatana-appindicator`); without it DPIMech
-works without a tray icon, and closing the window quits it.
+DPIMech and press **Install the service** once (it asks for your password). The AppImage
+brings the tray library along. On GNOME the tray icon needs the *AppIndicator and KStatusNotifierItem Support*
+extension (Ubuntu has it built in).
 
 ### Build from source
 

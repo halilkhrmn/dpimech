@@ -111,9 +111,9 @@ sudo dnf install dpimech
 ```
 
 Paketler (`.deb`, `.rpm`, COPR) arka plan servisini de kurar ve başlatır. AppImage kullanıyorsan DPIMech'i açıp bir
-kez **Install the service**'e bas (şifreni sorar). Tepsi simgesi için `libayatana-appindicator` gerekir
-(Arch / CachyOS: `sudo pacman -S libayatana-appindicator`); o yoksa DPIMech tepsi simgesi olmadan çalışır ve
-pencereyi kapatınca kapanır.
+kez **Install the service**'e bas (şifreni sorar). AppImage tepsi kütüphanesini
+kendi içinde getirir. GNOME'da tepsi simgesi için *AppIndicator and KStatusNotifierItem Support* eklentisi gerekir
+(Ubuntu'da hazır gelir).
 
 ### Kaynak koddan derleme
 
