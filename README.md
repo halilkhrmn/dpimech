@@ -99,6 +99,8 @@ Download from [Releases](https://github.com/halilkhrmn/dpimech/releases):
 | openSUSE, RHEL | `dpimech-<version>-1.x86_64.rpm` | `sudo dnf install ./dpimech-*.x86_64.rpm` |
 | Any other distribution | `DPIMech-<version>-x86_64.AppImage` | `chmod +x DPIMech-*.AppImage`, then run it |
 
+[![Copr build status](https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/package/dpimech/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/package/dpimech/)
+
 **Fedora** — add the repository once, then updates come with the rest of the system (`sudo dnf upgrade`):
 
 ```sh
