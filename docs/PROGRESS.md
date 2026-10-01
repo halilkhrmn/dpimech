@@ -121,6 +121,23 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-10-01 (37) — 0.2.8: AppImage starts without libxdo
+- **Report (CachyOS, AppImage 0.2.7):** `error while loading shared libraries: libxdo.so.3`. The AppImage bundles
+  no libraries, and tray-icon's default `libxdo` feature linked it (only for predefined Copy/Paste menu items,
+  which the tray does not use).
+- **Done:** tray-icon without default features (`gtk` only); libxdo dropped from rpm requires, Fedora spec, CI,
+  release workflow and READMEs. The binary now needs only GTK3/glib/fontconfig. libayatana-appindicator is
+  loaded at runtime and its binding panics when missing: the tray thread catches that, and without a tray
+  closing the window quits and `--minimized` shows the window after 3 s instead of running invisibly.
+  The AppImage bundles libayatana-appindicator3 + libayatana-indicator3, libayatana-ido3, libdbusmenu-glib/-gtk3
+  (owner: the tray must always be there); the GUI loads them by path only when the system has none, so no
+  LD_LIBRARY_PATH leaks into apps it starts. The tray-less fallback stays for systems where even that fails.
+- **Verified (bundling):** with all five hidden from the system, the AppImage loads its own copies
+  (/proc/<pid>/maps) and the tray comes up; with them installed it uses the system copies.
+- **Verified:** built the AppImage, hid libxdo + appindicator from the system: window opens, close quits,
+  `--minimized` shows the window; with the libraries back: close keeps it in the tray, `--minimized` stays hidden.
+  `readelf -d`: no libxdo. fmt, clippy (Linux + Windows), tests.
+
 ### 2026-10-01 (36) — 0.2.7: Fedora build fixed, lockfile checked in CI
 - **Problem:** COPR build 11060164 failed while making the source RPM: `cargo vendor --locked` refused the
   v0.2.6 tag, whose Cargo.lock still said 0.2.5 (the lockfile commit landed after PR #9 was merged and tagged).

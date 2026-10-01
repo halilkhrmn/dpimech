@@ -114,13 +114,15 @@ sudo dnf install dpimech
 ```
 
 Пакеты (`.deb`, `.rpm`, COPR) сразу устанавливают и запускают фоновую службу. С AppImage откройте
-DPIMech и один раз нажмите **Install the service** (спросит пароль).
+DPIMech и один раз нажмите **Install the service** (спросит пароль). Библиотека для трея уже
+внутри AppImage. В GNOME для значка в трее нужно расширение *AppIndicator and KStatusNotifierItem Support*
+(в Ubuntu оно уже есть).
 
 ### Сборка из исходников
 
 Нужны [Rust](https://rustup.rs), `systemd` и, для сборки окна, пакеты разработки GTK 3 и
 AppIndicator (в Debian/Ubuntu:
-`sudo apt install build-essential libgtk-3-dev libxdo-dev libayatana-appindicator3-dev libxkbcommon-x11-0`).
+`sudo apt install build-essential libgtk-3-dev libayatana-appindicator3-dev libxkbcommon-x11-0`).
 
 ```sh
 git clone https://github.com/halilkhrmn/dpimech && cd dpimech

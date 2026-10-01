@@ -109,13 +109,15 @@ sudo dnf install dpimech
 ```
 
 The packages (`.deb`, `.rpm`, COPR) also install and start the background service. With the AppImage, open
-DPIMech and press **Install the service** once (it asks for your password).
+DPIMech and press **Install the service** once (it asks for your password). The AppImage
+brings the tray library along. On GNOME the tray icon needs the *AppIndicator and KStatusNotifierItem Support*
+extension (Ubuntu has it built in).
 
 ### Build from source
 
 Needs [Rust](https://rustup.rs), `systemd`, and for building the window the GTK 3 and
 AppIndicator development packages (on Debian/Ubuntu:
-`sudo apt install build-essential libgtk-3-dev libxdo-dev libayatana-appindicator3-dev libxkbcommon-x11-0`).
+`sudo apt install build-essential libgtk-3-dev libayatana-appindicator3-dev libxkbcommon-x11-0`).
 
 ```sh
 git clone https://github.com/halilkhrmn/dpimech && cd dpimech

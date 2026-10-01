@@ -30,6 +30,8 @@ winresource = "0.1.31"
 # tray-icon's Linux backend is GTK; the tray lives on its own GTK thread (see tray.rs).
 [target.'cfg(target_os = "linux")'.dependencies]
 gtk = "0.18.2"
+# Loads the appindicator copy bundled in the AppImage when the system has none.
+libloading = "0.8.9"
 
 [target."cfg(windows)".dependencies]
 lnk = "0.6.4"
@@ -81,7 +83,6 @@ assets = [
 
 [package.metadata.generate-rpm.requires]
 gtk3 = "*"
-libxdo = "*"
 libayatana-appindicator-gtk3 = "*"
 libxkbcommon-x11 = "*"
 nftables = "*"

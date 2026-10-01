@@ -3,7 +3,7 @@ resolver = "3"
 members = ["crates/core", "crates/service", "crates/gui"]
 
 [workspace.package]
-version = "0.2.7"
+version = "0.2.8"
 edition = "2024"
 rust-version = "1.85"
 license = "GPL-3.0-or-later"
@@ -26,7 +26,9 @@ tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 # 0.24 shares muda 0.19 with Slint's winit backend; two muda versions define the same
 # Objective-C class and break the macOS link (LTO). Move together with Slint.
-tray-icon = "0.24.2"
+# No "libxdo" feature: it only serves the predefined Copy/Paste menu items, which the tray does not
+# use, and it made the binary need libxdo.so.3 (missing on many desktops; the AppImage failed to start).
+tray-icon = { version = "0.24.2", default-features = false, features = ["gtk"] }
 uuid = { version = "1.26", features = ["v4", "serde"] }
 windows-service = "0.8"
 windows-sys = { version = "0.61", features = ["Win32_Foundation", "Win32_Security", "Win32_Security_Authorization", "Win32_System_Threading", "Win32_UI_Shell", "Win32_Graphics_Gdi", "Win32_System_Com", "Win32_System_Diagnostics_ToolHelp", "Win32_UI_WindowsAndMessaging", "Win32_System_JobObjects"] }

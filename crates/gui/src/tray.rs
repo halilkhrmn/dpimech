@@ -7,6 +7,7 @@
 use crate::i18n::tr;
 use std::cell::RefCell;
 use std::collections::HashMap;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{LazyLock, Mutex};
 
 use dpimech_core::model::ProfileState;
@@ -30,6 +31,14 @@ thread_local! {
 static PROFILE_ITEMS: LazyLock<Mutex<HashMap<MenuId, (String, bool)>>> =
     LazyLock::new(Mutex::default);
 
+/// Set once the tray icon exists. Without it, closing the window must quit: a hidden window could
+/// not be brought back.
+static READY: AtomicBool = AtomicBool::new(false);
+
+pub fn available() -> bool {
+    READY.load(Ordering::Relaxed)
+}
+
 fn build_tray() -> anyhow::Result<TrayIcon> {
     Ok(TrayIconBuilder::new()
         .with_tooltip("DPIMech")
@@ -37,6 +46,45 @@ fn build_tray() -> anyhow::Result<TrayIcon> {
         .with_menu(Box::new(build_menu(&[])?))
         .with_menu_on_left_click(false)
         .build()?)
+}
+
+/// The AppImage carries libayatana-appindicator and the libraries it needs that desktops often lack
+/// (tools/build-linux-packages.sh puts them next to the binary in `usr/lib`). The tray's binding opens
+/// the library by name, so loading the bundled files first by path lets that lookup find them.
+/// A system copy wins: the bundled one is only for systems without it.
+#[cfg(target_os = "linux")]
+fn load_bundled_indicator() {
+    use libloading::os::unix::{Library, RTLD_GLOBAL, RTLD_NOW};
+    const NAME: &str = "libayatana-appindicator3.so.1";
+    // Dependencies first, so each library finds the ones it needs already loaded.
+    const BUNDLED: [&str; 5] = [
+        "libdbusmenu-glib.so.4",
+        "libdbusmenu-gtk3.so.4",
+        "libayatana-ido3-0.4.so.0",
+        "libayatana-indicator3.so.7",
+        NAME,
+    ];
+    // SAFETY: these are plain C libraries without constructors that depend on our state.
+    if unsafe { Library::new(NAME) }.is_ok() {
+        return;
+    }
+    let Some(dir) = std::env::current_exe()
+        .ok()
+        .and_then(|exe| Some(exe.parent()?.parent()?.join("lib")))
+    else {
+        return;
+    };
+    for name in BUNDLED {
+        let path = dir.join(name);
+        if !path.exists() {
+            continue;
+        }
+        // SAFETY: as above. The libraries stay loaded for the life of the process.
+        match unsafe { Library::open(Some(&path), RTLD_NOW | RTLD_GLOBAL) } {
+            Ok(lib) => std::mem::forget(lib),
+            Err(e) => eprintln!("bundled {name}: {e}"),
+        }
+    }
 }
 
 #[cfg(target_os = "linux")]
@@ -52,13 +100,20 @@ fn spawn_tray_thread() {
             eprintln!("tray unavailable (GTK: {e})");
             return;
         }
-        match build_tray() {
-            Ok(tray) => TRAY.set(Some(tray)),
-            Err(e) => {
+        load_bundled_indicator();
+        // The appindicator binding panics when no libayatana-appindicator3 can be loaded.
+        match std::panic::catch_unwind(build_tray) {
+            Ok(Ok(tray)) => TRAY.set(Some(tray)),
+            Ok(Err(e)) => {
                 eprintln!("tray unavailable: {e:#}");
                 return;
             }
+            Err(_) => {
+                eprintln!("tray unavailable: libayatana-appindicator3 could not be loaded");
+                return;
+            }
         }
+        READY.store(true, Ordering::Relaxed);
         // Only the newest profile list matters; older ones are skipped.
         gtk::glib::timeout_add_local(std::time::Duration::from_millis(200), move || {
             if let Some(profiles) = rx.try_iter().last() {
@@ -75,7 +130,10 @@ pub fn create(ui: Weak<AppWindow>, commands: mpsc::UnboundedSender<Command>) -> 
     #[cfg(target_os = "linux")]
     spawn_tray_thread();
     #[cfg(not(target_os = "linux"))]
-    TRAY.set(Some(build_tray()?));
+    {
+        TRAY.set(Some(build_tray()?));
+        READY.store(true, Ordering::Relaxed);
+    }
 
     let menu_ui = ui.clone();
     MenuEvent::set_event_handler(Some(move |event: MenuEvent| match event.id.as_ref() {

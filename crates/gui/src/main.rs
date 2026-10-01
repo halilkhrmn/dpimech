@@ -705,8 +705,15 @@ fn main() -> anyhow::Result<()> {
     });
 
     // Closing the window keeps the app in the tray; quitting happens from the tray menu.
-    ui.window()
-        .on_close_requested(|| CloseRequestResponse::HideWindow);
+    // Without a tray the window could not be brought back, so closing quits.
+    ui.window().on_close_requested(|| {
+        if tray::available() {
+            CloseRequestResponse::HideWindow
+        } else {
+            let _ = slint::quit_event_loop();
+            CloseRequestResponse::HideWindow
+        }
+    });
     // macOS only accepts a status-bar item once the application's event loop runs.
     #[cfg(target_os = "macos")]
     {
@@ -762,6 +769,17 @@ fn main() -> anyhow::Result<()> {
     // Launched at sign-in with --minimized: stay in the tray until the user opens the window.
     if !std::env::args().any(|a| a == autostart::MINIMIZED_FLAG) {
         ui.show()?;
+    } else {
+        // The Linux tray comes up on its own thread; if it never does, show the window instead
+        // of running invisibly.
+        let weak = ui.as_weak();
+        slint::Timer::single_shot(std::time::Duration::from_secs(3), move || {
+            if !tray::available()
+                && let Some(ui) = weak.upgrade()
+            {
+                let _ = ui.show();
+            }
+        });
     }
     slint::run_event_loop_until_quit()?;
     Ok(())
