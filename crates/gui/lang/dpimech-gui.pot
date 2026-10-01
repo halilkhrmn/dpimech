@@ -462,7 +462,7 @@ msgid "Profile shortcuts on the desktop and in the menu: {}"
 msgstr ""
 
 #: ui/pages.slint:312
-msgid "Create one with right click (or ⋯) on a profile. Deleting a profile removes its shortcuts."
+msgid "Create one by right-clicking a profile or with its menu button. Deleting a profile removes its shortcuts."
 msgstr ""
 
 #: ui/pages.slint:319
@@ -901,23 +901,23 @@ msgstr ""
 msgid "Without any bypass only {}/{} requests succeed. Blocked: {}."
 msgstr ""
 
-#: src/labui.rs:244
+#: src/labui.rs:239
 msgid "Cancelled."
 msgstr ""
 
-#: src/labui.rs:245
+#: src/labui.rs:240
 msgid "Stopped: {}"
 msgstr ""
 
-#: src/labui.rs:246
+#: src/labui.rs:241
 msgid "Done — {} strategies opened every site in every round. Press “Use” on the top one."
 msgstr ""
 
-#: src/labui.rs:250
+#: src/labui.rs:245
 msgid "Done — none opened every site in every round. Try another engine, more tries per site, or updated online lists."
 msgstr ""
 
-#: src/labui.rs:280
+#: src/labui.rs:275
 msgid "No bypass"
 msgstr ""
 
@@ -1077,7 +1077,7 @@ msgstr ""
 msgid "Give the shortcut a name."
 msgstr ""
 
-#: src/shortcut.rs:622
+#: src/shortcut.rs:710
 msgid "Starts the DPIMech profile \"{}\""
 msgstr ""
 

@@ -310,7 +310,10 @@ impl Packages {
                 })
                 .await?
             }
-            PackageKind::DriverMsi => install_msi(&file).await,
+            PackageKind::DriverMsi => {
+                let log = self.data.root.join("logs").join("driver-install.log");
+                install_msi(&file, &log).await
+            }
         };
         let _ = tokio::fs::remove_file(&file).await;
         result.map(|()| version)
@@ -708,25 +711,73 @@ fn find_binary(dir: &Path, stem: &str) -> anyhow::Result<PathBuf> {
 }
 
 #[cfg(windows)]
-async fn install_msi(file: &Path) -> anyhow::Result<()> {
+async fn install_msi(file: &Path, log: &Path) -> anyhow::Result<()> {
+    if let Some(dir) = log.parent() {
+        let _ = std::fs::create_dir_all(dir);
+    }
     let status = tokio::process::Command::new("msiexec")
         .arg("/i")
         .arg(file)
-        .args(["/qn", "/norestart"])
+        .args(["/qn", "/norestart", "/l*v"])
+        .arg(log)
         .status()
         .await?;
-    // 3010 = success, reboot required.
+    // The service is SYSTEM, so rights are never the problem; the log says what was.
+    let reason = || {
+        msi_error(log)
+            .map(|e| format!(" ({e})"))
+            .unwrap_or_default()
+    };
     match status.code() {
+        // 3010 = success, reboot required.
         Some(0) | Some(3010) => Ok(()),
-        Some(1925) | Some(1603) => {
-            bail!("installer failed (needs administrator rights?) — code {status}")
-        }
-        _ => bail!("installer exited with {status}"),
+        Some(1618) => bail!("another installation is running — try again when it has finished"),
+        Some(1603) => bail!(
+            "the driver installer failed{} — usually the driver is still in use or Windows is \
+             waiting for a restart: restart Windows and press Install again. Details: {}",
+            reason(),
+            log.display()
+        ),
+        _ => bail!(
+            "installer exited with {status}{}; details: {}",
+            reason(),
+            log.display()
+        ),
     }
 }
 
+/// The first error message in a verbose MSI log (`MSI (s) ... Note: 1: 1722 ...` lines are
+/// noise; `Error NNNN.` / `Product: ... -- Error` lines carry the text). MSI logs are UTF-16.
+#[cfg(windows)]
+fn msi_error(log: &Path) -> Option<String> {
+    let bytes = std::fs::read(log).ok()?;
+    let text = if bytes.starts_with(&[0xFF, 0xFE]) {
+        let units: Vec<u16> = bytes[2..]
+            .chunks_exact(2)
+            .map(|c| u16::from_le_bytes([c[0], c[1]]))
+            .collect();
+        String::from_utf16_lossy(&units)
+    } else {
+        String::from_utf8_lossy(&bytes).into_owned()
+    };
+    msi_error_in(&text)
+}
+
+#[cfg(any(windows, test))]
+fn msi_error_in(text: &str) -> Option<String> {
+    text.lines()
+        .map(str::trim)
+        .find_map(|line| {
+            let at = line.find("-- Error ").or_else(|| line.find("Error "))?;
+            let msg = &line[at..];
+            // "Error 1722." style lines with a message; skip bare debug codes.
+            (msg.len() > 12 && msg.contains('.')).then(|| msg.trim_start_matches("-- ").to_owned())
+        })
+        .map(|m| m.chars().take(300).collect())
+}
+
 #[cfg(not(windows))]
-async fn install_msi(_file: &Path) -> anyhow::Result<()> {
+async fn install_msi(_file: &Path, _log: &Path) -> anyhow::Result<()> {
     bail!("MSI packages are Windows-only")
 }
 
@@ -896,5 +947,22 @@ mod tests {
         assert!(out.join("fake/quic.bin").is_file());
         assert!(!out.join("winws.exe").exists());
         let _ = std::fs::remove_dir_all(&dir);
+    }
+}
+
+#[cfg(test)]
+mod msi_tests {
+    use super::msi_error_in;
+
+    #[test]
+    fn msi_log_error_line_is_found() {
+        let log = "MSI (s) (1C:2C) [12:00:01:000]: Note: 1: 1708\n\
+                   CustomAction InstallDriver returned actual error code 1603\n\
+                   Product: Windows Packet Filter -- Error 1920. Service 'ndisrd' failed to start.\n";
+        assert_eq!(
+            msi_error_in(log).as_deref(),
+            Some("Error 1920. Service 'ndisrd' failed to start.")
+        );
+        assert_eq!(msi_error_in("nothing here\n"), None);
     }
 }
