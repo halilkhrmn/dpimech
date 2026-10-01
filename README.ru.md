@@ -104,6 +104,8 @@ UDP (например, голос) идёт напрямую. Трафик пр�
 | openSUSE, RHEL | `dpimech-<версия>-1.x86_64.rpm` | `sudo dnf install ./dpimech-*.x86_64.rpm` |
 | Любой другой дистрибутив | `DPIMech-<версия>-x86_64.AppImage` | `chmod +x DPIMech-*.AppImage`, затем запустите |
 
+[![Copr build status](https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/package/dpimech/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/package/dpimech/)
+
 **Fedora** — добавьте репозиторий один раз, дальше обновления приходят вместе с системой (`sudo dnf upgrade`):
 
 ```sh

@@ -121,6 +121,14 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-10-01 (36) — 0.2.7: Fedora build fixed, lockfile checked in CI
+- **Problem:** COPR build 11060164 failed while making the source RPM: `cargo vendor --locked` refused the
+  v0.2.6 tag, whose Cargo.lock still said 0.2.5 (the lockfile commit landed after PR #9 was merged and tagged).
+- **Done:** version 0.2.7 (no app changes) so COPR builds a tag with a matching lockfile; CI runs clippy and
+  tests with `--locked`, so a version bump without its Cargo.lock fails the pull request.
+- **Verified:** `cargo vendor --locked` succeeds on this commit (the step that failed on COPR).
+- **Next:** after the merge, check the COPR build for 0.2.7.
+
 ### 2026-10-01 (35) — Linux no longer "preview"
 - **Done (owner's call: Linux works on their machines):** READMEs (en/tr/ru) and the site call Linux ready;
   the "only tested in a container" note and the "Upgrading from dpimngr 0.1.x" section are gone.
