@@ -7,6 +7,7 @@
 use crate::i18n::tr;
 use std::cell::RefCell;
 use std::collections::HashMap;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{LazyLock, Mutex};
 
 use dpimech_core::model::ProfileState;
@@ -30,6 +31,14 @@ thread_local! {
 static PROFILE_ITEMS: LazyLock<Mutex<HashMap<MenuId, (String, bool)>>> =
     LazyLock::new(Mutex::default);
 
+/// Set once the tray icon exists. Without it, closing the window must quit: a hidden window could
+/// not be brought back.
+static READY: AtomicBool = AtomicBool::new(false);
+
+pub fn available() -> bool {
+    READY.load(Ordering::Relaxed)
+}
+
 fn build_tray() -> anyhow::Result<TrayIcon> {
     Ok(TrayIconBuilder::new()
         .with_tooltip("DPIMech")
@@ -52,13 +61,20 @@ fn spawn_tray_thread() {
             eprintln!("tray unavailable (GTK: {e})");
             return;
         }
-        match build_tray() {
-            Ok(tray) => TRAY.set(Some(tray)),
-            Err(e) => {
+        // The appindicator binding panics when libayatana-appindicator3 is not installed
+        // (common on Arch-based systems, and the AppImage does not bundle it).
+        match std::panic::catch_unwind(build_tray) {
+            Ok(Ok(tray)) => TRAY.set(Some(tray)),
+            Ok(Err(e)) => {
                 eprintln!("tray unavailable: {e:#}");
                 return;
             }
+            Err(_) => {
+                eprintln!("tray unavailable: libayatana-appindicator3 is not installed");
+                return;
+            }
         }
+        READY.store(true, Ordering::Relaxed);
         // Only the newest profile list matters; older ones are skipped.
         gtk::glib::timeout_add_local(std::time::Duration::from_millis(200), move || {
             if let Some(profiles) = rx.try_iter().last() {
@@ -75,7 +91,10 @@ pub fn create(ui: Weak<AppWindow>, commands: mpsc::UnboundedSender<Command>) -> 
     #[cfg(target_os = "linux")]
     spawn_tray_thread();
     #[cfg(not(target_os = "linux"))]
-    TRAY.set(Some(build_tray()?));
+    {
+        TRAY.set(Some(build_tray()?));
+        READY.store(true, Ordering::Relaxed);
+    }
 
     let menu_ui = ui.clone();
     MenuEvent::set_event_handler(Some(move |event: MenuEvent| match event.id.as_ref() {

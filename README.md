@@ -109,13 +109,15 @@ sudo dnf install dpimech
 ```
 
 The packages (`.deb`, `.rpm`, COPR) also install and start the background service. With the AppImage, open
-DPIMech and press **Install the service** once (it asks for your password).
+DPIMech and press **Install the service** once (it asks for your password). The tray icon needs
+`libayatana-appindicator` (Arch / CachyOS: `sudo pacman -S libayatana-appindicator`); without it DPIMech
+works without a tray icon, and closing the window quits it.
 
 ### Build from source
 
 Needs [Rust](https://rustup.rs), `systemd`, and for building the window the GTK 3 and
 AppIndicator development packages (on Debian/Ubuntu:
-`sudo apt install build-essential libgtk-3-dev libxdo-dev libayatana-appindicator3-dev libxkbcommon-x11-0`).
+`sudo apt install build-essential libgtk-3-dev libayatana-appindicator3-dev libxkbcommon-x11-0`).
 
 ```sh
 git clone https://github.com/halilkhrmn/dpimech && cd dpimech

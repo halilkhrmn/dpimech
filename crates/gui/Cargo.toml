@@ -81,7 +81,6 @@ assets = [
 
 [package.metadata.generate-rpm.requires]
 gtk3 = "*"
-libxdo = "*"
 libayatana-appindicator-gtk3 = "*"
 libxkbcommon-x11 = "*"
 nftables = "*"

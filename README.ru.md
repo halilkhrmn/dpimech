@@ -114,13 +114,15 @@ sudo dnf install dpimech
 ```
 
 Пакеты (`.deb`, `.rpm`, COPR) сразу устанавливают и запускают фоновую службу. С AppImage откройте
-DPIMech и один раз нажмите **Install the service** (спросит пароль).
+DPIMech и один раз нажмите **Install the service** (спросит пароль). Для значка в трее нужен
+`libayatana-appindicator` (Arch / CachyOS: `sudo pacman -S libayatana-appindicator`); без него DPIMech
+работает без значка в трее, а закрытие окна завершает программу.
 
 ### Сборка из исходников
 
 Нужны [Rust](https://rustup.rs), `systemd` и, для сборки окна, пакеты разработки GTK 3 и
 AppIndicator (в Debian/Ubuntu:
-`sudo apt install build-essential libgtk-3-dev libxdo-dev libayatana-appindicator3-dev libxkbcommon-x11-0`).
+`sudo apt install build-essential libgtk-3-dev libayatana-appindicator3-dev libxkbcommon-x11-0`).
 
 ```sh
 git clone https://github.com/halilkhrmn/dpimech && cd dpimech

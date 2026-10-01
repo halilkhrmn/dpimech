@@ -21,7 +21,6 @@ BuildRequires:  rust >= 1.85
 BuildRequires:  gcc
 BuildRequires:  pkgconfig
 BuildRequires:  gtk3-devel
-BuildRequires:  libxdo-devel
 BuildRequires:  libayatana-appindicator-gtk3-devel
 BuildRequires:  openssl-devel
 BuildRequires:  systemd-rpm-macros
@@ -83,6 +82,8 @@ install -Dm644 crates/gui/assets/dpimech.png %{buildroot}%{_datadir}/icons/hicol
 %{_datadir}/icons/hicolor/256x256/apps/dpimech.png
 
 %changelog
+* Thu Oct 01 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.2.8-1
+- No longer needs libxdo; runs without a tray when libayatana-appindicator is missing
 * Thu Oct 01 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.2.7-1
 - Same as 0.2.6; its tag had an outdated Cargo.lock, so the Fedora build failed
 * Thu Oct 01 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.2.6-1

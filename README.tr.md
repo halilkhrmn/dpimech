@@ -111,13 +111,15 @@ sudo dnf install dpimech
 ```
 
 Paketler (`.deb`, `.rpm`, COPR) arka plan servisini de kurar ve başlatır. AppImage kullanıyorsan DPIMech'i açıp bir
-kez **Install the service**'e bas (şifreni sorar).
+kez **Install the service**'e bas (şifreni sorar). Tepsi simgesi için `libayatana-appindicator` gerekir
+(Arch / CachyOS: `sudo pacman -S libayatana-appindicator`); o yoksa DPIMech tepsi simgesi olmadan çalışır ve
+pencereyi kapatınca kapanır.
 
 ### Kaynak koddan derleme
 
 [Rust](https://rustup.rs), `systemd` ve pencereyi derlemek için GTK 3 ile AppIndicator geliştirme
 paketleri gerekir (Debian/Ubuntu'da:
-`sudo apt install build-essential libgtk-3-dev libxdo-dev libayatana-appindicator3-dev libxkbcommon-x11-0`).
+`sudo apt install build-essential libgtk-3-dev libayatana-appindicator3-dev libxkbcommon-x11-0`).
 
 ```sh
 git clone https://github.com/halilkhrmn/dpimech && cd dpimech
