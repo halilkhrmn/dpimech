@@ -20,6 +20,17 @@ called *DPI* (deep packet inspection). DPIMech runs small, well-known open-sourc
 | **Linux** | Preview: `.deb`, `.rpm` and AppImage on the Releases page, Fedora via COPR (see below). |
 | **macOS** | Early preview: `.dmg` on the Releases page, local proxy only (see below). |
 
+<p align="center">
+  <a href="site/screenshots/windows-profiles.png"><img src="site/screenshots/windows-profiles.png" width="49%" alt="DPIMech profiles page on Windows"></a>
+  <a href="site/screenshots/windows-editor.png"><img src="site/screenshots/windows-editor.png" width="49%" alt="Editing a per-app Discord profile on Windows"></a>
+  <br><sub>Windows: profiles and a per-app profile for Discord</sub>
+</p>
+<p align="center">
+  <a href="site/screenshots/linux-profiles.png"><img src="site/screenshots/linux-profiles.png" width="49%" alt="DPIMech profiles page on Linux"></a>
+  <a href="site/screenshots/linux-editor.png"><img src="site/screenshots/linux-editor.png" width="49%" alt="Editing a profile on Linux"></a>
+  <br><sub>Linux: profiles running side by side, profile editor</sub>
+</p>
+
 ## What it does
 
 - **One click on, one click off.** Each *profile* is a ready setup, for example "Discord".

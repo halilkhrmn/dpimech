@@ -20,6 +20,17 @@ Bazı internet sağlayıcıları trafiğinin içine bakıp belirli siteleri enge
 | **Linux** | Önizleme: Releases sayfasında `.deb`, `.rpm` ve AppImage; Fedora için COPR (aşağıya bak). |
 | **macOS** | Erken önizleme: Releases sayfasında `.dmg`, sadece yerel proxy (aşağıya bak). |
 
+<p align="center">
+  <a href="site/screenshots/windows-profiles.png"><img src="site/screenshots/windows-profiles.png" width="49%" alt="Windows'ta DPIMech profiller sayfası"></a>
+  <a href="site/screenshots/windows-editor.png"><img src="site/screenshots/windows-editor.png" width="49%" alt="Windows'ta Discord profilini düzenleme"></a>
+  <br><sub>Windows: profiller ve Discord için uygulama başına profil</sub>
+</p>
+<p align="center">
+  <a href="site/screenshots/linux-profiles.png"><img src="site/screenshots/linux-profiles.png" width="49%" alt="Linux'ta DPIMech profiller sayfası"></a>
+  <a href="site/screenshots/linux-editor.png"><img src="site/screenshots/linux-editor.png" width="49%" alt="Linux'ta profil düzenleme"></a>
+  <br><sub>Linux: birlikte çalışan profiller, profil düzenleyici</sub>
+</p>
+
 ## Ne işe yarar?
 
 - **Tek tıkla aç, tek tıkla kapat.** Her *profil* hazır bir ayardır, örneğin "Discord".
