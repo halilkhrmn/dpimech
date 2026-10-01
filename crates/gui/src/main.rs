@@ -25,7 +25,7 @@ mod wizard;
 use crate::i18n::tr;
 use dpimech_core::model::{EngineKind, Os, ProfileState, RoutingMode};
 use dpimech_core::packages::PackageId;
-use slint::{CloseRequestResponse, ComponentHandle, ModelRc, SharedString, VecModel};
+use slint::{CloseRequestResponse, ComponentHandle, Model, ModelRc, SharedString, VecModel};
 use tokio::sync::mpsc;
 
 use crate::bridge::Command;
@@ -795,10 +795,26 @@ pub fn set_app_update(ui: &AppWindow, text: String, url: Option<String>) {
     APP_UPDATE_URL.set(url);
 }
 
-/// Replaces the profile list; recreating the model resets per-card switch state.
+/// Updates the profile cards. Rows change in place while the same profiles are listed, so a card
+/// keeps its open menu when a status update arrives; a new model only when profiles come or go.
 pub fn apply_profiles(ui: &AppWindow, profiles: Vec<ProfileState>) {
     let items: Vec<ProfileItem> = profiles.iter().map(convert::profile_item).collect();
-    ui.set_profiles(ModelRc::new(VecModel::from(items)));
+    let current = ui.get_profiles();
+    let same_list = current.row_count() == items.len()
+        && items
+            .iter()
+            .enumerate()
+            .all(|(i, item)| current.row_data(i).is_some_and(|row| row.id == item.id));
+    match current.as_any().downcast_ref::<VecModel<ProfileItem>>() {
+        Some(model) if same_list => {
+            for (i, item) in items.into_iter().enumerate() {
+                if model.row_data(i).as_ref() != Some(&item) {
+                    model.set_row_data(i, item);
+                }
+            }
+        }
+        _ => ui.set_profiles(ModelRc::new(VecModel::from(items))),
+    }
     tray::update_profiles(&profiles);
     PROFILES.set(profiles);
 }

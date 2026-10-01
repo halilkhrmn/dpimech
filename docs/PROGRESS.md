@@ -131,6 +131,14 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 - **Verified (Linux, Xvfb):** shortcut with no main app: launcher window, then `dpimech --minimized` keeps
   running with no window; shortcut again: no second instance, window stays hidden. fmt, clippy (Linux +
   Windows), tests. Not run on Windows yet.
+- **Owner's report:** right-click → "Create shortcut…" on a profile card did nothing (the editor button worked).
+  Cause: every status event replaced the whole profile model, destroying the card whose menu was open; the
+  menu's activation was lost and the click fell through to the new card (opens the editor). Reproduced under
+  Xvfb by changing a profile's status while its menu was open.
+- **Done:** `apply_profiles` updates rows in place when the same profiles are listed; `ProfileCard` resets its
+  switch from `item.on` on every change (the reason for the old wholesale replacement).
+- **Verified (Xvfb):** status change with the menu open, then "Create shortcut…" → dialog opens; switch on via
+  click, off via the service → switch shows off; on/off clicks stay consistent.
 
 ### 2026-10-01 (37) — 0.2.8: AppImage starts without libxdo
 - **Report (CachyOS, AppImage 0.2.7):** `error while loading shared libraries: libxdo.so.3`. The AppImage bundles

@@ -164,7 +164,9 @@ sh packaging/fedora/make-srpm.sh target/srpm
 - **Style:** `cargo fmt`, no warnings. Comments explain *why*, not *what*. Match the surrounding code.
 - **Layering:** `core` must not depend on UI or OS-service crates. OS-specific code lives behind `cfg(...)` in the smallest possible module.
 - **UI:** Slint with the `fluent` style and the **software renderer** (GPU renderer costs ~90 MB extra RAM, see DECISIONS #4). Use `Palette.*` / `Theme.*` colours, never hardcoded ones in pages. Icons come from `Icons` in `theme.slint`.
-- **Model updates:** profile lists are replaced wholesale (new `VecModel`) so card switches never keep stale state; logs use an incremental `VecModel`.
+- **Model updates:** profile cards change in place (`set_row_data`) while the same profiles are listed, so an open card
+  menu survives status updates; `changed item` in `ProfileCard` puts the switch back on the service's state. A new
+  `VecModel` only when profiles are added, removed or reordered. Logs use an incremental `VecModel`.
 - **Budget:** GUI release build ≤ 40 MB working set when visible; service ≤ 20 MB idle. Re-measure after UI-heavy changes.
 
 ## Security rules (the service runs as SYSTEM/root)

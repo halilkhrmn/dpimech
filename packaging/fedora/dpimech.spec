@@ -84,6 +84,7 @@ install -Dm644 crates/gui/assets/dpimech.png %{buildroot}%{_datadir}/icons/hicol
 %changelog
 * Thu Oct 01 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.2.9-1
 - A profile shortcut also starts DPIMech in the tray when it is not running
+- "Create shortcut" from a profile card's menu works while status updates arrive
 * Thu Oct 01 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.2.8-1
 - No longer needs libxdo; runs without a tray when libayatana-appindicator is missing
 * Thu Oct 01 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.2.7-1
