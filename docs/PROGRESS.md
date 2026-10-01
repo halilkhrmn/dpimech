@@ -121,6 +121,11 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-10-01 (35) — Linux no longer "preview"
+- **Done (owner's call: Linux works on their machines):** READMEs (en/tr/ru) and the site call Linux ready;
+  the "only tested in a container" note and the "Upgrading from dpimngr 0.1.x" section are gone.
+  macOS stays "early preview". The dpimngr migration code stays in the app.
+
 ### 2026-10-01 (34) — screenshots in the READMEs and on the site
 - **Done:** four screenshots in `site/screenshots/` (Windows ones from the owner, Linux ones taken under Xvfb
   with a demo data dir), shown in README (en/tr/ru) under the status table and in a "Screenshots" section
