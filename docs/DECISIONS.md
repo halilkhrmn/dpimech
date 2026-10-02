@@ -312,3 +312,11 @@ own release), a launchd service and an unsigned universal `.dmg`. The wizard hid
   what to install (stderr and a GTK dialog, translated) and exits. The AUR package depends on it; the Arch smoke
   test checks the message, installs the library and then checks the window.
 
+## 48. Arch package on the release page; AUR on hold (2026-10-02)
+- **Problem:** the AUR currently takes no new accounts, so `dpimech-bin` cannot be published there.
+- **Decision:** the release workflow already builds `dpimech-bin` from the release `.deb` and installs it in a
+  clean Arch; it now attaches that `.pkg.tar.zst` to the GitHub release. Arch-based users install it with
+  `sudo pacman -U`; pacman pulls in the dependencies (including libxkbcommon-x11) and removes it cleanly.
+- **Trade-off:** no automatic updates through `yay`/`pacman -Syu`; the in-app update check still tells users
+  about a new version. The AUR push stays in `tools/aur-publish.sh` (`--push`) for when registration reopens.
+

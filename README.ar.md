@@ -102,6 +102,7 @@
 |---|---|---|
 | Ubuntu وDebian وMint وPop!_OS | `dpimech_<version>_amd64.deb` | `sudo apt install ./dpimech_*_amd64.deb` |
 | Fedora | لا حاجة للتنزيل: [مستودع COPR](https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/) | انظر أدناه |
+| Arch وCachyOS وEndeavourOS وManjaro | `dpimech-bin-<version>-1-x86_64.pkg.tar.zst` | `sudo pacman -U ./dpimech-bin-*.pkg.tar.zst` |
 | openSUSE وRHEL | `dpimech-<version>-1.x86_64.rpm` | `sudo dnf install ./dpimech-*.x86_64.rpm` |
 | أي توزيعة أخرى | `DPIMech-<version>-x86_64.AppImage` | `chmod +x DPIMech-*.AppImage` ثم شغّله |
 
@@ -116,7 +117,19 @@ sudo dnf install dpimech
 
 <div dir="rtl">
 
-الحزم (`.deb` و`.rpm` وCOPR) تثبّت خدمة الخلفية وتشغّلها أيضًا. مع AppImage، افتح DPIMech واضغط
+**Arch وCachyOS وEndeavourOS وManjaro** — حزمة Arch ‏(`dpimech-bin`) جاهزة، لكنها ليست على AUR بعد: لا يقبل AUR
+حاليًا تسجيل أعضاء جدد. الحزمة نفسها مرفقة بكل إصدار: نزّل `dpimech-bin-<version>-1-x86_64.pkg.tar.zst` من
+[Releases](https://github.com/halilkhrmn/dpimech/releases/latest) وثبّتها (يجلب pacman الاعتماديات، وينبّهك DPIMech عند صدور إصدار جديد):
+
+</div>
+
+```sh
+sudo pacman -U ./dpimech-bin-*-x86_64.pkg.tar.zst
+```
+
+<div dir="rtl">
+
+الحزم (`.deb` و`.rpm` وCOPR وArch) تثبّت خدمة الخلفية وتشغّلها أيضًا. مع AppImage، افتح DPIMech واضغط
 **تثبيت الخدمة** مرة واحدة (تطلب كلمة المرور). في GNOME تحتاج أيقونة شريط المهام إلى إضافة
 *AppIndicator and KStatusNotifierItem Support* (مضمّنة في Ubuntu).
 

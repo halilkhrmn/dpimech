@@ -177,13 +177,18 @@
   </div>
   <div class="dl">
     <b>Linux</b>
-    <small>.deb, .rpm or AppImage</small>
+    <small>.deb, .rpm, Arch package or AppImage</small>
     <a class="button" id="dl-linux" href="https://github.com/halilkhrmn/dpimech/releases/latest">Download</a>
   </div>
   <div class="dl">
     <b>Fedora</b>
     <small>COPR repository, updates with dnf</small>
     <a class="button" href="#fedora">How to install</a>
+  </div>
+  <div class="dl">
+    <b>Arch, CachyOS, Manjaro</b>
+    <small>Arch package, install with pacman</small>
+    <a class="button" href="#arch">How to install</a>
   </div>
   <div class="dl">
     <b>macOS</b> <em>(early preview)</em>
@@ -199,6 +204,12 @@
   after that DPIMech updates with the rest of the system (<code>sudo dnf upgrade</code>).</p>
 <pre class="cmd">sudo dnf copr enable halilkahraman/DPIMech
 sudo dnf install dpimech</pre>
+<p id="arch"><b>Arch, CachyOS, EndeavourOS, Manjaro:</b> there is an Arch package (<code>dpimech-bin</code>), but it is
+  not on the AUR yet: the AUR takes no new accounts at the moment. The same package is attached to every release
+  instead: download <code>dpimech-bin-&lt;version&gt;-1-x86_64.pkg.tar.zst</code> from the
+  <a href="https://github.com/halilkhrmn/dpimech/releases/latest">releases page</a> and install it (pacman brings the
+  dependencies; DPIMech tells you when a new version is out):</p>
+<pre class="cmd">sudo pacman -U ./dpimech-bin-*-x86_64.pkg.tar.zst</pre>
 
 <h2 id="what">What is it?</h2>
 <p>

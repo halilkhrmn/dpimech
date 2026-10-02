@@ -108,6 +108,7 @@ WinDivert را به اشتباه خطرناک می‌دانند؛ DPIMech آن �
 |---|---|---|
 | Ubuntu، Debian، Mint، Pop!_OS | `dpimech_<version>_amd64.deb` | `sudo apt install ./dpimech_*_amd64.deb` |
 | Fedora | نیازی به دانلود نیست: [مخزن COPR](https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/) | پایین‌تر |
+| Arch، CachyOS، EndeavourOS، Manjaro | `dpimech-bin-<version>-1-x86_64.pkg.tar.zst` | `sudo pacman -U ./dpimech-bin-*.pkg.tar.zst` |
 | openSUSE، RHEL | `dpimech-<version>-1.x86_64.rpm` | `sudo dnf install ./dpimech-*.x86_64.rpm` |
 | هر توزیع دیگر | `DPIMech-<version>-x86_64.AppImage` | `chmod +x DPIMech-*.AppImage` و سپس اجرا |
 
@@ -122,7 +123,20 @@ sudo dnf install dpimech
 
 <div dir="rtl">
 
-بسته‌ها (`.deb`، `.rpm`، COPR) سرویس پس‌زمینه را هم نصب و اجرا می‌کنند. با AppImage، DPIMech را باز کنید و
+**Arch، CachyOS، EndeavourOS، Manjaro** — بستهٔ Arch (`dpimech-bin`) آماده است، اما هنوز در AUR نیست: AUR در حال حاضر
+عضو جدید نمی‌پذیرد. همین بسته به هر انتشار پیوست می‌شود: `dpimech-bin-<version>-1-x86_64.pkg.tar.zst` را از
+[Releases](https://github.com/halilkhrmn/dpimech/releases/latest) دانلود و نصب کنید (pacman وابستگی‌ها را می‌آورد و DPIMech
+نسخهٔ جدید را خبر می‌دهد):
+
+</div>
+
+```sh
+sudo pacman -U ./dpimech-bin-*-x86_64.pkg.tar.zst
+```
+
+<div dir="rtl">
+
+بسته‌ها (`.deb`، `.rpm`، COPR، Arch) سرویس پس‌زمینه را هم نصب و اجرا می‌کنند. با AppImage، DPIMech را باز کنید و
 یک بار **نصب سرویس** را بزنید (گذرواژه می‌خواهد). در GNOME نماد سینی سیستم به افزونهٔ
 *AppIndicator and KStatusNotifierItem Support* نیاز دارد (در Ubuntu از پیش هست).
 

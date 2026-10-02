@@ -144,7 +144,8 @@ trait Engine {
 
 **Priority 4 — reach and reliability** (set 2026-10-01, in this order)
 1. Release smoke tests: every package is installed on a clean system and started before a release is published.
-2. AUR package (`dpimech-bin`), updated by the release workflow.
+2. ~~AUR package~~ → the Arch package `dpimech-bin` is attached to every release (`sudo pacman -U`); the AUR
+   itself is on hold, it takes no new accounts (DECISIONS #48).
 3. Domain packs fetched from `main` like the strategies.
 4. Encrypted DNS (DoH) in one click, offered when the Lab finds DNS blocking.
 5. Then: self-repair (re-run the Lab in the background when a profile stops working) or a troubleshooter.

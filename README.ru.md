@@ -102,6 +102,7 @@ UDP (например, голос) идёт напрямую. Трафик пр�
 |---|---|---|
 | Ubuntu, Debian, Mint, Pop!_OS | `dpimech_<версия>_amd64.deb` | `sudo apt install ./dpimech_*_amd64.deb` |
 | Fedora | скачивать не нужно: [репозиторий COPR](https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/) | см. ниже |
+| Arch, CachyOS, EndeavourOS, Manjaro | `dpimech-bin-<версия>-1-x86_64.pkg.tar.zst` | `sudo pacman -U ./dpimech-bin-*.pkg.tar.zst` |
 | openSUSE, RHEL | `dpimech-<версия>-1.x86_64.rpm` | `sudo dnf install ./dpimech-*.x86_64.rpm` |
 | Любой другой дистрибутив | `DPIMech-<версия>-x86_64.AppImage` | `chmod +x DPIMech-*.AppImage`, затем запустите |
 
@@ -114,7 +115,16 @@ sudo dnf copr enable halilkahraman/DPIMech
 sudo dnf install dpimech
 ```
 
-Пакеты (`.deb`, `.rpm`, COPR) сразу устанавливают и запускают фоновую службу. С AppImage откройте
+**Arch, CachyOS, EndeavourOS, Manjaro** — пакет для Arch (`dpimech-bin`) есть, но в AUR его пока нет: AUR сейчас не
+регистрирует новых пользователей. Тот же пакет прикреплён к каждому релизу: скачайте
+`dpimech-bin-<версия>-1-x86_64.pkg.tar.zst` со страницы [Releases](https://github.com/halilkhrmn/dpimech/releases/latest) и установите
+(зависимости подтянет pacman; о новой версии сообщит сам DPIMech):
+
+```sh
+sudo pacman -U ./dpimech-bin-*-x86_64.pkg.tar.zst
+```
+
+Пакеты (`.deb`, `.rpm`, COPR, Arch) сразу устанавливают и запускают фоновую службу. С AppImage откройте
 DPIMech и один раз нажмите **Install the service** (спросит пароль). Библиотека для трея уже
 внутри AppImage. В GNOME для значка в трее нужно расширение *AppIndicator and KStatusNotifierItem Support*
 (в Ubuntu оно уже есть).

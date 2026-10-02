@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
-# Builds the AUR package dpimech-bin for a release and, with --push, publishes it.
-# Runs in an Arch container as root (release.yml): tools/aur-publish.sh <version> <deb> [--push]
+# Builds the Arch package dpimech-bin for a release, installs it, and with PKG_OUT=<dir> copies the
+# package there (release.yml attaches it to the GitHub release: `sudo pacman -U` installs it).
+# Runs in an Arch container as root: tools/aur-publish.sh <version> <deb> [--push]
 # The .deb is the one the release publishes; makepkg uses it instead of downloading.
-# --push needs AUR_SSH_PRIVATE_KEY (the key added to the AUR account that owns dpimech-bin).
+# --push publishes to the AUR; on hold (the AUR takes no new accounts, DECISIONS #48). It needs
+# AUR_SSH_PRIVATE_KEY (the key added to the AUR account that owns dpimech-bin).
 set -euo pipefail
 
 version=$1
@@ -32,6 +34,10 @@ su builder -c "cd '$pkg' && makepkg --noconfirm --cleanbuild >/dev/null && makep
 pacman -U --noconfirm "$pkg"/dpimech-bin-"$version"-1-x86_64.pkg.tar.* >/dev/null
 test -x /usr/bin/dpimech && test -x /usr/lib/dpimech/dpimech-service
 echo "built and installed dpimech-bin $version"
+if [ -n "${PKG_OUT:-}" ]; then
+    mkdir -p "$PKG_OUT"
+    cp "$pkg"/dpimech-bin-"$version"-1-x86_64.pkg.tar.* "$PKG_OUT/"
+fi
 
 [ "$push" = "--push" ] || exit 0
 [ -n "${AUR_SSH_PRIVATE_KEY:-}" ] || { echo "AUR_SSH_PRIVATE_KEY is not set; not publishing" >&2; exit 1; }

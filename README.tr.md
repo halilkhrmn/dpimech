@@ -99,6 +99,7 @@ saniye sonra yakalanır.
 |---|---|---|
 | Ubuntu, Debian, Mint, Pop!_OS | `dpimech_<sürüm>_amd64.deb` | `sudo apt install ./dpimech_*_amd64.deb` |
 | Fedora | indirmeye gerek yok: [COPR deposu](https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/) | aşağıya bak |
+| Arch, CachyOS, EndeavourOS, Manjaro | `dpimech-bin-<sürüm>-1-x86_64.pkg.tar.zst` | `sudo pacman -U ./dpimech-bin-*.pkg.tar.zst` |
 | openSUSE, RHEL | `dpimech-<sürüm>-1.x86_64.rpm` | `sudo dnf install ./dpimech-*.x86_64.rpm` |
 | Diğer tüm dağıtımlar | `DPIMech-<sürüm>-x86_64.AppImage` | `chmod +x DPIMech-*.AppImage`, sonra çalıştır |
 
@@ -111,7 +112,16 @@ sudo dnf copr enable halilkahraman/DPIMech
 sudo dnf install dpimech
 ```
 
-Paketler (`.deb`, `.rpm`, COPR) arka plan servisini de kurar ve başlatır. AppImage kullanıyorsan DPIMech'i açıp bir
+**Arch, CachyOS, EndeavourOS, Manjaro** — Arch paketimiz (`dpimech-bin`) hazır, ama AUR şu anda yeni üye kaydı almadığı
+için henüz AUR'da değil. Aynı paket her sürümde indirilebilir: [Releases](https://github.com/halilkhrmn/dpimech/releases/latest)
+sayfasından `dpimech-bin-<sürüm>-1-x86_64.pkg.tar.zst` dosyasını indir ve kur (bağımlılıkları pacman getirir; yeni sürüm
+çıkınca DPIMech haber verir):
+
+```sh
+sudo pacman -U ./dpimech-bin-*-x86_64.pkg.tar.zst
+```
+
+Paketler (`.deb`, `.rpm`, COPR, Arch) arka plan servisini de kurar ve başlatır. AppImage kullanıyorsan DPIMech'i açıp bir
 kez **Install the service**'e bas (şifreni sorar). AppImage tepsi kütüphanesini
 kendi içinde getirir. GNOME'da tepsi simgesi için *AppIndicator and KStatusNotifierItem Support* eklentisi gerekir
 (Ubuntu'da hazır gelir).
