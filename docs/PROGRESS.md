@@ -121,13 +121,15 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
-### 2026-10-02 (42) — Arch package on the release page, AUR on hold
+### 2026-10-02 (42) — 0.3.1: Arch package on the release page, AUR on hold
 - **Owner's note:** the AUR takes no new accounts, so `dpimech-bin` cannot be published there for now.
 - **Done:** the release workflow attaches the Arch package it already builds and installs in a clean Arch
   (`dpimech-bin-<version>-1-x86_64.pkg.tar.zst`) to the release; READMEs (all five languages) and the site list
   it with `sudo pacman -U`. The AUR push stays in `tools/aur-publish.sh` for later (DECISIONS #48).
 - **Verified:** dry run of the release workflow on the branch (the package is built, installed and uploaded as an
   artifact; attaching happens only on a real release).
+- **0.3.1:** released so the Arch package the READMEs and the site point to exists; it also ships the
+  libxkbcommon-x11 message (#18) and the release smoke tests.
 
 ### 2026-10-02 (41) — Arch smoke test: missing libxkbcommon-x11
 - **Found by the smoke test:** the AppImage panics on a bare Arch without libxkbcommon-x11; bundling Ubuntu's copy

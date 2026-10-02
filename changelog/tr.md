@@ -1,5 +1,10 @@
 # Değişiklikler
 
+## 0.3.1
+- Arch, CachyOS, EndeavourOS ve Manjaro: her sürüm sayfasında artık bir Arch paketi (`dpimech-bin`) var; `sudo pacman -U` ile kurulur.
+- libxkbcommon-x11 olmayan Linux sistemlerde DPIMech açılışta çökmüyor; hangi paketi kurman gerektiğini söylüyor.
+- Her paket artık sürüm yayımlanmadan önce temiz bir sistemde kurulup çalıştırılarak test ediliyor.
+
 ## 0.3.0
 - Farsça (فارسی) ve Arapça (العربية) arayüz.
 - Ülkende engelli siteler listenin başında ve kurulum sihirbazında hazır seçili: Türkiye, Rusya, İran, Kazakistan, Belarus ve Mısır.

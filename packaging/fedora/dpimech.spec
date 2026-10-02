@@ -82,6 +82,9 @@ install -Dm644 crates/gui/assets/dpimech.png %{buildroot}%{_datadir}/icons/hicol
 %{_datadir}/icons/hicolor/256x256/apps/dpimech.png
 
 %changelog
+* Fri Oct 02 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.3.1-1
+- A clear message instead of a crash when libxkbcommon-x11 is missing
+- Arch package on the release page; smoke tests before every release
 * Fri Oct 02 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.3.0-1
 - Persian and Arabic interface; sites blocked in the user's country come first
 - Site list updates without a release; "What's new" after an update
