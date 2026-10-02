@@ -3,13 +3,13 @@
 use crate::i18n::tr;
 use std::cell::RefCell;
 
-use dpimech_core::catalog::{STANDARD_SET, domain_packs};
+use dpimech_core::catalog::{STANDARD_SET, country_preset, domain_packs};
 use dpimech_core::lab::{IspInfo, LabRequest, LabResult, LabStrategy};
 use dpimech_core::model::{EngineKind, Os};
 use slint::{ModelRc, SharedString, VecModel};
 
-use crate::convert::parse_domains;
-use crate::{AppWindow, LabPack, LabRow};
+use crate::convert::{Chips, country, pack_rows, parse_domains};
+use crate::{AppWindow, LabRow};
 
 #[derive(Default)]
 struct State {
@@ -45,8 +45,8 @@ pub fn init(ui: &AppWindow) {
     )));
     STATE.with_borrow_mut(|s| {
         s.engines = engines;
-        // Discord is what most people come for.
-        s.selected_packs = vec!["discord".to_owned()];
+        // What is blocked in the user's country (else Discord, what most people come for).
+        s.selected_packs = country_preset(&domain_packs(), country());
     });
     refresh_packs(ui);
     ui.set_lab_isp_text(tr("ISP not detected").into());
@@ -79,16 +79,8 @@ pub fn toggle_pack(ui: &AppWindow, index: i32) {
 }
 
 pub fn refresh_packs(ui: &AppWindow) {
-    let packs: Vec<LabPack> = STATE.with_borrow(|s| {
-        domain_packs()
-            .iter()
-            .map(|p| LabPack {
-                name: p.name.as_str().into(),
-                selected: s.selected_packs.contains(&p.id),
-            })
-            .collect()
-    });
-    ui.set_lab_packs(ModelRc::new(VecModel::from(packs)));
+    let rows = STATE.with_borrow(|s| pack_rows(Chips::Lab, &s.selected_packs));
+    ui.set_lab_packs(rows);
 }
 
 pub fn set_strategies(ui: &AppWindow, strategies: Vec<LabStrategy>) {

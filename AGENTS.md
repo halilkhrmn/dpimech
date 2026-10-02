@@ -92,7 +92,9 @@ crates/gui/       dpimech binary (Slint)
   src/single.rs     single GUI instance (Windows mutex + event, Unix socket)
   src/logfile.rs    daily log files (opt-in) and error snapshots written by the GUI (never by the service)
   src/report.rs     "Report a problem": report text, GitHub issue / mailto links; ui/report.slint
-  src/i18n.rs       translations for Rust-built text + language choice; lang/ holds the .po catalogs
+  src/i18n.rs       translations for Rust-built text + language choice (tr, ru, fa, ar) and the user's
+                    country from the locale; lang/ holds the .po catalogs
+  src/whatsnew.rs   "What's new" dialog after an update (ui/whatsnew.slint)
   assets/           logo-source.png (master) → logo.png (UI), dpimech.ico/.png (exe, notifications),
                     tray-32.rgba (tray; status dot drawn at runtime) — regenerate with tools/make_icon.py
   src/apps.rs       process + Start Menu discovery with icons (Win32)
@@ -108,7 +110,10 @@ packaging/fedora/ dpimech.spec + make-srpm.sh (source RPM with vendored crates) 
 .github/workflows ci.yml (fmt, clippy, tests), release.yml (new version on main or tag v* → GitHub release),
                   pages.yml (site/ → GitHub Pages), copr.yml (manual COPR build / webhook test)
 strategies/       default.json: the standard strategies per engine; embedded in the app and fetched from
-                  `main` by the service, so editing it reaches users without a release
+                  `main` by the service, so editing it reaches users without a release; domains.json: the
+                  site packs (with the countries where each is blocked), handled the same way
+changelog/        en.md + tr/ru/fa/ar.md: user-facing notes per version, shown once after an update
+                  ("What's new", src/whatsnew.rs) and used as the GitHub release text
 site/             landing page (plain HTML, no build step; reads the newest release via the GitHub API)
 docs/             PLAN, PROGRESS, DECISIONS, RELEASING (release steps, COPR setup)
 ```

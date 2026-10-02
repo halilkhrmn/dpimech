@@ -2,7 +2,7 @@ import { Palette, Button, LineEdit, ProgressIndicator, ScrollView, ListView } fr
 import { Theme, Icons } from "theme.slint";
 import { Glyph, LogItem, Note } from "components.slint";
 import { AppItem } from "editor.slint";
-import { LabPack } from "lab.slint";
+import { PackRow } from "lab.slint";
 
 export struct WizardTask {
     text: string,
@@ -54,7 +54,7 @@ component PackChip inherits Rectangle {
 
 export component Wizard inherits Rectangle {
     in property <int> step;
-    in property <[LabPack]> packs;
+    in property <[PackRow]> packs;
     in-out property <string> custom-sites;
     in property <int> where;
     in property <bool> apps-supported: true;
@@ -71,6 +71,7 @@ export component Wizard inherits Rectangle {
     callback choose-easy;
     callback choose-advanced;
     callback toggle-pack(int);
+    callback packs-width(float);
     callback set-where(int);
     callback add-app;
     callback remove-app(int);
@@ -133,13 +134,28 @@ export component Wizard inherits Rectangle {
             spacing: 16px;
             Text { text: @tr("What do you want to open?"); font-size: 26px; font-weight: 700; }
             Text { text: @tr("Pick one or more. You can add other sites too."); color: Theme.muted; }
-            HorizontalLayout {
-                spacing: 8px;
-                alignment: start;
-                for pack[i] in packs: PackChip {
-                    text: pack.name;
-                    selected: pack.selected;
-                    clicked => { root.toggle-pack(i); }
+            // The rows decide nothing about the width: chips are split for the width this area gets,
+            // so its minimum must not grow with the rows (that would never let it shrink again).
+            Rectangle {
+                min-width: 0px;
+                horizontal-stretch: 1;
+                min-height: chip-rows.min-height;
+                preferred-height: chip-rows.preferred-height;
+                // Also on creation: `changed` does not fire for the first value.
+                init => { root.packs-width(self.width / 1px); }
+                changed width => { root.packs-width(self.width / 1px); }
+                chip-rows := VerticalLayout {
+                    width: parent.width;
+                    spacing: 8px;
+                    for row in packs: HorizontalLayout {
+                        spacing: 8px;
+                        alignment: start;
+                        for pack in row.packs: PackChip {
+                            text: pack.name;
+                            selected: pack.selected;
+                            clicked => { root.toggle-pack(pack.index); }
+                        }
+                    }
                 }
             }
             LineEdit {

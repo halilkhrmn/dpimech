@@ -121,6 +121,23 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-10-02 (39) — 0.3.0: Persian and Arabic, sites by country, "What's new"
+- **Done:** site packs moved to `strategies/domains.json` and fetched from `main` (DECISIONS #43); new packs
+  Telegram, WhatsApp, Facebook, Signal, Viber, LinkedIn, TikTok, SoundCloud, Imgur and independent media of Belarus
+  and Egypt; country tags for TR, RU, IR, KZ, BY, EG (same ids as the Android app), the user's country first and
+  preselected in the wizard and the Lab; chips wrap into rows. Persian and Arabic UI (all 306 strings),
+  `README.fa.md` / `README.ar.md`, a "By country" section in every README. "What's new" dialog after an update
+  from `changelog/<lang>.md` (DECISIONS #45); the release workflow uses the English notes as the release text.
+- **Verified:** `cargo test` (country presets, locale → country, changelog parsing, catalogs complete), clippy,
+  fmt. Screenshots under Xvfb: Lab in Persian with `fa_IR` (Iran's sites first and selected, rows wrap, Persian pack
+  names), wizard in Arabic with `ar_EG` (Egyptian media first), the "What's new" dialog in Arabic after setting
+  `last_version = "0.2.9"`. Arabic and Persian text shape and run right to left correctly; the layout itself is not
+  mirrored (DECISIONS #44). Every new probe host answered HTTPS from here; hosts behind bot checks are not probes.
+- **Open/next:** not tested on Windows yet (region from "Country or region", fonts for Arabic script in Segoe UI);
+  the Android app's country work should use the same lists. At the smallest window (760 px) the chips wrap to the
+  area, but the Lab's engine and strategy rows are wider than the page (already so before; a window manager keeps
+  the window at the layout's minimum, Xvfb does not).
+
 ### 2026-10-01 (38) — 0.2.9: profile shortcuts bring up the tray
 - **Owner's report:** opening a profile shortcut starts the profile and the app, but no main window or tray
   appears, so there is nothing to switch the profile off with.

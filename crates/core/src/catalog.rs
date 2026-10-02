@@ -23,6 +23,19 @@ pub struct DomainPack {
     /// apex domains without an A record (e.g. `discordapp.net`) would fail regardless of the
     /// strategy and make every result look worse.
     pub probes: Vec<String>,
+    /// ISO codes of the countries where the site is widely reported blocked; `*` = offered first
+    /// everywhere. The wizard preselects a country's packs and every list shows them first.
+    #[serde(default)]
+    pub countries: Vec<String>,
+    /// `name` in other languages, by language code ("fa", "ar", …); brand names need none.
+    #[serde(default)]
+    pub names: std::collections::BTreeMap<String, String>,
+}
+
+impl DomainPack {
+    pub fn display_name(&self, lang: &str) -> &str {
+        self.names.get(lang).map_or(&self.name, String::as_str)
+    }
 }
 
 /// The sites offered by the wizard, the Lab and the editor, from `strategies/domains.json`. Like
@@ -60,7 +73,10 @@ pub fn parse_domain_packs(text: &str) -> anyhow::Result<Vec<DomainPack>> {
         if !id_ok || !ids.insert(pack.id.as_str()) {
             anyhow::bail!("bad or repeated pack id \"{}\"", pack.id);
         }
-        if pack.name.trim().is_empty() || pack.name.len() > 60 {
+        if std::iter::once(&pack.name)
+            .chain(pack.names.values())
+            .any(|n| n.trim().is_empty() || n.len() > 120)
+        {
             anyhow::bail!("{}: bad name", pack.id);
         }
         if pack.domains.is_empty() || pack.probes.is_empty() {
@@ -68,6 +84,11 @@ pub fn parse_domain_packs(text: &str) -> anyhow::Result<Vec<DomainPack>> {
         }
         if pack.domains.len() > 200 || pack.probes.len() > 20 {
             anyhow::bail!("{}: too many domains", pack.id);
+        }
+        if let Some(bad) = pack.countries.iter().find(|c| {
+            c.as_str() != "*" && !(c.len() == 2 && c.bytes().all(|b| b.is_ascii_uppercase()))
+        }) {
+            anyhow::bail!("{}: \"{bad}\" is not a country code", pack.id);
         }
         if let Some(bad) = pack
             .domains
@@ -124,6 +145,41 @@ pub fn set_domain_packs(packs: Vec<DomainPack>) -> bool {
 
 pub fn domain_pack(id: &str) -> Option<DomainPack> {
     domain_packs().iter().find(|p| p.id == id).cloned()
+}
+
+/// Indexes into `packs` in the order to show them to a user in `country` (ISO code, may be
+/// empty): that country's sites, then the ones offered everywhere, then the rest.
+pub fn pack_order(packs: &[DomainPack], country: &str) -> Vec<usize> {
+    let rank = |p: &DomainPack| {
+        if !country.is_empty() && p.countries.iter().any(|c| c == country) {
+            0
+        } else if p.countries.iter().any(|c| c == "*") {
+            1
+        } else {
+            2
+        }
+    };
+    let mut order: Vec<usize> = (0..packs.len()).collect();
+    order.sort_by_key(|&i| rank(&packs[i])); // stable: file order within a rank
+    order
+}
+
+/// The packs to preselect for a user in `country`: the country's own, else the first one
+/// offered everywhere.
+pub fn country_preset(packs: &[DomainPack], country: &str) -> Vec<String> {
+    let own: Vec<String> = packs
+        .iter()
+        .filter(|p| !country.is_empty() && p.countries.iter().any(|c| c == country))
+        .map(|p| p.id.clone())
+        .collect();
+    if !own.is_empty() {
+        return own;
+    }
+    packs
+        .iter()
+        .find(|p| p.countries.iter().any(|c| c == "*"))
+        .map(|p| vec![p.id.clone()])
+        .unwrap_or_default()
 }
 
 /// Where DPIMech itself is released (update notifications).
@@ -456,6 +512,22 @@ mod tests {
     }
 
     #[test]
+    fn country_presets_come_first() {
+        let packs = domain_packs();
+        let ir = country_preset(&packs, "IR");
+        assert!(ir.contains(&"telegram".to_owned()) && !ir.contains(&"roblox".to_owned()));
+        let order = pack_order(&packs, "IR");
+        assert!(order[..ir.len()].iter().all(|&i| ir.contains(&packs[i].id)));
+        assert_eq!(order.len(), packs.len());
+        // No country of its own: the first pack offered everywhere.
+        assert_eq!(country_preset(&packs, "DE"), ["discord"]);
+        assert_eq!(country_preset(&packs, ""), ["discord"]);
+        for c in ["TR", "RU", "IR", "KZ", "BY", "EG"] {
+            assert!(!country_preset(&packs, c).is_empty(), "{c}");
+        }
+    }
+
+    #[test]
     fn domain_packs_parse_and_reject_bad_files() {
         let packs = domain_packs();
         assert!(packs.iter().any(|p| p.id == "discord"));
@@ -479,6 +551,13 @@ mod tests {
             assert!(parse_domain_packs(&pack("x", bad)).is_err(), "{bad}");
         }
         assert!(parse_domain_packs(&pack("Bad Id", "x.com")).is_err());
+        let country = |c: &str| {
+            pack("x", "x.com").replace(r#""probes""#, &format!(r#""countries":["{c}"],"probes""#))
+        };
+        assert!(parse_domain_packs(&country("IR")).is_ok());
+        assert!(parse_domain_packs(&country("*")).is_ok());
+        assert!(parse_domain_packs(&country("ir")).is_err());
+        assert!(parse_domain_packs(&country("IRN")).is_err());
         let twice = r#"{"format":1,"packs":[
             {"id":"a","name":"A","domains":["a.com"],"probes":["a.com"]},
             {"id":"a","name":"B","domains":["b.com"],"probes":["b.com"]}]}"#;

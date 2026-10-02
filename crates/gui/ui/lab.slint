@@ -5,6 +5,13 @@ import { PageHeader, Badge, Glyph } from "components.slint";
 export struct LabPack {
     name: string,
     selected: bool,
+    /// Position in the service's pack list (rows show them in another order).
+    index: int,
+}
+
+/// One line of site chips; Rust splits the packs into rows that fit (Slint has no wrapping layout).
+export struct PackRow {
+    packs: [LabPack],
 }
 
 export struct LabRow {
@@ -117,7 +124,7 @@ component ResultRow inherits Rectangle {
 export component LabPage inherits VerticalLayout {
     in property <[string]> engines;
     in-out property <int> engine-index;
-    in property <[LabPack]> packs;
+    in property <[PackRow]> packs;
     in-out property <string> custom-domains;
     in property <string> isp-text;
     in property <string> strategy-summary;
@@ -130,6 +137,8 @@ export component LabPage inherits VerticalLayout {
     in property <[LabRow]> results;
     callback engine-changed(int);
     callback toggle-pack(int);
+    /// The chip area's width in px, so Rust can split the chips into rows that fit.
+    callback packs-width(float);
     callback detect-isp;
     callback refresh-strategies;
     callback start-test;
@@ -176,13 +185,28 @@ export component LabPage inherits VerticalLayout {
             HorizontalLayout {
                 spacing: 12px;
                 Text { text: @tr("Sites"); vertical-alignment: center; width: 90px; }
-                HorizontalLayout {
-                    spacing: 6px;
-                    alignment: start;
-                    for pack[i] in packs: Chip {
-                        text: pack.name;
-                        selected: pack.selected;
-                        clicked => { root.toggle-pack(i); }
+                // The rows decide nothing about the width: chips are split for the width this area gets,
+                // so its minimum must not grow with the rows (that would never let it shrink again).
+                Rectangle {
+                    min-width: 0px;
+                    horizontal-stretch: 1;
+                    min-height: chip-rows.min-height;
+                    preferred-height: chip-rows.preferred-height;
+                    // Also on creation: `changed` does not fire for the first value.
+                    init => { root.packs-width(self.width / 1px); }
+                    changed width => { root.packs-width(self.width / 1px); }
+                    chip-rows := VerticalLayout {
+                        width: parent.width;
+                        spacing: 6px;
+                        for row in packs: HorizontalLayout {
+                            spacing: 6px;
+                            alignment: start;
+                            for pack in row.packs: Chip {
+                                text: pack.name;
+                                selected: pack.selected;
+                                clicked => { root.toggle-pack(pack.index); }
+                            }
+                        }
                     }
                 }
             }

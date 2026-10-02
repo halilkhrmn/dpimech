@@ -1,6 +1,7 @@
 import { Palette, Button, ComboBox, LineEdit, SpinBox, Switch, TextEdit, ListView, ScrollView } from "std-widgets.slint";
 import { Theme, Icons } from "theme.slint";
 import { PageHeader, Glyph, Badge, Note } from "components.slint";
+import { PackRow } from "lab.slint";
 
 export struct ProfileDraft {
     id: string,
@@ -167,8 +168,9 @@ export component ProfileEditorPage inherits VerticalLayout {
     in property <string> error;
     callback engine-changed(int);
     callback open-picker;
-    in property <[string]> domain-pack-names;
+    in property <[PackRow]> domain-packs;
     callback add-domain-pack(int);
+    callback packs-width(float);
     callback remove-app(int);
     callback save(ProfileDraft);
     callback cancel;
@@ -254,12 +256,27 @@ export component ProfileEditorPage inherits VerticalLayout {
                     color: Theme.muted;
                     wrap: word-wrap;
                 }
-                HorizontalLayout {
-                    spacing: 6px;
-                    alignment: start;
-                    for pack[i] in domain-pack-names: Button {
-                        text: "+ " + pack;
-                        clicked => { root.add-domain-pack(i); }
+                // The rows decide nothing about the width: chips are split for the width this area gets,
+                // so its minimum must not grow with the rows (that would never let it shrink again).
+                Rectangle {
+                    min-width: 0px;
+                    horizontal-stretch: 1;
+                    min-height: chip-rows.min-height;
+                    preferred-height: chip-rows.preferred-height;
+                    // Also on creation: `changed` does not fire for the first value.
+                    init => { root.packs-width(self.width / 1px); }
+                    changed width => { root.packs-width(self.width / 1px); }
+                    chip-rows := VerticalLayout {
+                        width: parent.width;
+                        spacing: 6px;
+                        for row in domain-packs: HorizontalLayout {
+                            spacing: 6px;
+                            alignment: start;
+                            for pack in row.packs: Button {
+                                text: "+ " + pack.name;
+                                clicked => { root.add-domain-pack(pack.index); }
+                            }
+                        }
                     }
                 }
                 TextEdit {

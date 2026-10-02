@@ -1,0 +1,1229 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: fa\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: ui/app.slint:211
+msgid "Profiles"
+msgstr "پروفایل‌ها"
+
+#: ui/app.slint:216
+msgid "Strategy Lab"
+msgstr "آزمایشگاه راهبرد"
+
+#: ui/app.slint:221
+msgid "Engines"
+msgstr "موتورها"
+
+#: ui/app.slint:227
+msgid "Logs"
+msgstr "گزارش‌ها"
+
+#: ui/app.slint:233
+msgid "Settings"
+msgstr "تنظیمات"
+
+#: ui/app.slint:276
+msgid "Another DPI tool is running: {}. Two tools on the same traffic break connections — close it, or turn DPIMech's profiles off."
+msgstr "ابزار دیگری برای دور زدن DPI در حال اجراست: {}. دو ابزار روی یک ترافیک اتصال‌ها را خراب می‌کنند — آن را ببندید یا پروفایل‌های DPIMech را خاموش کنید."
+
+#: ui/app.slint:294
+msgid "DPIMech {} is ready to install."
+msgstr "DPIMech {} آمادهٔ نصب است."
+
+#: ui/app.slint:298
+msgid "Restart and update"
+msgstr "راه‌اندازی دوباره و به‌روزرسانی"
+
+#: ui/app.slint:310
+msgid "Background service is not running. Engines can't be started until it is."
+msgstr "سرویس پس‌زمینه اجرا نمی‌شود. تا زمانی که اجرا نشود، موتورها راه‌اندازی نمی‌شوند."
+
+#: ui/components.slint:132
+msgid "Edit"
+msgstr "ویرایش"
+
+#: ui/components.slint:133
+msgid "Create shortcut…"
+msgstr "ساخت میان‌بر…"
+
+#: ui/components.slint:155
+msgid "More actions"
+msgstr "کارهای بیشتر"
+
+#: ui/components.slint:198
+msgid "Check the connection now"
+msgstr "اکنون اتصال را بررسی کن"
+
+#: ui/editor.slint:78
+msgid "running"
+msgstr "در حال اجرا"
+
+#: ui/editor.slint:116
+msgid "Add application"
+msgstr "افزودن برنامه"
+
+#: ui/editor.slint:117
+msgid "Close"
+msgstr "بستن"
+
+#: ui/editor.slint:120
+msgid "Search running and installed apps…"
+msgstr "جست‌وجو در برنامه‌های در حال اجرا و نصب‌شده…"
+
+#: ui/editor.slint:131
+msgid "Looking for apps…"
+msgstr "در حال یافتن برنامه‌ها…"
+
+#: ui/editor.slint:146
+msgid "Or type a name (discord) or path…"
+msgstr "یا یک نام (discord) یا مسیر بنویسید…"
+
+#: ui/editor.slint:150
+msgid "Add"
+msgstr "افزودن"
+
+#: ui/editor.slint:154
+msgid "Browse…"
+msgstr "مرور…"
+
+#: ui/editor.slint:186
+msgid "New profile"
+msgstr "پروفایل جدید"
+
+#: ui/editor.slint:186
+msgid "Edit profile"
+msgstr "ویرایش پروفایل"
+
+#: ui/editor.slint:188
+msgid "Back"
+msgstr "بازگشت"
+
+#: ui/editor.slint:204
+msgid "Name"
+msgstr "نام"
+
+#: ui/editor.slint:207
+msgid "e.g. Discord"
+msgstr "مثلاً Discord"
+
+#: ui/editor.slint:212
+msgid "Engine"
+msgstr "موتور"
+
+#: ui/editor.slint:224
+msgid "Routing"
+msgstr "مسیریابی"
+
+#: ui/editor.slint:232
+msgid "Local proxy port"
+msgstr "درگاه پراکسی محلی"
+
+#: ui/editor.slint:241
+msgid "Start with service"
+msgstr "همراه با سرویس شروع شود"
+
+#: ui/editor.slint:251
+msgid "Games with strict anti-cheat (for example Valorant or FACEIT) may refuse to start or disconnect you while a packet driver is active. Turn this off before playing, or unblock only the apps you need."
+msgstr "بازی‌هایی با ضدتقلب سخت‌گیر (مثلاً Valorant یا FACEIT) ممکن است وقتی درایور بسته فعال است اجرا نشوند یا اتصال شما را قطع کنند. پیش از بازی این را خاموش کنید، یا فقط برنامه‌هایی را که لازم دارید رفع انسداد کنید."
+
+#: ui/editor.slint:252
+msgid "Sites to unblock"
+msgstr "سایت‌هایی که باید باز شوند"
+
+#: ui/editor.slint:254
+msgid "The engine only touches these domains. One per line; subdomains are included."
+msgstr "موتور فقط با این دامنه‌ها کار دارد. هر خط یک دامنه؛ زیردامنه‌ها هم شامل می‌شوند."
+
+#: ui/editor.slint:282
+msgid "Applications"
+msgstr "برنامه‌ها"
+
+#: ui/editor.slint:283
+msgid "Add app"
+msgstr "افزودن برنامه"
+
+#: ui/editor.slint:294
+msgid "Only the apps listed here will go through the engine."
+msgstr "فقط برنامه‌های این فهرست از موتور عبور می‌کنند."
+
+#: ui/editor.slint:309
+msgid "Connection check"
+msgstr "بررسی اتصال"
+
+#: ui/editor.slint:311
+msgid "DPIMech opens these sites through the engine every few minutes. If they get much slower than usual or stop answering, it can restart the engine for you."
+msgstr "DPIMech هر چند دقیقه این سایت‌ها را از طریق موتور باز می‌کند. اگر خیلی کندتر از همیشه شوند یا پاسخ ندهند، می‌تواند موتور را برایتان دوباره راه‌اندازی کند."
+
+#: ui/editor.slint:325
+msgid "Check every"
+msgstr "بررسی هر"
+
+#: ui/editor.slint:327
+msgid "Off"
+msgstr "خاموش"
+
+#: ui/editor.slint:327
+msgid "1 minute"
+msgstr "۱ دقیقه"
+
+#: ui/editor.slint:327
+msgid "3 minutes"
+msgstr "۳ دقیقه"
+
+#: ui/editor.slint:327
+msgid "5 minutes"
+msgstr "۵ دقیقه"
+
+#: ui/editor.slint:327
+msgid "10 minutes"
+msgstr "۱۰ دقیقه"
+
+#: ui/editor.slint:333
+msgid "When it gets slow"
+msgstr "وقتی کند شد"
+
+#: ui/editor.slint:335
+msgid "Restart the engine automatically"
+msgstr "موتور را خودکار دوباره راه‌اندازی کن"
+
+#: ui/editor.slint:335
+msgid "Only warn me"
+msgstr "فقط به من هشدار بده"
+
+#: ui/editor.slint:341
+msgid "Sites to check"
+msgstr "سایت‌هایی که بررسی شوند"
+
+#: ui/editor.slint:344
+msgid "Empty = the sites above"
+msgstr "خالی = سایت‌های بالا"
+
+#: ui/editor.slint:344
+msgid "e.g. discord.com, gateway.discord.gg"
+msgstr "مثلاً discord.com, gateway.discord.gg"
+
+#: ui/editor.slint:350
+msgid "Reliability"
+msgstr "پایداری"
+
+#: ui/editor.slint:356
+msgid "Auto-restart when stuck or crashed"
+msgstr "راه‌اندازی دوبارهٔ خودکار هنگام گیر کردن یا از کار افتادن"
+
+#: ui/editor.slint:358
+msgid "Fixes the “ping jumps to thousands after a few hours” problem without touching other profiles."
+msgstr "مشکل «پینگ پس از چند ساعت به هزاران می‌رسد» را بدون دست زدن به پروفایل‌های دیگر حل می‌کند."
+
+#: ui/editor.slint:371
+msgid "Preventive restart every (hours)"
+msgstr "راه‌اندازی دوبارهٔ پیشگیرانه هر (ساعت)"
+
+#: ui/editor.slint:372
+msgid "0 = never. Takes well under a second."
+msgstr "۰ = هرگز. کمتر از یک ثانیه طول می‌کشد."
+
+#: ui/editor.slint:383
+msgid "TCP only"
+msgstr "فقط TCP"
+
+#: ui/editor.slint:385
+msgid "Voice/UDP goes direct. Fewer connections through the engine."
+msgstr "صدا/UDP مستقیم می‌رود. اتصال‌های کمتری از موتور عبور می‌کنند."
+
+#: ui/editor.slint:398
+msgid "Strategy arguments"
+msgstr "پارامترهای راهبرد"
+
+#: ui/editor.slint:406
+msgid "Tip: the Strategy Lab finds working arguments for your connection."
+msgstr "نکته: آزمایشگاه راهبرد پارامترهایی را که روی اتصال شما کار می‌کنند پیدا می‌کند."
+
+#: ui/editor.slint:421
+msgid "Save"
+msgstr "ذخیره"
+
+#: ui/editor.slint:426
+msgid "Cancel"
+msgstr "لغو"
+
+#: ui/editor.slint:430
+msgid "Delete"
+msgstr "حذف"
+
+#: ui/engines.slint:53
+msgid "{} available"
+msgstr "{} موجود است"
+
+#: ui/engines.slint:68
+msgid "Install"
+msgstr "نصب"
+
+#: ui/engines.slint:74
+msgid "Update"
+msgstr "به‌روزرسانی"
+
+#: ui/engines.slint:80
+msgid "Remove"
+msgstr "حذف"
+
+#: ui/engines.slint:95
+msgid "Installing…"
+msgstr "در حال نصب…"
+
+#: ui/engines.slint:95
+msgid "Downloading… {}%"
+msgstr "در حال دانلود… {}%"
+
+#: ui/engines.slint:110
+msgid "Hide what's new"
+msgstr "پنهان کردن تازه‌ها"
+
+#: ui/engines.slint:110
+msgid "What's new in {}"
+msgstr "تازه‌های {}"
+
+#: ui/engines.slint:142
+msgid "Downloaded from the official GitHub releases and verified with SHA-256."
+msgstr "از انتشارهای رسمی GitHub دانلود و با SHA-256 بررسی شده است."
+
+#: ui/engines.slint:144
+msgid "Checking…"
+msgstr "در حال بررسی…"
+
+#: ui/engines.slint:144
+msgid "Check for updates"
+msgstr "بررسی به‌روزرسانی"
+
+#: ui/engines.slint:159
+msgid "zapret and GoodbyeDPI use WinDivert, a legitimate packet driver that some antivirus programs flag by mistake. If Windows Security deletes it, add an exclusion for DPIMech's engine folder (only administrators can write there)."
+msgstr "zapret و GoodbyeDPI از WinDivert استفاده می‌کنند؛ یک درایور بستهٔ قانونی که برخی آنتی‌ویروس‌ها به اشتباه آن را خطرناک می‌دانند. اگر Windows Security آن را حذف کرد، برای پوشهٔ موتورهای DPIMech استثنا اضافه کنید (فقط مدیران می‌توانند در آن بنویسند)."
+
+#: ui/engines.slint:167
+msgid "Add Windows Security exclusion"
+msgstr "افزودن استثنا در Windows Security"
+
+#: ui/engines.slint:171
+msgid "Working…"
+msgstr "در حال انجام…"
+
+#: ui/engines.slint:179
+msgid "Exclusion added"
+msgstr "استثنا اضافه شد"
+
+#: ui/lab.slint:116
+msgid "Use"
+msgstr "استفاده"
+
+#: ui/lab.slint:153
+msgid "Finds the settings that work on your connection by trying them on real sites."
+msgstr "با امتحان روی سایت‌های واقعی، تنظیماتی را که روی اتصال شما کار می‌کنند پیدا می‌کند."
+
+#: ui/lab.slint:179
+msgid "Detect my ISP"
+msgstr "تشخیص ارائه‌دهندهٔ اینترنت"
+
+#: ui/lab.slint:187
+msgid "Sites"
+msgstr "سایت‌ها"
+
+#: ui/lab.slint:208
+msgid "Other sites, e.g. example.com, another.org"
+msgstr "سایت‌های دیگر، مثلاً example.com, another.org"
+
+#: ui/lab.slint:215
+msgid "Strategies"
+msgstr "راهبردها"
+
+#: ui/lab.slint:218
+msgid "Update online lists"
+msgstr "به‌روزرسانی فهرست‌های آنلاین"
+
+#: ui/lab.slint:222
+msgid "Tries per site"
+msgstr "تلاش برای هر سایت"
+
+#: ui/lab.slint:236
+msgid "Start test"
+msgstr "شروع آزمایش"
+
+#: ui/lab.slint:277
+msgid "Results appear here, best first."
+msgstr "نتایج اینجا نمایش داده می‌شوند، بهترین در ابتدا."
+
+#: ui/launch.slint:62
+msgid "Open DPIMech"
+msgstr "باز کردن DPIMech"
+
+#: ui/pages.slint:20
+msgid "Each profile runs one engine with one strategy."
+msgstr "هر پروفایل یک موتور را با یک راهبرد اجرا می‌کند."
+
+#: ui/pages.slint:23
+msgid "Set up something new"
+msgstr "راه‌اندازی چیزی جدید"
+
+#: ui/pages.slint:23
+msgid "Quick setup"
+msgstr "راه‌اندازی سریع"
+
+#: ui/pages.slint:36
+msgid "No profiles yet"
+msgstr "هنوز پروفایلی نیست"
+
+#: ui/pages.slint:37
+msgid "Create a profile to pick an engine, a strategy and what to route through it."
+msgstr "یک پروفایل بسازید تا موتور، راهبرد و آنچه از آن عبور می‌کند را انتخاب کنید."
+
+#: ui/pages.slint:70
+msgid "Newest first. Engine output and service events."
+msgstr "جدیدترین در ابتدا. خروجی موتورها و رویدادهای سرویس."
+
+#: ui/pages.slint:71
+msgid "Clear"
+msgstr "پاک کردن"
+
+#: ui/pages.slint:117
+msgid "Coming soon"
+msgstr "به‌زودی"
+
+#: ui/pages.slint:173
+msgid "Interface"
+msgstr "رابط کاربری"
+
+#: ui/pages.slint:180
+msgid "Easy mode"
+msgstr "حالت ساده"
+
+#: ui/pages.slint:182
+msgid "Fewer menus; the setup wizard does the work. Turn off for engines, the Strategy Lab and logs."
+msgstr "منوهای کمتر؛ راه‌انداز کار را انجام می‌دهد. برای موتورها، آزمایشگاه راهبرد و گزارش‌ها خاموشش کنید."
+
+#: ui/pages.slint:195
+msgid "Language"
+msgstr "زبان"
+
+#: ui/pages.slint:203
+msgid "Run the setup wizard again"
+msgstr "اجرای دوبارهٔ راه‌انداز"
+
+#: ui/pages.slint:204
+msgid "Open wizard"
+msgstr "باز کردن راه‌انداز"
+
+#: ui/pages.slint:210
+msgid "Startup"
+msgstr "شروع"
+
+#: ui/pages.slint:217
+msgid "Start DPIMech when I sign in"
+msgstr "هنگام ورود من DPIMech اجرا شود"
+
+#: ui/pages.slint:219
+msgid "The background service always starts with the computer; this brings back the tray icon."
+msgstr "سرویس پس‌زمینه همیشه با رایانه شروع می‌شود؛ این گزینه نماد سینی سیستم را برمی‌گرداند."
+
+#: ui/pages.slint:232
+msgid "Start minimized to the tray"
+msgstr "کوچک‌شده در سینی سیستم شروع شود"
+
+#: ui/pages.slint:244
+msgid "Log"
+msgstr "گزارش"
+
+#: ui/pages.slint:251
+msgid "Save the log to daily files"
+msgstr "ذخیرهٔ گزارش در فایل‌های روزانه"
+
+#: ui/pages.slint:253
+msgid "One file per day while DPIMech is open; files older than 14 days are deleted. Even when this is off, the recent log is saved to this folder if a profile stops with an error."
+msgstr "تا وقتی DPIMech باز است، هر روز یک فایل؛ فایل‌های قدیمی‌تر از ۱۴ روز حذف می‌شوند. حتی وقتی این خاموش است، اگر پروفایلی با خطا متوقف شود، گزارش اخیر در این پوشه ذخیره می‌شود."
+
+#: ui/pages.slint:268
+msgid "Detailed log"
+msgstr "گزارش مفصل"
+
+#: ui/pages.slint:270
+msgid "Also logs every connection (site, address, how it ended) and each tested strategy. Turn it on to find out why something does not open; it makes the log much longer."
+msgstr "هر اتصال (سایت، نشانی، نحوهٔ پایان) و هر راهبرد آزمایش‌شده را هم ثبت می‌کند. برای فهمیدن اینکه چرا چیزی باز نمی‌شود روشنش کنید؛ گزارش را بسیار طولانی‌تر می‌کند."
+
+#: ui/pages.slint:293
+msgid "Change folder…"
+msgstr "تغییر پوشه…"
+
+#: ui/pages.slint:294
+msgid "Open folder"
+msgstr "باز کردن پوشه"
+
+#: ui/pages.slint:301
+msgid "Shortcuts"
+msgstr "میان‌برها"
+
+#: ui/pages.slint:308
+msgid "Profile shortcuts on the desktop and in the menu: {}"
+msgstr "میان‌برهای پروفایل روی دسکتاپ و در منو: {}"
+
+#: ui/pages.slint:312
+msgid "Create one by right-clicking a profile or with its menu button. Deleting a profile removes its shortcuts."
+msgstr "با کلیک راست روی یک پروفایل یا با دکمهٔ منوی آن یکی بسازید. حذف پروفایل میان‌برهایش را هم حذف می‌کند."
+
+#: ui/pages.slint:319
+msgid "Remove all shortcuts"
+msgstr "حذف همهٔ میان‌برها"
+
+#: ui/pages.slint:327
+msgid "Background service"
+msgstr "سرویس پس‌زمینه"
+
+#: ui/pages.slint:330
+msgid "Connected"
+msgstr "متصل"
+
+#: ui/pages.slint:330
+msgid "Not running"
+msgstr "اجرا نمی‌شود"
+
+#: ui/pages.slint:334
+msgid "Install the service"
+msgstr "نصب سرویس"
+
+#: ui/pages.slint:340
+msgid "About"
+msgstr "درباره"
+
+#: ui/pages.slint:345
+msgid "Opens sites and apps that your internet provider blocks by running well-known open-source DPI bypass tools on your computer. It is not a VPN: your traffic still goes straight to the sites, nothing is sent through another server."
+msgstr "سایت‌ها و برنامه‌هایی را که ارائه‌دهندهٔ اینترنت شما مسدود کرده، با اجرای ابزارهای شناخته‌شده و متن‌باز دور زدن DPI روی رایانهٔ خودتان باز می‌کند. این VPN نیست: ترافیک شما همچنان مستقیم به سایت‌ها می‌رود و از سرور دیگری عبور نمی‌کند."
+
+#: ui/pages.slint:349
+msgid "Platform: {}"
+msgstr "سکو: {}"
+
+#: ui/pages.slint:350
+msgid "Free software under the GNU GPL v3 or later."
+msgstr "نرم‌افزار آزاد تحت GNU GPL نسخهٔ ۳ یا بالاتر."
+
+#: ui/pages.slint:354
+msgid "Source code"
+msgstr "کد منبع"
+
+#: ui/pages.slint:355
+msgid "Report a problem"
+msgstr "گزارش مشکل"
+
+#: ui/pages.slint:363
+msgid "Download"
+msgstr "دانلود"
+
+#: ui/pages.slint:369
+msgid "Thanks"
+msgstr "سپاس"
+
+#: ui/pages.slint:373
+msgid "DPIMech only manages these projects; the real work is theirs."
+msgstr "DPIMech فقط این پروژه‌ها را مدیریت می‌کند؛ کار اصلی را آن‌ها انجام می‌دهند."
+
+#: ui/report.slint:33
+msgid "What happened? A sentence or two helps a lot (optional)."
+msgstr "چه اتفاقی افتاد؟ یکی دو جمله خیلی کمک می‌کند (اختیاری)."
+
+#: ui/report.slint:39
+msgid "e.g. Discord stopped working after an hour"
+msgstr "مثلاً Discord پس از یک ساعت از کار افتاد"
+
+#: ui/report.slint:42
+msgid "This is what will be shared. It contains your DPIMech settings and the recent log (site names, your internet provider if you detected it) — no passwords or browsing history."
+msgstr "این چیزی است که به اشتراک گذاشته می‌شود. شامل تنظیمات DPIMech و گزارش اخیر است (نام سایت‌ها، ارائه‌دهندهٔ اینترنت اگر آن را تشخیص داده باشید) — بدون گذرواژه یا تاریخچهٔ مرور."
+
+#: ui/report.slint:54
+msgid "Full report saved as {}"
+msgstr "گزارش کامل ذخیره شد: {}"
+
+#: ui/report.slint:60
+msgid "Have a GitHub account? Open an issue and drag the saved file into it. No account? Send it by e-mail to {} and attach the saved file."
+msgstr "حساب GitHub دارید؟ یک issue باز کنید و فایل ذخیره‌شده را در آن بکشید. حساب ندارید؟ آن را به {} ایمیل کنید و فایل ذخیره‌شده را پیوست کنید."
+
+#: ui/report.slint:67
+msgid "Show file"
+msgstr "نمایش فایل"
+
+#: ui/report.slint:68
+msgid "Send by e-mail"
+msgstr "ارسال با ایمیل"
+
+#: ui/report.slint:69
+msgid "Open a GitHub issue"
+msgstr "باز کردن issue در GitHub"
+
+#: ui/shortcut.slint:38
+msgid "Create a shortcut"
+msgstr "ساخت میان‌بر"
+
+#: ui/shortcut.slint:40
+msgid "One click turns \"{}\" on and then opens the app you choose."
+msgstr "با یک کلیک «{}» روشن می‌شود و سپس برنامهٔ انتخابی شما باز می‌شود."
+
+#: ui/shortcut.slint:58
+msgid "Then open"
+msgstr "سپس باز کن"
+
+#: ui/shortcut.slint:62
+msgid "Looking for your apps…"
+msgstr "در حال یافتن برنامه‌های شما…"
+
+#: ui/shortcut.slint:73
+msgid "Desktop"
+msgstr "دسکتاپ"
+
+#: ui/shortcut.slint:88
+msgid "Create"
+msgstr "ساختن"
+
+#: ui/shortcut.slint:93
+msgid "Done"
+msgstr "انجام شد"
+
+#: ui/whatsnew.slint:26
+msgid "What's new in DPIMech {}"
+msgstr "تازه‌های DPIMech {}"
+
+#: ui/whatsnew.slint:36
+msgid "Got it"
+msgstr "متوجه شدم"
+
+#: ui/wizard.slint:114
+msgid "Welcome!"
+msgstr "خوش آمدید!"
+
+#: ui/wizard.slint:116
+msgid "DPIMech opens sites and apps that your internet provider blocks, without a VPN. How would you like to start?"
+msgstr "DPIMech سایت‌ها و برنامه‌هایی را که ارائه‌دهندهٔ اینترنت شما مسدود کرده، بدون VPN باز می‌کند. چطور می‌خواهید شروع کنید؟"
+
+#: ui/wizard.slint:121
+msgid "Just make it work"
+msgstr "فقط کار کند"
+
+#: ui/wizard.slint:122
+msgid "Answer three simple questions; DPIMech installs what it needs, finds settings that work on your connection and turns them on. You can switch to the full interface later in Settings."
+msgstr "به سه پرسش ساده پاسخ دهید؛ DPIMech هرچه لازم دارد نصب می‌کند، تنظیماتی را که روی اتصال شما کار می‌کنند پیدا و روشن می‌کند. بعداً می‌توانید در تنظیمات به رابط کامل بروید."
+
+#: ui/wizard.slint:126
+msgid "I know what I'm doing"
+msgstr "می‌دانم چه می‌کنم"
+
+#: ui/wizard.slint:127
+msgid "Open the full interface: engines, profiles, strategy arguments and the Strategy Lab."
+msgstr "رابط کامل را باز کن: موتورها، پروفایل‌ها، پارامترهای راهبرد و آزمایشگاه راهبرد."
+
+#: ui/wizard.slint:135
+msgid "What do you want to open?"
+msgstr "چه چیزی را می‌خواهید باز کنید؟"
+
+#: ui/wizard.slint:136
+msgid "Pick one or more. You can add other sites too."
+msgstr "یک یا چند مورد انتخاب کنید. سایت‌های دیگر را هم می‌توانید اضافه کنید."
+
+#: ui/wizard.slint:152
+msgid "Other sites, e.g. example.com"
+msgstr "سایت‌های دیگر، مثلاً example.com"
+
+#: ui/wizard.slint:160
+msgid "Where should it work?"
+msgstr "کجا کار کند؟"
+
+#: ui/wizard.slint:162
+msgid "Only in some apps (recommended)"
+msgstr "فقط در برخی برنامه‌ها (پیشنهادی)"
+
+#: ui/wizard.slint:163
+msgid "For example only Discord. Everything else stays exactly as it is."
+msgstr "مثلاً فقط Discord. همه چیز دیگر دقیقاً همان‌طور که هست می‌ماند."
+
+#: ui/wizard.slint:181
+msgid "The whole computer"
+msgstr "کل رایانه"
+
+#: ui/wizard.slint:182
+msgid "Every app, including games and voice. Uses zapret and needs the DPIMech service."
+msgstr "همهٔ برنامه‌ها، از جمله بازی‌ها و صدا. از zapret استفاده می‌کند و به سرویس DPIMech نیاز دارد."
+
+#: ui/wizard.slint:188
+msgid "Only when I choose (proxy)"
+msgstr "فقط وقتی خودم بخواهم (پراکسی)"
+
+#: ui/wizard.slint:189
+msgid "Creates a local proxy (127.0.0.1) you can set in a browser or app."
+msgstr "یک پراکسی محلی (127.0.0.1) می‌سازد که می‌توانید در مرورگر یا برنامه تنظیمش کنید."
+
+#: ui/wizard.slint:198
+msgid "Your internet provider"
+msgstr "ارائه‌دهندهٔ اینترنت شما"
+
+#: ui/wizard.slint:200
+msgid "Knowing your provider lets DPIMech try settings made for it first. This sends your public IP address to ipwho.is. You can skip it."
+msgstr "دانستن ارائه‌دهنده به DPIMech اجازه می‌دهد اول تنظیمات مخصوص آن را امتحان کند. این کار نشانی IP عمومی شما را به ipwho.is می‌فرستد. می‌توانید از آن بگذرید."
+
+#: ui/wizard.slint:207
+msgid "Detect my provider"
+msgstr "تشخیص ارائه‌دهنده"
+
+#: ui/wizard.slint:213
+msgid "DPIMech's background service is not installed yet. It is needed to run the engines. Your computer asks for administrator permission once."
+msgstr "سرویس پس‌زمینهٔ DPIMech هنوز نصب نشده است. برای اجرای موتورها لازم است. رایانه یک بار اجازهٔ مدیر را می‌خواهد."
+
+#: ui/wizard.slint:227
+msgid "Setting things up…"
+msgstr "در حال آماده‌سازی…"
+
+#: ui/wizard.slint:254
+msgid "Details"
+msgstr "جزئیات"
+
+#: ui/wizard.slint:282
+msgid "All set!"
+msgstr "همه چیز آماده است!"
+
+#: ui/wizard.slint:292
+msgid "Start"
+msgstr "شروع"
+
+#: ui/wizard.slint:292
+msgid "Next"
+msgstr "بعدی"
+
+#: ui/wizard.slint:296
+msgid "Report this problem"
+msgstr "گزارش این مشکل"
+
+#: ui/wizard.slint:298
+msgid "Try again"
+msgstr "دوباره امتحان کن"
+
+#: ui/wizard.slint:299
+msgid "Finish"
+msgstr "پایان"
+
+#: src/bridge.rs:72
+msgid "Start it with: dpimech-service run"
+msgstr "با این فرمان اجرایش کنید: dpimech-service run"
+
+#: src/bridge.rs:88
+msgid "Version {} · data in {}"
+msgstr "نسخهٔ {} · داده‌ها در {}"
+
+#: src/bridge.rs:175
+msgid "Could not update: {}"
+msgstr "به‌روزرسانی ممکن نشد: {}"
+
+#: src/bridge.rs:190
+msgid "You have the latest version ({})."
+msgstr "آخرین نسخه را دارید ({})."
+
+#: src/bridge.rs:193
+msgid "Could not check for updates: {}"
+msgstr "بررسی به‌روزرسانی ممکن نشد: {}"
+
+#: src/bridge.rs:255
+msgid "Could not load strategies: {}"
+msgstr "بارگیری راهبردها ممکن نشد: {}"
+
+#: src/bridge.rs:267
+msgid "ISP lookup failed: {}"
+msgstr "تشخیص ارائه‌دهندهٔ اینترنت ناموفق بود: {}"
+
+#: src/bridge.rs:372
+msgid "DPIMech {} is downloaded. Restart DPIMech to update."
+msgstr "DPIMech {} دانلود شد. برای به‌روزرسانی، DPIMech را دوباره راه‌اندازی کنید."
+
+#: src/bridge.rs:386
+msgid "Version {} is available."
+msgstr "نسخهٔ {} موجود است."
+
+#: src/bridge.rs:401
+msgid "Downloading DPIMech {}…"
+msgstr "در حال دانلود DPIMech {}…"
+
+#: src/bridge.rs:433
+msgid "Saved the log to {}"
+msgstr "گزارش در {} ذخیره شد"
+
+#: src/bridge.rs:473
+msgid "Looking up…"
+msgstr "در حال جست‌وجو…"
+
+#: src/bridge.rs:475
+msgid "This needs the background service."
+msgstr "این کار به سرویس پس‌زمینه نیاز دارد."
+
+#: src/convert.rs:141
+msgid "Give the profile a name."
+msgstr "برای پروفایل یک نام بگذارید."
+
+#: src/convert.rs:146
+msgid "Choose an engine."
+msgstr "یک موتور انتخاب کنید."
+
+#: src/convert.rs:150
+msgid "Choose a routing mode."
+msgstr "یک حالت مسیریابی انتخاب کنید."
+
+#: src/convert.rs:154
+msgid "Port must be between 1024 and 65535."
+msgstr "درگاه باید بین 1024 و 65535 باشد."
+
+#: src/convert.rs:162
+msgid "Add at least one application for per-app routing."
+msgstr "برای مسیریابی برنامه‌محور دست‌کم یک برنامه اضافه کنید."
+
+#: src/convert.rs:203
+msgid "{} · port {}"
+msgstr "{} · درگاه {}"
+
+#: src/convert.rs:212
+msgid "All matching traffic"
+msgstr "همهٔ ترافیک منطبق"
+
+#: src/convert.rs:213
+msgid "{} site(s): {}"
+msgstr "{} سایت: {}"
+
+#: src/convert.rs:226
+msgid "Stopped"
+msgstr "متوقف"
+
+#: src/convert.rs:227
+msgid "Starting…"
+msgstr "در حال شروع…"
+
+#: src/convert.rs:235
+msgid "1 auto-restart"
+msgstr "۱ راه‌اندازی دوبارهٔ خودکار"
+
+#: src/convert.rs:236
+msgid "{} auto-restarts"
+msgstr "{} راه‌اندازی دوبارهٔ خودکار"
+
+#: src/convert.rs:245
+msgid "Sites not answering ({}/{})"
+msgstr "سایت‌ها پاسخ نمی‌دهند ({}/{})"
+
+#: src/convert.rs:247
+msgid "Slow: avg. {} ms (usually {} ms)"
+msgstr "کند: میانگین {} ms (معمولاً {} ms)"
+
+#: src/convert.rs:249
+msgid "Only {}/{} sites answer"
+msgstr "فقط {}/{} سایت پاسخ می‌دهند"
+
+#: src/convert.rs:256
+msgid "Running · {}"
+msgstr "در حال اجرا · {}"
+
+#: src/convert.rs:257
+msgid "avg. {} ms"
+msgstr "میانگین {} ms"
+
+#: src/convert.rs:365
+msgid "just now"
+msgstr "همین الان"
+
+#: src/convert.rs:366
+msgid "{} min"
+msgstr "{} دقیقه"
+
+#: src/convert.rs:367
+msgid "{} h {} min"
+msgstr "{} ساعت {} دقیقه"
+
+#: src/convert.rs:379
+msgid "Last check: {}/{} sites answered"
+msgstr "آخرین بررسی: {}/{} سایت پاسخ دادند"
+
+#: src/convert.rs:385
+msgid "(usually {} ms)"
+msgstr "(معمولاً {} ms)"
+
+#: src/i18n.rs (EXTRA_TEXTS)
+msgid "Automatic"
+msgstr "خودکار"
+
+#: src/i18n.rs (EXTRA_TEXTS)
+msgid "Restarting did not help. This setting may have stopped working on your connection — run the Strategy Lab."
+msgstr "راه‌اندازی دوباره کمکی نکرد. شاید این تنظیم دیگر روی اتصال شما کار نمی‌کند — آزمایشگاه راهبرد را اجرا کنید."
+
+#: src/i18n.rs (EXTRA_TEXTS)
+msgid "This setting does not open this profile's sites on your connection. Find a working one in the Strategy Lab, or try another engine."
+msgstr "این تنظیم سایت‌های این پروفایل را روی اتصال شما باز نمی‌کند. در آزمایشگاه راهبرد تنظیمی کارآمد پیدا کنید یا موتور دیگری را امتحان کنید."
+
+#: src/i18n.rs (EXTRA_TEXTS)
+msgid "Per-app"
+msgstr "برنامه‌محور"
+
+#: src/i18n.rs (EXTRA_TEXTS)
+msgid "System-wide"
+msgstr "سراسری"
+
+#: src/i18n.rs (EXTRA_TEXTS)
+msgid "Local proxy"
+msgstr "پراکسی محلی"
+
+#: src/labui.rs:52
+msgid "ISP not detected"
+msgstr "ارائه‌دهنده تشخیص داده نشده"
+
+#: src/labui.rs:53
+msgid "Pick sites and press Start."
+msgstr "سایت‌ها را انتخاب کنید و «شروع» را بزنید."
+
+#: src/labui.rs:92
+msgid "{} to try: {} from the DPIMech standard set"
+msgstr "{} مورد برای امتحان: {} از مجموعهٔ استاندارد DPIMech"
+
+#: src/labui.rs:107
+msgid "{} from {}"
+msgstr "{} از {}"
+
+#: src/labui.rs:111
+msgid "“Update online lists” adds more"
+msgstr "«به‌روزرسانی فهرست‌های آنلاین» موارد بیشتری اضافه می‌کند"
+
+#: src/labui.rs:115
+msgid "★ {} made for your ISP"
+msgstr "★ {} مخصوص ارائه‌دهندهٔ شما"
+
+#: src/labui.rs:119
+msgid "Standard set: well-known settings that ship with DPIMech."
+msgstr "مجموعهٔ استاندارد: تنظیمات شناخته‌شده‌ای که همراه DPIMech می‌آیند."
+
+#: src/labui.rs:122
+msgid "{}: downloaded from {}."
+msgstr "{}: دانلودشده از {}."
+
+#: src/labui.rs:187
+msgid "Testing {} strategies… engines run briefly in the background."
+msgstr "در حال آزمایش {} راهبرد… موتورها برای مدت کوتاهی در پس‌زمینه اجرا می‌شوند."
+
+#: src/labui.rs:200
+msgid "Without any bypass every test site already works — nothing to fix on this network for these sites."
+msgstr "بدون هیچ دور زدنی همهٔ سایت‌های آزمایشی کار می‌کنند — در این شبکه برای این سایت‌ها چیزی برای درست کردن نیست."
+
+#: src/labui.rs:204
+msgid "Without any bypass only {}/{} requests succeed. Blocked: {}."
+msgstr "بدون دور زدن فقط {}/{} درخواست موفق می‌شوند. مسدود: {}."
+
+#: src/labui.rs:235
+msgid "Cancelled."
+msgstr "لغو شد."
+
+#: src/labui.rs:236
+msgid "Stopped: {}"
+msgstr "متوقف شد: {}"
+
+#: src/labui.rs:237
+msgid "Done — {} strategies opened every site in every round. Press “Use” on the top one."
+msgstr "تمام — {} راهبرد همهٔ سایت‌ها را در همهٔ دورها باز کردند. روی «استفاده» در بالاترین مورد بزنید."
+
+#: src/labui.rs:241
+msgid "Done — none opened every site in every round. Try another engine, more tries per site, or updated online lists."
+msgstr "تمام — هیچ‌کدام همهٔ سایت‌ها را در همهٔ دورها باز نکردند. موتور دیگر، تلاش بیشتر برای هر سایت یا فهرست‌های آنلاین به‌روز را امتحان کنید."
+
+#: src/labui.rs:271
+msgid "No bypass"
+msgstr "بدون دور زدن"
+
+#: src/launcher.rs:45
+msgid "Connecting to the DPIMech service…"
+msgstr "در حال اتصال به سرویس DPIMech…"
+
+#: src/launcher.rs:68
+msgid "Opening {}…"
+msgstr "در حال باز کردن {}…"
+
+#: src/launcher.rs:71
+msgid "Could not open {}: {}"
+msgstr "باز کردن {} ممکن نشد: {}"
+
+#: src/launcher.rs:77
+msgid "{} is on"
+msgstr "{} روشن است"
+
+#: src/launcher.rs:85
+msgid "Could not start"
+msgstr "شروع ممکن نشد"
+
+#: src/launcher.rs:103
+msgid "The DPIMech service is not running. Open DPIMech to set it up."
+msgstr "سرویس DPIMech اجرا نمی‌شود. برای راه‌اندازی، DPIMech را باز کنید."
+
+#: src/launcher.rs:109
+msgid "The profile of this shortcut no longer exists."
+msgstr "پروفایل این میان‌بر دیگر وجود ندارد."
+
+#: src/launcher.rs:111
+msgid "Starting {}"
+msgstr "در حال شروع {}"
+
+#: src/launcher.rs:116
+msgid "Turning the profile on…"
+msgstr "در حال روشن کردن پروفایل…"
+
+#: src/launcher.rs:132
+msgid "The profile stopped right after starting. The Logs page in DPIMech shows why."
+msgstr "پروفایل بلافاصله پس از شروع متوقف شد. صفحهٔ گزارش‌ها در DPIMech علت را نشان می‌دهد."
+
+#: src/launcher.rs:137
+msgid "The profile is taking too long to start. The Logs page in DPIMech shows why."
+msgstr "شروع پروفایل بیش از حد طول می‌کشد. صفحهٔ گزارش‌ها در DPIMech علت را نشان می‌دهد."
+
+#: src/launcher.rs:253
+msgid "the menu entry has no command"
+msgstr "مورد منو فرمانی ندارد"
+
+#: src/main.rs:386
+msgid "Folder for DPIMech log files"
+msgstr "پوشهٔ فایل‌های گزارش DPIMech"
+
+#: src/main.rs:582
+msgid "The service is installed. Connecting…"
+msgstr "سرویس نصب شد. در حال اتصال…"
+
+#: src/main.rs:583
+msgid "Installing the service failed: {}"
+msgstr "نصب سرویس ناموفق بود: {}"
+
+#: src/main.rs:591
+msgid "Installing… confirm the prompt. DPIMech connects by itself when the service is ready."
+msgstr "در حال نصب… پنجرهٔ تأیید را بپذیرید. DPIMech وقتی سرویس آماده شد خودش وصل می‌شود."
+
+#: src/main.rs:592
+msgid "Could not start the installer: {}"
+msgstr "اجرای نصب‌کننده ممکن نشد: {}"
+
+#: src/main.rs:663
+msgid "Downloading online lists…"
+msgstr "در حال دانلود فهرست‌های آنلاین…"
+
+#: src/notify.rs:54
+msgid "{} stopped"
+msgstr "{} متوقف شد"
+
+#: src/notify.rs:62
+msgid "{} needs attention"
+msgstr "{} نیاز به توجه دارد"
+
+#: src/notify.rs:68
+msgid "the sites stopped answering"
+msgstr "سایت‌ها دیگر پاسخ نمی‌دهند"
+
+#: src/notify.rs:70
+msgid "{} ms instead of the usual {} ms"
+msgstr "{} ms به جای {} ms همیشگی"
+
+#: src/notify.rs:72
+msgid "only {}/{} sites answer"
+msgstr "فقط {}/{} سایت پاسخ می‌دهند"
+
+#: src/notify.rs:75
+msgid "{} is slow"
+msgstr "{} کند است"
+
+#: src/notify.rs:76
+msgid "Connection check: {}."
+msgstr "بررسی اتصال: {}."
+
+#: src/notify.rs:82
+msgid "{} was restarted"
+msgstr "{} دوباره راه‌اندازی شد"
+
+#: src/notify.rs:83
+msgid "DPIMech restarted the engine to fix the connection."
+msgstr "DPIMech برای درست کردن اتصال، موتور را دوباره راه‌اندازی کرد."
+
+#: src/notify.rs:168
+msgid "DPIMech update available"
+msgstr "به‌روزرسانی DPIMech موجود است"
+
+#: src/notify.rs:169
+msgid "Version {} is out. Settings → About shows how to get it."
+msgstr "نسخهٔ {} منتشر شد. تنظیمات ← درباره نشان می‌دهد چطور آن را بگیرید."
+
+#: src/notify.rs:184
+msgid "DPIMech {} is ready"
+msgstr "DPIMech {} آماده است"
+
+#: src/notify.rs:185
+msgid "Restart DPIMech to update: use the button at the top of the window."
+msgstr "برای به‌روزرسانی DPIMech را دوباره راه‌اندازی کنید: از دکمهٔ بالای پنجره استفاده کنید."
+
+#: src/picker.rs:92
+msgid "Choose an application"
+msgstr "یک برنامه انتخاب کنید"
+
+#: src/selfupdate.rs:34
+msgid "Update it with your package manager (Fedora: sudo dnf upgrade), or download it."
+msgstr "آن را با مدیر بستهٔ خود به‌روز کنید (Fedora: sudo dnf upgrade) یا دانلودش کنید."
+
+#: src/selfupdate.rs:36
+msgid "Download it from the releases page."
+msgstr "آن را از صفحهٔ انتشارها دانلود کنید."
+
+#: src/selfupdate.rs:73
+msgid "No update has been downloaded yet."
+msgstr "هنوز هیچ به‌روزرسانی‌ای دانلود نشده است."
+
+#: src/selfupdate.rs:75
+msgid "This copy is not an AppImage."
+msgstr "این نسخه AppImage نیست."
+
+#: src/selfupdate.rs:165
+msgid "Installing the update…"
+msgstr "در حال نصب به‌روزرسانی…"
+
+#: src/shortcut.rs:131
+msgid "Choose where to put the shortcut."
+msgstr "محل قرار گرفتن میان‌بر را انتخاب کنید."
+
+#: src/shortcut.rs:135
+msgid "Give the shortcut a name."
+msgstr "برای میان‌بر یک نام بگذارید."
+
+#: src/shortcut.rs:714
+msgid "Starts the DPIMech profile \"{}\""
+msgstr "پروفایل «{}» در DPIMech را شروع می‌کند"
+
+#: src/shortcutui.rs:25
+msgid "Start menu"
+msgstr "منوی Start"
+
+#: src/shortcutui.rs:27
+msgid "Applications folder"
+msgstr "پوشهٔ Applications"
+
+#: src/shortcutui.rs:29
+msgid "Applications menu"
+msgstr "منوی برنامه‌ها"
+
+#: src/shortcutui.rs:109
+msgid "Shortcut created: {}"
+msgstr "میان‌بر ساخته شد: {}"
+
+#: src/shortcutui.rs:115
+msgid "Could not create the shortcut: {}"
+msgstr "ساخت میان‌بر ممکن نشد: {}"
+
+#: src/shortcutui.rs:130
+msgid "Nothing, only turn the profile on"
+msgstr "هیچ، فقط پروفایل را روشن کن"
+
+#: src/shortcutui.rs:142
+msgid "Removed {} shortcut(s) of the deleted profile"
+msgstr "{} میان‌بر پروفایل حذف‌شده پاک شد"
+
+#: src/shortcutui.rs:154
+msgid "Removed {} shortcut(s)."
+msgstr "{} میان‌بر حذف شد."
+
+#: src/tray.rs:195
+msgid "idle"
+msgstr "بی‌کار"
+
+#: src/tray.rs:196
+msgid "{} profile(s) running"
+msgstr "{} پروفایل در حال اجرا"
+
+#: src/tray.rs:205
+msgid "Show DPIMech"
+msgstr "نمایش DPIMech"
+
+#: src/tray.rs:220
+msgid "Report a problem…"
+msgstr "گزارش مشکل…"
+
+#: src/tray.rs:224
+msgid "Quit"
+msgstr "خروج"
+
+#: src/wizard.rs:207
+msgid "Pick at least one site."
+msgstr "دست‌کم یک سایت انتخاب کنید."
+
+#: src/wizard.rs:218
+msgid "Add at least one app (for example Discord)."
+msgstr "دست‌کم یک برنامه اضافه کنید (مثلاً Discord)."
+
+#: src/wizard.rs:274
+msgid "The DPIMech background service is not running. Go back and press “Install the service”."
+msgstr "سرویس پس‌زمینهٔ DPIMech اجرا نمی‌شود. برگردید و «نصب سرویس» را بزنید."
+
+#: src/wizard.rs:319
+msgid "Installing {} failed: {}"
+msgstr "نصب {} ناموفق بود: {}"
+
+#: src/wizard.rs:392
+msgid "The test was cancelled."
+msgstr "آزمایش لغو شد."
+
+#: src/wizard.rs:396
+msgid "The test failed: {}"
+msgstr "آزمایش ناموفق بود: {}"
+
+#: src/wizard.rs:404
+msgid "Good news: these sites already open normally on your connection, so nothing needs to be changed."
+msgstr "خبر خوب: این سایت‌ها روی اتصال شما به‌طور عادی باز می‌شوند، پس نیازی به تغییر نیست."
+
+#: src/wizard.rs:443
+msgid "My sites"
+msgstr "سایت‌های من"
+
+#: src/wizard.rs:464
+msgid "Could not create the profile: {}"
+msgstr "ساخت پروفایل ممکن نشد: {}"
+
+#: src/wizard.rs:470
+msgid "“{}” is on and starts automatically with the computer."
+msgstr "«{}» روشن است و به‌طور خودکار با رایانه شروع می‌شود."
+
+#: src/wizard.rs:476
+msgid "{}/{} test requests worked ({} ms on average)."
+msgstr "{}/{} درخواست آزمایشی موفق بودند (به‌طور میانگین {} ms)."
+
+#: src/wizard.rs:484
+msgid "No setting worked every time, so this one may be unreliable. If the connection fails, try “The whole computer” (zapret) or the Strategy Lab."
+msgstr "هیچ تنظیمی همیشه کار نکرد، پس این یکی ممکن است ناپایدار باشد. اگر اتصال قطع شد، «کل رایانه» (zapret) یا آزمایشگاه راهبرد را امتحان کنید."
+
+#: src/wizard.rs:492
+msgid "Set your browser or app to use the SOCKS5 proxy 127.0.0.1:{}."
+msgstr "مرورگر یا برنامهٔ خود را برای استفاده از پراکسی SOCKS5 127.0.0.1:{} تنظیم کنید."
+
+#: src/wizard.rs:499
+msgid "Restart the chosen apps if they were already open."
+msgstr "اگر برنامه‌های انتخاب‌شده باز بودند، آن‌ها را دوباره باز کنید."
+
+#: src/wizard.rs:525
+msgid "The engine could not run on this computer: {}."
+msgstr "موتور روی این رایانه اجرا نشد: {}."
+
+#: src/wizard.rs:531
+msgid "Try again later, add other sites, or run the Strategy Lab from the full interface to test more settings."
+msgstr "بعداً دوباره امتحان کنید، سایت‌های دیگری اضافه کنید، یا از رابط کامل آزمایشگاه راهبرد را برای آزمودن تنظیمات بیشتر اجرا کنید."
+
+#: src/wizard.rs:535
+msgid "Try “The whole computer” (zapret) or run the Strategy Lab from the full interface."
+msgstr "«کل رایانه» (zapret) را امتحان کنید یا آزمایشگاه راهبرد را از رابط کامل اجرا کنید."
+
+#: src/wizard.rs:540
+msgid "No setting worked on your connection for these sites."
+msgstr "هیچ تنظیمی برای این سایت‌ها روی اتصال شما کار نکرد."
+
+#: src/wizard.rs:606
+msgid "Install {}"
+msgstr "نصب {}"
+
+#: src/wizard.rs:622
+msgid "Find a setting that works on your connection"
+msgstr "یافتن تنظیمی که روی اتصال شما کار کند"
+
+#: src/wizard.rs:631
+msgid "Create the profile and turn it on"
+msgstr "ساخت پروفایل و روشن کردن آن"

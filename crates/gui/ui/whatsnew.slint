@@ -1,0 +1,40 @@
+import { Button, ScrollView } from "std-widgets.slint";
+import { Theme } from "theme.slint";
+
+/// Shown once after DPIMech was updated: the release notes of the versions since the last start
+/// (changelog/<lang>.md, built into the app).
+export component WhatsNewDialog inherits Rectangle {
+    in property <string> version;
+    in property <string> notes;
+    callback close;
+
+    background: #00000080;
+    TouchArea { clicked => { root.close(); } }
+
+    Rectangle {
+        width: min(620px, root.width - 48px);
+        height: min(400px, root.height - 48px);
+        border-radius: 10px;
+        background: Theme.content;
+        border-width: 1px;
+        border-color: Theme.border;
+        TouchArea { }
+
+        VerticalLayout {
+            padding: 20px;
+            spacing: 12px;
+            Text { text: @tr("What's new in DPIMech {}", root.version); font-size: 20px; font-weight: 700; wrap: word-wrap; }
+            ScrollView {
+                vertical-stretch: 1;
+                VerticalLayout {
+                    padding-right: 12px;
+                    Text { text: root.notes; wrap: word-wrap; font-size: 14px; }
+                }
+            }
+            HorizontalLayout {
+                alignment: end;
+                Button { text: @tr("Got it"); primary: true; clicked => { root.close(); } }
+            }
+        }
+    }
+}

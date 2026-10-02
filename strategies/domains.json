@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "_comment": "Sites the setup wizard, the Strategy Lab and the profile editor offer. The service fetches this file from main, so a change here reaches every user without a release. domains: everything the engine acts on (goes into the hostlist). probes: hosts the Lab and the connection check request; each must answer HTTPS on / (an apex domain without an A record fails whatever the strategy).",
+  "_comment": "Sites the setup wizard, the Strategy Lab and the profile editor offer. The service fetches this file from main, so a change here reaches every user without a release. domains: everything the engine acts on (goes into the hostlist). probes: hosts the Lab and the connection check request; each must answer HTTPS on / (an apex domain without an A record fails whatever the strategy). countries: ISO codes of the countries where the site is widely reported blocked; the wizard picks these first for users there (\"*\": offered first everywhere).",
   "packs": [
     {
       "id": "discord",
@@ -27,6 +27,12 @@
         "media.discordapp.net",
         "updates.discord.com",
         "dis.gd"
+      ],
+      "countries": [
+        "*",
+        "TR",
+        "RU",
+        "IR"
       ]
     },
     {
@@ -51,6 +57,11 @@
         "yt3.ggpht.com",
         "youtubei.googleapis.com",
         "redirector.googlevideo.com"
+      ],
+      "countries": [
+        "*",
+        "RU",
+        "IR"
       ]
     },
     {
@@ -66,6 +77,9 @@
         "www.roblox.com",
         "roblox.com",
         "apis.roblox.com"
+      ],
+      "countries": [
+        "TR"
       ]
     },
     {
@@ -81,6 +95,10 @@
         "x.com",
         "twitter.com",
         "pbs.twimg.com"
+      ],
+      "countries": [
+        "RU",
+        "IR"
       ]
     },
     {
@@ -94,6 +112,10 @@
       "probes": [
         "www.instagram.com",
         "instagram.com"
+      ],
+      "countries": [
+        "RU",
+        "IR"
       ]
     },
     {
@@ -106,7 +128,211 @@
       "probes": [
         "www.wattpad.com",
         "wattpad.com"
+      ],
+      "countries": [
+        "TR"
       ]
+    },
+    {
+      "id": "imgur",
+      "name": "Imgur",
+      "domains": [
+        "imgur.com",
+        "i.imgur.com",
+        "i.stack.imgur.com"
+      ],
+      "probes": [
+        "imgur.com",
+        "i.imgur.com"
+      ],
+      "countries": [
+        "TR"
+      ]
+    },
+    {
+      "id": "facebook",
+      "name": "Facebook",
+      "domains": [
+        "facebook.com",
+        "www.facebook.com",
+        "fbcdn.net",
+        "messenger.com",
+        "fb.com"
+      ],
+      "probes": [
+        "www.facebook.com",
+        "facebook.com"
+      ],
+      "countries": [
+        "RU",
+        "IR"
+      ]
+    },
+    {
+      "id": "linkedin",
+      "name": "LinkedIn",
+      "domains": [
+        "linkedin.com",
+        "www.linkedin.com",
+        "licdn.com"
+      ],
+      "probes": [
+        "www.linkedin.com"
+      ],
+      "countries": [
+        "RU"
+      ]
+    },
+    {
+      "id": "telegram",
+      "name": "Telegram",
+      "domains": [
+        "telegram.org",
+        "t.me",
+        "telegram.me",
+        "web.telegram.org",
+        "core.telegram.org"
+      ],
+      "probes": [
+        "telegram.org",
+        "t.me",
+        "web.telegram.org"
+      ],
+      "countries": [
+        "IR"
+      ]
+    },
+    {
+      "id": "whatsapp",
+      "name": "WhatsApp",
+      "domains": [
+        "whatsapp.com",
+        "www.whatsapp.com",
+        "web.whatsapp.com",
+        "whatsapp.net"
+      ],
+      "probes": [
+        "www.whatsapp.com",
+        "web.whatsapp.com"
+      ]
+    },
+    {
+      "id": "signal",
+      "name": "Signal",
+      "domains": [
+        "signal.org",
+        "whispersystems.org",
+        "signal.art",
+        "updates.signal.org"
+      ],
+      "probes": [
+        "signal.org"
+      ],
+      "countries": [
+        "RU",
+        "IR"
+      ]
+    },
+    {
+      "id": "viber",
+      "name": "Viber",
+      "domains": [
+        "viber.com",
+        "www.viber.com"
+      ],
+      "probes": [
+        "www.viber.com",
+        "viber.com"
+      ],
+      "countries": [
+        "RU"
+      ]
+    },
+    {
+      "id": "tiktok",
+      "name": "TikTok",
+      "domains": [
+        "tiktok.com",
+        "www.tiktok.com",
+        "tiktokcdn.com",
+        "tiktokv.com",
+        "ttwstatic.com"
+      ],
+      "probes": [
+        "www.tiktok.com",
+        "tiktok.com"
+      ],
+      "countries": [
+        "BY"
+      ]
+    },
+    {
+      "id": "soundcloud",
+      "name": "SoundCloud",
+      "domains": [
+        "soundcloud.com",
+        "sndcdn.com",
+        "api-v2.soundcloud.com"
+      ],
+      "probes": [
+        "soundcloud.com"
+      ],
+      "countries": [
+        "KZ"
+      ]
+    },
+    {
+      "id": "news-by",
+      "name": "Belarusian independent media",
+      "domains": [
+        "zerkalo.io",
+        "www.zerkalo.io",
+        "nashaniva.com",
+        "charter97.org",
+        "euroradio.fm",
+        "svaboda.org",
+        "www.svaboda.org",
+        "belsat.eu"
+      ],
+      "probes": [
+        "www.zerkalo.io",
+        "nashaniva.com",
+        "www.svaboda.org",
+        "belsat.eu"
+      ],
+      "countries": [
+        "BY"
+      ],
+      "names": {
+        "tr": "Belarus bağımsız medyası",
+        "ru": "Независимые СМИ Беларуси",
+        "fa": "رسانه‌های مستقل بلاروس",
+        "ar": "وسائل الإعلام المستقلة في بيلاروس"
+      }
+    },
+    {
+      "id": "news-eg",
+      "name": "Egyptian independent media",
+      "domains": [
+        "madamasr.com",
+        "www.madamasr.com",
+        "zawia3.com",
+        "cairo24.com",
+        "www.cairo24.com"
+      ],
+      "probes": [
+        "zawia3.com",
+        "www.cairo24.com"
+      ],
+      "countries": [
+        "EG"
+      ],
+      "names": {
+        "tr": "Mısır bağımsız medyası",
+        "ru": "Независимые СМИ Египта",
+        "fa": "رسانه‌های مستقل مصر",
+        "ar": "وسائل الإعلام المصرية المستقلة"
+      }
     }
   ]
 }

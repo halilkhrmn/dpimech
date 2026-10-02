@@ -4,7 +4,7 @@
 use crate::i18n::tr;
 use std::cell::RefCell;
 
-use dpimech_core::catalog::domain_packs;
+use dpimech_core::catalog::{country_preset, domain_packs};
 use dpimech_core::lab::{LabRequest, LabResult, LabStrategy};
 use dpimech_core::model::{EngineKind, Os, Profile, Reliability, Routing, RoutingMode};
 use dpimech_core::packages::{PackageId, PackageInfo, PackageTask};
@@ -12,9 +12,9 @@ use slint::{ComponentHandle, ModelRc, SharedString, VecModel};
 use tokio::sync::mpsc::UnboundedSender;
 
 use crate::bridge::Command;
-use crate::convert::parse_domains;
+use crate::convert::{Chips, country, pack_rows, parse_domains};
 use crate::state::PROFILES;
-use crate::{AppWindow, LabPack, WizardTask, picker};
+use crate::{AppWindow, WizardTask, picker};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum Where {
@@ -56,7 +56,7 @@ struct State {
 impl Default for State {
     fn default() -> Self {
         Self {
-            selected: vec!["discord".to_owned()],
+            selected: country_preset(&domain_packs(), country()),
             where_: default_where(),
             phase: Phase::Idle,
             packages: Vec::new(),
@@ -165,16 +165,8 @@ pub fn toggle_pack(ui: &AppWindow, index: i32) {
 }
 
 pub fn refresh_packs(ui: &AppWindow) {
-    let packs: Vec<LabPack> = STATE.with_borrow(|s| {
-        domain_packs()
-            .iter()
-            .map(|p| LabPack {
-                name: p.name.as_str().into(),
-                selected: s.selected.contains(&p.id),
-            })
-            .collect()
-    });
-    ui.set_wizard_packs(ModelRc::new(VecModel::from(packs)));
+    let rows = STATE.with_borrow(|s| pack_rows(Chips::Wizard, &s.selected));
+    ui.set_wizard_packs(rows);
 }
 
 pub fn set_where(ui: &AppWindow, index: i32) {
