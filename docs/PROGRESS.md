@@ -121,6 +121,12 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-10-02 (40) — Android package names in domains.json
+- Done: `android_packages` for every app pack in `strategies/domains.json`, so the Android app can use this
+  file instead of its own copy (DECISIONS #46).
+- Verified how: `cargo test --workspace` (the embedded file still parses; the field is ignored here).
+- Open/next: nothing on desktop.
+
 ### 2026-10-02 (39) — 0.3.0: Persian and Arabic, sites by country, "What's new"
 - **Done:** site packs moved to `strategies/domains.json` and fetched from `main` (DECISIONS #43); new packs
   Telegram, WhatsApp, Facebook, Signal, Viber, LinkedIn, TikTok, SoundCloud, Imgur and independent media of Belarus

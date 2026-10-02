@@ -294,3 +294,11 @@ own release), a launchd service and an unsigned universal `.dmg`. The wizard hid
   three), in the UI language with English as fallback. The GitHub release uses the English section as its text.
 - **Why built in, not the GitHub release text:** works offline and in every UI language; the release text was a
   list of pull-request titles. `cargo test` fails while a language lacks the current version's section.
+
+## 46. Android reads `domains.json` too (2026-10-02)
+- **Decision:** the Android app (halilkhrmn/dpimech-android) uses `strategies/domains.json` as its site list,
+  embedded and fetched from `main` like here, instead of a copy in its own code. Each pack may carry
+  `android_packages`: Android apps that use the site, which the Android app routes through its tunnel when the
+  pack is chosen. Desktop ignores the field (serde skips unknown fields), so no format change.
+- **Why:** one list for both apps; a new blocked site reaches phones and computers without a release.
+

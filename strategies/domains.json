@@ -1,6 +1,6 @@
 {
   "format": 1,
-  "_comment": "Sites the setup wizard, the Strategy Lab and the profile editor offer. The service fetches this file from main, so a change here reaches every user without a release. domains: everything the engine acts on (goes into the hostlist). probes: hosts the Lab and the connection check request; each must answer HTTPS on / (an apex domain without an A record fails whatever the strategy). countries: ISO codes of the countries where the site is widely reported blocked; the wizard picks these first for users there (\"*\": offered first everywhere).",
+  "_comment": "Sites the setup wizard, the Strategy Lab and the profile editor offer. The service fetches this file from main, so a change here reaches every user without a release. domains: everything the engine acts on (goes into the hostlist). probes: hosts the Lab and the connection check request; each must answer HTTPS on / (an apex domain without an A record fails whatever the strategy). countries: ISO codes of the countries where the site is widely reported blocked; the wizard picks these first for users there (\"*\": offered first everywhere). android_packages: Android apps that use the site; the Android app routes them through the tunnel when the pack is chosen (the desktop app ignores the field).",
   "packs": [
     {
       "id": "discord",
@@ -33,6 +33,9 @@
         "TR",
         "RU",
         "IR"
+      ],
+      "android_packages": [
+        "com.discord"
       ]
     },
     {
@@ -62,6 +65,14 @@
         "*",
         "RU",
         "IR"
+      ],
+      "android_packages": [
+        "com.google.android.youtube",
+        "com.google.android.apps.youtube.music",
+        "app.revanced.android.youtube",
+        "app.revanced.android.apps.youtube.music",
+        "org.schabi.newpipe",
+        "com.github.libretube"
       ]
     },
     {
@@ -80,6 +91,9 @@
       ],
       "countries": [
         "TR"
+      ],
+      "android_packages": [
+        "com.roblox.client"
       ]
     },
     {
@@ -99,6 +113,9 @@
       "countries": [
         "RU",
         "IR"
+      ],
+      "android_packages": [
+        "com.twitter.android"
       ]
     },
     {
@@ -116,6 +133,9 @@
       "countries": [
         "RU",
         "IR"
+      ],
+      "android_packages": [
+        "com.instagram.android"
       ]
     },
     {
@@ -131,6 +151,9 @@
       ],
       "countries": [
         "TR"
+      ],
+      "android_packages": [
+        "wp.wattpad"
       ]
     },
     {
@@ -147,6 +170,9 @@
       ],
       "countries": [
         "TR"
+      ],
+      "android_packages": [
+        "com.imgur.mobile"
       ]
     },
     {
@@ -166,6 +192,11 @@
       "countries": [
         "RU",
         "IR"
+      ],
+      "android_packages": [
+        "com.facebook.katana",
+        "com.facebook.orca",
+        "com.facebook.lite"
       ]
     },
     {
@@ -181,6 +212,9 @@
       ],
       "countries": [
         "RU"
+      ],
+      "android_packages": [
+        "com.linkedin.android"
       ]
     },
     {
@@ -200,6 +234,11 @@
       ],
       "countries": [
         "IR"
+      ],
+      "android_packages": [
+        "org.telegram.messenger",
+        "org.telegram.messenger.web",
+        "org.thunderdog.challegram"
       ]
     },
     {
@@ -214,6 +253,10 @@
       "probes": [
         "www.whatsapp.com",
         "web.whatsapp.com"
+      ],
+      "android_packages": [
+        "com.whatsapp",
+        "com.whatsapp.w4b"
       ]
     },
     {
@@ -231,6 +274,9 @@
       "countries": [
         "RU",
         "IR"
+      ],
+      "android_packages": [
+        "org.thoughtcrime.securesms"
       ]
     },
     {
@@ -246,6 +292,9 @@
       ],
       "countries": [
         "RU"
+      ],
+      "android_packages": [
+        "com.viber.voip"
       ]
     },
     {
@@ -264,6 +313,10 @@
       ],
       "countries": [
         "BY"
+      ],
+      "android_packages": [
+        "com.zhiliaoapp.musically",
+        "com.ss.android.ugc.trill"
       ]
     },
     {
@@ -279,6 +332,9 @@
       ],
       "countries": [
         "KZ"
+      ],
+      "android_packages": [
+        "com.soundcloud.android"
       ]
     },
     {
