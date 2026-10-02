@@ -54,15 +54,15 @@ fn check_index(minutes: u32) -> i32 {
 /// the domains come from (at most three per pack), plus custom domains as they are.
 pub fn check_sites_for(domains: &[String]) -> Vec<String> {
     let mut out: Vec<String> = Vec::new();
-    for pack in dpimech_core::catalog::DOMAIN_PACKS {
-        if pack.domains.iter().any(|d| domains.iter().any(|x| x == d)) {
-            out.extend(pack.probes.iter().take(3).map(|s| (*s).to_owned()));
+    for pack in dpimech_core::catalog::domain_packs() {
+        if pack.domains.iter().any(|d| domains.contains(d)) {
+            out.extend(pack.probes.iter().take(3).cloned());
         }
     }
     for d in domains {
-        let in_pack = dpimech_core::catalog::DOMAIN_PACKS
+        let in_pack = dpimech_core::catalog::domain_packs()
             .iter()
-            .any(|p| p.domains.contains(&d.as_str()));
+            .any(|p| p.domains.contains(d));
         if !in_pack && !out.contains(d) {
             out.push(d.clone());
         }
@@ -88,11 +88,11 @@ pub fn parse_domains(text: &str) -> Vec<String> {
 }
 
 /// Appends a domain pack to the editor's text, skipping domains already listed.
-pub fn add_domains(text: &str, extra: &[&str]) -> String {
+pub fn add_domains(text: &str, extra: &[String]) -> String {
     let mut all = parse_domains(text);
     for d in extra {
         if !all.iter().any(|x| x == d) {
-            all.push((*d).to_owned());
+            all.push(d.clone());
         }
     }
     all.join("\n")

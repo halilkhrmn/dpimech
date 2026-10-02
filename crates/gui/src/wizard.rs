@@ -4,7 +4,7 @@
 use crate::i18n::tr;
 use std::cell::RefCell;
 
-use dpimech_core::catalog::DOMAIN_PACKS;
+use dpimech_core::catalog::domain_packs;
 use dpimech_core::lab::{LabRequest, LabResult, LabStrategy};
 use dpimech_core::model::{EngineKind, Os, Profile, Reliability, Routing, RoutingMode};
 use dpimech_core::packages::{PackageId, PackageInfo, PackageTask};
@@ -55,7 +55,7 @@ struct State {
 impl Default for State {
     fn default() -> Self {
         Self {
-            selected: DOMAIN_PACKS.iter().map(|p| p.id == "discord").collect(),
+            selected: domain_packs().iter().map(|p| p.id == "discord").collect(),
             where_: default_where(),
             phase: Phase::Idle,
             packages: Vec::new(),
@@ -160,11 +160,11 @@ pub fn toggle_pack(ui: &AppWindow, index: i32) {
 
 fn refresh_packs(ui: &AppWindow) {
     let packs: Vec<LabPack> = STATE.with_borrow(|s| {
-        DOMAIN_PACKS
+        domain_packs()
             .iter()
             .zip(&s.selected)
             .map(|(p, sel)| LabPack {
-                name: p.name.into(),
+                name: p.name.as_str().into(),
                 selected: *sel,
             })
             .collect()
@@ -187,7 +187,7 @@ pub fn set_where(ui: &AppWindow, index: i32) {
 fn domains(ui: &AppWindow) -> (Vec<String>, Vec<String>, Vec<&'static str>) {
     let custom = parse_domains(&ui.get_wizard_custom_sites());
     STATE.with_borrow(|s| {
-        let packs: Vec<_> = DOMAIN_PACKS
+        let packs: Vec<_> = domain_packs()
             .iter()
             .zip(&s.selected)
             .filter(|(_, sel)| **sel)
@@ -195,15 +195,19 @@ fn domains(ui: &AppWindow) -> (Vec<String>, Vec<String>, Vec<&'static str>) {
             .collect();
         let mut domains: Vec<String> = packs
             .iter()
-            .flat_map(|p| p.domains.iter().map(|d| (*d).to_owned()))
+            .flat_map(|p| p.domains.iter().cloned())
             .collect();
         let mut probes: Vec<String> = packs
             .iter()
-            .flat_map(|p| p.probes.iter().map(|d| (*d).to_owned()))
+            .flat_map(|p| p.probes.iter().cloned())
             .collect();
         domains.extend(custom.iter().cloned());
         probes.extend(custom);
-        (domains, probes, packs.iter().map(|p| p.name).collect())
+        (
+            domains,
+            probes,
+            packs.iter().map(|p| p.name.as_str()).collect(),
+        )
     })
 }
 

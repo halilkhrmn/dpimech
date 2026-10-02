@@ -267,3 +267,17 @@ own release), a launchd service and an unsigned universal `.dmg`. The wizard hid
   the admin-only data folder, written atomically.
 - **Not moved:** domain packs and ISP presets stay in the code; they change together with UI and probes.
 
+## 43. Site packs in a JSON file shared with Android (2026-10-02)
+- **Decision:** the domain packs move from `catalog.rs` to `strategies/packs.json` (format 1): id, name,
+  domains, probe hosts, and `android_packages` (Android apps that use the sites; desktop ignores it). The
+  desktop app embeds it with `include_str!`; the Android app embeds a copy and fetches the newest one from
+  `main` with its strategy lists, so a new site reaches phones without a release. One list instead of two
+  copies that drift: Android had five packs desktop lacked (Imgur, Facebook, LinkedIn, Signal, Viber), which
+  desktop now gets too.
+- **Not fetched on desktop (yet):** the wizard, the Lab and the editor list packs by position, and
+  monitoring maps domains back to packs; a list that changes under a running GUI would need more care than
+  it is worth now. A new pack reaches desktop with the next release.
+- **Safety:** plain data. Every host must be a lower-case DNS name (no paths, ports or wildcards), ids are
+  unique, and every pack has probes; a file that fails these checks, or has another `format`, is ignored.
+  Discord stays first (the wizard and the Lab preselect it).
+

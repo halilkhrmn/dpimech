@@ -121,6 +121,13 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-10-02 (33) — Site packs as a JSON file shared with Android
+- Done: `strategies/packs.json` (format 1) replaces the packs in `catalog.rs` (`domain_packs()`, checked
+  parser); desktop gains Imgur, Facebook, LinkedIn, Signal and Viber from the Android list (DECISIONS #43).
+- Verified how: `cargo fmt --check`, `cargo clippy --workspace --all-targets -D warnings`,
+  `cargo test --workspace` (new tests: embedded file, bad hosts, repeated ids, wrong format).
+- Open/next: fetch the file at runtime on desktop too, once the GUI can take a changing list.
+
 ### 2026-09-30 (32) — 0.2.5: standard strategies as a JSON file in the repository
 - **Done:** the standard strategies moved from Rust tables to `strategies/default.json` (DECISIONS #42). The app
   embeds it and the service fetches the newest one from `main` with the daily update check and on "Update

@@ -36,7 +36,7 @@ crates/core/      shared library (no UI, no OS service code)
   src/config.rs     ServiceConfig (TOML, atomic save)
   src/paths.rs      data-dir layout
   src/packages.rs   downloadable packages catalog (repo, asset matching, extract rules, pinned hashes)
-  src/catalog.rs    domain packs (+ probe hosts), standard strategies (strategies/default.json), online sources, ISP table
+  src/catalog.rs    domain packs (strategies/packs.json), standard strategies (strategies/default.json), online sources, ISP table
   src/lab.rs        Strategy Lab request/result types
   src/args.rs       quote-aware argument splitter
   src/argpolicy.rs  engine argument allowlist (getopt-aware; blocks file writes, arbitrary reads, listen overrides)
@@ -107,7 +107,9 @@ packaging/fedora/ dpimech.spec + make-srpm.sh (source RPM with vendored crates) 
 .github/workflows ci.yml (fmt, clippy, tests), release.yml (new version on main or tag v* → GitHub release),
                   pages.yml (site/ → GitHub Pages), copr.yml (manual COPR build / webhook test)
 strategies/       default.json: the standard strategies per engine; embedded in the app and fetched from
-                  `main` by the service, so editing it reaches users without a release
+                  `main` by the service, so editing it reaches users without a release;
+                  packs.json: site packs (domains, probe hosts, Android package names), embedded here and
+                  in the Android app, which also fetches it from `main`
 site/             landing page (plain HTML, no build step; reads the newest release via the GitHub API)
 docs/             PLAN, PROGRESS, DECISIONS, RELEASING (release steps, COPR setup)
 ```

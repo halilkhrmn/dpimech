@@ -13,102 +13,79 @@ use serde::Deserialize;
 
 use crate::model::EngineKind;
 
+/// A ready-made site pack, from `strategies/packs.json` (shared with the Android app).
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 pub struct DomainPack {
-    pub id: &'static str,
-    pub name: &'static str,
+    pub id: String,
+    pub name: String,
     /// Everything the engine should act on (goes into the hostlist).
-    pub domains: &'static [&'static str],
-    /// Hosts the Strategy Lab requests. Each answers HTTPS on `/` (checked 2026-09-30);
-    /// apex domains without an A record (e.g. `discordapp.net`) would fail regardless of the
-    /// strategy and make every result look worse.
-    pub probes: &'static [&'static str],
+    pub domains: Vec<String>,
+    /// Hosts the Strategy Lab requests. Each answers HTTPS on `/`; apex domains without an
+    /// A record (e.g. `discordapp.net`) would fail regardless of the strategy and make every
+    /// result look worse.
+    pub probes: Vec<String>,
+    // `android_packages` (Android apps that use these sites) is only read by the Android app.
 }
 
-pub const DOMAIN_PACKS: &[DomainPack] = &[
-    DomainPack {
-        id: "discord",
-        name: "Discord",
-        domains: &[
-            "discord.com",
-            "discordapp.com",
-            "discord.gg",
-            "discord.media",
-            "discordapp.net",
-            "gateway.discord.gg",
-            "cdn.discordapp.com",
-            "media.discordapp.net",
-            "images-ext-1.discordapp.net",
-            "updates.discord.com",
-            "dis.gd",
-        ],
-        probes: &[
-            "discord.com",
-            "discordapp.com",
-            "discord.gg",
-            "gateway.discord.gg",
-            "cdn.discordapp.com",
-            "media.discordapp.net",
-            "updates.discord.com",
-            "dis.gd",
-        ],
-    },
-    DomainPack {
-        id: "youtube",
-        name: "YouTube",
-        domains: &[
-            "youtube.com",
-            "www.youtube.com",
-            "youtu.be",
-            "i.ytimg.com",
-            "yt3.ggpht.com",
-            "youtubei.googleapis.com",
-            "manifest.googlevideo.com",
-            "redirector.googlevideo.com",
-            "googlevideo.com",
-        ],
-        probes: &[
-            "www.youtube.com",
-            "youtube.com",
-            "youtu.be",
-            "i.ytimg.com",
-            "yt3.ggpht.com",
-            "youtubei.googleapis.com",
-            "redirector.googlevideo.com",
-        ],
-    },
-    DomainPack {
-        id: "roblox",
-        name: "Roblox",
-        domains: &[
-            "roblox.com",
-            "www.roblox.com",
-            "rbxcdn.com",
-            "apis.roblox.com",
-        ],
-        probes: &["www.roblox.com", "roblox.com", "apis.roblox.com"],
-    },
-    DomainPack {
-        id: "x",
-        name: "X / Twitter",
-        domains: &["x.com", "twitter.com", "twimg.com", "pbs.twimg.com"],
-        probes: &["x.com", "twitter.com", "pbs.twimg.com"],
-    },
-    DomainPack {
-        id: "instagram",
-        name: "Instagram",
-        domains: &["instagram.com", "www.instagram.com", "cdninstagram.com"],
-        probes: &["www.instagram.com", "instagram.com"],
-    },
-    DomainPack {
-        id: "wattpad",
-        name: "Wattpad",
-        domains: &["wattpad.com", "www.wattpad.com"],
-        probes: &["www.wattpad.com", "wattpad.com"],
-    },
-];
+/// The site packs, from `strategies/packs.json` in the repository. Discord stays first: the
+/// wizard and the Lab preselect it.
+pub const EMBEDDED_PACKS: &str = include_str!("../../../strategies/packs.json");
+/// The pack file format this build understands.
+const PACK_FORMAT: u32 = 1;
+
+#[derive(Deserialize)]
+struct PackFile {
+    format: u32,
+    packs: Vec<DomainPack>,
+}
+
+/// Parses and checks a pack file: unique ids, plain host names, at least one probe each.
+pub fn parse_packs(text: &str) -> anyhow::Result<Vec<DomainPack>> {
+    let file: PackFile = serde_json::from_str(text)?;
+    if file.format != PACK_FORMAT {
+        anyhow::bail!("unsupported pack file format {}", file.format);
+    }
+    if file.packs.is_empty() {
+        anyhow::bail!("the pack file has no packs");
+    }
+    let mut ids = std::collections::HashSet::new();
+    for p in &file.packs {
+        if p.id.is_empty() || p.name.trim().is_empty() || !ids.insert(p.id.as_str()) {
+            anyhow::bail!("pack \"{}\": missing or repeated id or name", p.id);
+        }
+        if p.domains.is_empty() || p.probes.is_empty() {
+            anyhow::bail!("pack \"{}\": no domains or no probes", p.id);
+        }
+        if let Some(bad) = p.domains.iter().chain(&p.probes).find(|h| !is_host(h)) {
+            anyhow::bail!("pack \"{}\": \"{bad}\" is not a host name", p.id);
+        }
+    }
+    Ok(file.packs)
+}
+
+/// A lower-case DNS name with at least one dot: what a hosts file and a probe accept.
+fn is_host(h: &str) -> bool {
+    h.len() <= 253
+        && h.contains('.')
+        && h.split('.').all(|label| {
+            !label.is_empty()
+                && label.len() <= 63
+                && !label.starts_with('-')
+                && !label.ends_with('-')
+                && label
+                    .bytes()
+                    .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == b'-')
+        })
+}
+
+/// The packs built into this binary.
+pub fn domain_packs() -> &'static [DomainPack] {
+    static PACKS: OnceLock<Vec<DomainPack>> = OnceLock::new();
+    PACKS.get_or_init(|| parse_packs(EMBEDDED_PACKS).expect("valid packs.json"))
+}
 
 pub fn domain_pack(id: &str) -> Option<&'static DomainPack> {
-    DOMAIN_PACKS.iter().find(|p| p.id == id)
+    domain_packs().iter().find(|p| p.id == id)
 }
 
 /// Where DPIMech itself is released (update notifications).
@@ -371,6 +348,32 @@ pub fn uses_hostlist(args: &str) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn embedded_packs_parse_with_discord_first() {
+        let packs = domain_packs();
+        assert_eq!(packs[0].id, "discord");
+        assert!(domain_pack("youtube").is_some());
+        assert!(packs.len() >= 6);
+    }
+
+    #[test]
+    fn pack_file_rejects_bad_hosts_and_formats() {
+        let ok = r#"{"format":1,"packs":[{"id":"a","name":"A","domains":["a.com"],"probes":["a.com"]}]}"#;
+        assert_eq!(parse_packs(ok).unwrap()[0].domains, ["a.com"]);
+        for bad in [
+            ok.replace("\"format\":1", "\"format\":2"),
+            ok.replace("[\"a.com\"],\"probes", "[\"a.com/x\"],\"probes"),
+            ok.replace("[\"a.com\"],\"probes", "[\"-a.com\"],\"probes"),
+            ok.replace("\"probes\":[\"a.com\"]", "\"probes\":[]"),
+            ok.replace(
+                "}]}",
+                "},{\"id\":\"a\",\"name\":\"B\",\"domains\":[\"b.com\"],\"probes\":[\"b.com\"]}]}",
+            ),
+        ] {
+            assert!(parse_packs(&bad).is_err(), "{bad}");
+        }
+    }
 
     #[test]
     fn nfqws_strategies_lose_only_the_windivert_filters() {

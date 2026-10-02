@@ -110,7 +110,9 @@ fn main() -> anyhow::Result<()> {
     ui.set_logs(ModelRc::new(VecModel::<LogItem>::default()));
     ui.set_draft_apps(DRAFT_APPS.with(|m| ModelRc::from(m.clone())));
     ui.set_domain_pack_names(string_model(
-        dpimech_core::catalog::DOMAIN_PACKS.iter().map(|p| p.name),
+        dpimech_core::catalog::domain_packs()
+            .iter()
+            .map(|p| p.name.as_str()),
     ));
     ui.on_add_domain_pack({
         let weak = ui.as_weak();
@@ -118,12 +120,12 @@ fn main() -> anyhow::Result<()> {
             let ui = weak.unwrap();
             let Some(pack) = usize::try_from(index)
                 .ok()
-                .and_then(|i| dpimech_core::catalog::DOMAIN_PACKS.get(i))
+                .and_then(|i| dpimech_core::catalog::domain_packs().get(i))
             else {
                 return;
             };
             let mut draft = ui.get_draft();
-            draft.domains = convert::add_domains(&draft.domains, pack.domains).into();
+            draft.domains = convert::add_domains(&draft.domains, &pack.domains).into();
             ui.set_draft(draft);
         }
     });

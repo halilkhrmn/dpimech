@@ -3,7 +3,7 @@
 use crate::i18n::tr;
 use std::cell::RefCell;
 
-use dpimech_core::catalog::{DOMAIN_PACKS, STANDARD_SET};
+use dpimech_core::catalog::{STANDARD_SET, domain_packs};
 use dpimech_core::lab::{IspInfo, LabRequest, LabResult, LabStrategy};
 use dpimech_core::model::{EngineKind, Os};
 use slint::{ModelRc, SharedString, VecModel};
@@ -44,7 +44,7 @@ pub fn init(ui: &AppWindow) {
     STATE.with_borrow_mut(|s| {
         s.engines = engines;
         // Discord is what most people come for.
-        s.selected_packs = DOMAIN_PACKS.iter().map(|p| p.id == "discord").collect();
+        s.selected_packs = domain_packs().iter().map(|p| p.id == "discord").collect();
     });
     refresh_packs(ui);
     ui.set_lab_isp_text(tr("ISP not detected").into());
@@ -73,11 +73,11 @@ pub fn toggle_pack(ui: &AppWindow, index: i32) {
 
 fn refresh_packs(ui: &AppWindow) {
     let packs: Vec<LabPack> = STATE.with_borrow(|s| {
-        DOMAIN_PACKS
+        domain_packs()
             .iter()
             .zip(&s.selected_packs)
             .map(|(p, sel)| LabPack {
-                name: p.name.into(),
+                name: p.name.as_str().into(),
                 selected: *sel,
             })
             .collect()
@@ -139,11 +139,11 @@ pub fn set_isp(ui: &AppWindow, info: &IspInfo) {
 pub fn request(ui: &AppWindow) -> Result<LabRequest, String> {
     let engine = engine_at(ui.get_lab_engine_index()).ok_or("Choose an engine.")?;
     let mut domains: Vec<String> = STATE.with_borrow(|s| {
-        DOMAIN_PACKS
+        domain_packs()
             .iter()
             .zip(&s.selected_packs)
             .filter(|(_, sel)| **sel)
-            .flat_map(|(p, _)| p.domains.iter().map(|d| (*d).to_owned()))
+            .flat_map(|(p, _)| p.domains.iter().cloned())
             .collect()
     });
     for d in parse_domains(&ui.get_lab_custom_domains()) {
@@ -156,11 +156,11 @@ pub fn request(ui: &AppWindow) -> Result<LabRequest, String> {
     }
     let custom = parse_domains(&ui.get_lab_custom_domains());
     let probes: Vec<String> = STATE.with_borrow(|s| {
-        DOMAIN_PACKS
+        domain_packs()
             .iter()
             .zip(&s.selected_packs)
             .filter(|(_, sel)| **sel)
-            .flat_map(|(p, _)| p.probes.iter().map(|d| (*d).to_owned()))
+            .flat_map(|(p, _)| p.probes.iter().cloned())
             .chain(custom)
             .collect()
     });
