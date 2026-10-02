@@ -123,7 +123,20 @@ sudo dnf install dpimech
 
 <div dir="rtl">
 
-بسته‌ها (`.deb`، `.rpm`، COPR) سرویس پس‌زمینه را هم نصب و اجرا می‌کنند. با AppImage، DPIMech را باز کنید و
+**Arch، CachyOS، EndeavourOS، Manjaro** — بستهٔ Arch (`dpimech-bin`) آماده است، اما هنوز در AUR نیست: AUR در حال حاضر
+عضو جدید نمی‌پذیرد. همین بسته به هر انتشار پیوست می‌شود: `dpimech-bin-<version>-1-x86_64.pkg.tar.zst` را از
+[Releases](https://github.com/halilkhrmn/dpimech/releases/latest) دانلود و نصب کنید (pacman وابستگی‌ها را می‌آورد و DPIMech
+نسخهٔ جدید را خبر می‌دهد):
+
+</div>
+
+```sh
+sudo pacman -U ./dpimech-bin-*-x86_64.pkg.tar.zst
+```
+
+<div dir="rtl">
+
+بسته‌ها (`.deb`، `.rpm`، COPR، Arch) سرویس پس‌زمینه را هم نصب و اجرا می‌کنند. با AppImage، DPIMech را باز کنید و
 یک بار **نصب سرویس** را بزنید (گذرواژه می‌خواهد). در GNOME نماد سینی سیستم به افزونهٔ
 *AppIndicator and KStatusNotifierItem Support* نیاز دارد (در Ubuntu از پیش هست).
 

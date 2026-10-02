@@ -110,7 +110,16 @@ sudo dnf copr enable halilkahraman/DPIMech
 sudo dnf install dpimech
 ```
 
-The packages (`.deb`, `.rpm`, COPR) also install and start the background service. With the AppImage, open
+**Arch, CachyOS, EndeavourOS, Manjaro** — there is an Arch package (`dpimech-bin`), but it is not on the AUR yet: the AUR
+takes no new accounts at the moment. The same package is attached to every release instead: download
+`dpimech-bin-<version>-1-x86_64.pkg.tar.zst` from [Releases](https://github.com/halilkhrmn/dpimech/releases/latest) and install it
+(pacman brings the dependencies; DPIMech tells you when a new version is out):
+
+```sh
+sudo pacman -U ./dpimech-bin-*-x86_64.pkg.tar.zst
+```
+
+The packages (`.deb`, `.rpm`, COPR, Arch) also install and start the background service. With the AppImage, open
 DPIMech and press **Install the service** once (it asks for your password). The AppImage
 brings the tray library along. On GNOME the tray icon needs the *AppIndicator and KStatusNotifierItem Support*
 extension (Ubuntu has it built in).
