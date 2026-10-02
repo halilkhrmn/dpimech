@@ -25,6 +25,9 @@ pub struct Prefs {
     /// "tr", "ru", "en"; empty = follow the system language.
     #[serde(default)]
     pub language: String,
+    /// The version that last started, so "What's new" shows once after an update.
+    #[serde(default)]
+    pub last_version: String,
 }
 
 impl Prefs {

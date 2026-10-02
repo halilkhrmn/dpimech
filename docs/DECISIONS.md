@@ -265,5 +265,32 @@ own release), a launchd service and an unsigned universal `.dmg`. The wizard hid
 - **Safety:** the file only supplies names and argument strings; every strategy still goes through the argument
   policy at launch, and a file this build cannot parse (or with another `format`) is ignored. It is stored in
   the admin-only data folder, written atomically.
-- **Not moved:** domain packs and ISP presets stay in the code; they change together with UI and probes.
+- **Not moved:** ISP presets stay in the code. Domain packs moved to `strategies/domains.json` later (#43).
 
+## 43. Site packs in a JSON file, tagged with the countries that block them (2026-10-02)
+- **Decision:** domain packs live in `strategies/domains.json`, fetched from `main` like the strategies (#42). Each pack
+  may list `countries` (ISO codes; `*` = offered first everywhere) and translated `names`. The GUI takes the country
+  from the system region (Windows: "Country or region"; Unix/macOS: the locale's region, else a language spoken
+  mainly in one country: fa → IR, kk → KZ, be → BY), shows that country's packs first and preselects them in the
+  wizard and the Lab. Same idea as the Android app's `CountryPreset`, with the same pack ids.
+- **Why the locale, not the ISP lookup:** the lookup sends the IP address to a third party and is opt-in; the
+  region setting is local and good enough for ordering a list. Nothing is hidden: every pack is always offered.
+- **Lists stay short:** a country only lists sites widely reported blocked there (Freedom House, news reports).
+  Packs whose site refuses automated requests (403 from a bot check) keep those hosts in `domains` but not in
+  `probes`, or every strategy would look broken.
+- **Chips wrap in Rust:** Slint has no wrapping layout, so the GUI splits the chips into rows from an estimate of
+  each label's width and the width Slint reports for the area (`init` and `changed width`).
+
+## 44. Persian and Arabic without mirroring the layout (2026-10-02)
+- **Decision:** add `fa` and `ar` catalogs. Slint's software renderer shapes Arabic script and lays out each text
+  right to left, but cannot mirror the whole layout; the window keeps its left-to-right arrangement. Screenshots
+  in both languages read correctly, so this is acceptable until Slint supports layout mirroring.
+- **READMEs:** `README.fa.md` and `README.ar.md` wrap the text in `<div dir="rtl">`; code blocks stay outside so
+  commands keep their direction.
+
+## 45. "What's new" from a changelog built into the app (2026-10-02)
+- **Decision:** `changelog/<lang>.md` holds user-facing notes per version (`## <version>` sections). The first start
+  of a new version shows the sections since the version that ran before (`last_version` in the GUI prefs; at most
+  three), in the UI language with English as fallback. The GitHub release uses the English section as its text.
+- **Why built in, not the GitHub release text:** works offline and in every UI language; the release text was a
+  list of pull-request titles. `cargo test` fails while a language lacks the current version's section.

@@ -149,6 +149,9 @@ impl Supervisor {
                 if let Err(e) = lab.update_standard_strategies().await {
                     tracing::warn!("{e:#}");
                 }
+                if let Err(e) = lab.update_domain_packs().await {
+                    tracing::warn!("{e:#}");
+                }
                 if let Ok(Some(version)) = packages.check_app_update().await {
                     let _ = events.send(Event::AppUpdateAvailable {
                         url: format!(

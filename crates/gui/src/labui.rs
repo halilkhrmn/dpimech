@@ -3,18 +3,20 @@
 use crate::i18n::tr;
 use std::cell::RefCell;
 
-use dpimech_core::catalog::{DOMAIN_PACKS, STANDARD_SET};
+use dpimech_core::catalog::{STANDARD_SET, country_preset, domain_packs};
 use dpimech_core::lab::{IspInfo, LabRequest, LabResult, LabStrategy};
 use dpimech_core::model::{EngineKind, Os};
 use slint::{ModelRc, SharedString, VecModel};
 
-use crate::convert::parse_domains;
-use crate::{AppWindow, LabPack, LabRow};
+use crate::convert::{Chips, country, pack_rows, parse_domains};
+use crate::{AppWindow, LabRow};
 
 #[derive(Default)]
 struct State {
     engines: Vec<EngineKind>,
-    selected_packs: Vec<bool>,
+    /// Ids of the chosen domain packs: the list itself can change when the service sends a
+    /// newer one.
+    selected_packs: Vec<String>,
     strategies: Vec<LabStrategy>,
     results: Vec<LabResult>,
     /// Domains of the running/last test, reused when a result becomes a profile.
@@ -43,8 +45,8 @@ pub fn init(ui: &AppWindow) {
     )));
     STATE.with_borrow_mut(|s| {
         s.engines = engines;
-        // Discord is what most people come for.
-        s.selected_packs = DOMAIN_PACKS.iter().map(|p| p.id == "discord").collect();
+        // What is blocked in the user's country (else Discord, what most people come for).
+        s.selected_packs = country_preset(&domain_packs(), country());
     });
     refresh_packs(ui);
     ui.set_lab_isp_text(tr("ISP not detected").into());
@@ -60,29 +62,25 @@ pub fn engine_at(index: i32) -> Option<EngineKind> {
 }
 
 pub fn toggle_pack(ui: &AppWindow, index: i32) {
+    let Some(id) = usize::try_from(index)
+        .ok()
+        .and_then(|i| domain_packs().get(i).map(|p| p.id.clone()))
+    else {
+        return;
+    };
     STATE.with_borrow_mut(|s| {
-        if let Some(v) = usize::try_from(index)
-            .ok()
-            .and_then(|i| s.selected_packs.get_mut(i))
-        {
-            *v = !*v;
+        if let Some(at) = s.selected_packs.iter().position(|x| *x == id) {
+            s.selected_packs.remove(at);
+        } else {
+            s.selected_packs.push(id);
         }
     });
     refresh_packs(ui);
 }
 
-fn refresh_packs(ui: &AppWindow) {
-    let packs: Vec<LabPack> = STATE.with_borrow(|s| {
-        DOMAIN_PACKS
-            .iter()
-            .zip(&s.selected_packs)
-            .map(|(p, sel)| LabPack {
-                name: p.name.into(),
-                selected: *sel,
-            })
-            .collect()
-    });
-    ui.set_lab_packs(ModelRc::new(VecModel::from(packs)));
+pub fn refresh_packs(ui: &AppWindow) {
+    let rows = STATE.with_borrow(|s| pack_rows(Chips::Lab, &s.selected_packs));
+    ui.set_lab_packs(rows);
 }
 
 pub fn set_strategies(ui: &AppWindow, strategies: Vec<LabStrategy>) {
@@ -139,11 +137,10 @@ pub fn set_isp(ui: &AppWindow, info: &IspInfo) {
 pub fn request(ui: &AppWindow) -> Result<LabRequest, String> {
     let engine = engine_at(ui.get_lab_engine_index()).ok_or("Choose an engine.")?;
     let mut domains: Vec<String> = STATE.with_borrow(|s| {
-        DOMAIN_PACKS
+        domain_packs()
             .iter()
-            .zip(&s.selected_packs)
-            .filter(|(_, sel)| **sel)
-            .flat_map(|(p, _)| p.domains.iter().map(|d| (*d).to_owned()))
+            .filter(|p| s.selected_packs.contains(&p.id))
+            .flat_map(|p| p.domains.clone())
             .collect()
     });
     for d in parse_domains(&ui.get_lab_custom_domains()) {
@@ -156,11 +153,10 @@ pub fn request(ui: &AppWindow) -> Result<LabRequest, String> {
     }
     let custom = parse_domains(&ui.get_lab_custom_domains());
     let probes: Vec<String> = STATE.with_borrow(|s| {
-        DOMAIN_PACKS
+        domain_packs()
             .iter()
-            .zip(&s.selected_packs)
-            .filter(|(_, sel)| **sel)
-            .flat_map(|(p, _)| p.probes.iter().map(|d| (*d).to_owned()))
+            .filter(|p| s.selected_packs.contains(&p.id))
+            .flat_map(|p| p.probes.clone())
             .chain(custom)
             .collect()
     });

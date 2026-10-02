@@ -1,4 +1,4 @@
-<p align="center"><a href="README.md">English</a> · <b>Türkçe</b> · <a href="README.ru.md">Русский</a></p>
+<p align="center"><a href="README.md">English</a> · <b>Türkçe</b> · <a href="README.ru.md">Русский</a> · <a href="README.fa.md">فارسی</a> · <a href="README.ar.md">العربية</a></p>
 
 <p align="center"><img src="crates/gui/assets/logo.png" width="128" alt="DPIMech logosu"></p>
 
@@ -46,6 +46,7 @@ Bazı internet sağlayıcıları trafiğinin içine bakıp belirli siteleri enge
 - **Kısayollar.** Profile sağ tıkla (ya da ⋯) → *Kısayol oluştur*: masaüstünde ya da menüde bir simge;
   tıklayınca profili açar, ardından uygulamayı (örneğin Discord) başlatır.
 - **Hafif:** Pencere yaklaşık 25–35 MB, arka plan servisi yaklaşık 20 MB RAM kullanır.
+- **Kendi dilinde:** Türkçe, İngilizce, Rusça, Farsça ve Arapça.
 
 ## Windows
 
@@ -141,6 +142,25 @@ macOS'ta DPIMech şimdilik sadece **yerel SOCKS proxy** (zapret'in tpws aracı) 
 tarayıcında ya da uygulamanda `127.0.0.1:<port>` ayarlarsın. Tüm bilgisayar ve uygulama bazlı
 modlar planlanıyor. macOS'ta otomatik olarak derlenip kontrol ediliyor ama henüz bir Mac'te elle
 test edilmedi.
+
+## Ülkelere göre
+
+DPIMech ülkeni sistemin bölge ayarından tahmin eder ve orada engellendiği yaygın olarak bilinen siteleri
+listenin başında, kurulum sihirbazında da hazır seçili gösterir. İstediğin başka siteyi her zaman seçebilir
+ya da yazabilirsin. Liste [`strategies/domains.json`](strategies/domains.json) dosyasında durur ve yeni sürüm
+beklemeden güncellenir.
+
+| Ülke | Hazır seçili | Akılda tut |
+|---|---|---|
+| Türkiye | Discord, Roblox, Wattpad, Imgur | Pek çok engel DNS ile de yapılıyor: aşağıdaki "Hâlâ açılmıyor mu?" maddesine bak. |
+| Rusya | YouTube, Discord, Instagram, X, Facebook, LinkedIn, Signal, Viber | YouTube kesilmek yerine yavaşlatılıyor; genelde en iyi zapret çalışır. |
+| İran | YouTube, Instagram, X, Telegram, Facebook, Signal, Discord | Filtreleme IP adreslerini ve zaman zaman tüm uluslararası interneti de kapatıyor; o durumda DPIMech yardımcı olamaz. Telegram ve WhatsApp *uygulamaları* doğrudan IP adreslerine bağlandığı için yalnızca web siteleri fayda görür. |
+| Kazakistan | SoundCloud | Engellerin çoğu haber sitelerini ve VPN'leri hedefliyor, çoğunlukla IP adresiyle. İhtiyacın olan siteleri "Diğer siteler"e ekle. |
+| Belarus | TikTok, bağımsız medya (Zerkalo, Nasha Niva, Svaboda, Belsat, …) | Bazı yayınlar adreslerini sık değiştiriyor; güncel adresi "Diğer siteler"e ekle. |
+| Mısır | bağımsız medya (Mada Masr, Zawia3, Cairo 24) | WhatsApp ve benzeri uygulamalardaki sesli/görüntülü aramalar başka yolla engelleniyor ve engelli kalır. |
+
+Diğer ülkelerde Discord başta gelir. Eksik bir site ya da ülke mi var? `strategies/domains.json` için bir
+issue ya da pull request aç.
 
 ## Bilmekte fayda var
 

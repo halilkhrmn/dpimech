@@ -1,4 +1,4 @@
-<p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.ru.md">Русский</a></p>
+<p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.ru.md">Русский</a> · <a href="README.fa.md">فارسی</a> · <a href="README.ar.md">العربية</a></p>
 
 <p align="center"><img src="crates/gui/assets/logo.png" width="128" alt="DPIMech logo"></p>
 
@@ -45,6 +45,7 @@ called *DPI* (deep packet inspection). DPIMech runs small, well-known open-sourc
   shows the average ping on each profile.
 - **Shortcuts.** Right-click a profile (or press ⋯) → *Create shortcut*: a desktop or menu icon that
   turns the profile on and then opens the app, for example Discord.
+- **In your language:** English, Turkish, Russian, Persian and Arabic.
 - **Light:** about 25–35 MB of RAM for the window, around 20 MB for the background service.
 
 ## Windows
@@ -138,6 +139,24 @@ choose **Open**. Then press **Install the service** once (it asks for your passw
 On macOS DPIMech can only run a **local SOCKS proxy** (zapret's tpws) for now; you set
 `127.0.0.1:<port>` in your browser or app. Whole-computer and per-app modes are planned. Built
 and checked automatically on macOS, but not yet tested by hand on a Mac.
+
+## By country
+
+DPIMech guesses your country from the system's region setting and offers the sites widely reported
+blocked there first, already selected in the setup wizard. You can always pick others or type any site.
+The list lives in [`strategies/domains.json`](strategies/domains.json) and updates without a new version.
+
+| Country | Preselected | Keep in mind |
+|---|---|---|
+| Turkey | Discord, Roblox, Wattpad, Imgur | Many blocks are also done with DNS: see "Still blocked?" below. |
+| Russia | YouTube, Discord, Instagram, X, Facebook, LinkedIn, Signal, Viber | YouTube is slowed rather than cut; zapret usually works best. |
+| Iran | YouTube, Instagram, X, Telegram, Facebook, Signal, Discord | Filtering also blocks IP addresses and, at times, the whole international internet; DPIMech cannot help then. The Telegram and WhatsApp *apps* connect to IP addresses directly, so only their websites benefit. |
+| Kazakhstan | SoundCloud | Most blocks target news sites and VPNs, often by IP address. Add the sites you need under "Other sites". |
+| Belarus | TikTok, independent media (Zerkalo, Nasha Niva, Svaboda, Belsat, …) | Some outlets change their address often; add the current one under "Other sites". |
+| Egypt | independent media (Mada Masr, Zawia3, Cairo 24) | Voice and video calls in WhatsApp and similar apps are blocked differently and stay blocked. |
+
+Everywhere else Discord comes first. Missing a site or a country? Open an issue or a pull request
+against `strategies/domains.json`.
 
 ## Good to know
 

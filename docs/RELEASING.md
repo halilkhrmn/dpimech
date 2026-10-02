@@ -5,8 +5,11 @@
 `main` only changes through pull requests. A release is a pull request that raises the version:
 
 1. On a branch: set `version` in `Cargo.toml` (workspace) and the default `AppVersion` in
-   `installer/dpimech.iss`, add a line to `%changelog` in `packaging/fedora/dpimech.spec`, and add a
-   work-log entry to `docs/PROGRESS.md`.
+   `installer/dpimech.iss`, add a line to `%changelog` in `packaging/fedora/dpimech.spec`, write the
+   user-facing notes as a `## <version>` section in `changelog/en.md` and its translations
+   (`tr.md`, `ru.md`, `fa.md`, `ar.md`; the app shows them once after the update as "What's new", the
+   GitHub release uses the English one, and `cargo test` fails while a language lacks the section),
+   and add a work-log entry to `docs/PROGRESS.md`.
 2. Open the pull request; merge it when CI is green.
 3. On the merge, the `Release` workflow sees a version without a tag and publishes it: it builds the
    Windows installer, the Linux `.deb` / `.rpm` / AppImage and the macOS `.dmg`, creates the tag
@@ -58,6 +61,14 @@ RPM from the **newest `v*` tag** (all crates vendored), and COPR builds it witho
 
 Build locally: `sh packaging/fedora/make-srpm.sh target/srpm` (needs `cargo`, `git`, `rpm-build`),
 then `rpmbuild --rebuild target/srpm/dpimech-*.src.rpm` on Fedora, or `mock` for a clean chroot.
+
+## Changing the site lists
+
+`strategies/domains.json` holds the sites the wizard, the Lab and the profile editor offer, fetched from `main`
+the same way as the strategies below (no version bump needed). `probes` must answer HTTPS on `/` without a bot
+check (a 403 counts as blocked); `countries` lists ISO codes of the countries where the site is widely reported
+blocked (`*` = offered first everywhere): users there get these first and preselected; `names` translates a
+pack name that is not a brand. `cargo test` checks the file.
 
 ## Changing the standard strategies
 

@@ -54,15 +54,14 @@ fn check_index(minutes: u32) -> i32 {
 /// the domains come from (at most three per pack), plus custom domains as they are.
 pub fn check_sites_for(domains: &[String]) -> Vec<String> {
     let mut out: Vec<String> = Vec::new();
-    for pack in dpimech_core::catalog::DOMAIN_PACKS {
-        if pack.domains.iter().any(|d| domains.iter().any(|x| x == d)) {
-            out.extend(pack.probes.iter().take(3).map(|s| (*s).to_owned()));
+    let packs = dpimech_core::catalog::domain_packs();
+    for pack in packs.iter() {
+        if pack.domains.iter().any(|d| domains.contains(d)) {
+            out.extend(pack.probes.iter().take(3).cloned());
         }
     }
     for d in domains {
-        let in_pack = dpimech_core::catalog::DOMAIN_PACKS
-            .iter()
-            .any(|p| p.domains.contains(&d.as_str()));
+        let in_pack = packs.iter().any(|p| p.domains.contains(d));
         if !in_pack && !out.contains(d) {
             out.push(d.clone());
         }
@@ -88,11 +87,11 @@ pub fn parse_domains(text: &str) -> Vec<String> {
 }
 
 /// Appends a domain pack to the editor's text, skipping domains already listed.
-pub fn add_domains(text: &str, extra: &[&str]) -> String {
+pub fn add_domains(text: &str, extra: &[String]) -> String {
     let mut all = parse_domains(text);
     for d in extra {
-        if !all.iter().any(|x| x == d) {
-            all.push((*d).to_owned());
+        if !all.contains(d) {
+            all.push(d.clone());
         }
     }
     all.join("\n")
@@ -391,4 +390,81 @@ pub fn health_text(status: &ProfileStatus) -> String {
         text.push_str(&tr(advice));
     }
     text
+}
+
+/// Where a row of site chips is shown; each has its own font and padding.
+#[derive(Clone, Copy)]
+pub enum Chips {
+    Lab = 0,
+    Wizard = 1,
+    Editor = 2,
+}
+
+thread_local! {
+    /// Width of each chip area as Slint last reported it.
+    static CHIP_WIDTHS: std::cell::Cell<[f32; 3]> = const { std::cell::Cell::new([560.0; 3]) };
+}
+
+impl Chips {
+    /// Rough width of a chip: px per character of its label, and padding + border + "✓ " + spacing.
+    fn metrics(self) -> (f32, f32) {
+        match self {
+            Chips::Lab => (7.5, 48.0),
+            Chips::Wizard => (8.2, 60.0),
+            Chips::Editor => (7.5, 46.0),
+        }
+    }
+
+    /// Stores the reported width; true when the rows should be rebuilt.
+    pub fn set_width(self, width: f32) -> bool {
+        if width <= 0.0 {
+            return false; // not laid out yet
+        }
+        CHIP_WIDTHS.with(|w| {
+            let mut all = w.get();
+            let changed = (all[self as usize] - width).abs() >= 1.0;
+            all[self as usize] = width;
+            w.set(all);
+            changed
+        })
+    }
+}
+
+/// The user's country, read once (sites blocked there are offered first).
+pub fn country() -> &'static str {
+    static COUNTRY: std::sync::OnceLock<String> = std::sync::OnceLock::new();
+    COUNTRY.get_or_init(crate::i18n::system_country)
+}
+
+/// The site packs as chips, the user's country first, split into rows that fit the area
+/// (Slint has no wrapping layout).
+pub fn pack_rows(place: Chips, selected: &[String]) -> slint::ModelRc<crate::PackRow> {
+    let packs = dpimech_core::catalog::domain_packs();
+    let width = CHIP_WIDTHS.with(|w| w.get()[place as usize]);
+    let (per_char, extra) = place.metrics();
+    let lang = crate::i18n::current();
+    let mut rows: Vec<Vec<crate::LabPack>> = Vec::new();
+    let mut used = f32::MAX;
+    for i in dpimech_core::catalog::pack_order(&packs, country()) {
+        let pack = &packs[i];
+        let name = pack.display_name(lang);
+        let chip = name.chars().count() as f32 * per_char + extra;
+        if used + chip > width {
+            rows.push(Vec::new());
+            used = 0.0;
+        }
+        used += chip;
+        rows.last_mut().unwrap().push(crate::LabPack {
+            name: name.into(),
+            selected: selected.contains(&pack.id),
+            index: i as i32,
+        });
+    }
+    slint::ModelRc::new(slint::VecModel::from(
+        rows.into_iter()
+            .map(|packs| crate::PackRow {
+                packs: slint::ModelRc::new(slint::VecModel::from(packs)),
+            })
+            .collect::<Vec<_>>(),
+    ))
 }

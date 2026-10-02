@@ -17,11 +17,18 @@ use std::fmt::Display;
 use std::sync::RwLock;
 
 /// Languages with a catalog, besides English (the source language).
-pub const LANGUAGES: &[(&str, &str)] = &[("tr", "Türkçe"), ("ru", "Русский")];
+pub const LANGUAGES: &[(&str, &str)] = &[
+    ("tr", "Türkçe"),
+    ("ru", "Русский"),
+    ("fa", "فارسی"),
+    ("ar", "العربية"),
+];
 
 const CATALOGS: &[(&str, &str)] = &[
     ("tr", include_str!("../lang/tr/LC_MESSAGES/dpimech-gui.po")),
     ("ru", include_str!("../lang/ru/LC_MESSAGES/dpimech-gui.po")),
+    ("fa", include_str!("../lang/fa/LC_MESSAGES/dpimech-gui.po")),
+    ("ar", include_str!("../lang/ar/LC_MESSAGES/dpimech-gui.po")),
 ];
 
 /// Texts that reach `tr()` through a variable (sent by the service, or names from the core
@@ -38,13 +45,63 @@ pub const EXTRA_TEXTS: &[&str] = &[
 ];
 
 static CURRENT: RwLock<Option<HashMap<String, String>>> = RwLock::new(None);
+static CURRENT_CODE: RwLock<&'static str> = RwLock::new("en");
 
 /// Switches Rust-side text to `lang` ("tr", "ru"; anything else is English) and returns the
 /// language actually used.
 pub fn set_language(lang: &str) -> &'static str {
     let found = CATALOGS.iter().find(|(code, _)| *code == lang);
     *CURRENT.write().unwrap() = found.map(|(_, po)| parse_po(po));
-    found.map_or("en", |(code, _)| code)
+    let code = found.map_or("en", |(code, _)| *code);
+    *CURRENT_CODE.write().unwrap() = code;
+    code
+}
+
+/// The language in use ("en" when none was set).
+pub fn current() -> &'static str {
+    *CURRENT_CODE.read().unwrap()
+}
+
+/// The user's country (ISO code, e.g. "IR"), for offering the sites blocked there first: the
+/// region of the system locale, else a guess from a language spoken mainly in one country.
+/// Empty when unknown.
+pub fn system_country() -> String {
+    #[cfg(windows)]
+    if let Some(geo) = windows_geo() {
+        return geo;
+    }
+    country_from_locale(&system_locale().unwrap_or_default())
+}
+
+fn country_from_locale(locale: &str) -> String {
+    let mut parts = locale.split(['_', '-', '.', '@']);
+    let lang = parts.next().unwrap_or("").to_ascii_lowercase();
+    // "fa_IR.UTF-8", "tr-TR", "zh-Hans-CN": the region is the first two-letter part after the language.
+    if let Some(region) = parts.find(|p| p.len() == 2 && p.bytes().all(|b| b.is_ascii_alphabetic()))
+    {
+        return region.to_ascii_uppercase();
+    }
+    match lang.as_str() {
+        "tr" => "TR",
+        "fa" => "IR",
+        "kk" => "KZ",
+        "be" => "BY",
+        _ => "",
+    }
+    .to_owned()
+}
+
+/// "Country or region" in Windows settings, which is the user's location rather than a language.
+#[cfg(windows)]
+fn windows_geo() -> Option<String> {
+    use winreg::RegKey;
+    use winreg::enums::HKEY_CURRENT_USER;
+    let name: String = RegKey::predef(HKEY_CURRENT_USER)
+        .open_subkey(r"Control Panel\International\Geo")
+        .ok()?
+        .get_value("Name")
+        .ok()?;
+    (name.len() == 2 && name.bytes().all(|b| b.is_ascii_uppercase())).then_some(name)
 }
 
 /// The user's language from the system, reduced to one we have ("tr-TR" → "tr").
@@ -233,6 +290,17 @@ fn unquote(s: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn country_from_the_locale() {
+        assert_eq!(country_from_locale("fa_IR.UTF-8"), "IR");
+        assert_eq!(country_from_locale("ar-EG"), "EG");
+        assert_eq!(country_from_locale("zh-Hans-CN"), "CN");
+        assert_eq!(country_from_locale("ru_BY.utf8"), "BY");
+        assert_eq!(country_from_locale("fa"), "IR");
+        assert_eq!(country_from_locale("en.UTF-8"), "");
+        assert_eq!(country_from_locale(""), "");
+    }
 
     #[test]
     fn placeholders_in_order_and_by_index() {
