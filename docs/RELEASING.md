@@ -13,8 +13,13 @@
 2. Open the pull request; merge it when CI is green.
 3. On the merge, the `Release` workflow sees a version without a tag and publishes it: it builds the
    Windows installer, the Linux `.deb` / `.rpm` / AppImage and the macOS `.dmg`, creates the tag
-   `v<version>` with a GitHub release (files + `SHA256SUMS.txt`), and starts the Fedora COPR build
-   (below). Merges that keep the version publish nothing.
+   `v<version>` with a GitHub release (files + `SHA256SUMS.txt`), starts the Fedora COPR build and
+   updates the AUR package (both below). Merges that keep the version publish nothing.
+
+Before anything is published, **smoke tests** install each package on a clean system and start it
+(`tools/smoke-linux.sh`: AppImage on Arch, `.deb` on Ubuntu, `.rpm` on Fedora; `tools/smoke-windows.ps1`:
+silent install, service, window, uninstall). If one fails, nothing is published: the job's log says which
+library is missing or how the app failed.
 
 Pushing a tag `v<version>` by hand also publishes (it must match `Cargo.toml`).
 A dry run without publishing: **Actions → Release → Run workflow**.
@@ -61,6 +66,20 @@ RPM from the **newest `v*` tag** (all crates vendored), and COPR builds it witho
 
 Build locally: `sh packaging/fedora/make-srpm.sh target/srpm` (needs `cargo`, `git`, `rpm-build`),
 then `rpmbuild --rebuild target/srpm/dpimech-*.src.rpm` on Fedora, or `mock` for a clean chroot.
+
+## AUR (one-time setup)
+
+Arch, CachyOS, EndeavourOS and Manjaro users install `dpimech-bin` from the AUR (`yay -S dpimech-bin`). It
+repackages the release `.deb` (`packaging/aur/`); the release workflow builds and installs it in a clean
+Arch on every run and, for a real release, pushes the new version with `tools/aur-publish.sh`.
+
+1. Create an account on <https://aur.archlinux.org> (Register).
+2. Make a key pair just for this: `ssh-keygen -t ed25519 -f aur -C dpimech-aur -N ""`.
+3. AUR → My Account → **SSH Public Key**: paste the contents of `aur.pub`, save.
+4. GitHub → repository → Settings → Secrets and variables → Actions → **New repository secret**:
+   name `AUR_SSH_PRIVATE_KEY`, value the whole contents of `aur` (the private key). Delete both files after.
+5. The next release creates the package `dpimech-bin` on the AUR (the first push creates it) and
+   updates it from then on. Without the secret, releases only build the package and say so.
 
 ## Changing the site lists
 

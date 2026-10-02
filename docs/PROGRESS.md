@@ -121,6 +121,14 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-10-02 (41) — Arch smoke test: missing libxkbcommon-x11
+- **Found by the smoke test:** the AppImage panics on a bare Arch without libxkbcommon-x11; bundling Ubuntu's copy
+  segfaults there (DECISIONS #47). Reproduced and debugged in an Arch bootstrap chroot with gdb.
+- **Done:** the GUI shows a translated "install libxkbcommon-x11" dialog instead; the smoke test checks it, then
+  installs the library. The smoke script also starts the extracted AppImage when the AppImage fails.
+- **Verified:** Arch chroot: without the library the dialog appears (screenshot) and the process waits for it;
+  with the library the window runs 8 s without errors.
+
 ### 2026-10-02 (40) — Android package names in domains.json
 - Done: `android_packages` for every app pack in `strategies/domains.json`, so the Android app can use this
   file instead of its own copy (DECISIONS #46).
@@ -143,6 +151,20 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
   the Android app's country work should use the same lists. At the smallest window (760 px) the chips wrap to the
   area, but the Lab's engine and strategy rows are wider than the page (already so before; a window manager keeps
   the window at the layout's minimum, Xvfb does not).
+
+### 2026-10-01 (38b) — Priority 4 set; release smoke tests
+- **Decided (owner):** Priority 4 in PLAN.md: smoke tests, AUR, remote domain packs, encrypted DNS, then
+  self-repair or a troubleshooter; code signing once the owner applies to SignPath.
+- **Done:** `tools/smoke-linux.sh` (install a package, `ldd` for missing libraries, start the service and ask it
+  `hello`, run the GUI for 10 s under Xvfb; fail on exit, panic, missing library or "tray unavailable") and
+  `tools/smoke-windows.ps1` (silent install, service running and answering, GUI alive, silent uninstall removes
+  the service). release.yml runs them on Arch (AppImage, no appindicator/xdotool), Ubuntu 24.04 (.deb),
+  Fedora (.rpm) and windows-latest; `publish` waits for them.
+- **Done (AUR):** `packaging/aur` (PKGBUILD repackaging the release .deb, install hook = service-setup.sh like
+  deb/rpm) and `tools/aur-publish.sh`; release.yml job `aur` builds and installs it in a clean Arch on every run
+  and pushes it after a real release when `AUR_SSH_PRIVATE_KEY` is set (setup in RELEASING.md, owner's step).
+- **Verified:** here: AppImage and .deb 0.2.8 pass; the published 0.2.7 AppImage with libxdo hidden fails with
+  "libxdo.so.3 => not found" (the CachyOS report). The CI jobs themselves: see the dry run on the PR.
 
 ### 2026-10-01 (38) — 0.2.9: profile shortcuts bring up the tray
 - **Owner's report:** opening a profile shortcut starts the profile and the app, but no main window or tray

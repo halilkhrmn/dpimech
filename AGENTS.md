@@ -95,18 +95,24 @@ crates/gui/       dpimech binary (Slint)
   src/i18n.rs       translations for Rust-built text + language choice (tr, ru, fa, ar) and the user's
                     country from the locale; lang/ holds the .po catalogs
   src/whatsnew.rs   "What's new" dialog after an update (ui/whatsnew.slint)
+  src/bundled.rs    libraries the AppImage carries (tray), loaded only when the system lacks them; a clear
+                    message instead of a crash when libxkbcommon-x11 is missing
   assets/           logo-source.png (master) → logo.png (UI), dpimech.ico/.png (exe, notifications),
                     tray-32.rgba (tray; status dot drawn at runtime) — regenerate with tools/make_icon.py
   src/apps.rs       process + Start Menu discovery with icons (Win32)
   src/picker.rs     app picker logic; src/state.rs UI-thread state
 tools/            ipc.ps1 (raw IPC requests), uia.ps1 (drive the GUI via UI Automation),
                   build-installer.ps1, build-linux-packages.sh, build-macos-app.sh, i18n.py, make_icon.py,
-                  copr-webhook.sh (starts a COPR build; used by release.yml and copr.yml)
+                  copr-webhook.sh (starts a COPR build; used by release.yml and copr.yml),
+                  smoke-linux.sh / smoke-windows.ps1 (release smoke tests: install a package on a clean
+                  system, check libraries, service and window; release.yml runs them before publishing)
 installer/        dpimech.iss (Inno Setup)
 packaging/linux/  .desktop entry, service-setup.sh (deb postinst / rpm %post), deb maintainer scripts;
                   package metadata lives in crates/gui/Cargo.toml ([package.metadata.deb / generate-rpm])
 packaging/fedora/ dpimech.spec + make-srpm.sh (source RPM with vendored crates) for Fedora COPR;
                   .copr/Makefile is COPR's entry point (see docs/RELEASING.md)
+packaging/aur/    PKGBUILD template + install hook for `dpimech-bin` (repackages the release .deb);
+                  tools/aur-publish.sh builds, installs and (in release.yml) pushes it
 .github/workflows ci.yml (fmt, clippy, tests), release.yml (new version on main or tag v* → GitHub release),
                   pages.yml (site/ → GitHub Pages), copr.yml (manual COPR build / webhook test)
 strategies/       default.json: the standard strategies per engine; embedded in the app and fetched from
@@ -152,6 +158,10 @@ sudo /usr/local/lib/dpimech/dpimech-service uninstall
 # Linux packages into target/linux/ (.deb, .rpm, AppImage); the release workflow runs the same script.
 cargo install cargo-deb cargo-generate-rpm   # once
 ./tools/build-linux-packages.sh
+
+# Release smoke test of a package (root; the release workflow runs these in clean containers / on Windows)
+sudo tools/smoke-linux.sh appimage|deb|rpm target/linux/<file>
+pwsh tools/smoke-windows.ps1 target/installer/dpimech-setup-<version>.exe
 
 # Fedora source RPM (what COPR builds): newest v* tag, or DPIMECH_REF=<ref>
 sh packaging/fedora/make-srpm.sh target/srpm

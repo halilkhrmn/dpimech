@@ -136,119 +136,119 @@ msgstr "Açılacak siteler"
 msgid "The engine only touches these domains. One per line; subdomains are included."
 msgstr "Motor sadece bu alan adlarına dokunur. Her satıra bir tane; alt alan adları dahildir."
 
-#: ui/editor.slint:282
+#: ui/editor.slint:293
 msgid "Applications"
 msgstr "Uygulamalar"
 
-#: ui/editor.slint:283
+#: ui/editor.slint:294
 msgid "Add app"
 msgstr "Uygulama ekle"
 
-#: ui/editor.slint:294
+#: ui/editor.slint:305
 msgid "Only the apps listed here will go through the engine."
 msgstr "Sadece burada listelenen uygulamalar motordan geçer."
 
-#: ui/editor.slint:309
+#: ui/editor.slint:320
 msgid "Connection check"
 msgstr "Bağlantı kontrolü"
 
-#: ui/editor.slint:311
+#: ui/editor.slint:322
 msgid "DPIMech opens these sites through the engine every few minutes. If they get much slower than usual or stop answering, it can restart the engine for you."
 msgstr "DPIMech bu siteleri birkaç dakikada bir motor üzerinden açar. Her zamankinden çok yavaşlarsa ya da cevap vermezlerse motoru senin için yeniden başlatabilir."
 
-#: ui/editor.slint:325
+#: ui/editor.slint:336
 msgid "Check every"
 msgstr "Kontrol sıklığı"
 
-#: ui/editor.slint:327
+#: ui/editor.slint:338
 msgid "Off"
 msgstr "Kapalı"
 
-#: ui/editor.slint:327
+#: ui/editor.slint:338
 msgid "1 minute"
 msgstr "1 dakika"
 
-#: ui/editor.slint:327
+#: ui/editor.slint:338
 msgid "3 minutes"
 msgstr "3 dakika"
 
-#: ui/editor.slint:327
+#: ui/editor.slint:338
 msgid "5 minutes"
 msgstr "5 dakika"
 
-#: ui/editor.slint:327
+#: ui/editor.slint:338
 msgid "10 minutes"
 msgstr "10 dakika"
 
-#: ui/editor.slint:333
+#: ui/editor.slint:344
 msgid "When it gets slow"
 msgstr "Yavaşlayınca"
 
-#: ui/editor.slint:335
+#: ui/editor.slint:346
 msgid "Restart the engine automatically"
 msgstr "Motoru otomatik yeniden başlat"
 
-#: ui/editor.slint:335
+#: ui/editor.slint:346
 msgid "Only warn me"
 msgstr "Sadece uyar"
 
-#: ui/editor.slint:341
+#: ui/editor.slint:352
 msgid "Sites to check"
 msgstr "Kontrol edilecek siteler"
 
-#: ui/editor.slint:344
+#: ui/editor.slint:355
 msgid "Empty = the sites above"
 msgstr "Boş = yukarıdaki siteler"
 
-#: ui/editor.slint:344
+#: ui/editor.slint:355
 msgid "e.g. discord.com, gateway.discord.gg"
 msgstr "örn. discord.com, gateway.discord.gg"
 
-#: ui/editor.slint:350
+#: ui/editor.slint:361
 msgid "Reliability"
 msgstr "Güvenilirlik"
 
-#: ui/editor.slint:356
+#: ui/editor.slint:367
 msgid "Auto-restart when stuck or crashed"
 msgstr "Takılır ya da çökerse otomatik yeniden başlat"
 
-#: ui/editor.slint:358
+#: ui/editor.slint:369
 msgid "Fixes the “ping jumps to thousands after a few hours” problem without touching other profiles."
 msgstr "“Birkaç saat sonra ping binlere çıkıyor” sorununu diğer profillere dokunmadan çözer."
 
-#: ui/editor.slint:371
+#: ui/editor.slint:382
 msgid "Preventive restart every (hours)"
 msgstr "Önleyici yeniden başlatma (saatte bir)"
 
-#: ui/editor.slint:372
+#: ui/editor.slint:383
 msgid "0 = never. Takes well under a second."
 msgstr "0 = hiç. Bir saniyeden çok daha kısa sürer."
 
-#: ui/editor.slint:383
+#: ui/editor.slint:394
 msgid "TCP only"
 msgstr "Sadece TCP"
 
-#: ui/editor.slint:385
+#: ui/editor.slint:396
 msgid "Voice/UDP goes direct. Fewer connections through the engine."
 msgstr "Ses/UDP doğrudan gider. Motordan daha az bağlantı geçer."
 
-#: ui/editor.slint:398
+#: ui/editor.slint:409
 msgid "Strategy arguments"
 msgstr "Strateji argümanları"
 
-#: ui/editor.slint:406
+#: ui/editor.slint:417
 msgid "Tip: the Strategy Lab finds working arguments for your connection."
 msgstr "İpucu: Strateji Laboratuvarı bağlantında çalışan argümanları bulur."
 
-#: ui/editor.slint:421
+#: ui/editor.slint:432
 msgid "Save"
 msgstr "Kaydet"
 
-#: ui/editor.slint:426
+#: ui/editor.slint:437
 msgid "Cancel"
 msgstr "İptal"
 
-#: ui/editor.slint:430
+#: ui/editor.slint:441
 msgid "Delete"
 msgstr "Sil"
 
@@ -328,27 +328,27 @@ msgstr "İnternet sağlayıcımı bul"
 msgid "Sites"
 msgstr "Siteler"
 
-#: ui/lab.slint:208
+#: ui/lab.slint:219
 msgid "Other sites, e.g. example.com, another.org"
 msgstr "Diğer siteler, örn. example.com, another.org"
 
-#: ui/lab.slint:215
+#: ui/lab.slint:226
 msgid "Strategies"
 msgstr "Stratejiler"
 
-#: ui/lab.slint:218
+#: ui/lab.slint:229
 msgid "Update online lists"
 msgstr "Çevrimiçi listeleri güncelle"
 
-#: ui/lab.slint:222
+#: ui/lab.slint:233
 msgid "Tries per site"
 msgstr "Site başına deneme"
 
-#: ui/lab.slint:236
+#: ui/lab.slint:247
 msgid "Start test"
 msgstr "Testi başlat"
 
-#: ui/lab.slint:277
+#: ui/lab.slint:288
 msgid "Results appear here, best first."
 msgstr "Sonuçlar burada görünür, en iyisi en üstte."
 
@@ -624,83 +624,83 @@ msgstr "Neyi açmak istiyorsun?"
 msgid "Pick one or more. You can add other sites too."
 msgstr "Bir ya da daha fazlasını seç. Başka siteler de ekleyebilirsin."
 
-#: ui/wizard.slint:152
+#: ui/wizard.slint:163
 msgid "Other sites, e.g. example.com"
 msgstr "Diğer siteler, örn. example.com"
 
-#: ui/wizard.slint:160
+#: ui/wizard.slint:171
 msgid "Where should it work?"
 msgstr "Nerede çalışsın?"
 
-#: ui/wizard.slint:162
+#: ui/wizard.slint:173
 msgid "Only in some apps (recommended)"
 msgstr "Sadece bazı uygulamalarda (önerilen)"
 
-#: ui/wizard.slint:163
+#: ui/wizard.slint:174
 msgid "For example only Discord. Everything else stays exactly as it is."
 msgstr "Örneğin sadece Discord. Geri kalan her şey olduğu gibi kalır."
 
-#: ui/wizard.slint:181
+#: ui/wizard.slint:192
 msgid "The whole computer"
 msgstr "Tüm bilgisayar"
 
-#: ui/wizard.slint:182
+#: ui/wizard.slint:193
 msgid "Every app, including games and voice. Uses zapret and needs the DPIMech service."
 msgstr "Oyunlar ve sesli sohbet dahil tüm uygulamalar. zapret kullanır ve DPIMech servisi gerekir."
 
-#: ui/wizard.slint:188
+#: ui/wizard.slint:199
 msgid "Only when I choose (proxy)"
 msgstr "Sadece ben seçtiğimde (proxy)"
 
-#: ui/wizard.slint:189
+#: ui/wizard.slint:200
 msgid "Creates a local proxy (127.0.0.1) you can set in a browser or app."
 msgstr "Tarayıcıda ya da bir uygulamada ayarlayabileceğin yerel bir proxy (127.0.0.1) oluşturur."
 
-#: ui/wizard.slint:198
+#: ui/wizard.slint:209
 msgid "Your internet provider"
 msgstr "İnternet sağlayıcın"
 
-#: ui/wizard.slint:200
+#: ui/wizard.slint:211
 msgid "Knowing your provider lets DPIMech try settings made for it first. This sends your public IP address to ipwho.is. You can skip it."
 msgstr "Sağlayıcını bilmek, DPIMech'in önce ona özel ayarları denemesini sağlar. Bu, genel IP adresini ipwho.is'e gönderir. Atlayabilirsin."
 
-#: ui/wizard.slint:207
+#: ui/wizard.slint:218
 msgid "Detect my provider"
 msgstr "Sağlayıcımı bul"
 
-#: ui/wizard.slint:213
+#: ui/wizard.slint:224
 msgid "DPIMech's background service is not installed yet. It is needed to run the engines. Your computer asks for administrator permission once."
 msgstr "DPIMech'in arka plan servisi henüz kurulu değil. Motorları çalıştırmak için gerekli. Bilgisayarın bir kez yönetici izni ister."
 
-#: ui/wizard.slint:227
+#: ui/wizard.slint:238
 msgid "Setting things up…"
 msgstr "Hazırlanıyor…"
 
-#: ui/wizard.slint:254
+#: ui/wizard.slint:265
 msgid "Details"
 msgstr "Ayrıntılar"
 
-#: ui/wizard.slint:282
+#: ui/wizard.slint:293
 msgid "All set!"
 msgstr "Hazır!"
 
-#: ui/wizard.slint:292
+#: ui/wizard.slint:303
 msgid "Start"
 msgstr "Başlat"
 
-#: ui/wizard.slint:292
+#: ui/wizard.slint:303
 msgid "Next"
 msgstr "İleri"
 
-#: ui/wizard.slint:296
+#: ui/wizard.slint:307
 msgid "Report this problem"
 msgstr "Bu sorunu bildir"
 
-#: ui/wizard.slint:298
+#: ui/wizard.slint:309
 msgid "Try again"
 msgstr "Tekrar dene"
 
-#: ui/wizard.slint:299
+#: ui/wizard.slint:310
 msgid "Finish"
 msgstr "Bitir"
 
@@ -755,6 +755,10 @@ msgstr "Aranıyor…"
 #: src/bridge.rs:475
 msgid "This needs the background service."
 msgstr "Bunun için arka plan servisi gerekli."
+
+#: src/bundled.rs:58
+msgid "DPIMech needs the libxkbcommon-x11 library to open its window. Install it with your package manager (Arch: sudo pacman -S libxkbcommon-x11) and start DPIMech again."
+msgstr "DPIMech'in penceresini açabilmesi için libxkbcommon-x11 kütüphanesi gerekiyor. Paket yöneticinle kur (Arch: sudo pacman -S libxkbcommon-x11) ve DPIMech'i yeniden başlat."
 
 #: src/convert.rs:141
 msgid "Give the profile a name."
@@ -980,27 +984,27 @@ msgstr "Profilin başlaması çok uzun sürüyor. Nedenini DPIMech'teki Kayıtla
 msgid "the menu entry has no command"
 msgstr "menü girdisinde komut yok"
 
-#: src/main.rs:386
+#: src/main.rs:397
 msgid "Folder for DPIMech log files"
 msgstr "DPIMech kayıt dosyaları için klasör"
 
-#: src/main.rs:582
+#: src/main.rs:593
 msgid "The service is installed. Connecting…"
 msgstr "Servis kuruldu. Bağlanılıyor…"
 
-#: src/main.rs:583
+#: src/main.rs:594
 msgid "Installing the service failed: {}"
 msgstr "Servis kurulamadı: {}"
 
-#: src/main.rs:591
+#: src/main.rs:602
 msgid "Installing… confirm the prompt. DPIMech connects by itself when the service is ready."
 msgstr "Kuruluyor… izin penceresini onayla. Servis hazır olunca DPIMech kendiliğinden bağlanır."
 
-#: src/main.rs:592
+#: src/main.rs:603
 msgid "Could not start the installer: {}"
 msgstr "Kurulum başlatılamadı: {}"
 
-#: src/main.rs:663
+#: src/main.rs:674
 msgid "Downloading online lists…"
 msgstr "Çevrimiçi listeler indiriliyor…"
 
@@ -1124,23 +1128,23 @@ msgstr "Silinen profilin {} kısayolu kaldırıldı"
 msgid "Removed {} shortcut(s)."
 msgstr "{} kısayol kaldırıldı."
 
-#: src/tray.rs:195
+#: src/tray.rs:156
 msgid "idle"
 msgstr "boşta"
 
-#: src/tray.rs:196
+#: src/tray.rs:157
 msgid "{} profile(s) running"
 msgstr "{} profil çalışıyor"
 
-#: src/tray.rs:205
+#: src/tray.rs:166
 msgid "Show DPIMech"
 msgstr "DPIMech'i göster"
 
-#: src/tray.rs:220
+#: src/tray.rs:181
 msgid "Report a problem…"
 msgstr "Sorun bildir…"
 
-#: src/tray.rs:224
+#: src/tray.rs:185
 msgid "Quit"
 msgstr "Çık"
 

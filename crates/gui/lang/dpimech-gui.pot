@@ -133,119 +133,119 @@ msgstr ""
 msgid "The engine only touches these domains. One per line; subdomains are included."
 msgstr ""
 
-#: ui/editor.slint:282
+#: ui/editor.slint:293
 msgid "Applications"
 msgstr ""
 
-#: ui/editor.slint:283
+#: ui/editor.slint:294
 msgid "Add app"
 msgstr ""
 
-#: ui/editor.slint:294
+#: ui/editor.slint:305
 msgid "Only the apps listed here will go through the engine."
 msgstr ""
 
-#: ui/editor.slint:309
+#: ui/editor.slint:320
 msgid "Connection check"
 msgstr ""
 
-#: ui/editor.slint:311
+#: ui/editor.slint:322
 msgid "DPIMech opens these sites through the engine every few minutes. If they get much slower than usual or stop answering, it can restart the engine for you."
 msgstr ""
 
-#: ui/editor.slint:325
+#: ui/editor.slint:336
 msgid "Check every"
 msgstr ""
 
-#: ui/editor.slint:327
+#: ui/editor.slint:338
 msgid "Off"
 msgstr ""
 
-#: ui/editor.slint:327
+#: ui/editor.slint:338
 msgid "1 minute"
 msgstr ""
 
-#: ui/editor.slint:327
+#: ui/editor.slint:338
 msgid "3 minutes"
 msgstr ""
 
-#: ui/editor.slint:327
+#: ui/editor.slint:338
 msgid "5 minutes"
 msgstr ""
 
-#: ui/editor.slint:327
+#: ui/editor.slint:338
 msgid "10 minutes"
 msgstr ""
 
-#: ui/editor.slint:333
+#: ui/editor.slint:344
 msgid "When it gets slow"
 msgstr ""
 
-#: ui/editor.slint:335
+#: ui/editor.slint:346
 msgid "Restart the engine automatically"
 msgstr ""
 
-#: ui/editor.slint:335
+#: ui/editor.slint:346
 msgid "Only warn me"
 msgstr ""
 
-#: ui/editor.slint:341
+#: ui/editor.slint:352
 msgid "Sites to check"
 msgstr ""
 
-#: ui/editor.slint:344
+#: ui/editor.slint:355
 msgid "Empty = the sites above"
 msgstr ""
 
-#: ui/editor.slint:344
+#: ui/editor.slint:355
 msgid "e.g. discord.com, gateway.discord.gg"
 msgstr ""
 
-#: ui/editor.slint:350
+#: ui/editor.slint:361
 msgid "Reliability"
 msgstr ""
 
-#: ui/editor.slint:356
+#: ui/editor.slint:367
 msgid "Auto-restart when stuck or crashed"
 msgstr ""
 
-#: ui/editor.slint:358
+#: ui/editor.slint:369
 msgid "Fixes the “ping jumps to thousands after a few hours” problem without touching other profiles."
 msgstr ""
 
-#: ui/editor.slint:371
+#: ui/editor.slint:382
 msgid "Preventive restart every (hours)"
 msgstr ""
 
-#: ui/editor.slint:372
+#: ui/editor.slint:383
 msgid "0 = never. Takes well under a second."
 msgstr ""
 
-#: ui/editor.slint:383
+#: ui/editor.slint:394
 msgid "TCP only"
 msgstr ""
 
-#: ui/editor.slint:385
+#: ui/editor.slint:396
 msgid "Voice/UDP goes direct. Fewer connections through the engine."
 msgstr ""
 
-#: ui/editor.slint:398
+#: ui/editor.slint:409
 msgid "Strategy arguments"
 msgstr ""
 
-#: ui/editor.slint:406
+#: ui/editor.slint:417
 msgid "Tip: the Strategy Lab finds working arguments for your connection."
 msgstr ""
 
-#: ui/editor.slint:421
+#: ui/editor.slint:432
 msgid "Save"
 msgstr ""
 
-#: ui/editor.slint:426
+#: ui/editor.slint:437
 msgid "Cancel"
 msgstr ""
 
-#: ui/editor.slint:430
+#: ui/editor.slint:441
 msgid "Delete"
 msgstr ""
 
@@ -325,27 +325,27 @@ msgstr ""
 msgid "Sites"
 msgstr ""
 
-#: ui/lab.slint:208
+#: ui/lab.slint:219
 msgid "Other sites, e.g. example.com, another.org"
 msgstr ""
 
-#: ui/lab.slint:215
+#: ui/lab.slint:226
 msgid "Strategies"
 msgstr ""
 
-#: ui/lab.slint:218
+#: ui/lab.slint:229
 msgid "Update online lists"
 msgstr ""
 
-#: ui/lab.slint:222
+#: ui/lab.slint:233
 msgid "Tries per site"
 msgstr ""
 
-#: ui/lab.slint:236
+#: ui/lab.slint:247
 msgid "Start test"
 msgstr ""
 
-#: ui/lab.slint:277
+#: ui/lab.slint:288
 msgid "Results appear here, best first."
 msgstr ""
 
@@ -621,83 +621,83 @@ msgstr ""
 msgid "Pick one or more. You can add other sites too."
 msgstr ""
 
-#: ui/wizard.slint:152
+#: ui/wizard.slint:163
 msgid "Other sites, e.g. example.com"
 msgstr ""
 
-#: ui/wizard.slint:160
+#: ui/wizard.slint:171
 msgid "Where should it work?"
 msgstr ""
 
-#: ui/wizard.slint:162
+#: ui/wizard.slint:173
 msgid "Only in some apps (recommended)"
 msgstr ""
 
-#: ui/wizard.slint:163
+#: ui/wizard.slint:174
 msgid "For example only Discord. Everything else stays exactly as it is."
 msgstr ""
 
-#: ui/wizard.slint:181
+#: ui/wizard.slint:192
 msgid "The whole computer"
 msgstr ""
 
-#: ui/wizard.slint:182
+#: ui/wizard.slint:193
 msgid "Every app, including games and voice. Uses zapret and needs the DPIMech service."
 msgstr ""
 
-#: ui/wizard.slint:188
+#: ui/wizard.slint:199
 msgid "Only when I choose (proxy)"
 msgstr ""
 
-#: ui/wizard.slint:189
+#: ui/wizard.slint:200
 msgid "Creates a local proxy (127.0.0.1) you can set in a browser or app."
 msgstr ""
 
-#: ui/wizard.slint:198
+#: ui/wizard.slint:209
 msgid "Your internet provider"
 msgstr ""
 
-#: ui/wizard.slint:200
+#: ui/wizard.slint:211
 msgid "Knowing your provider lets DPIMech try settings made for it first. This sends your public IP address to ipwho.is. You can skip it."
 msgstr ""
 
-#: ui/wizard.slint:207
+#: ui/wizard.slint:218
 msgid "Detect my provider"
 msgstr ""
 
-#: ui/wizard.slint:213
+#: ui/wizard.slint:224
 msgid "DPIMech's background service is not installed yet. It is needed to run the engines. Your computer asks for administrator permission once."
 msgstr ""
 
-#: ui/wizard.slint:227
+#: ui/wizard.slint:238
 msgid "Setting things up…"
 msgstr ""
 
-#: ui/wizard.slint:254
+#: ui/wizard.slint:265
 msgid "Details"
 msgstr ""
 
-#: ui/wizard.slint:282
+#: ui/wizard.slint:293
 msgid "All set!"
 msgstr ""
 
-#: ui/wizard.slint:292
+#: ui/wizard.slint:303
 msgid "Start"
 msgstr ""
 
-#: ui/wizard.slint:292
+#: ui/wizard.slint:303
 msgid "Next"
 msgstr ""
 
-#: ui/wizard.slint:296
+#: ui/wizard.slint:307
 msgid "Report this problem"
 msgstr ""
 
-#: ui/wizard.slint:298
+#: ui/wizard.slint:309
 msgid "Try again"
 msgstr ""
 
-#: ui/wizard.slint:299
+#: ui/wizard.slint:310
 msgid "Finish"
 msgstr ""
 
@@ -751,6 +751,10 @@ msgstr ""
 
 #: src/bridge.rs:475
 msgid "This needs the background service."
+msgstr ""
+
+#: src/bundled.rs:58
+msgid "DPIMech needs the libxkbcommon-x11 library to open its window. Install it with your package manager (Arch: sudo pacman -S libxkbcommon-x11) and start DPIMech again."
 msgstr ""
 
 #: src/convert.rs:141
@@ -977,27 +981,27 @@ msgstr ""
 msgid "the menu entry has no command"
 msgstr ""
 
-#: src/main.rs:386
+#: src/main.rs:397
 msgid "Folder for DPIMech log files"
 msgstr ""
 
-#: src/main.rs:582
+#: src/main.rs:593
 msgid "The service is installed. Connecting…"
 msgstr ""
 
-#: src/main.rs:583
+#: src/main.rs:594
 msgid "Installing the service failed: {}"
 msgstr ""
 
-#: src/main.rs:591
+#: src/main.rs:602
 msgid "Installing… confirm the prompt. DPIMech connects by itself when the service is ready."
 msgstr ""
 
-#: src/main.rs:592
+#: src/main.rs:603
 msgid "Could not start the installer: {}"
 msgstr ""
 
-#: src/main.rs:663
+#: src/main.rs:674
 msgid "Downloading online lists…"
 msgstr ""
 
@@ -1121,23 +1125,23 @@ msgstr ""
 msgid "Removed {} shortcut(s)."
 msgstr ""
 
-#: src/tray.rs:195
+#: src/tray.rs:156
 msgid "idle"
 msgstr ""
 
-#: src/tray.rs:196
+#: src/tray.rs:157
 msgid "{} profile(s) running"
 msgstr ""
 
-#: src/tray.rs:205
+#: src/tray.rs:166
 msgid "Show DPIMech"
 msgstr ""
 
-#: src/tray.rs:220
+#: src/tray.rs:181
 msgid "Report a problem…"
 msgstr ""
 
-#: src/tray.rs:224
+#: src/tray.rs:185
 msgid "Quit"
 msgstr ""
 

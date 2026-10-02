@@ -48,45 +48,6 @@ fn build_tray() -> anyhow::Result<TrayIcon> {
         .build()?)
 }
 
-/// The AppImage carries libayatana-appindicator and the libraries it needs that desktops often lack
-/// (tools/build-linux-packages.sh puts them next to the binary in `usr/lib`). The tray's binding opens
-/// the library by name, so loading the bundled files first by path lets that lookup find them.
-/// A system copy wins: the bundled one is only for systems without it.
-#[cfg(target_os = "linux")]
-fn load_bundled_indicator() {
-    use libloading::os::unix::{Library, RTLD_GLOBAL, RTLD_NOW};
-    const NAME: &str = "libayatana-appindicator3.so.1";
-    // Dependencies first, so each library finds the ones it needs already loaded.
-    const BUNDLED: [&str; 5] = [
-        "libdbusmenu-glib.so.4",
-        "libdbusmenu-gtk3.so.4",
-        "libayatana-ido3-0.4.so.0",
-        "libayatana-indicator3.so.7",
-        NAME,
-    ];
-    // SAFETY: these are plain C libraries without constructors that depend on our state.
-    if unsafe { Library::new(NAME) }.is_ok() {
-        return;
-    }
-    let Some(dir) = std::env::current_exe()
-        .ok()
-        .and_then(|exe| Some(exe.parent()?.parent()?.join("lib")))
-    else {
-        return;
-    };
-    for name in BUNDLED {
-        let path = dir.join(name);
-        if !path.exists() {
-            continue;
-        }
-        // SAFETY: as above. The libraries stay loaded for the life of the process.
-        match unsafe { Library::open(Some(&path), RTLD_NOW | RTLD_GLOBAL) } {
-            Ok(lib) => std::mem::forget(lib),
-            Err(e) => eprintln!("bundled {name}: {e}"),
-        }
-    }
-}
-
 #[cfg(target_os = "linux")]
 static UPDATES: std::sync::OnceLock<Mutex<std::sync::mpsc::Sender<Vec<ProfileState>>>> =
     std::sync::OnceLock::new();
@@ -100,7 +61,7 @@ fn spawn_tray_thread() {
             eprintln!("tray unavailable (GTK: {e})");
             return;
         }
-        load_bundled_indicator();
+        crate::bundled::load(crate::bundled::INDICATOR);
         // The appindicator binding panics when no libayatana-appindicator3 can be loaded.
         match std::panic::catch_unwind(build_tray) {
             Ok(Ok(tray)) => TRAY.set(Some(tray)),

@@ -1,0 +1,15 @@
+# Same as the .deb and .rpm: the background service is enabled and started with the package,
+# because the app cannot do anything without it.
+post_install() {
+    sh /usr/lib/dpimech/service-setup.sh
+}
+
+post_upgrade() {
+    sh /usr/lib/dpimech/service-setup.sh
+}
+
+pre_remove() {
+    if [ -d /run/systemd/system ]; then
+        systemctl disable --now dpimech.service >/dev/null 2>&1 || true
+    fi
+}

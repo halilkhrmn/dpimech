@@ -1,0 +1,21 @@
+# Maintainer: Halil Kahraman <halilkahraman@yandex.com>
+# Template: tools/aur-publish.sh fills in pkgver and the checksum for each release.
+pkgname=dpimech-bin
+pkgver=@VERSION@
+pkgrel=1
+pkgdesc='Open sites and apps your internet provider blocks with DPI (manager for ByeDPI, zapret, SpoofDPI)'
+arch=('x86_64')
+url='https://github.com/halilkhrmn/dpimech'
+license=('GPL-3.0-or-later')
+depends=('gtk3' 'libayatana-appindicator' 'libxkbcommon-x11' 'fontconfig' 'openssl' 'nftables' 'systemd')
+provides=('dpimech')
+conflicts=('dpimech')
+install=dpimech-bin.install
+source=("https://github.com/halilkhrmn/dpimech/releases/download/v${pkgver}/dpimech_${pkgver}-1_amd64.deb")
+sha256sums=('@SHA256@')
+
+package() {
+    bsdtar -xf data.tar.* -C "$pkgdir"
+    # Debian's copyright file; Arch keeps licenses elsewhere and GPL is in the common licenses.
+    rm -rf "$pkgdir/usr/share/doc"
+}

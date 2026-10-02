@@ -25,7 +25,7 @@ rm -rf "$appdir"
 mkdir -p "$appdir/usr/bin" "$appdir/usr/share/applications" "$appdir/usr/share/icons/hicolor/256x256/apps"
 cp target/release/dpimech target/release/dpimech-service "$appdir/usr/bin/"
 # The tray library and the parts of it that desktops often lack (Arch, CachyOS). GTK and glib come
-# from the system. The GUI loads these only when the system has no appindicator (tray.rs).
+# from the system. The GUI loads these only when the system lacks them (src/bundled.rs).
 mkdir -p "$appdir/usr/lib"
 for lib in libayatana-appindicator3.so.1 libayatana-indicator3.so.7 libayatana-ido3-0.4.so.0 \
     libdbusmenu-glib.so.4 libdbusmenu-gtk3.so.4; do

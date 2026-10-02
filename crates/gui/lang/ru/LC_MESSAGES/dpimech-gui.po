@@ -136,119 +136,119 @@ msgstr "Сайты для разблокировки"
 msgid "The engine only touches these domains. One per line; subdomains are included."
 msgstr "Движок затрагивает только эти домены. По одному в строке; поддомены включены."
 
-#: ui/editor.slint:282
+#: ui/editor.slint:293
 msgid "Applications"
 msgstr "Приложения"
 
-#: ui/editor.slint:283
+#: ui/editor.slint:294
 msgid "Add app"
 msgstr "Добавить приложение"
 
-#: ui/editor.slint:294
+#: ui/editor.slint:305
 msgid "Only the apps listed here will go through the engine."
 msgstr "Через движок пойдут только перечисленные здесь приложения."
 
-#: ui/editor.slint:309
+#: ui/editor.slint:320
 msgid "Connection check"
 msgstr "Проверка соединения"
 
-#: ui/editor.slint:311
+#: ui/editor.slint:322
 msgid "DPIMech opens these sites through the engine every few minutes. If they get much slower than usual or stop answering, it can restart the engine for you."
 msgstr "DPIMech каждые несколько минут открывает эти сайты через движок. Если они станут намного медленнее обычного или перестанут отвечать, он может перезапустить движок."
 
-#: ui/editor.slint:325
+#: ui/editor.slint:336
 msgid "Check every"
 msgstr "Проверять каждые"
 
-#: ui/editor.slint:327
+#: ui/editor.slint:338
 msgid "Off"
 msgstr "Выкл."
 
-#: ui/editor.slint:327
+#: ui/editor.slint:338
 msgid "1 minute"
 msgstr "1 минуту"
 
-#: ui/editor.slint:327
+#: ui/editor.slint:338
 msgid "3 minutes"
 msgstr "3 минуты"
 
-#: ui/editor.slint:327
+#: ui/editor.slint:338
 msgid "5 minutes"
 msgstr "5 минут"
 
-#: ui/editor.slint:327
+#: ui/editor.slint:338
 msgid "10 minutes"
 msgstr "10 минут"
 
-#: ui/editor.slint:333
+#: ui/editor.slint:344
 msgid "When it gets slow"
 msgstr "При замедлении"
 
-#: ui/editor.slint:335
+#: ui/editor.slint:346
 msgid "Restart the engine automatically"
 msgstr "Автоматически перезапускать движок"
 
-#: ui/editor.slint:335
+#: ui/editor.slint:346
 msgid "Only warn me"
 msgstr "Только предупредить"
 
-#: ui/editor.slint:341
+#: ui/editor.slint:352
 msgid "Sites to check"
 msgstr "Сайты для проверки"
 
-#: ui/editor.slint:344
+#: ui/editor.slint:355
 msgid "Empty = the sites above"
 msgstr "Пусто = сайты выше"
 
-#: ui/editor.slint:344
+#: ui/editor.slint:355
 msgid "e.g. discord.com, gateway.discord.gg"
 msgstr "напр. discord.com, gateway.discord.gg"
 
-#: ui/editor.slint:350
+#: ui/editor.slint:361
 msgid "Reliability"
 msgstr "Надёжность"
 
-#: ui/editor.slint:356
+#: ui/editor.slint:367
 msgid "Auto-restart when stuck or crashed"
 msgstr "Автоперезапуск при зависании или сбое"
 
-#: ui/editor.slint:358
+#: ui/editor.slint:369
 msgid "Fixes the “ping jumps to thousands after a few hours” problem without touching other profiles."
 msgstr "Устраняет проблему «через несколько часов пинг растёт до тысяч», не затрагивая другие профили."
 
-#: ui/editor.slint:371
+#: ui/editor.slint:382
 msgid "Preventive restart every (hours)"
 msgstr "Профилактический перезапуск (каждые N часов)"
 
-#: ui/editor.slint:372
+#: ui/editor.slint:383
 msgid "0 = never. Takes well under a second."
 msgstr "0 = никогда. Занимает намного меньше секунды."
 
-#: ui/editor.slint:383
+#: ui/editor.slint:394
 msgid "TCP only"
 msgstr "Только TCP"
 
-#: ui/editor.slint:385
+#: ui/editor.slint:396
 msgid "Voice/UDP goes direct. Fewer connections through the engine."
 msgstr "Голос/UDP идёт напрямую. Меньше соединений через движок."
 
-#: ui/editor.slint:398
+#: ui/editor.slint:409
 msgid "Strategy arguments"
 msgstr "Аргументы стратегии"
 
-#: ui/editor.slint:406
+#: ui/editor.slint:417
 msgid "Tip: the Strategy Lab finds working arguments for your connection."
 msgstr "Совет: лаборатория стратегий найдёт аргументы, которые работают на вашем подключении."
 
-#: ui/editor.slint:421
+#: ui/editor.slint:432
 msgid "Save"
 msgstr "Сохранить"
 
-#: ui/editor.slint:426
+#: ui/editor.slint:437
 msgid "Cancel"
 msgstr "Отмена"
 
-#: ui/editor.slint:430
+#: ui/editor.slint:441
 msgid "Delete"
 msgstr "Удалить"
 
@@ -328,27 +328,27 @@ msgstr "Определить провайдера"
 msgid "Sites"
 msgstr "Сайты"
 
-#: ui/lab.slint:208
+#: ui/lab.slint:219
 msgid "Other sites, e.g. example.com, another.org"
 msgstr "Другие сайты, напр. example.com, another.org"
 
-#: ui/lab.slint:215
+#: ui/lab.slint:226
 msgid "Strategies"
 msgstr "Стратегии"
 
-#: ui/lab.slint:218
+#: ui/lab.slint:229
 msgid "Update online lists"
 msgstr "Обновить онлайн-списки"
 
-#: ui/lab.slint:222
+#: ui/lab.slint:233
 msgid "Tries per site"
 msgstr "Попыток на сайт"
 
-#: ui/lab.slint:236
+#: ui/lab.slint:247
 msgid "Start test"
 msgstr "Начать проверку"
 
-#: ui/lab.slint:277
+#: ui/lab.slint:288
 msgid "Results appear here, best first."
 msgstr "Результаты появятся здесь, лучшие сверху."
 
@@ -624,83 +624,83 @@ msgstr "Что вы хотите открыть?"
 msgid "Pick one or more. You can add other sites too."
 msgstr "Выберите один или несколько. Можно добавить и другие сайты."
 
-#: ui/wizard.slint:152
+#: ui/wizard.slint:163
 msgid "Other sites, e.g. example.com"
 msgstr "Другие сайты, напр. example.com"
 
-#: ui/wizard.slint:160
+#: ui/wizard.slint:171
 msgid "Where should it work?"
 msgstr "Где это должно работать?"
 
-#: ui/wizard.slint:162
+#: ui/wizard.slint:173
 msgid "Only in some apps (recommended)"
 msgstr "Только в некоторых приложениях (рекомендуется)"
 
-#: ui/wizard.slint:163
+#: ui/wizard.slint:174
 msgid "For example only Discord. Everything else stays exactly as it is."
 msgstr "Например, только Discord. Всё остальное остаётся как есть."
 
-#: ui/wizard.slint:181
+#: ui/wizard.slint:192
 msgid "The whole computer"
 msgstr "Весь компьютер"
 
-#: ui/wizard.slint:182
+#: ui/wizard.slint:193
 msgid "Every app, including games and voice. Uses zapret and needs the DPIMech service."
 msgstr "Все приложения, включая игры и голос. Использует zapret и требует службу DPIMech."
 
-#: ui/wizard.slint:188
+#: ui/wizard.slint:199
 msgid "Only when I choose (proxy)"
 msgstr "Только когда я выберу (прокси)"
 
-#: ui/wizard.slint:189
+#: ui/wizard.slint:200
 msgid "Creates a local proxy (127.0.0.1) you can set in a browser or app."
 msgstr "Создаёт локальный прокси (127.0.0.1), который можно указать в браузере или приложении."
 
-#: ui/wizard.slint:198
+#: ui/wizard.slint:209
 msgid "Your internet provider"
 msgstr "Ваш провайдер"
 
-#: ui/wizard.slint:200
+#: ui/wizard.slint:211
 msgid "Knowing your provider lets DPIMech try settings made for it first. This sends your public IP address to ipwho.is. You can skip it."
 msgstr "Зная провайдера, DPIMech сначала попробует настройки, сделанные для него. Для этого ваш внешний IP-адрес отправляется на ipwho.is. Этот шаг можно пропустить."
 
-#: ui/wizard.slint:207
+#: ui/wizard.slint:218
 msgid "Detect my provider"
 msgstr "Определить провайдера"
 
-#: ui/wizard.slint:213
+#: ui/wizard.slint:224
 msgid "DPIMech's background service is not installed yet. It is needed to run the engines. Your computer asks for administrator permission once."
 msgstr "Фоновая служба DPIMech ещё не установлена. Она нужна для запуска движков. Компьютер один раз попросит права администратора."
 
-#: ui/wizard.slint:227
+#: ui/wizard.slint:238
 msgid "Setting things up…"
 msgstr "Настройка…"
 
-#: ui/wizard.slint:254
+#: ui/wizard.slint:265
 msgid "Details"
 msgstr "Подробности"
 
-#: ui/wizard.slint:282
+#: ui/wizard.slint:293
 msgid "All set!"
 msgstr "Готово!"
 
-#: ui/wizard.slint:292
+#: ui/wizard.slint:303
 msgid "Start"
 msgstr "Начать"
 
-#: ui/wizard.slint:292
+#: ui/wizard.slint:303
 msgid "Next"
 msgstr "Далее"
 
-#: ui/wizard.slint:296
+#: ui/wizard.slint:307
 msgid "Report this problem"
 msgstr "Сообщить об этой проблеме"
 
-#: ui/wizard.slint:298
+#: ui/wizard.slint:309
 msgid "Try again"
 msgstr "Повторить"
 
-#: ui/wizard.slint:299
+#: ui/wizard.slint:310
 msgid "Finish"
 msgstr "Готово"
 
@@ -755,6 +755,10 @@ msgstr "Поиск…"
 #: src/bridge.rs:475
 msgid "This needs the background service."
 msgstr "Для этого нужна фоновая служба."
+
+#: src/bundled.rs:58
+msgid "DPIMech needs the libxkbcommon-x11 library to open its window. Install it with your package manager (Arch: sudo pacman -S libxkbcommon-x11) and start DPIMech again."
+msgstr "Чтобы открыть окно, DPIMech нужна библиотека libxkbcommon-x11. Установите её менеджером пакетов (Arch: sudo pacman -S libxkbcommon-x11) и запустите DPIMech снова."
 
 #: src/convert.rs:141
 msgid "Give the profile a name."
@@ -980,27 +984,27 @@ msgstr "Профиль запускается слишком долго. При�
 msgid "the menu entry has no command"
 msgstr "в пункте меню нет команды"
 
-#: src/main.rs:386
+#: src/main.rs:397
 msgid "Folder for DPIMech log files"
 msgstr "Папка для файлов журнала DPIMech"
 
-#: src/main.rs:582
+#: src/main.rs:593
 msgid "The service is installed. Connecting…"
 msgstr "Служба установлена. Подключение…"
 
-#: src/main.rs:583
+#: src/main.rs:594
 msgid "Installing the service failed: {}"
 msgstr "Не удалось установить службу: {}"
 
-#: src/main.rs:591
+#: src/main.rs:602
 msgid "Installing… confirm the prompt. DPIMech connects by itself when the service is ready."
 msgstr "Установка… подтвердите запрос. DPIMech подключится сам, когда служба будет готова."
 
-#: src/main.rs:592
+#: src/main.rs:603
 msgid "Could not start the installer: {}"
 msgstr "Не удалось запустить установку: {}"
 
-#: src/main.rs:663
+#: src/main.rs:674
 msgid "Downloading online lists…"
 msgstr "Загрузка онлайн-списков…"
 
@@ -1124,23 +1128,23 @@ msgstr "Удалено ярлыков удалённого профиля: {}"
 msgid "Removed {} shortcut(s)."
 msgstr "Удалено ярлыков: {}."
 
-#: src/tray.rs:195
+#: src/tray.rs:156
 msgid "idle"
 msgstr "простаивает"
 
-#: src/tray.rs:196
+#: src/tray.rs:157
 msgid "{} profile(s) running"
 msgstr "работает профилей: {}"
 
-#: src/tray.rs:205
+#: src/tray.rs:166
 msgid "Show DPIMech"
 msgstr "Показать DPIMech"
 
-#: src/tray.rs:220
+#: src/tray.rs:181
 msgid "Report a problem…"
 msgstr "Сообщить о проблеме…"
 
-#: src/tray.rs:224
+#: src/tray.rs:185
 msgid "Quit"
 msgstr "Выход"
 

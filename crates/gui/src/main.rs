@@ -5,6 +5,8 @@ mod i18n;
 mod apps;
 mod autostart;
 mod bridge;
+#[cfg(target_os = "linux")]
+mod bundled;
 mod convert;
 mod hotkey;
 mod labui;
@@ -37,6 +39,15 @@ slint::include_modules!();
 fn main() -> anyhow::Result<()> {
     // A profile shortcut: a small progress window, no tray, no single-instance lock.
     let args: Vec<String> = std::env::args().collect();
+    #[cfg(target_os = "linux")]
+    if bundled::x11_keyboard_missing() {
+        i18n::set_language(&match prefs::load().language {
+            lang if lang.is_empty() => i18n::system_language(),
+            lang => lang,
+        });
+        bundled::report_x11_keyboard_missing();
+        std::process::exit(1);
+    }
     if let Some((profile, open)) = launcher::from_args(&args) {
         return launcher::run(profile, open);
     }

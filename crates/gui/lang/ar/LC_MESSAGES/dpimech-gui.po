@@ -136,119 +136,119 @@ msgstr "المواقع المراد فك حجبها"
 msgid "The engine only touches these domains. One per line; subdomains are included."
 msgstr "لا يتعامل المحرك إلا مع هذه النطاقات. نطاق في كل سطر؛ النطاقات الفرعية مشمولة."
 
-#: ui/editor.slint:282
+#: ui/editor.slint:293
 msgid "Applications"
 msgstr "التطبيقات"
 
-#: ui/editor.slint:283
+#: ui/editor.slint:294
 msgid "Add app"
 msgstr "إضافة تطبيق"
 
-#: ui/editor.slint:294
+#: ui/editor.slint:305
 msgid "Only the apps listed here will go through the engine."
 msgstr "فقط التطبيقات المدرجة هنا ستمر عبر المحرك."
 
-#: ui/editor.slint:309
+#: ui/editor.slint:320
 msgid "Connection check"
 msgstr "فحص الاتصال"
 
-#: ui/editor.slint:311
+#: ui/editor.slint:322
 msgid "DPIMech opens these sites through the engine every few minutes. If they get much slower than usual or stop answering, it can restart the engine for you."
 msgstr "يفتح DPIMech هذه المواقع عبر المحرك كل بضع دقائق. إذا أصبحت أبطأ بكثير من المعتاد أو توقفت عن الاستجابة، يمكنه إعادة تشغيل المحرك نيابةً عنك."
 
-#: ui/editor.slint:325
+#: ui/editor.slint:336
 msgid "Check every"
 msgstr "الفحص كل"
 
-#: ui/editor.slint:327
+#: ui/editor.slint:338
 msgid "Off"
 msgstr "إيقاف"
 
-#: ui/editor.slint:327
+#: ui/editor.slint:338
 msgid "1 minute"
 msgstr "دقيقة واحدة"
 
-#: ui/editor.slint:327
+#: ui/editor.slint:338
 msgid "3 minutes"
 msgstr "3 دقائق"
 
-#: ui/editor.slint:327
+#: ui/editor.slint:338
 msgid "5 minutes"
 msgstr "5 دقائق"
 
-#: ui/editor.slint:327
+#: ui/editor.slint:338
 msgid "10 minutes"
 msgstr "10 دقائق"
 
-#: ui/editor.slint:333
+#: ui/editor.slint:344
 msgid "When it gets slow"
 msgstr "عندما يصبح بطيئًا"
 
-#: ui/editor.slint:335
+#: ui/editor.slint:346
 msgid "Restart the engine automatically"
 msgstr "أعد تشغيل المحرك تلقائيًا"
 
-#: ui/editor.slint:335
+#: ui/editor.slint:346
 msgid "Only warn me"
 msgstr "نبّهني فقط"
 
-#: ui/editor.slint:341
+#: ui/editor.slint:352
 msgid "Sites to check"
 msgstr "المواقع المراد فحصها"
 
-#: ui/editor.slint:344
+#: ui/editor.slint:355
 msgid "Empty = the sites above"
 msgstr "فارغ = المواقع أعلاه"
 
-#: ui/editor.slint:344
+#: ui/editor.slint:355
 msgid "e.g. discord.com, gateway.discord.gg"
 msgstr "مثلًا discord.com, gateway.discord.gg"
 
-#: ui/editor.slint:350
+#: ui/editor.slint:361
 msgid "Reliability"
 msgstr "الموثوقية"
 
-#: ui/editor.slint:356
+#: ui/editor.slint:367
 msgid "Auto-restart when stuck or crashed"
 msgstr "إعادة التشغيل التلقائي عند التعليق أو التعطل"
 
-#: ui/editor.slint:358
+#: ui/editor.slint:369
 msgid "Fixes the “ping jumps to thousands after a few hours” problem without touching other profiles."
 msgstr "يحل مشكلة «قفز البينغ إلى الآلاف بعد بضع ساعات» دون المساس بالملفات الشخصية الأخرى."
 
-#: ui/editor.slint:371
+#: ui/editor.slint:382
 msgid "Preventive restart every (hours)"
 msgstr "إعادة تشغيل وقائية كل (ساعات)"
 
-#: ui/editor.slint:372
+#: ui/editor.slint:383
 msgid "0 = never. Takes well under a second."
 msgstr "0 = أبدًا. تستغرق أقل من ثانية بكثير."
 
-#: ui/editor.slint:383
+#: ui/editor.slint:394
 msgid "TCP only"
 msgstr "TCP فقط"
 
-#: ui/editor.slint:385
+#: ui/editor.slint:396
 msgid "Voice/UDP goes direct. Fewer connections through the engine."
 msgstr "الصوت/UDP يمر مباشرة. اتصالات أقل عبر المحرك."
 
-#: ui/editor.slint:398
+#: ui/editor.slint:409
 msgid "Strategy arguments"
 msgstr "معاملات الإستراتيجية"
 
-#: ui/editor.slint:406
+#: ui/editor.slint:417
 msgid "Tip: the Strategy Lab finds working arguments for your connection."
 msgstr "نصيحة: يجد مختبر الإستراتيجيات المعاملات التي تعمل على اتصالك."
 
-#: ui/editor.slint:421
+#: ui/editor.slint:432
 msgid "Save"
 msgstr "حفظ"
 
-#: ui/editor.slint:426
+#: ui/editor.slint:437
 msgid "Cancel"
 msgstr "إلغاء"
 
-#: ui/editor.slint:430
+#: ui/editor.slint:441
 msgid "Delete"
 msgstr "حذف"
 
@@ -328,27 +328,27 @@ msgstr "اكتشف مزود الإنترنت"
 msgid "Sites"
 msgstr "المواقع"
 
-#: ui/lab.slint:208
+#: ui/lab.slint:219
 msgid "Other sites, e.g. example.com, another.org"
 msgstr "مواقع أخرى، مثلًا example.com, another.org"
 
-#: ui/lab.slint:215
+#: ui/lab.slint:226
 msgid "Strategies"
 msgstr "الإستراتيجيات"
 
-#: ui/lab.slint:218
+#: ui/lab.slint:229
 msgid "Update online lists"
 msgstr "تحديث القوائم عبر الإنترنت"
 
-#: ui/lab.slint:222
+#: ui/lab.slint:233
 msgid "Tries per site"
 msgstr "محاولات لكل موقع"
 
-#: ui/lab.slint:236
+#: ui/lab.slint:247
 msgid "Start test"
 msgstr "بدء الاختبار"
 
-#: ui/lab.slint:277
+#: ui/lab.slint:288
 msgid "Results appear here, best first."
 msgstr "تظهر النتائج هنا، الأفضل أولًا."
 
@@ -624,83 +624,83 @@ msgstr "ماذا تريد أن تفتح؟"
 msgid "Pick one or more. You can add other sites too."
 msgstr "اختر واحدًا أو أكثر. يمكنك إضافة مواقع أخرى أيضًا."
 
-#: ui/wizard.slint:152
+#: ui/wizard.slint:163
 msgid "Other sites, e.g. example.com"
 msgstr "مواقع أخرى، مثلًا example.com"
 
-#: ui/wizard.slint:160
+#: ui/wizard.slint:171
 msgid "Where should it work?"
 msgstr "أين يجب أن يعمل؟"
 
-#: ui/wizard.slint:162
+#: ui/wizard.slint:173
 msgid "Only in some apps (recommended)"
 msgstr "في بعض التطبيقات فقط (موصى به)"
 
-#: ui/wizard.slint:163
+#: ui/wizard.slint:174
 msgid "For example only Discord. Everything else stays exactly as it is."
 msgstr "مثلًا Discord فقط. يبقى كل شيء آخر كما هو تمامًا."
 
-#: ui/wizard.slint:181
+#: ui/wizard.slint:192
 msgid "The whole computer"
 msgstr "الحاسوب بأكمله"
 
-#: ui/wizard.slint:182
+#: ui/wizard.slint:193
 msgid "Every app, including games and voice. Uses zapret and needs the DPIMech service."
 msgstr "كل التطبيقات، بما فيها الألعاب والصوت. يستخدم zapret ويحتاج إلى خدمة DPIMech."
 
-#: ui/wizard.slint:188
+#: ui/wizard.slint:199
 msgid "Only when I choose (proxy)"
 msgstr "فقط عندما أختار (وكيل)"
 
-#: ui/wizard.slint:189
+#: ui/wizard.slint:200
 msgid "Creates a local proxy (127.0.0.1) you can set in a browser or app."
 msgstr "ينشئ وكيلًا محليًا (127.0.0.1) يمكنك ضبطه في متصفح أو تطبيق."
 
-#: ui/wizard.slint:198
+#: ui/wizard.slint:209
 msgid "Your internet provider"
 msgstr "مزود الإنترنت لديك"
 
-#: ui/wizard.slint:200
+#: ui/wizard.slint:211
 msgid "Knowing your provider lets DPIMech try settings made for it first. This sends your public IP address to ipwho.is. You can skip it."
 msgstr "معرفة مزودك تتيح لـ DPIMech تجربة الإعدادات المصممة له أولًا. يرسل هذا عنوان IP العام الخاص بك إلى ipwho.is. يمكنك تخطيه."
 
-#: ui/wizard.slint:207
+#: ui/wizard.slint:218
 msgid "Detect my provider"
 msgstr "اكتشف مزودي"
 
-#: ui/wizard.slint:213
+#: ui/wizard.slint:224
 msgid "DPIMech's background service is not installed yet. It is needed to run the engines. Your computer asks for administrator permission once."
 msgstr "خدمة الخلفية لـ DPIMech غير مثبتة بعد. وهي لازمة لتشغيل المحركات. سيطلب حاسوبك إذن المسؤول مرة واحدة."
 
-#: ui/wizard.slint:227
+#: ui/wizard.slint:238
 msgid "Setting things up…"
 msgstr "جارٍ الإعداد…"
 
-#: ui/wizard.slint:254
+#: ui/wizard.slint:265
 msgid "Details"
 msgstr "التفاصيل"
 
-#: ui/wizard.slint:282
+#: ui/wizard.slint:293
 msgid "All set!"
 msgstr "كل شيء جاهز!"
 
-#: ui/wizard.slint:292
+#: ui/wizard.slint:303
 msgid "Start"
 msgstr "ابدأ"
 
-#: ui/wizard.slint:292
+#: ui/wizard.slint:303
 msgid "Next"
 msgstr "التالي"
 
-#: ui/wizard.slint:296
+#: ui/wizard.slint:307
 msgid "Report this problem"
 msgstr "الإبلاغ عن هذه المشكلة"
 
-#: ui/wizard.slint:298
+#: ui/wizard.slint:309
 msgid "Try again"
 msgstr "حاول مجددًا"
 
-#: ui/wizard.slint:299
+#: ui/wizard.slint:310
 msgid "Finish"
 msgstr "إنهاء"
 
@@ -755,6 +755,10 @@ msgstr "جارٍ البحث…"
 #: src/bridge.rs:475
 msgid "This needs the background service."
 msgstr "يتطلب هذا خدمة الخلفية."
+
+#: src/bundled.rs:58
+msgid "DPIMech needs the libxkbcommon-x11 library to open its window. Install it with your package manager (Arch: sudo pacman -S libxkbcommon-x11) and start DPIMech again."
+msgstr "يحتاج DPIMech إلى مكتبة libxkbcommon-x11 لفتح نافذته. ثبّتها بمدير الحزم لديك (Arch: sudo pacman -S libxkbcommon-x11) ثم شغّل DPIMech مجددًا."
 
 #: src/convert.rs:141
 msgid "Give the profile a name."
@@ -980,27 +984,27 @@ msgstr "يستغرق بدء الملف الشخصي وقتًا طويلًا. ت�
 msgid "the menu entry has no command"
 msgstr "عنصر القائمة بلا أمر"
 
-#: src/main.rs:386
+#: src/main.rs:397
 msgid "Folder for DPIMech log files"
 msgstr "مجلد ملفات سجل DPIMech"
 
-#: src/main.rs:582
+#: src/main.rs:593
 msgid "The service is installed. Connecting…"
 msgstr "تم تثبيت الخدمة. جارٍ الاتصال…"
 
-#: src/main.rs:583
+#: src/main.rs:594
 msgid "Installing the service failed: {}"
 msgstr "فشل تثبيت الخدمة: {}"
 
-#: src/main.rs:591
+#: src/main.rs:602
 msgid "Installing… confirm the prompt. DPIMech connects by itself when the service is ready."
 msgstr "جارٍ التثبيت… وافق على الطلب. سيتصل DPIMech تلقائيًا عندما تجهز الخدمة."
 
-#: src/main.rs:592
+#: src/main.rs:603
 msgid "Could not start the installer: {}"
 msgstr "تعذّر تشغيل المثبّت: {}"
 
-#: src/main.rs:663
+#: src/main.rs:674
 msgid "Downloading online lists…"
 msgstr "جارٍ تنزيل القوائم عبر الإنترنت…"
 
@@ -1124,23 +1128,23 @@ msgstr "أُزيل {} من اختصارات الملف الشخصي المحذو
 msgid "Removed {} shortcut(s)."
 msgstr "أُزيل {} من الاختصارات."
 
-#: src/tray.rs:195
+#: src/tray.rs:156
 msgid "idle"
 msgstr "خامل"
 
-#: src/tray.rs:196
+#: src/tray.rs:157
 msgid "{} profile(s) running"
 msgstr "عدد الملفات الشخصية العاملة: {}"
 
-#: src/tray.rs:205
+#: src/tray.rs:166
 msgid "Show DPIMech"
 msgstr "إظهار DPIMech"
 
-#: src/tray.rs:220
+#: src/tray.rs:181
 msgid "Report a problem…"
 msgstr "الإبلاغ عن مشكلة…"
 
-#: src/tray.rs:224
+#: src/tray.rs:185
 msgid "Quit"
 msgstr "خروج"
 

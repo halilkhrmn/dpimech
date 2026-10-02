@@ -142,6 +142,14 @@ trait Engine {
 - ~~App self-update~~ → since 0.2.3 (DECISIONS #40).
 - macOS: whole computer (pf) and per-app routing, signing and notarization — on hold for now.
 
+**Priority 4 — reach and reliability** (set 2026-10-01, in this order)
+1. Release smoke tests: every package is installed on a clean system and started before a release is published.
+2. AUR package (`dpimech-bin`), updated by the release workflow.
+3. Domain packs fetched from `main` like the strategies.
+4. Encrypted DNS (DoH) in one click, offered when the Lab finds DNS blocking.
+5. Then: self-repair (re-run the Lab in the background when a profile stops working) or a troubleshooter.
+- Windows code signing (SignPath, free for open source): the owner applies; set up once approved.
+
 ## Open items
 - ~~Final app name~~ → **DPIMech** (2026-09-30; 0.1.x installs migrate automatically, see DECISIONS #28).
 - ~~Where our strategy/domain-pack repo lives~~ → no separate repo: `strategies/default.json` here (DECISIONS #42).
