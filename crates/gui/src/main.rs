@@ -109,21 +109,19 @@ fn main() -> anyhow::Result<()> {
     ui.set_engine_names(string_model(engines.iter().map(|e| e.display_name())));
     ui.set_logs(ModelRc::new(VecModel::<LogItem>::default()));
     ui.set_draft_apps(DRAFT_APPS.with(|m| ModelRc::from(m.clone())));
-    ui.set_domain_pack_names(string_model(
-        dpimech_core::catalog::DOMAIN_PACKS.iter().map(|p| p.name),
-    ));
+    set_domain_pack_names(&ui);
     ui.on_add_domain_pack({
         let weak = ui.as_weak();
         move |index| {
             let ui = weak.unwrap();
             let Some(pack) = usize::try_from(index)
                 .ok()
-                .and_then(|i| dpimech_core::catalog::DOMAIN_PACKS.get(i))
+                .and_then(|i| dpimech_core::catalog::domain_packs().get(i).cloned())
             else {
                 return;
             };
             let mut draft = ui.get_draft();
-            draft.domains = convert::add_domains(&draft.domains, pack.domains).into();
+            draft.domains = convert::add_domains(&draft.domains, &pack.domains).into();
             ui.set_draft(draft);
         }
     });
@@ -817,6 +815,20 @@ pub fn apply_profiles(ui: &AppWindow, profiles: Vec<ProfileState>) {
     }
     tray::update_profiles(&profiles);
     PROFILES.set(profiles);
+}
+
+fn set_domain_pack_names(ui: &AppWindow) {
+    let packs = dpimech_core::catalog::domain_packs();
+    ui.set_domain_pack_names(string_model(packs.iter().map(|p| p.name.as_str())));
+}
+
+/// The service sent its domain packs (possibly newer than the built-in ones).
+pub fn apply_domain_packs(ui: &AppWindow, packs: Vec<dpimech_core::catalog::DomainPack>) {
+    if dpimech_core::catalog::set_domain_packs(packs) {
+        set_domain_pack_names(ui);
+        labui::refresh_packs(ui);
+        wizard::refresh_packs(ui);
+    }
 }
 
 fn string_model<'a>(items: impl Iterator<Item = &'a str>) -> ModelRc<SharedString> {

@@ -4,7 +4,7 @@
 use crate::i18n::tr;
 use std::cell::RefCell;
 
-use dpimech_core::catalog::DOMAIN_PACKS;
+use dpimech_core::catalog::domain_packs;
 use dpimech_core::lab::{LabRequest, LabResult, LabStrategy};
 use dpimech_core::model::{EngineKind, Os, Profile, Reliability, Routing, RoutingMode};
 use dpimech_core::packages::{PackageId, PackageInfo, PackageTask};
@@ -35,7 +35,8 @@ enum Phase {
 }
 
 struct State {
-    selected: Vec<bool>,
+    /// Ids of the chosen domain packs (the list can change when the service sends a newer one).
+    selected: Vec<String>,
     where_: Where,
     phase: Phase,
     packages: Vec<PackageInfo>,
@@ -55,7 +56,7 @@ struct State {
 impl Default for State {
     fn default() -> Self {
         Self {
-            selected: DOMAIN_PACKS.iter().map(|p| p.id == "discord").collect(),
+            selected: vec!["discord".to_owned()],
             where_: default_where(),
             phase: Phase::Idle,
             packages: Vec::new(),
@@ -147,25 +148,29 @@ pub fn open(ui: &AppWindow, from_welcome: bool) {
 }
 
 pub fn toggle_pack(ui: &AppWindow, index: i32) {
+    let Some(id) = usize::try_from(index)
+        .ok()
+        .and_then(|i| domain_packs().get(i).map(|p| p.id.clone()))
+    else {
+        return;
+    };
     STATE.with_borrow_mut(|s| {
-        if let Some(v) = usize::try_from(index)
-            .ok()
-            .and_then(|i| s.selected.get_mut(i))
-        {
-            *v = !*v;
+        if let Some(at) = s.selected.iter().position(|x| *x == id) {
+            s.selected.remove(at);
+        } else {
+            s.selected.push(id);
         }
     });
     refresh_packs(ui);
 }
 
-fn refresh_packs(ui: &AppWindow) {
+pub fn refresh_packs(ui: &AppWindow) {
     let packs: Vec<LabPack> = STATE.with_borrow(|s| {
-        DOMAIN_PACKS
+        domain_packs()
             .iter()
-            .zip(&s.selected)
-            .map(|(p, sel)| LabPack {
-                name: p.name.into(),
-                selected: *sel,
+            .map(|p| LabPack {
+                name: p.name.as_str().into(),
+                selected: s.selected.contains(&p.id),
             })
             .collect()
     });
@@ -184,26 +189,20 @@ pub fn set_where(ui: &AppWindow, index: i32) {
     ui.set_wizard_where(index);
 }
 
-fn domains(ui: &AppWindow) -> (Vec<String>, Vec<String>, Vec<&'static str>) {
+fn domains(ui: &AppWindow) -> (Vec<String>, Vec<String>, Vec<String>) {
     let custom = parse_domains(&ui.get_wizard_custom_sites());
     STATE.with_borrow(|s| {
-        let packs: Vec<_> = DOMAIN_PACKS
-            .iter()
-            .zip(&s.selected)
-            .filter(|(_, sel)| **sel)
-            .map(|(p, _)| p)
-            .collect();
-        let mut domains: Vec<String> = packs
-            .iter()
-            .flat_map(|p| p.domains.iter().map(|d| (*d).to_owned()))
-            .collect();
-        let mut probes: Vec<String> = packs
-            .iter()
-            .flat_map(|p| p.probes.iter().map(|d| (*d).to_owned()))
-            .collect();
+        let all = domain_packs();
+        let packs: Vec<_> = all.iter().filter(|p| s.selected.contains(&p.id)).collect();
+        let mut domains: Vec<String> = packs.iter().flat_map(|p| p.domains.clone()).collect();
+        let mut probes: Vec<String> = packs.iter().flat_map(|p| p.probes.clone()).collect();
         domains.extend(custom.iter().cloned());
         probes.extend(custom);
-        (domains, probes, packs.iter().map(|p| p.name).collect())
+        (
+            domains,
+            probes,
+            packs.iter().map(|p| p.name.clone()).collect(),
+        )
     })
 }
 
@@ -217,7 +216,7 @@ pub fn next(ui: &AppWindow) {
                 return;
             }
             // Offer the matching desktop app when Discord is chosen.
-            if STATE.with_borrow(|s| s.selected.first().copied().unwrap_or(false)) {
+            if STATE.with_borrow(|s| s.selected.iter().any(|id| id == "discord")) {
                 suggest_discord_app();
             }
         }

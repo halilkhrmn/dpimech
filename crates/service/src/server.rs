@@ -134,6 +134,9 @@ async fn dispatch(supervisor: &Supervisor, request: Request) -> anyhow::Result<R
             supervisor.install_package(id).await?;
             Reply::Ok
         }
+        Request::DomainPacks => Reply::DomainPacks {
+            packs: supervisor.lab.domain_packs(),
+        },
         Request::LabStrategies { engine } => Reply::LabStrategies {
             strategies: supervisor.lab.strategies(engine),
         },

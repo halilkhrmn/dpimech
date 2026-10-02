@@ -1,0 +1,112 @@
+{
+  "format": 1,
+  "_comment": "Sites the setup wizard, the Strategy Lab and the profile editor offer. The service fetches this file from main, so a change here reaches every user without a release. domains: everything the engine acts on (goes into the hostlist). probes: hosts the Lab and the connection check request; each must answer HTTPS on / (an apex domain without an A record fails whatever the strategy).",
+  "packs": [
+    {
+      "id": "discord",
+      "name": "Discord",
+      "domains": [
+        "discord.com",
+        "discordapp.com",
+        "discord.gg",
+        "discord.media",
+        "discordapp.net",
+        "gateway.discord.gg",
+        "cdn.discordapp.com",
+        "media.discordapp.net",
+        "images-ext-1.discordapp.net",
+        "updates.discord.com",
+        "dis.gd"
+      ],
+      "probes": [
+        "discord.com",
+        "discordapp.com",
+        "discord.gg",
+        "gateway.discord.gg",
+        "cdn.discordapp.com",
+        "media.discordapp.net",
+        "updates.discord.com",
+        "dis.gd"
+      ]
+    },
+    {
+      "id": "youtube",
+      "name": "YouTube",
+      "domains": [
+        "youtube.com",
+        "www.youtube.com",
+        "youtu.be",
+        "i.ytimg.com",
+        "yt3.ggpht.com",
+        "youtubei.googleapis.com",
+        "manifest.googlevideo.com",
+        "redirector.googlevideo.com",
+        "googlevideo.com"
+      ],
+      "probes": [
+        "www.youtube.com",
+        "youtube.com",
+        "youtu.be",
+        "i.ytimg.com",
+        "yt3.ggpht.com",
+        "youtubei.googleapis.com",
+        "redirector.googlevideo.com"
+      ]
+    },
+    {
+      "id": "roblox",
+      "name": "Roblox",
+      "domains": [
+        "roblox.com",
+        "www.roblox.com",
+        "rbxcdn.com",
+        "apis.roblox.com"
+      ],
+      "probes": [
+        "www.roblox.com",
+        "roblox.com",
+        "apis.roblox.com"
+      ]
+    },
+    {
+      "id": "x",
+      "name": "X / Twitter",
+      "domains": [
+        "x.com",
+        "twitter.com",
+        "twimg.com",
+        "pbs.twimg.com"
+      ],
+      "probes": [
+        "x.com",
+        "twitter.com",
+        "pbs.twimg.com"
+      ]
+    },
+    {
+      "id": "instagram",
+      "name": "Instagram",
+      "domains": [
+        "instagram.com",
+        "www.instagram.com",
+        "cdninstagram.com"
+      ],
+      "probes": [
+        "www.instagram.com",
+        "instagram.com"
+      ]
+    },
+    {
+      "id": "wattpad",
+      "name": "Wattpad",
+      "domains": [
+        "wattpad.com",
+        "www.wattpad.com"
+      ],
+      "probes": [
+        "www.wattpad.com",
+        "wattpad.com"
+      ]
+    }
+  ]
+}

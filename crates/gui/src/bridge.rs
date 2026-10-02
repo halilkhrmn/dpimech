@@ -96,6 +96,9 @@ async fn run(ui: Weak<AppWindow>, mut commands: mpsc::UnboundedReceiver<Command>
             .await;
         refresh_profiles(&ui, &client).await;
         refresh_packages(&ui, &client).await;
+        if let Ok(Reply::DomainPacks { packs }) = client.request(Request::DomainPacks).await {
+            let _ = ui.upgrade_in_event_loop(move |ui| crate::apply_domain_packs(&ui, packs));
+        }
         if !CHECKED_THIS_SESSION.swap(true, std::sync::atomic::Ordering::Relaxed)
             && let Ok(Reply::AppUpdate {
                 latest: Some(latest),
