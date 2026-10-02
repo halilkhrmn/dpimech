@@ -95,6 +95,8 @@ crates/gui/       dpimech binary (Slint)
   src/i18n.rs       translations for Rust-built text + language choice (tr, ru, fa, ar) and the user's
                     country from the locale; lang/ holds the .po catalogs
   src/whatsnew.rs   "What's new" dialog after an update (ui/whatsnew.slint)
+  src/bundled.rs    libraries the AppImage carries (tray), loaded only when the system lacks them; a clear
+                    message instead of a crash when libxkbcommon-x11 is missing
   assets/           logo-source.png (master) → logo.png (UI), dpimech.ico/.png (exe, notifications),
                     tray-32.rgba (tray; status dot drawn at runtime) — regenerate with tools/make_icon.py
   src/apps.rs       process + Start Menu discovery with icons (Win32)

@@ -73,6 +73,12 @@ code=$?
 set -e
 cat "$work/gui.log"
 # 124: still running when the timeout stopped it, which is what a working GUI does.
+if [ "$code" -ne 124 ] && [ "$kind" = appimage ]; then
+    # Tell a runtime problem from an app problem: start the extracted copy directly.
+    echo "== window, extracted AppImage"
+    DISPLAY=:99 HOME="$work/home" XDG_RUNTIME_DIR="$work/run" RUST_BACKTRACE=1 \
+        timeout 10 "$work/squashfs-root/AppRun" 2>&1 || echo "exit code $?"
+fi
 [ "$code" -eq 124 ] || fail "the GUI exited with code $code"
 if grep -E 'panicked|error while loading shared libraries|tray unavailable' "$work/gui.log"; then
     fail "the GUI reported a problem at start"
