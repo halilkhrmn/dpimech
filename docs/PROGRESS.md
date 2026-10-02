@@ -121,6 +121,14 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-10-02 (41) — Arch smoke test: missing libxkbcommon-x11
+- **Found by the smoke test:** the AppImage panics on a bare Arch without libxkbcommon-x11; bundling Ubuntu's copy
+  segfaults there (DECISIONS #47). Reproduced and debugged in an Arch bootstrap chroot with gdb.
+- **Done:** the GUI shows a translated "install libxkbcommon-x11" dialog instead; the smoke test checks it, then
+  installs the library. The smoke script also starts the extracted AppImage when the AppImage fails.
+- **Verified:** Arch chroot: without the library the dialog appears (screenshot) and the process waits for it;
+  with the library the window runs 8 s without errors.
+
 ### 2026-10-02 (40) — Android package names in domains.json
 - Done: `android_packages` for every app pack in `strategies/domains.json`, so the Android app can use this
   file instead of its own copy (DECISIONS #46).

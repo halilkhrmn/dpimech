@@ -302,3 +302,13 @@ own release), a launchd service and an unsigned universal `.dmg`. The wizard hid
   pack is chosen. Desktop ignores the field (serde skips unknown fields), so no format change.
 - **Why:** one list for both apps; a new blocked site reaches phones and computers without a release.
 
+## 47. libxkbcommon-x11 is required, not bundled (2026-10-02)
+- **Problem:** on a bare Arch the AppImage panicked at start: winit opens libxkbcommon-x11 for an X11 window, and on
+  Arch it is a package of its own that GTK does not pull in.
+- **Tried:** bundling the build machine's copy (Ubuntu 22.04). It crashed in `xkb_state_update_mask` on Arch:
+  libxkbcommon-x11 uses libxkbcommon's internal structures, so it only works with the exact libxkbcommon it was
+  built with, and the system's libxkbcommon is already loaded by GTK.
+- **Decision:** no bundled copy. When there is an X11 display, no Wayland, and the library is missing, the GUI says
+  what to install (stderr and a GTK dialog, translated) and exits. The AUR package depends on it; the Arch smoke
+  test checks the message, installs the library and then checks the window.
+

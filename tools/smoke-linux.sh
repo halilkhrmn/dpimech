@@ -67,6 +67,20 @@ Xvfb :99 -screen 0 1280x800x24 >/dev/null 2>&1 &
 sleep 1
 mkdir -p "$work/home" "$work/run"
 chmod 700 "$work/run"
+if ! /sbin/ldconfig -p | grep -q 'libxkbcommon-x11\.so\.0'; then
+    # Bare Arch: no libxkbcommon-x11. The GUI must say what to install instead of panicking
+    # (it shows a dialog, so it is still running when the timeout ends).
+    echo "== window without libxkbcommon-x11"
+    set +e
+    DISPLAY=:99 HOME="$work/home" XDG_RUNTIME_DIR="$work/run" timeout 5 "${run_gui[@]}" >"$work/gui.log" 2>&1
+    set -e
+    cat "$work/gui.log"
+    grep -q 'pacman -S libxkbcommon-x11' "$work/gui.log" || fail "no message about the missing libxkbcommon-x11"
+    ! grep -q panicked "$work/gui.log" || fail "the GUI panicked without libxkbcommon-x11"
+    command -v pacman >/dev/null || fail "libxkbcommon-x11 is missing and cannot be installed here"
+    pacman -S --noconfirm libxkbcommon-x11 >/dev/null
+fi
+
 set +e
 DISPLAY=:99 HOME="$work/home" XDG_RUNTIME_DIR="$work/run" timeout 10 "${run_gui[@]}" >"$work/gui.log" 2>&1
 code=$?
