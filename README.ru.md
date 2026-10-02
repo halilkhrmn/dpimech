@@ -102,6 +102,7 @@ UDP (например, голос) идёт напрямую. Трафик пр�
 |---|---|---|
 | Ubuntu, Debian, Mint, Pop!_OS | `dpimech_<версия>_amd64.deb` | `sudo apt install ./dpimech_*_amd64.deb` |
 | Fedora | скачивать не нужно: [репозиторий COPR](https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/) | см. ниже |
+| Arch, CachyOS, EndeavourOS, Manjaro | `dpimech-bin-<версия>-1-x86_64.pkg.tar.zst` | `sudo pacman -U ./dpimech-bin-*.pkg.tar.zst` |
 | openSUSE, RHEL | `dpimech-<версия>-1.x86_64.rpm` | `sudo dnf install ./dpimech-*.x86_64.rpm` |
 | Любой другой дистрибутив | `DPIMech-<версия>-x86_64.AppImage` | `chmod +x DPIMech-*.AppImage`, затем запустите |
 

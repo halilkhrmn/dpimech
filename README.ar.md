@@ -102,6 +102,7 @@
 |---|---|---|
 | Ubuntu وDebian وMint وPop!_OS | `dpimech_<version>_amd64.deb` | `sudo apt install ./dpimech_*_amd64.deb` |
 | Fedora | لا حاجة للتنزيل: [مستودع COPR](https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/) | انظر أدناه |
+| Arch وCachyOS وEndeavourOS وManjaro | `dpimech-bin-<version>-1-x86_64.pkg.tar.zst` | `sudo pacman -U ./dpimech-bin-*.pkg.tar.zst` |
 | openSUSE وRHEL | `dpimech-<version>-1.x86_64.rpm` | `sudo dnf install ./dpimech-*.x86_64.rpm` |
 | أي توزيعة أخرى | `DPIMech-<version>-x86_64.AppImage` | `chmod +x DPIMech-*.AppImage` ثم شغّله |
 

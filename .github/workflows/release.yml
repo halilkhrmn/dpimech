@@ -248,15 +248,26 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     container: archlinux:latest
+    # The Arch package, built from the release .deb and installed in a clean Arch, is attached to the
+    # release (`sudo pacman -U`). Publishing to the AUR is on hold: it takes no new accounts (DECISIONS #48).
     env:
       VERSION: ${{ needs.plan.outputs.version }}
-      AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
-      PUSH: ${{ needs.plan.outputs.publish == 'true' && secrets.AUR_SSH_PRIVATE_KEY != '' && '--push' || '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           name: linux
           path: dist
-      - name: Build, install and publish dpimech-bin
-        run: bash tools/aur-publish.sh "$VERSION" "dist/dpimech_${VERSION}-1_amd64.deb" $PUSH
+      - name: Build and install dpimech-bin
+        run: PKG_OUT=arch bash tools/aur-publish.sh "$VERSION" "dist/dpimech_${VERSION}-1_amd64.deb"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: arch
+          path: arch/*
+      - name: Attach to the release
+        if: needs.plan.outputs.publish == 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ env.VERSION }}
+          name: DPIMech v${{ env.VERSION }}
+          files: arch/*

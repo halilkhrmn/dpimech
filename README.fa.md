@@ -108,6 +108,7 @@ WinDivert را به اشتباه خطرناک می‌دانند؛ DPIMech آن �
 |---|---|---|
 | Ubuntu، Debian، Mint، Pop!_OS | `dpimech_<version>_amd64.deb` | `sudo apt install ./dpimech_*_amd64.deb` |
 | Fedora | نیازی به دانلود نیست: [مخزن COPR](https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/) | پایین‌تر |
+| Arch، CachyOS، EndeavourOS، Manjaro | `dpimech-bin-<version>-1-x86_64.pkg.tar.zst` | `sudo pacman -U ./dpimech-bin-*.pkg.tar.zst` |
 | openSUSE، RHEL | `dpimech-<version>-1.x86_64.rpm` | `sudo dnf install ./dpimech-*.x86_64.rpm` |
 | هر توزیع دیگر | `DPIMech-<version>-x86_64.AppImage` | `chmod +x DPIMech-*.AppImage` و سپس اجرا |
 
