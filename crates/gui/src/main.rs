@@ -5,6 +5,8 @@ mod i18n;
 mod apps;
 mod autostart;
 mod bridge;
+#[cfg(target_os = "linux")]
+mod bundled;
 mod convert;
 mod hotkey;
 mod labui;
@@ -37,6 +39,8 @@ slint::include_modules!();
 fn main() -> anyhow::Result<()> {
     // A profile shortcut: a small progress window, no tray, no single-instance lock.
     let args: Vec<String> = std::env::args().collect();
+    #[cfg(target_os = "linux")]
+    bundled::load(bundled::XKB_X11);
     if let Some((profile, open)) = launcher::from_args(&args) {
         return launcher::run(profile, open);
     }
