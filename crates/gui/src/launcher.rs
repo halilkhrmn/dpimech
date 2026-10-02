@@ -1,7 +1,7 @@
 //! What a profile shortcut runs: `dpimech --launch <profile> [--open <app>]`.
 //! A small window shows progress while the profile is switched on, then opens the app and
-//! closes itself. It runs next to the main window (if any) and never takes the single-instance
-//! lock, so the tray and hotkey stay with the main app.
+//! closes itself. It never takes the single-instance lock: the tray and hotkey belong to the main
+//! app, which it starts in the tray when it is not running yet.
 
 use std::time::{Duration, Instant};
 
@@ -11,7 +11,7 @@ use slint::{ComponentHandle, Image, SharedString, Weak};
 
 use crate::i18n::tr;
 use crate::shortcut::{self, Choice};
-use crate::{LaunchWindow, prefs};
+use crate::{LaunchWindow, autostart, prefs, single};
 
 /// Engines normally come up in a second or two; ProxiFyre and the driver can take longer.
 const START_TIMEOUT: Duration = Duration::from_secs(60);
@@ -48,11 +48,13 @@ pub fn run(profile_id: String, open: Option<String>) -> anyhow::Result<()> {
         let _ = slint::quit_event_loop();
     });
     ui.on_open_main(|| {
-        if let Ok(exe) = std::env::current_exe() {
-            let _ = std::process::Command::new(exe).spawn();
-        }
+        start_main(&[]);
         let _ = slint::quit_event_loop();
     });
+    // Without the main app there is no tray to switch the profile off again.
+    if !single::is_running() {
+        start_main(&[autostart::MINIMIZED_FLAG]);
+    }
 
     let weak = ui.as_weak();
     std::thread::spawn(move || {
@@ -138,6 +140,26 @@ async fn start_profile(ui: &Weak<LaunchWindow>, id: &str) -> Result<String, Stri
             }
             _ => {}
         }
+    }
+}
+
+/// Starts the main app. From an AppImage this must be the image itself: the mount this process
+/// runs from goes away when it exits.
+fn start_main(args: &[&str]) {
+    use std::process::{Command, Stdio};
+    match shortcut::launcher_exe() {
+        Ok(exe) => {
+            let spawned = Command::new(exe)
+                .args(args)
+                .stdin(Stdio::null())
+                .stdout(Stdio::null())
+                .stderr(Stdio::null())
+                .spawn();
+            if let Err(e) = spawned {
+                eprintln!("starting DPIMech: {e}");
+            }
+        }
+        Err(e) => eprintln!("{e:#}"),
     }
 }
 

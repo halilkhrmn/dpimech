@@ -4,13 +4,14 @@ import { ProfileItem, LogItem, NavItem, Glyph } from "components.slint";
 import { DashboardPage, LogsPage, PlaceholderPage, SettingsPage } from "pages.slint";
 import { ProfileDraft, AppItem, ProfileEditorPage, AppPicker } from "editor.slint";
 import { ReportDialog } from "report.slint";
+import { WhatsNewDialog } from "whatsnew.slint";
 import { ShortcutDialog } from "shortcut.slint";
 import { LaunchWindow } from "launch.slint";
 import { PackageItem, EnginesPage } from "engines.slint";
-import { LabPack, LabRow, LabPage } from "lab.slint";
+import { LabPack, PackRow, LabRow, LabPage } from "lab.slint";
 import { WizardTask, Wizard } from "wizard.slint";
 
-export { ProfileItem, LogItem, ProfileDraft, AppItem, PackageItem, LabPack, LabRow, WizardTask, LaunchWindow }
+export { ProfileItem, LogItem, ProfileDraft, AppItem, PackageItem, LabPack, PackRow, LabRow, WizardTask, LaunchWindow }
 
 export enum Page { dashboard, editor, lab, engines, logs, settings }
 
@@ -44,6 +45,9 @@ export component AppWindow inherits Window {
     // App picker
     in-out property <bool> picker-open;
     in-out property <bool> report-open;
+    in-out property <bool> whats-new-open;
+    in property <string> whats-new-version;
+    in property <string> whats-new-notes;
     in property <string> report-text;
     in property <string> report-saved;
     in property <string> report-email;
@@ -84,7 +88,7 @@ export component AppWindow inherits Window {
     // Strategy Lab
     in property <[string]> lab-engines;
     in-out property <int> lab-engine-index;
-    in property <[LabPack]> lab-packs;
+    in property <[PackRow]> lab-packs;
     in-out property <string> lab-custom-domains;
     in property <string> lab-isp-text;
     in property <string> lab-strategy-summary;
@@ -97,6 +101,7 @@ export component AppWindow inherits Window {
     in property <[LabRow]> lab-results;
     callback lab-engine-changed(int);
     callback lab-toggle-pack(int);
+    callback lab-packs-width(float);
     callback lab-detect-isp;
     callback lab-refresh;
     callback lab-start;
@@ -107,7 +112,7 @@ export component AppWindow inherits Window {
     in property <bool> easy-mode;
     in-out property <bool> wizard-open;
     in property <int> wizard-step;
-    in property <[LabPack]> wizard-packs;
+    in property <[PackRow]> wizard-packs;
     in-out property <string> wizard-custom-sites;
     in property <int> wizard-where;
     in property <bool> wizard-apps-supported: true;
@@ -120,6 +125,7 @@ export component AppWindow inherits Window {
     callback wizard-choose-easy;
     callback wizard-choose-advanced;
     callback wizard-toggle-pack(int);
+    callback wizard-packs-width(float);
     callback wizard-set-where(int);
     callback wizard-detect-isp;
     callback install-service;
@@ -173,8 +179,9 @@ export component AppWindow inherits Window {
     callback save-profile(ProfileDraft);
     callback delete-profile(string);
     callback open-picker;
-    in property <[string]> domain-pack-names;
+    in property <[PackRow]> domain-packs;
     callback add-domain-pack(int);
+    callback editor-packs-width(float);
     callback picker-search(string);
     callback picker-pick(AppItem);
     callback picker-add-manual(string);
@@ -327,8 +334,9 @@ export component AppWindow inherits Window {
                 error: editor-error;
                 engine-changed(i) => { root.engine-changed(i); }
                 open-picker => { root.open-picker(); }
-                domain-pack-names: domain-pack-names;
+                domain-packs: domain-packs;
                 add-domain-pack(i) => { root.add-domain-pack(i); }
+                packs-width(w) => { root.editor-packs-width(w); }
                 remove-app(i) => { root.remove-app(i); }
                 save(d) => { root.save-profile(d); }
                 cancel => { page = Page.dashboard; }
@@ -351,6 +359,7 @@ export component AppWindow inherits Window {
                 results: lab-results;
                 engine-changed(i) => { root.lab-engine-changed(i); }
                 toggle-pack(i) => { root.lab-toggle-pack(i); }
+                packs-width(w) => { root.lab-packs-width(w); }
                 detect-isp => { root.lab-detect-isp(); }
                 refresh-strategies => { root.lab-refresh(); }
                 start-test => { root.lab-start(); }
@@ -433,6 +442,7 @@ export component AppWindow inherits Window {
         choose-easy => { root.wizard-choose-easy(); }
         choose-advanced => { root.wizard-choose-advanced(); }
         toggle-pack(i) => { root.wizard-toggle-pack(i); }
+        packs-width(w) => { root.wizard-packs-width(w); }
         set-where(i) => { root.wizard-set-where(i); }
         add-app => { root.open-picker(); }
         remove-app(i) => { root.remove-app(i); }
@@ -468,6 +478,14 @@ export component AppWindow inherits Window {
         email-report => { root.report-email-send(); }
         open-folder => { root.report-folder(); }
         close => { report-open = false; }
+    }
+
+    if whats-new-open: WhatsNewDialog {
+        width: root.width;
+        height: root.height;
+        version: whats-new-version;
+        notes: whats-new-notes;
+        close => { whats-new-open = false; }
     }
 
     if shortcut-open: ShortcutDialog {

@@ -39,6 +39,9 @@
     font-size: 12px;
   }
   #nav a { margin-right: 10px; }
+  #platforms { background: #d4d0c8; border-bottom: 1px solid #808080; padding: 3px 10px; font-size: 12px; }
+  #platforms b, #platforms a { display: inline-block; padding: 1px 8px; margin-right: 4px; border: 2px outset #fff; background: #ece9d8; color: #000; text-decoration: none; }
+  #platforms b { border-style: inset; background: #fff; }
   #nav img { width: 16px; height: 11px; vertical-align: -1px; margin-right: 3px; border: 1px solid #999; }
   #get {
     background: #ffffe1;
@@ -107,6 +110,10 @@
   td:first-child { background: #ece9d8; white-space: nowrap; font-weight: bold; }
   hr { border: 0; border-top: 1px solid #808080; }
   footer { text-align: center; font-size: 11px; color: #444; padding: 8px 12px 14px; }
+  .shots { display: flex; flex-wrap: wrap; gap: 10px; }
+  .shots figure { flex: 1 1 300px; margin: 0; border: 2px inset #808080; background: #f4f4f4; }
+  .shots img { display: block; width: 100%; height: auto; }
+  .shots figcaption { font-size: 11px; color: #444; padding: 3px 6px; border-top: 1px solid #a0a0a0; }
   .badge {
     display: inline-block;
     border: 1px solid #000;
@@ -134,9 +141,16 @@
   </div>
 </header>
 
+<!-- The same switcher is on the Android page: one DPIMech, two repositories. -->
+<div id="platforms">
+  <b>&#128187; Desktop (Windows, Linux, macOS)</b>
+  <a href="https://halilkhrmn.github.io/dpimech-android/">&#128241; Android</a>
+</div>
+
 <div id="nav">
   <a href="#download">Download</a>
   <a href="#what">What is it?</a>
+  <a href="#screenshots">Screenshots</a>
   <a href="#safe">Is it safe?</a>
   <a href="#credits">Credits</a>
   <a href="https://github.com/halilkhrmn/dpimech">Source code</a>
@@ -162,7 +176,7 @@
     <a class="button" id="dl-windows" href="https://github.com/halilkhrmn/dpimech/releases/latest">Download</a>
   </div>
   <div class="dl">
-    <b>Linux</b> <em>(preview)</em>
+    <b>Linux</b>
     <small>.deb, .rpm or AppImage</small>
     <a class="button" id="dl-linux" href="https://github.com/halilkhrmn/dpimech/releases/latest">Download</a>
   </div>
@@ -178,7 +192,10 @@
   </div>
 </div>
 <p><small>All files are on the GitHub releases page, with SHA-256 checksums.</small></p>
-<p id="fedora"><b>Fedora:</b> add the <a href="https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/">COPR repository</a> once;
+<p class="note"><b>On a phone?</b> <a href="https://halilkhrmn.github.io/dpimech-android/">DPIMech for Android</a>
+  runs ByeDPI for the apps you choose, without root.</p>
+<p id="fedora"><a href="https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/package/dpimech/"><img src="https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/package/dpimech/status_image/last_build.png" alt="Copr build status"></a></p>
+<p><b>Fedora:</b> add the <a href="https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/">COPR repository</a> once;
   after that DPIMech updates with the rest of the system (<code>sudo dnf upgrade</code>).</p>
 <pre class="cmd">sudo dnf copr enable halilkahraman/DPIMech
 sudo dnf install dpimech</pre>
@@ -203,11 +220,24 @@ sudo dnf install dpimech</pre>
   <li>English, Türkçe, Русский.</li>
 </ul>
 
+<h2 id="screenshots">Screenshots</h2>
+<div class="shots">
+  <figure><a href="screenshots/windows-profiles.png"><img src="screenshots/windows-profiles.png" width="1246" height="858" loading="lazy" alt="DPIMech profiles page on Windows"></a>
+    <figcaption>Windows: a Discord profile running</figcaption></figure>
+  <figure><a href="screenshots/windows-editor.png"><img src="screenshots/windows-editor.png" width="1256" height="863" loading="lazy" alt="Editing a per-app Discord profile on Windows"></a>
+    <figcaption>Windows: only Discord goes through the engine</figcaption></figure>
+  <figure><a href="screenshots/linux-profiles.png"><img src="screenshots/linux-profiles.png" width="1000" height="660" loading="lazy" alt="DPIMech profiles page on Linux"></a>
+    <figcaption>Linux: profiles side by side</figcaption></figure>
+  <figure><a href="screenshots/linux-editor.png"><img src="screenshots/linux-editor.png" width="1000" height="660" loading="lazy" alt="Editing a profile on Linux"></a>
+    <figcaption>Linux: connection check and auto-restart</figcaption></figure>
+</div>
+
 <h2>Which system can do what?</h2>
 <table>
   <tr><td>Windows</td><td>Per app (ByeDPI + ProxiFyre) or whole computer (zapret, GoodbyeDPI).</td></tr>
   <tr><td>Linux</td><td>Per app or whole computer (zapret nfqws / tpws, ByeDPI) with systemd and nftables.</td></tr>
   <tr><td>macOS</td><td>Local proxy (tpws, ByeDPI) for apps and browsers you point at it.</td></tr>
+  <tr><td>Android</td><td>Per app through Android's VPN feature (ByeDPI), no root. <a href="https://halilkhrmn.github.io/dpimech-android/">DPIMech for Android</a>.</td></tr>
 </table>
 
 <h2 id="safe">Is it safe?</h2>
@@ -242,6 +272,7 @@ sudo dnf install dpimech</pre>
   <span class="badge"><i>BEST VIEWED</i><u>ANY BROWSER</u></span>
   <br>
   DPIMech &middot; free software under the <a href="https://github.com/halilkhrmn/dpimech/blob/main/LICENSE">GNU GPL v3 or later</a>
+  &middot; <a href="https://halilkhrmn.github.io/dpimech-android/">Android version</a>
 </footer>
 
 </div>
@@ -296,6 +327,10 @@ sudo dnf install dpimech</pre>
     offer("Ubuntu / Debian", deb);
   } else if (os === "linux" && appimage) {
     offer("Linux", appimage, "AppImage, runs on most distributions");
+  } else if (os === "mobile" && /Android/.test(ua)) {
+    main.textContent = "Get DPIMech for Android";
+    main.href = "https://halilkhrmn.github.io/dpimech-android/";
+    info.textContent = "This page is for computers; the Android version has its own page";
   } else {
     main.textContent = "Download DPIMech " + version;
     info.textContent = "For Windows, Linux and macOS computers" + (date ? " · released " + date : "");

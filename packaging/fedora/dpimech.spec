@@ -21,7 +21,6 @@ BuildRequires:  rust >= 1.85
 BuildRequires:  gcc
 BuildRequires:  pkgconfig
 BuildRequires:  gtk3-devel
-BuildRequires:  libxdo-devel
 BuildRequires:  libayatana-appindicator-gtk3-devel
 BuildRequires:  openssl-devel
 BuildRequires:  systemd-rpm-macros
@@ -83,6 +82,18 @@ install -Dm644 crates/gui/assets/dpimech.png %{buildroot}%{_datadir}/icons/hicol
 %{_datadir}/icons/hicolor/256x256/apps/dpimech.png
 
 %changelog
+* Fri Oct 02 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.3.0-1
+- Persian and Arabic interface; sites blocked in the user's country come first
+- Site list updates without a release; "What's new" after an update
+* Thu Oct 01 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.2.9-1
+- A profile shortcut also starts DPIMech in the tray when it is not running
+- "Create shortcut" from a profile card's menu works while status updates arrive
+* Thu Oct 01 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.2.8-1
+- No longer needs libxdo; runs without a tray when libayatana-appindicator is missing
+* Thu Oct 01 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.2.7-1
+- Same as 0.2.6; its tag had an outdated Cargo.lock, so the Fedora build failed
+* Thu Oct 01 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.2.6-1
+- Shortcuts made by older versions are counted and removed; clearer driver install errors
 * Wed Sep 30 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.2.5-1
 - Standard strategies come from strategies/default.json and update without a release
 * Wed Sep 30 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.2.4-1

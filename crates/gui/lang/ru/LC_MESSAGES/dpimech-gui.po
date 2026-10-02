@@ -4,251 +4,251 @@ msgstr ""
 "Language: ru\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ui/app.slint:204
+#: ui/app.slint:211
 msgid "Profiles"
 msgstr "Профили"
 
-#: ui/app.slint:209
+#: ui/app.slint:216
 msgid "Strategy Lab"
 msgstr "Лаборатория"
 
-#: ui/app.slint:214
+#: ui/app.slint:221
 msgid "Engines"
 msgstr "Движки"
 
-#: ui/app.slint:220
+#: ui/app.slint:227
 msgid "Logs"
 msgstr "Журнал"
 
-#: ui/app.slint:226
+#: ui/app.slint:233
 msgid "Settings"
 msgstr "Настройки"
 
-#: ui/app.slint:269
+#: ui/app.slint:276
 msgid "Another DPI tool is running: {}. Two tools on the same traffic break connections — close it, or turn DPIMech's profiles off."
 msgstr "Работает другой инструмент обхода DPI: {}. Два инструмента на одном трафике ломают соединения — закройте его или выключите профили DPIMech."
 
-#: ui/app.slint:287
+#: ui/app.slint:294
 msgid "DPIMech {} is ready to install."
 msgstr "DPIMech {} готов к установке."
 
-#: ui/app.slint:291
+#: ui/app.slint:298
 msgid "Restart and update"
 msgstr "Перезапустить и обновить"
 
-#: ui/app.slint:303
+#: ui/app.slint:310
 msgid "Background service is not running. Engines can't be started until it is."
 msgstr "Фоновая служба не запущена. Пока она не работает, движки нельзя запустить."
 
-#: ui/components.slint:126
+#: ui/components.slint:132
 msgid "Edit"
 msgstr "Изменить"
 
-#: ui/components.slint:127
+#: ui/components.slint:133
 msgid "Create shortcut…"
 msgstr "Создать ярлык…"
 
-#: ui/components.slint:149
+#: ui/components.slint:155
 msgid "More actions"
 msgstr "Другие действия"
 
-#: ui/components.slint:192
+#: ui/components.slint:198
 msgid "Check the connection now"
 msgstr "Проверить соединение сейчас"
 
-#: ui/editor.slint:77
+#: ui/editor.slint:78
 msgid "running"
 msgstr "работает"
 
-#: ui/editor.slint:115
+#: ui/editor.slint:116
 msgid "Add application"
 msgstr "Добавить приложение"
 
-#: ui/editor.slint:116
+#: ui/editor.slint:117
 msgid "Close"
 msgstr "Закрыть"
 
-#: ui/editor.slint:119
+#: ui/editor.slint:120
 msgid "Search running and installed apps…"
 msgstr "Поиск среди запущенных и установленных приложений…"
 
-#: ui/editor.slint:130
+#: ui/editor.slint:131
 msgid "Looking for apps…"
 msgstr "Поиск приложений…"
 
-#: ui/editor.slint:145
+#: ui/editor.slint:146
 msgid "Or type a name (discord) or path…"
 msgstr "Или введите имя (discord) или путь…"
 
-#: ui/editor.slint:149
+#: ui/editor.slint:150
 msgid "Add"
 msgstr "Добавить"
 
-#: ui/editor.slint:153
+#: ui/editor.slint:154
 msgid "Browse…"
 msgstr "Обзор…"
 
-#: ui/editor.slint:184
+#: ui/editor.slint:186
 msgid "New profile"
 msgstr "Новый профиль"
 
-#: ui/editor.slint:184
+#: ui/editor.slint:186
 msgid "Edit profile"
 msgstr "Изменить профиль"
 
-#: ui/editor.slint:186
+#: ui/editor.slint:188
 msgid "Back"
 msgstr "Назад"
 
-#: ui/editor.slint:202
+#: ui/editor.slint:204
 msgid "Name"
 msgstr "Имя"
 
-#: ui/editor.slint:205
+#: ui/editor.slint:207
 msgid "e.g. Discord"
 msgstr "напр. Discord"
 
-#: ui/editor.slint:210
+#: ui/editor.slint:212
 msgid "Engine"
 msgstr "Движок"
 
-#: ui/editor.slint:222
+#: ui/editor.slint:224
 msgid "Routing"
 msgstr "Маршрутизация"
 
-#: ui/editor.slint:230
+#: ui/editor.slint:232
 msgid "Local proxy port"
 msgstr "Порт локального прокси"
 
-#: ui/editor.slint:239
+#: ui/editor.slint:241
 msgid "Start with service"
 msgstr "Запускать вместе со службой"
 
-#: ui/editor.slint:249
+#: ui/editor.slint:251
 msgid "Games with strict anti-cheat (for example Valorant or FACEIT) may refuse to start or disconnect you while a packet driver is active. Turn this off before playing, or unblock only the apps you need."
 msgstr "Игры со строгим античитом (например, Valorant или FACEIT) могут не запуститься или отключить вас, пока работает драйвер пакетов. Выключайте это перед игрой или выбирайте только нужные приложения."
 
-#: ui/editor.slint:250
+#: ui/editor.slint:252
 msgid "Sites to unblock"
 msgstr "Сайты для разблокировки"
 
-#: ui/editor.slint:252
+#: ui/editor.slint:254
 msgid "The engine only touches these domains. One per line; subdomains are included."
 msgstr "Движок затрагивает только эти домены. По одному в строке; поддомены включены."
 
-#: ui/editor.slint:276
+#: ui/editor.slint:282
 msgid "Applications"
 msgstr "Приложения"
 
-#: ui/editor.slint:277
+#: ui/editor.slint:283
 msgid "Add app"
 msgstr "Добавить приложение"
 
-#: ui/editor.slint:288
+#: ui/editor.slint:294
 msgid "Only the apps listed here will go through the engine."
 msgstr "Через движок пойдут только перечисленные здесь приложения."
 
-#: ui/editor.slint:303
+#: ui/editor.slint:309
 msgid "Connection check"
 msgstr "Проверка соединения"
 
-#: ui/editor.slint:305
+#: ui/editor.slint:311
 msgid "DPIMech opens these sites through the engine every few minutes. If they get much slower than usual or stop answering, it can restart the engine for you."
 msgstr "DPIMech каждые несколько минут открывает эти сайты через движок. Если они станут намного медленнее обычного или перестанут отвечать, он может перезапустить движок."
 
-#: ui/editor.slint:319
+#: ui/editor.slint:325
 msgid "Check every"
 msgstr "Проверять каждые"
 
-#: ui/editor.slint:321
+#: ui/editor.slint:327
 msgid "Off"
 msgstr "Выкл."
 
-#: ui/editor.slint:321
+#: ui/editor.slint:327
 msgid "1 minute"
 msgstr "1 минуту"
 
-#: ui/editor.slint:321
+#: ui/editor.slint:327
 msgid "3 minutes"
 msgstr "3 минуты"
 
-#: ui/editor.slint:321
+#: ui/editor.slint:327
 msgid "5 minutes"
 msgstr "5 минут"
 
-#: ui/editor.slint:321
+#: ui/editor.slint:327
 msgid "10 minutes"
 msgstr "10 минут"
 
-#: ui/editor.slint:327
+#: ui/editor.slint:333
 msgid "When it gets slow"
 msgstr "При замедлении"
 
-#: ui/editor.slint:329
+#: ui/editor.slint:335
 msgid "Restart the engine automatically"
 msgstr "Автоматически перезапускать движок"
 
-#: ui/editor.slint:329
+#: ui/editor.slint:335
 msgid "Only warn me"
 msgstr "Только предупредить"
 
-#: ui/editor.slint:335
+#: ui/editor.slint:341
 msgid "Sites to check"
 msgstr "Сайты для проверки"
 
-#: ui/editor.slint:338
+#: ui/editor.slint:344
 msgid "Empty = the sites above"
 msgstr "Пусто = сайты выше"
 
-#: ui/editor.slint:338
+#: ui/editor.slint:344
 msgid "e.g. discord.com, gateway.discord.gg"
 msgstr "напр. discord.com, gateway.discord.gg"
 
-#: ui/editor.slint:344
+#: ui/editor.slint:350
 msgid "Reliability"
 msgstr "Надёжность"
 
-#: ui/editor.slint:350
+#: ui/editor.slint:356
 msgid "Auto-restart when stuck or crashed"
 msgstr "Автоперезапуск при зависании или сбое"
 
-#: ui/editor.slint:352
+#: ui/editor.slint:358
 msgid "Fixes the “ping jumps to thousands after a few hours” problem without touching other profiles."
 msgstr "Устраняет проблему «через несколько часов пинг растёт до тысяч», не затрагивая другие профили."
 
-#: ui/editor.slint:365
+#: ui/editor.slint:371
 msgid "Preventive restart every (hours)"
 msgstr "Профилактический перезапуск (каждые N часов)"
 
-#: ui/editor.slint:366
+#: ui/editor.slint:372
 msgid "0 = never. Takes well under a second."
 msgstr "0 = никогда. Занимает намного меньше секунды."
 
-#: ui/editor.slint:377
+#: ui/editor.slint:383
 msgid "TCP only"
 msgstr "Только TCP"
 
-#: ui/editor.slint:379
+#: ui/editor.slint:385
 msgid "Voice/UDP goes direct. Fewer connections through the engine."
 msgstr "Голос/UDP идёт напрямую. Меньше соединений через движок."
 
-#: ui/editor.slint:392
+#: ui/editor.slint:398
 msgid "Strategy arguments"
 msgstr "Аргументы стратегии"
 
-#: ui/editor.slint:400
+#: ui/editor.slint:406
 msgid "Tip: the Strategy Lab finds working arguments for your connection."
 msgstr "Совет: лаборатория стратегий найдёт аргументы, которые работают на вашем подключении."
 
-#: ui/editor.slint:415
+#: ui/editor.slint:421
 msgid "Save"
 msgstr "Сохранить"
 
-#: ui/editor.slint:420
+#: ui/editor.slint:426
 msgid "Cancel"
 msgstr "Отмена"
 
-#: ui/editor.slint:424
+#: ui/editor.slint:430
 msgid "Delete"
 msgstr "Удалить"
 
@@ -312,43 +312,43 @@ msgstr "Выполняется…"
 msgid "Exclusion added"
 msgstr "Исключение добавлено"
 
-#: ui/lab.slint:109
+#: ui/lab.slint:116
 msgid "Use"
 msgstr "Использовать"
 
-#: ui/lab.slint:144
+#: ui/lab.slint:153
 msgid "Finds the settings that work on your connection by trying them on real sites."
 msgstr "Находит настройки, которые работают на вашем подключении, проверяя их на реальных сайтах."
 
-#: ui/lab.slint:170
+#: ui/lab.slint:179
 msgid "Detect my ISP"
 msgstr "Определить провайдера"
 
-#: ui/lab.slint:178
+#: ui/lab.slint:187
 msgid "Sites"
 msgstr "Сайты"
 
-#: ui/lab.slint:195
+#: ui/lab.slint:208
 msgid "Other sites, e.g. example.com, another.org"
 msgstr "Другие сайты, напр. example.com, another.org"
 
-#: ui/lab.slint:202
+#: ui/lab.slint:215
 msgid "Strategies"
 msgstr "Стратегии"
 
-#: ui/lab.slint:205
+#: ui/lab.slint:218
 msgid "Update online lists"
 msgstr "Обновить онлайн-списки"
 
-#: ui/lab.slint:209
+#: ui/lab.slint:222
 msgid "Tries per site"
 msgstr "Попыток на сайт"
 
-#: ui/lab.slint:223
+#: ui/lab.slint:236
 msgid "Start test"
 msgstr "Начать проверку"
 
-#: ui/lab.slint:264
+#: ui/lab.slint:277
 msgid "Results appear here, best first."
 msgstr "Результаты появятся здесь, лучшие сверху."
 
@@ -465,8 +465,8 @@ msgid "Profile shortcuts on the desktop and in the menu: {}"
 msgstr "Ярлыки профилей на рабочем столе и в меню: {}"
 
 #: ui/pages.slint:312
-msgid "Create one with right click (or ⋯) on a profile. Deleting a profile removes its shortcuts."
-msgstr "Создайте ярлык правым щелчком (или ⋯) по профилю. При удалении профиля его ярлыки тоже удаляются."
+msgid "Create one by right-clicking a profile or with its menu button. Deleting a profile removes its shortcuts."
+msgstr "Создайте его правым щелчком по профилю или кнопкой меню. При удалении профиля его ярлыки удаляются."
 
 #: ui/pages.slint:319
 msgid "Remove all shortcuts"
@@ -584,115 +584,123 @@ msgstr "Создать"
 msgid "Done"
 msgstr "Готово"
 
-#: ui/wizard.slint:113
+#: ui/whatsnew.slint:26
+msgid "What's new in DPIMech {}"
+msgstr "Что нового в DPIMech {}"
+
+#: ui/whatsnew.slint:36
+msgid "Got it"
+msgstr "Понятно"
+
+#: ui/wizard.slint:114
 msgid "Welcome!"
 msgstr "Добро пожаловать!"
 
-#: ui/wizard.slint:115
+#: ui/wizard.slint:116
 msgid "DPIMech opens sites and apps that your internet provider blocks, without a VPN. How would you like to start?"
 msgstr "DPIMech открывает сайты и приложения, которые блокирует провайдер, без VPN. С чего начнём?"
 
-#: ui/wizard.slint:120
+#: ui/wizard.slint:121
 msgid "Just make it work"
 msgstr "Просто сделай, чтобы работало"
 
-#: ui/wizard.slint:121
+#: ui/wizard.slint:122
 msgid "Answer three simple questions; DPIMech installs what it needs, finds settings that work on your connection and turns them on. You can switch to the full interface later in Settings."
 msgstr "Ответьте на три простых вопроса: DPIMech установит всё нужное, найдёт настройки, которые работают на вашем подключении, и включит их. Полный интерфейс можно включить позже в настройках."
 
-#: ui/wizard.slint:125
+#: ui/wizard.slint:126
 msgid "I know what I'm doing"
 msgstr "Я знаю, что делаю"
 
-#: ui/wizard.slint:126
+#: ui/wizard.slint:127
 msgid "Open the full interface: engines, profiles, strategy arguments and the Strategy Lab."
 msgstr "Открыть полный интерфейс: движки, профили, аргументы стратегий и лабораторию стратегий."
 
-#: ui/wizard.slint:134
+#: ui/wizard.slint:135
 msgid "What do you want to open?"
 msgstr "Что вы хотите открыть?"
 
-#: ui/wizard.slint:135
+#: ui/wizard.slint:136
 msgid "Pick one or more. You can add other sites too."
 msgstr "Выберите один или несколько. Можно добавить и другие сайты."
 
-#: ui/wizard.slint:147
+#: ui/wizard.slint:152
 msgid "Other sites, e.g. example.com"
 msgstr "Другие сайты, напр. example.com"
 
-#: ui/wizard.slint:155
+#: ui/wizard.slint:160
 msgid "Where should it work?"
 msgstr "Где это должно работать?"
 
-#: ui/wizard.slint:157
+#: ui/wizard.slint:162
 msgid "Only in some apps (recommended)"
 msgstr "Только в некоторых приложениях (рекомендуется)"
 
-#: ui/wizard.slint:158
+#: ui/wizard.slint:163
 msgid "For example only Discord. Everything else stays exactly as it is."
 msgstr "Например, только Discord. Всё остальное остаётся как есть."
 
-#: ui/wizard.slint:176
+#: ui/wizard.slint:181
 msgid "The whole computer"
 msgstr "Весь компьютер"
 
-#: ui/wizard.slint:177
+#: ui/wizard.slint:182
 msgid "Every app, including games and voice. Uses zapret and needs the DPIMech service."
 msgstr "Все приложения, включая игры и голос. Использует zapret и требует службу DPIMech."
 
-#: ui/wizard.slint:183
+#: ui/wizard.slint:188
 msgid "Only when I choose (proxy)"
 msgstr "Только когда я выберу (прокси)"
 
-#: ui/wizard.slint:184
+#: ui/wizard.slint:189
 msgid "Creates a local proxy (127.0.0.1) you can set in a browser or app."
 msgstr "Создаёт локальный прокси (127.0.0.1), который можно указать в браузере или приложении."
 
-#: ui/wizard.slint:193
+#: ui/wizard.slint:198
 msgid "Your internet provider"
 msgstr "Ваш провайдер"
 
-#: ui/wizard.slint:195
+#: ui/wizard.slint:200
 msgid "Knowing your provider lets DPIMech try settings made for it first. This sends your public IP address to ipwho.is. You can skip it."
 msgstr "Зная провайдера, DPIMech сначала попробует настройки, сделанные для него. Для этого ваш внешний IP-адрес отправляется на ipwho.is. Этот шаг можно пропустить."
 
-#: ui/wizard.slint:202
+#: ui/wizard.slint:207
 msgid "Detect my provider"
 msgstr "Определить провайдера"
 
-#: ui/wizard.slint:208
+#: ui/wizard.slint:213
 msgid "DPIMech's background service is not installed yet. It is needed to run the engines. Your computer asks for administrator permission once."
 msgstr "Фоновая служба DPIMech ещё не установлена. Она нужна для запуска движков. Компьютер один раз попросит права администратора."
 
-#: ui/wizard.slint:222
+#: ui/wizard.slint:227
 msgid "Setting things up…"
 msgstr "Настройка…"
 
-#: ui/wizard.slint:249
+#: ui/wizard.slint:254
 msgid "Details"
 msgstr "Подробности"
 
-#: ui/wizard.slint:277
+#: ui/wizard.slint:282
 msgid "All set!"
 msgstr "Готово!"
 
-#: ui/wizard.slint:287
+#: ui/wizard.slint:292
 msgid "Start"
 msgstr "Начать"
 
-#: ui/wizard.slint:287
+#: ui/wizard.slint:292
 msgid "Next"
 msgstr "Далее"
 
-#: ui/wizard.slint:291
+#: ui/wizard.slint:296
 msgid "Report this problem"
 msgstr "Сообщить об этой проблеме"
 
-#: ui/wizard.slint:293
+#: ui/wizard.slint:298
 msgid "Try again"
 msgstr "Повторить"
 
-#: ui/wizard.slint:294
+#: ui/wizard.slint:299
 msgid "Finish"
 msgstr "Готово"
 
@@ -704,135 +712,135 @@ msgstr "Запустите её командой: dpimech-service run"
 msgid "Version {} · data in {}"
 msgstr "Версия {} · данные в {}"
 
-#: src/bridge.rs:172
+#: src/bridge.rs:175
 msgid "Could not update: {}"
 msgstr "Не удалось обновить: {}"
 
-#: src/bridge.rs:187
+#: src/bridge.rs:190
 msgid "You have the latest version ({})."
 msgstr "У вас последняя версия ({})."
 
-#: src/bridge.rs:190
+#: src/bridge.rs:193
 msgid "Could not check for updates: {}"
 msgstr "Не удалось проверить обновления: {}"
 
-#: src/bridge.rs:252
+#: src/bridge.rs:255
 msgid "Could not load strategies: {}"
 msgstr "Не удалось загрузить стратегии: {}"
 
-#: src/bridge.rs:264
+#: src/bridge.rs:267
 msgid "ISP lookup failed: {}"
 msgstr "Не удалось определить провайдера: {}"
 
-#: src/bridge.rs:369
+#: src/bridge.rs:372
 msgid "DPIMech {} is downloaded. Restart DPIMech to update."
 msgstr "DPIMech {} загружен. Перезапустите DPIMech, чтобы обновить."
 
-#: src/bridge.rs:383
+#: src/bridge.rs:386
 msgid "Version {} is available."
 msgstr "Доступна версия {}."
 
-#: src/bridge.rs:398
+#: src/bridge.rs:401
 msgid "Downloading DPIMech {}…"
 msgstr "Загрузка DPIMech {}…"
 
-#: src/bridge.rs:430
+#: src/bridge.rs:433
 msgid "Saved the log to {}"
 msgstr "Журнал сохранён: {}"
 
-#: src/bridge.rs:470
+#: src/bridge.rs:473
 msgid "Looking up…"
 msgstr "Поиск…"
 
-#: src/bridge.rs:472
+#: src/bridge.rs:475
 msgid "This needs the background service."
 msgstr "Для этого нужна фоновая служба."
 
-#: src/convert.rs:142
+#: src/convert.rs:141
 msgid "Give the profile a name."
 msgstr "Дайте профилю имя."
 
-#: src/convert.rs:147
+#: src/convert.rs:146
 msgid "Choose an engine."
 msgstr "Выберите движок."
 
-#: src/convert.rs:151
+#: src/convert.rs:150
 msgid "Choose a routing mode."
 msgstr "Выберите режим маршрутизации."
 
-#: src/convert.rs:155
+#: src/convert.rs:154
 msgid "Port must be between 1024 and 65535."
 msgstr "Порт должен быть от 1024 до 65535."
 
-#: src/convert.rs:163
+#: src/convert.rs:162
 msgid "Add at least one application for per-app routing."
 msgstr "Добавьте хотя бы одно приложение для маршрутизации по приложениям."
 
-#: src/convert.rs:204
+#: src/convert.rs:203
 msgid "{} · port {}"
 msgstr "{} · порт {}"
 
-#: src/convert.rs:213
+#: src/convert.rs:212
 msgid "All matching traffic"
 msgstr "Весь подходящий трафик"
 
-#: src/convert.rs:214
+#: src/convert.rs:213
 msgid "{} site(s): {}"
 msgstr "Сайтов: {} — {}"
 
-#: src/convert.rs:227
+#: src/convert.rs:226
 msgid "Stopped"
 msgstr "Остановлен"
 
-#: src/convert.rs:228
+#: src/convert.rs:227
 msgid "Starting…"
 msgstr "Запуск…"
 
-#: src/convert.rs:236
+#: src/convert.rs:235
 msgid "1 auto-restart"
 msgstr "1 автоперезапуск"
 
-#: src/convert.rs:237
+#: src/convert.rs:236
 msgid "{} auto-restarts"
 msgstr "автоперезапусков: {}"
 
-#: src/convert.rs:246
+#: src/convert.rs:245
 msgid "Sites not answering ({}/{})"
 msgstr "Сайты не отвечают ({}/{})"
 
-#: src/convert.rs:248
+#: src/convert.rs:247
 msgid "Slow: avg. {} ms (usually {} ms)"
 msgstr "Медленно: в среднем {} мс (обычно {} мс)"
 
-#: src/convert.rs:250
+#: src/convert.rs:249
 msgid "Only {}/{} sites answer"
 msgstr "Отвечают только {}/{} сайтов"
 
-#: src/convert.rs:257
+#: src/convert.rs:256
 msgid "Running · {}"
 msgstr "Работает · {}"
 
-#: src/convert.rs:258
+#: src/convert.rs:257
 msgid "avg. {} ms"
 msgstr "в среднем {} мс"
 
-#: src/convert.rs:366
+#: src/convert.rs:365
 msgid "just now"
 msgstr "только что"
 
-#: src/convert.rs:367
+#: src/convert.rs:366
 msgid "{} min"
 msgstr "{} мин"
 
-#: src/convert.rs:368
+#: src/convert.rs:367
 msgid "{} h {} min"
 msgstr "{} ч {} мин"
 
-#: src/convert.rs:380
+#: src/convert.rs:379
 msgid "Last check: {}/{} sites answered"
 msgstr "Последняя проверка: ответили {}/{} сайтов"
 
-#: src/convert.rs:386
+#: src/convert.rs:385
 msgid "(usually {} ms)"
 msgstr "(обычно {} мс)"
 
@@ -860,67 +868,67 @@ msgstr "Вся система"
 msgid "Local proxy"
 msgstr "Локальный прокси"
 
-#: src/labui.rs:50
+#: src/labui.rs:52
 msgid "ISP not detected"
 msgstr "Провайдер не определён"
 
-#: src/labui.rs:51
+#: src/labui.rs:53
 msgid "Pick sites and press Start."
 msgstr "Выберите сайты и нажмите «Начать»."
 
-#: src/labui.rs:94
+#: src/labui.rs:92
 msgid "{} to try: {} from the DPIMech standard set"
 msgstr "К проверке: {}; из стандартного набора DPIMech: {}"
 
-#: src/labui.rs:109
+#: src/labui.rs:107
 msgid "{} from {}"
 msgstr "{} из «{}»"
 
-#: src/labui.rs:113
+#: src/labui.rs:111
 msgid "“Update online lists” adds more"
 msgstr "«Обновить онлайн-списки» добавит ещё"
 
-#: src/labui.rs:117
+#: src/labui.rs:115
 msgid "★ {} made for your ISP"
 msgstr "★ {} для вашего провайдера"
 
-#: src/labui.rs:121
+#: src/labui.rs:119
 msgid "Standard set: well-known settings that ship with DPIMech."
 msgstr "Стандартный набор: известные настройки, входящие в DPIMech."
 
-#: src/labui.rs:124
+#: src/labui.rs:122
 msgid "{}: downloaded from {}."
 msgstr "{}: загружено из {}."
 
-#: src/labui.rs:191
+#: src/labui.rs:187
 msgid "Testing {} strategies… engines run briefly in the background."
 msgstr "Проверка стратегий: {}… движки ненадолго запускаются в фоне."
 
-#: src/labui.rs:204
+#: src/labui.rs:200
 msgid "Without any bypass every test site already works — nothing to fix on this network for these sites."
 msgstr "Без обхода все тестовые сайты уже работают — в этой сети для них ничего исправлять не нужно."
 
-#: src/labui.rs:208
+#: src/labui.rs:204
 msgid "Without any bypass only {}/{} requests succeed. Blocked: {}."
 msgstr "Без обхода успешны только {}/{} запросов. Заблокированы: {}."
 
-#: src/labui.rs:244
+#: src/labui.rs:235
 msgid "Cancelled."
 msgstr "Отменено."
 
-#: src/labui.rs:245
+#: src/labui.rs:236
 msgid "Stopped: {}"
 msgstr "Остановлено: {}"
 
-#: src/labui.rs:246
+#: src/labui.rs:237
 msgid "Done — {} strategies opened every site in every round. Press “Use” on the top one."
 msgstr "Готово — {} стратегий открыли все сайты в каждом раунде. Нажмите «Использовать» у верхней."
 
-#: src/labui.rs:250
+#: src/labui.rs:241
 msgid "Done — none opened every site in every round. Try another engine, more tries per site, or updated online lists."
 msgstr "Готово — ни одна не открыла все сайты в каждом раунде. Попробуйте другой движок, больше попыток на сайт или обновлённые онлайн-списки."
 
-#: src/labui.rs:280
+#: src/labui.rs:271
 msgid "No bypass"
 msgstr "Без обхода"
 
@@ -928,71 +936,71 @@ msgstr "Без обхода"
 msgid "Connecting to the DPIMech service…"
 msgstr "Подключение к службе DPIMech…"
 
-#: src/launcher.rs:66
+#: src/launcher.rs:68
 msgid "Opening {}…"
 msgstr "Открываем {}…"
 
-#: src/launcher.rs:69
+#: src/launcher.rs:71
 msgid "Could not open {}: {}"
 msgstr "Не удалось открыть {}: {}"
 
-#: src/launcher.rs:75
+#: src/launcher.rs:77
 msgid "{} is on"
 msgstr "{} включён"
 
-#: src/launcher.rs:83
+#: src/launcher.rs:85
 msgid "Could not start"
 msgstr "Не удалось запустить"
 
-#: src/launcher.rs:101
+#: src/launcher.rs:103
 msgid "The DPIMech service is not running. Open DPIMech to set it up."
 msgstr "Служба DPIMech не запущена. Откройте DPIMech, чтобы настроить её."
 
-#: src/launcher.rs:107
+#: src/launcher.rs:109
 msgid "The profile of this shortcut no longer exists."
 msgstr "Профиль этого ярлыка больше не существует."
 
-#: src/launcher.rs:109
+#: src/launcher.rs:111
 msgid "Starting {}"
 msgstr "Запуск: {}"
 
-#: src/launcher.rs:114
+#: src/launcher.rs:116
 msgid "Turning the profile on…"
 msgstr "Включаем профиль…"
 
-#: src/launcher.rs:130
+#: src/launcher.rs:132
 msgid "The profile stopped right after starting. The Logs page in DPIMech shows why."
 msgstr "Профиль остановился сразу после запуска. Причину покажет страница «Журнал» в DPIMech."
 
-#: src/launcher.rs:135
+#: src/launcher.rs:137
 msgid "The profile is taking too long to start. The Logs page in DPIMech shows why."
 msgstr "Профиль запускается слишком долго. Причину покажет страница «Журнал» в DPIMech."
 
-#: src/launcher.rs:231
+#: src/launcher.rs:253
 msgid "the menu entry has no command"
 msgstr "в пункте меню нет команды"
 
-#: src/main.rs:377
+#: src/main.rs:386
 msgid "Folder for DPIMech log files"
 msgstr "Папка для файлов журнала DPIMech"
 
-#: src/main.rs:565
+#: src/main.rs:582
 msgid "The service is installed. Connecting…"
 msgstr "Служба установлена. Подключение…"
 
-#: src/main.rs:566
+#: src/main.rs:583
 msgid "Installing the service failed: {}"
 msgstr "Не удалось установить службу: {}"
 
-#: src/main.rs:574
+#: src/main.rs:591
 msgid "Installing… confirm the prompt. DPIMech connects by itself when the service is ready."
 msgstr "Установка… подтвердите запрос. DPIMech подключится сам, когда служба будет готова."
 
-#: src/main.rs:575
+#: src/main.rs:592
 msgid "Could not start the installer: {}"
 msgstr "Не удалось запустить установку: {}"
 
-#: src/main.rs:629
+#: src/main.rs:663
 msgid "Downloading online lists…"
 msgstr "Загрузка онлайн-списков…"
 
@@ -1080,7 +1088,7 @@ msgstr "Выберите, куда поместить ярлык."
 msgid "Give the shortcut a name."
 msgstr "Дайте ярлыку имя."
 
-#: src/shortcut.rs:622
+#: src/shortcut.rs:714
 msgid "Starts the DPIMech profile \"{}\""
 msgstr "Запускает профиль DPIMech «{}»"
 
@@ -1116,106 +1124,106 @@ msgstr "Удалено ярлыков удалённого профиля: {}"
 msgid "Removed {} shortcut(s)."
 msgstr "Удалено ярлыков: {}."
 
-#: src/tray.rs:137
+#: src/tray.rs:195
 msgid "idle"
 msgstr "простаивает"
 
-#: src/tray.rs:138
+#: src/tray.rs:196
 msgid "{} profile(s) running"
 msgstr "работает профилей: {}"
 
-#: src/tray.rs:147
+#: src/tray.rs:205
 msgid "Show DPIMech"
 msgstr "Показать DPIMech"
 
-#: src/tray.rs:162
+#: src/tray.rs:220
 msgid "Report a problem…"
 msgstr "Сообщить о проблеме…"
 
-#: src/tray.rs:166
+#: src/tray.rs:224
 msgid "Quit"
 msgstr "Выход"
 
-#: src/wizard.rs:216
+#: src/wizard.rs:207
 msgid "Pick at least one site."
 msgstr "Выберите хотя бы один сайт."
 
-#: src/wizard.rs:227
+#: src/wizard.rs:218
 msgid "Add at least one app (for example Discord)."
 msgstr "Добавьте хотя бы одно приложение (например, Discord)."
 
-#: src/wizard.rs:283
+#: src/wizard.rs:274
 msgid "The DPIMech background service is not running. Go back and press “Install the service”."
 msgstr "Фоновая служба DPIMech не запущена. Вернитесь назад и нажмите «Установить службу»."
 
-#: src/wizard.rs:328
+#: src/wizard.rs:319
 msgid "Installing {} failed: {}"
 msgstr "Не удалось установить {}: {}"
 
-#: src/wizard.rs:401
+#: src/wizard.rs:392
 msgid "The test was cancelled."
 msgstr "Проверка отменена."
 
-#: src/wizard.rs:405
+#: src/wizard.rs:396
 msgid "The test failed: {}"
 msgstr "Проверка не удалась: {}"
 
-#: src/wizard.rs:413
+#: src/wizard.rs:404
 msgid "Good news: these sites already open normally on your connection, so nothing needs to be changed."
 msgstr "Хорошие новости: эти сайты уже нормально открываются на вашем подключении, ничего менять не нужно."
 
-#: src/wizard.rs:452
+#: src/wizard.rs:443
 msgid "My sites"
 msgstr "Мои сайты"
 
-#: src/wizard.rs:473
+#: src/wizard.rs:464
 msgid "Could not create the profile: {}"
 msgstr "Не удалось создать профиль: {}"
 
-#: src/wizard.rs:479
+#: src/wizard.rs:470
 msgid "“{}” is on and starts automatically with the computer."
 msgstr "«{}» включён и будет запускаться вместе с компьютером."
 
-#: src/wizard.rs:485
+#: src/wizard.rs:476
 msgid "{}/{} test requests worked ({} ms on average)."
 msgstr "Успешных проверочных запросов: {}/{} (в среднем {} мс)."
 
-#: src/wizard.rs:493
+#: src/wizard.rs:484
 msgid "No setting worked every time, so this one may be unreliable. If the connection fails, try “The whole computer” (zapret) or the Strategy Lab."
 msgstr "Ни одна настройка не сработала каждый раз, поэтому эта может быть ненадёжной. Если подключение не работает, попробуйте «Весь компьютер» (zapret) или Лабораторию стратегий."
 
-#: src/wizard.rs:501
+#: src/wizard.rs:492
 msgid "Set your browser or app to use the SOCKS5 proxy 127.0.0.1:{}."
 msgstr "Укажите в браузере или приложении SOCKS5-прокси 127.0.0.1:{}."
 
-#: src/wizard.rs:508
+#: src/wizard.rs:499
 msgid "Restart the chosen apps if they were already open."
 msgstr "Перезапустите выбранные приложения, если они уже были открыты."
 
-#: src/wizard.rs:534
+#: src/wizard.rs:525
 msgid "The engine could not run on this computer: {}."
 msgstr "Движок не смог запуститься на этом компьютере: {}."
 
-#: src/wizard.rs:540
+#: src/wizard.rs:531
 msgid "Try again later, add other sites, or run the Strategy Lab from the full interface to test more settings."
 msgstr "Попробуйте позже, добавьте другие сайты или запустите лабораторию стратегий из полного интерфейса, чтобы проверить больше настроек."
 
-#: src/wizard.rs:544
+#: src/wizard.rs:535
 msgid "Try “The whole computer” (zapret) or run the Strategy Lab from the full interface."
 msgstr "Попробуйте «Весь компьютер» (zapret) или запустите лабораторию стратегий из полного интерфейса."
 
-#: src/wizard.rs:549
+#: src/wizard.rs:540
 msgid "No setting worked on your connection for these sites."
 msgstr "Ни одна настройка не сработала на вашем подключении для этих сайтов."
 
-#: src/wizard.rs:615
+#: src/wizard.rs:606
 msgid "Install {}"
 msgstr "Установить {}"
 
-#: src/wizard.rs:631
+#: src/wizard.rs:622
 msgid "Find a setting that works on your connection"
 msgstr "Найти настройку, которая работает на вашем подключении"
 
-#: src/wizard.rs:640
+#: src/wizard.rs:631
 msgid "Create the profile and turn it on"
 msgstr "Создать профиль и включить его"

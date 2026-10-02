@@ -1,4 +1,4 @@
-<p align="center"><a href="README.md">English</a> · <b>Türkçe</b> · <a href="README.ru.md">Русский</a></p>
+<p align="center"><a href="README.md">English</a> · <b>Türkçe</b> · <a href="README.ru.md">Русский</a> · <a href="README.fa.md">فارسی</a> · <a href="README.ar.md">العربية</a></p>
 
 <p align="center"><img src="crates/gui/assets/logo.png" width="128" alt="DPIMech logosu"></p>
 
@@ -17,8 +17,19 @@ Bazı internet sağlayıcıları trafiğinin içine bakıp belirli siteleri enge
 | | Durum |
 |---|---|
 | **Windows 10 / 11** | Hazır. Kurulum dosyası [Releases](https://github.com/halilkhrmn/dpimech/releases) sayfasında. |
-| **Linux** | Önizleme: Releases sayfasında `.deb`, `.rpm` ve AppImage; Fedora için COPR (aşağıya bak). |
+| **Linux** | Hazır: Releases sayfasında `.deb`, `.rpm` ve AppImage; Fedora için COPR (aşağıya bak). |
 | **macOS** | Erken önizleme: Releases sayfasında `.dmg`, sadece yerel proxy (aşağıya bak). |
+
+<p align="center">
+  <a href="site/screenshots/windows-profiles.png"><img src="site/screenshots/windows-profiles.png" width="49%" alt="Windows'ta DPIMech profiller sayfası"></a>
+  <a href="site/screenshots/windows-editor.png"><img src="site/screenshots/windows-editor.png" width="49%" alt="Windows'ta Discord profilini düzenleme"></a>
+  <br><sub>Windows: profiller ve Discord için uygulama başına profil</sub>
+</p>
+<p align="center">
+  <a href="site/screenshots/linux-profiles.png"><img src="site/screenshots/linux-profiles.png" width="49%" alt="Linux'ta DPIMech profiller sayfası"></a>
+  <a href="site/screenshots/linux-editor.png"><img src="site/screenshots/linux-editor.png" width="49%" alt="Linux'ta profil düzenleme"></a>
+  <br><sub>Linux: birlikte çalışan profiller, profil düzenleyici</sub>
+</p>
 
 ## Ne işe yarar?
 
@@ -35,6 +46,7 @@ Bazı internet sağlayıcıları trafiğinin içine bakıp belirli siteleri enge
 - **Kısayollar.** Profile sağ tıkla (ya da ⋯) → *Kısayol oluştur*: masaüstünde ya da menüde bir simge;
   tıklayınca profili açar, ardından uygulamayı (örneğin Discord) başlatır.
 - **Hafif:** Pencere yaklaşık 25–35 MB, arka plan servisi yaklaşık 20 MB RAM kullanır.
+- **Kendi dilinde:** Türkçe, İngilizce, Rusça, Farsça ve Arapça.
 
 ## Windows
 
@@ -64,15 +76,7 @@ Aynı anda sadece **bir** WinDivert motoru (zapret ya da GoodbyeDPI) çalışabi
 programları WinDivert'i yanlışlıkla zararlı sanar; DPIMech onu sadece motorların resmî
 sürümlerinden indirir.
 
-### dpimngr 0.1.x'ten yükseltme
-
-DPIMech'in eski adı *dpimngr* idi. Yeni kurulum dosyasını çalıştırman yeterli: eski servisi
-kaldırır, profillerini ve motorlarını taşır.
-
-## Linux (önizleme)
-
-Linux sürümü çalışıyor ama şimdiye kadar sadece bir geliştirme konteynerinde denendi, gerçek bir
-masaüstünde henüz test edilmedi. Geri bildirimlerini bekliyoruz.
+## Linux
 
 ### Linux'taki motorlar
 
@@ -98,6 +102,8 @@ saniye sonra yakalanır.
 | openSUSE, RHEL | `dpimech-<sürüm>-1.x86_64.rpm` | `sudo dnf install ./dpimech-*.x86_64.rpm` |
 | Diğer tüm dağıtımlar | `DPIMech-<sürüm>-x86_64.AppImage` | `chmod +x DPIMech-*.AppImage`, sonra çalıştır |
 
+[![Copr build status](https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/package/dpimech/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/package/dpimech/)
+
 **Fedora** — depoyu bir kez ekle, sonra güncellemeler sistemle birlikte gelir (`sudo dnf upgrade`):
 
 ```sh
@@ -106,13 +112,15 @@ sudo dnf install dpimech
 ```
 
 Paketler (`.deb`, `.rpm`, COPR) arka plan servisini de kurar ve başlatır. AppImage kullanıyorsan DPIMech'i açıp bir
-kez **Install the service**'e bas (şifreni sorar).
+kez **Install the service**'e bas (şifreni sorar). AppImage tepsi kütüphanesini
+kendi içinde getirir. GNOME'da tepsi simgesi için *AppIndicator and KStatusNotifierItem Support* eklentisi gerekir
+(Ubuntu'da hazır gelir).
 
 ### Kaynak koddan derleme
 
 [Rust](https://rustup.rs), `systemd` ve pencereyi derlemek için GTK 3 ile AppIndicator geliştirme
 paketleri gerekir (Debian/Ubuntu'da:
-`sudo apt install build-essential libgtk-3-dev libxdo-dev libayatana-appindicator3-dev libxkbcommon-x11-0`).
+`sudo apt install build-essential libgtk-3-dev libayatana-appindicator3-dev libxkbcommon-x11-0`).
 
 ```sh
 git clone https://github.com/halilkhrmn/dpimech && cd dpimech
@@ -134,6 +142,25 @@ macOS'ta DPIMech şimdilik sadece **yerel SOCKS proxy** (zapret'in tpws aracı) 
 tarayıcında ya da uygulamanda `127.0.0.1:<port>` ayarlarsın. Tüm bilgisayar ve uygulama bazlı
 modlar planlanıyor. macOS'ta otomatik olarak derlenip kontrol ediliyor ama henüz bir Mac'te elle
 test edilmedi.
+
+## Ülkelere göre
+
+DPIMech ülkeni sistemin bölge ayarından tahmin eder ve orada engellendiği yaygın olarak bilinen siteleri
+listenin başında, kurulum sihirbazında da hazır seçili gösterir. İstediğin başka siteyi her zaman seçebilir
+ya da yazabilirsin. Liste [`strategies/domains.json`](strategies/domains.json) dosyasında durur ve yeni sürüm
+beklemeden güncellenir.
+
+| Ülke | Hazır seçili | Akılda tut |
+|---|---|---|
+| Türkiye | Discord, Roblox, Wattpad, Imgur | Pek çok engel DNS ile de yapılıyor: aşağıdaki "Hâlâ açılmıyor mu?" maddesine bak. |
+| Rusya | YouTube, Discord, Instagram, X, Facebook, LinkedIn, Signal, Viber | YouTube kesilmek yerine yavaşlatılıyor; genelde en iyi zapret çalışır. |
+| İran | YouTube, Instagram, X, Telegram, Facebook, Signal, Discord | Filtreleme IP adreslerini ve zaman zaman tüm uluslararası interneti de kapatıyor; o durumda DPIMech yardımcı olamaz. Telegram ve WhatsApp *uygulamaları* doğrudan IP adreslerine bağlandığı için yalnızca web siteleri fayda görür. |
+| Kazakistan | SoundCloud | Engellerin çoğu haber sitelerini ve VPN'leri hedefliyor, çoğunlukla IP adresiyle. İhtiyacın olan siteleri "Diğer siteler"e ekle. |
+| Belarus | TikTok, bağımsız medya (Zerkalo, Nasha Niva, Svaboda, Belsat, …) | Bazı yayınlar adreslerini sık değiştiriyor; güncel adresi "Diğer siteler"e ekle. |
+| Mısır | bağımsız medya (Mada Masr, Zawia3, Cairo 24) | WhatsApp ve benzeri uygulamalardaki sesli/görüntülü aramalar başka yolla engelleniyor ve engelli kalır. |
+
+Diğer ülkelerde Discord başta gelir. Eksik bir site ya da ülke mi var? `strategies/domains.json` için bir
+issue ya da pull request aç.
 
 ## Bilmekte fayda var
 

@@ -47,6 +47,8 @@ pub enum Request {
     RemovePackage {
         id: PackageId,
     },
+    /// The sites offered for profiles and the Lab: fetched from the repository, else built in.
+    DomainPacks,
     /// Built-in + cached online strategies for an engine.
     LabStrategies {
         engine: EngineKind,
@@ -97,6 +99,9 @@ pub enum Reply {
     },
     Profiles {
         profiles: Vec<ProfileState>,
+    },
+    DomainPacks {
+        packs: Vec<crate::catalog::DomainPack>,
     },
     Logs {
         lines: Vec<LogLine>,

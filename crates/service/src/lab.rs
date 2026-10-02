@@ -158,9 +158,52 @@ impl Lab {
         Ok(())
     }
 
+    /// The newest domain packs fetched from the repository, or the ones built into this binary.
+    pub fn domain_packs(&self) -> Vec<catalog::DomainPack> {
+        std::fs::read_to_string(self.domains_file())
+            .ok()
+            .and_then(|text| catalog::parse_domain_packs(&text).ok())
+            .unwrap_or_else(|| catalog::domain_packs().to_vec())
+    }
+
+    fn domains_file(&self) -> std::path::PathBuf {
+        self.data.root.join("strategies").join("domains.json")
+    }
+
+    /// Fetches `strategies/domains.json` from `main`, so a newly blocked site can be offered
+    /// without an app release. A file this build cannot read is not stored.
+    pub async fn update_domain_packs(&self) -> anyhow::Result<()> {
+        let text = self
+            .http
+            .get(catalog::DOMAINS_URL)
+            .send()
+            .await
+            .and_then(|r| r.error_for_status())
+            .context("downloading the domain packs")?
+            .text()
+            .await?;
+        catalog::parse_domain_packs(&text).context("the downloaded domain packs")?;
+        let file = self.domains_file();
+        if std::fs::read_to_string(&file).is_ok_and(|old| old == text) {
+            return Ok(());
+        }
+        if let Some(dir) = file.parent() {
+            std::fs::create_dir_all(dir)?;
+        }
+        let tmp = file.with_extension("json.tmp");
+        std::fs::write(&tmp, &text)?;
+        std::fs::rename(&tmp, &file)?;
+        self.logs
+            .info(SOURCE, "domain packs updated from the repository");
+        Ok(())
+    }
+
     pub async fn refresh(&self, engine: EngineKind) -> anyhow::Result<Vec<LabStrategy>> {
         // Not fatal: the online lists below are still worth having.
         if let Err(e) = self.update_standard_strategies().await {
+            self.logs.warn(SOURCE, format!("{e:#}"));
+        }
+        if let Err(e) = self.update_domain_packs().await {
             self.logs.warn(SOURCE, format!("{e:#}"));
         }
         let mut fetched = Vec::new();

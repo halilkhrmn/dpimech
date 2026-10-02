@@ -1,4 +1,4 @@
-<p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.ru.md">Русский</a></p>
+<p align="center"><b>English</b> · <a href="README.tr.md">Türkçe</a> · <a href="README.ru.md">Русский</a> · <a href="README.fa.md">فارسی</a> · <a href="README.ar.md">العربية</a></p>
 
 <p align="center"><img src="crates/gui/assets/logo.png" width="128" alt="DPIMech logo"></p>
 
@@ -17,8 +17,19 @@ called *DPI* (deep packet inspection). DPIMech runs small, well-known open-sourc
 | | Status |
 |---|---|
 | **Windows 10 / 11** | Ready. Installer on the [Releases](https://github.com/halilkhrmn/dpimech/releases) page. |
-| **Linux** | Preview: `.deb`, `.rpm` and AppImage on the Releases page, Fedora via COPR (see below). |
+| **Linux** | Ready: `.deb`, `.rpm` and AppImage on the Releases page, Fedora via COPR (see below). |
 | **macOS** | Early preview: `.dmg` on the Releases page, local proxy only (see below). |
+
+<p align="center">
+  <a href="site/screenshots/windows-profiles.png"><img src="site/screenshots/windows-profiles.png" width="49%" alt="DPIMech profiles page on Windows"></a>
+  <a href="site/screenshots/windows-editor.png"><img src="site/screenshots/windows-editor.png" width="49%" alt="Editing a per-app Discord profile on Windows"></a>
+  <br><sub>Windows: profiles and a per-app profile for Discord</sub>
+</p>
+<p align="center">
+  <a href="site/screenshots/linux-profiles.png"><img src="site/screenshots/linux-profiles.png" width="49%" alt="DPIMech profiles page on Linux"></a>
+  <a href="site/screenshots/linux-editor.png"><img src="site/screenshots/linux-editor.png" width="49%" alt="Editing a profile on Linux"></a>
+  <br><sub>Linux: profiles running side by side, profile editor</sub>
+</p>
 
 ## What it does
 
@@ -34,6 +45,7 @@ called *DPI* (deep packet inspection). DPIMech runs small, well-known open-sourc
   shows the average ping on each profile.
 - **Shortcuts.** Right-click a profile (or press ⋯) → *Create shortcut*: a desktop or menu icon that
   turns the profile on and then opens the app, for example Discord.
+- **In your language:** English, Turkish, Russian, Persian and Arabic.
 - **Light:** about 25–35 MB of RAM for the window, around 20 MB for the background service.
 
 ## Windows
@@ -63,15 +75,7 @@ Tip: in **Settings** you can make DPIMech start when you sign in, hidden in the 
 Only **one** WinDivert engine (zapret or GoodbyeDPI) can run at a time. Some antivirus programs
 wrongly flag WinDivert; DPIMech downloads it only from the engines' official releases.
 
-### Upgrading from dpimngr 0.1.x
-
-DPIMech was called *dpimngr* before. Just run the new installer: it removes the old service and
-moves your profiles and engines over.
-
-## Linux (preview)
-
-The Linux version works but has only been tested in a development container so far, not yet on a
-real desktop. Feedback is welcome.
+## Linux
 
 ### Engines on Linux
 
@@ -96,6 +100,8 @@ Download from [Releases](https://github.com/halilkhrmn/dpimech/releases):
 | openSUSE, RHEL | `dpimech-<version>-1.x86_64.rpm` | `sudo dnf install ./dpimech-*.x86_64.rpm` |
 | Any other distribution | `DPIMech-<version>-x86_64.AppImage` | `chmod +x DPIMech-*.AppImage`, then run it |
 
+[![Copr build status](https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/package/dpimech/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/package/dpimech/)
+
 **Fedora** — add the repository once, then updates come with the rest of the system (`sudo dnf upgrade`):
 
 ```sh
@@ -104,13 +110,15 @@ sudo dnf install dpimech
 ```
 
 The packages (`.deb`, `.rpm`, COPR) also install and start the background service. With the AppImage, open
-DPIMech and press **Install the service** once (it asks for your password).
+DPIMech and press **Install the service** once (it asks for your password). The AppImage
+brings the tray library along. On GNOME the tray icon needs the *AppIndicator and KStatusNotifierItem Support*
+extension (Ubuntu has it built in).
 
 ### Build from source
 
 Needs [Rust](https://rustup.rs), `systemd`, and for building the window the GTK 3 and
 AppIndicator development packages (on Debian/Ubuntu:
-`sudo apt install build-essential libgtk-3-dev libxdo-dev libayatana-appindicator3-dev libxkbcommon-x11-0`).
+`sudo apt install build-essential libgtk-3-dev libayatana-appindicator3-dev libxkbcommon-x11-0`).
 
 ```sh
 git clone https://github.com/halilkhrmn/dpimech && cd dpimech
@@ -131,6 +139,24 @@ choose **Open**. Then press **Install the service** once (it asks for your passw
 On macOS DPIMech can only run a **local SOCKS proxy** (zapret's tpws) for now; you set
 `127.0.0.1:<port>` in your browser or app. Whole-computer and per-app modes are planned. Built
 and checked automatically on macOS, but not yet tested by hand on a Mac.
+
+## By country
+
+DPIMech guesses your country from the system's region setting and offers the sites widely reported
+blocked there first, already selected in the setup wizard. You can always pick others or type any site.
+The list lives in [`strategies/domains.json`](strategies/domains.json) and updates without a new version.
+
+| Country | Preselected | Keep in mind |
+|---|---|---|
+| Turkey | Discord, Roblox, Wattpad, Imgur | Many blocks are also done with DNS: see "Still blocked?" below. |
+| Russia | YouTube, Discord, Instagram, X, Facebook, LinkedIn, Signal, Viber | YouTube is slowed rather than cut; zapret usually works best. |
+| Iran | YouTube, Instagram, X, Telegram, Facebook, Signal, Discord | Filtering also blocks IP addresses and, at times, the whole international internet; DPIMech cannot help then. The Telegram and WhatsApp *apps* connect to IP addresses directly, so only their websites benefit. |
+| Kazakhstan | SoundCloud | Most blocks target news sites and VPNs, often by IP address. Add the sites you need under "Other sites". |
+| Belarus | TikTok, independent media (Zerkalo, Nasha Niva, Svaboda, Belsat, …) | Some outlets change their address often; add the current one under "Other sites". |
+| Egypt | independent media (Mada Masr, Zawia3, Cairo 24) | Voice and video calls in WhatsApp and similar apps are blocked differently and stay blocked. |
+
+Everywhere else Discord comes first. Missing a site or a country? Open an issue or a pull request
+against `strategies/domains.json`.
 
 ## Good to know
 

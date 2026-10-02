@@ -1,4 +1,4 @@
-<p align="center"><a href="README.md">English</a> · <a href="README.tr.md">Türkçe</a> · <b>Русский</b></p>
+<p align="center"><a href="README.md">English</a> · <a href="README.tr.md">Türkçe</a> · <b>Русский</b> · <a href="README.fa.md">فارسی</a> · <a href="README.ar.md">العربية</a></p>
 
 <p align="center"><img src="crates/gui/assets/logo.png" width="128" alt="Логотип DPIMech"></p>
 
@@ -18,8 +18,19 @@
 | | Статус |
 |---|---|
 | **Windows 10 / 11** | Готово. Установщик на странице [Releases](https://github.com/halilkhrmn/dpimech/releases). |
-| **Linux** | Предварительная версия: `.deb`, `.rpm` и AppImage на странице Releases, для Fedora — COPR (см. ниже). |
+| **Linux** | Готово: `.deb`, `.rpm` и AppImage на странице Releases, для Fedora — COPR (см. ниже). |
 | **macOS** | Ранняя предварительная версия: `.dmg` на странице Releases, только локальный прокси (см. ниже). |
+
+<p align="center">
+  <a href="site/screenshots/windows-profiles.png"><img src="site/screenshots/windows-profiles.png" width="49%" alt="Страница профилей DPIMech в Windows"></a>
+  <a href="site/screenshots/windows-editor.png"><img src="site/screenshots/windows-editor.png" width="49%" alt="Редактирование профиля Discord в Windows"></a>
+  <br><sub>Windows: профили и профиль для Discord по приложениям</sub>
+</p>
+<p align="center">
+  <a href="site/screenshots/linux-profiles.png"><img src="site/screenshots/linux-profiles.png" width="49%" alt="Страница профилей DPIMech в Linux"></a>
+  <a href="site/screenshots/linux-editor.png"><img src="site/screenshots/linux-editor.png" width="49%" alt="Редактирование профиля в Linux"></a>
+  <br><sub>Linux: несколько профилей одновременно, редактор профиля</sub>
+</p>
 
 ## Что умеет
 
@@ -37,6 +48,7 @@
 - **Ярлыки.** Щёлкните профиль правой кнопкой (или ⋯) → *Создать ярлык*: значок на рабочем столе
   или в меню, который включает профиль и затем открывает приложение, например Discord.
 - **Лёгкий:** окно занимает около 25–35 МБ памяти, фоновая служба — около 20 МБ.
+- **На вашем языке:** русский, английский, турецкий, персидский и арабский.
 
 ## Windows
 
@@ -67,15 +79,7 @@
 антивирусы ошибочно считают WinDivert опасным. DPIMech скачивает его только из официальных выпусков
 движков.
 
-### Обновление с dpimngr 0.1.x
-
-Раньше DPIMech назывался *dpimngr*. Просто запустите новый установщик: он удалит старую службу и
-перенесёт ваши профили и движки.
-
-## Linux (предварительная версия)
-
-Версия для Linux работает, но пока проверялась только в контейнере для разработки, а не на
-настоящем рабочем столе. Будем рады отзывам.
+## Linux
 
 ### Движки в Linux
 
@@ -101,6 +105,8 @@ UDP (например, голос) идёт напрямую. Трафик пр�
 | openSUSE, RHEL | `dpimech-<версия>-1.x86_64.rpm` | `sudo dnf install ./dpimech-*.x86_64.rpm` |
 | Любой другой дистрибутив | `DPIMech-<версия>-x86_64.AppImage` | `chmod +x DPIMech-*.AppImage`, затем запустите |
 
+[![Copr build status](https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/package/dpimech/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/package/dpimech/)
+
 **Fedora** — добавьте репозиторий один раз, дальше обновления приходят вместе с системой (`sudo dnf upgrade`):
 
 ```sh
@@ -109,13 +115,15 @@ sudo dnf install dpimech
 ```
 
 Пакеты (`.deb`, `.rpm`, COPR) сразу устанавливают и запускают фоновую службу. С AppImage откройте
-DPIMech и один раз нажмите **Install the service** (спросит пароль).
+DPIMech и один раз нажмите **Install the service** (спросит пароль). Библиотека для трея уже
+внутри AppImage. В GNOME для значка в трее нужно расширение *AppIndicator and KStatusNotifierItem Support*
+(в Ubuntu оно уже есть).
 
 ### Сборка из исходников
 
 Нужны [Rust](https://rustup.rs), `systemd` и, для сборки окна, пакеты разработки GTK 3 и
 AppIndicator (в Debian/Ubuntu:
-`sudo apt install build-essential libgtk-3-dev libxdo-dev libayatana-appindicator3-dev libxkbcommon-x11-0`).
+`sudo apt install build-essential libgtk-3-dev libayatana-appindicator3-dev libxkbcommon-x11-0`).
 
 ```sh
 git clone https://github.com/halilkhrmn/dpimech && cd dpimech
@@ -138,6 +146,25 @@ target/release/dpimech                         # окно
 `127.0.0.1:<порт>` в браузере или приложении. Режимы «весь компьютер» и «по приложениям»
 запланированы. Сборка и проверки идут автоматически на macOS, но вручную на Mac ещё не
 тестировалось.
+
+## По странам
+
+DPIMech определяет страну по региональным настройкам системы и показывает первыми сайты, о блокировке
+которых там широко известно; в мастере настройки они уже выбраны. Вы всегда можете выбрать другие или
+ввести любой сайт. Список хранится в [`strategies/domains.json`](strategies/domains.json) и обновляется
+без новой версии.
+
+| Страна | Выбрано заранее | Учтите |
+|---|---|---|
+| Турция | Discord, Roblox, Wattpad, Imgur | Многие блокировки сделаны и через DNS: см. «Всё ещё заблокировано?» ниже. |
+| Россия | YouTube, Discord, Instagram, X, Facebook, LinkedIn, Signal, Viber | YouTube не блокируют, а замедляют; обычно лучше всего работает zapret. |
+| Иран | YouTube, Instagram, X, Telegram, Facebook, Signal, Discord | Фильтрация блокирует и IP-адреса, а временами весь международный интернет — тогда DPIMech не поможет. *Приложения* Telegram и WhatsApp подключаются напрямую к IP-адресам, поэтому помогает только с их сайтами. |
+| Казахстан | SoundCloud | Блокируют в основном новостные сайты и VPN, чаще по IP-адресу. Нужные сайты добавьте в «Другие сайты». |
+| Беларусь | TikTok, независимые СМИ (Зеркало, Наша Ніва, Свабода, Белсат, …) | Некоторые издания часто меняют адрес; добавьте актуальный в «Другие сайты». |
+| Египет | независимые СМИ (Mada Masr, Zawia3, Cairo 24) | Голосовые и видеозвонки в WhatsApp и похожих приложениях блокируются иначе и останутся заблокированными. |
+
+В остальных странах первым идёт Discord. Не хватает сайта или страны? Откройте issue или pull request
+для `strategies/domains.json`.
 
 ## Полезно знать
 

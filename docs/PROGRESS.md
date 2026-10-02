@@ -121,12 +121,105 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
-### 2026-10-02 (33) — Site packs as a JSON file shared with Android
-- Done: `strategies/packs.json` (format 1) replaces the packs in `catalog.rs` (`domain_packs()`, checked
-  parser); desktop gains Imgur, Facebook, LinkedIn, Signal and Viber from the Android list (DECISIONS #43).
-- Verified how: `cargo fmt --check`, `cargo clippy --workspace --all-targets -D warnings`,
-  `cargo test --workspace` (new tests: embedded file, bad hosts, repeated ids, wrong format).
-- Open/next: fetch the file at runtime on desktop too, once the GUI can take a changing list.
+### 2026-10-02 (40) — Android package names in domains.json
+- Done: `android_packages` for every app pack in `strategies/domains.json`, so the Android app can use this
+  file instead of its own copy (DECISIONS #46).
+- Verified how: `cargo test --workspace` (the embedded file still parses; the field is ignored here).
+- Open/next: nothing on desktop.
+
+### 2026-10-02 (39) — 0.3.0: Persian and Arabic, sites by country, "What's new"
+- **Done:** site packs moved to `strategies/domains.json` and fetched from `main` (DECISIONS #43); new packs
+  Telegram, WhatsApp, Facebook, Signal, Viber, LinkedIn, TikTok, SoundCloud, Imgur and independent media of Belarus
+  and Egypt; country tags for TR, RU, IR, KZ, BY, EG (same ids as the Android app), the user's country first and
+  preselected in the wizard and the Lab; chips wrap into rows. Persian and Arabic UI (all 306 strings),
+  `README.fa.md` / `README.ar.md`, a "By country" section in every README. "What's new" dialog after an update
+  from `changelog/<lang>.md` (DECISIONS #45); the release workflow uses the English notes as the release text.
+- **Verified:** `cargo test` (country presets, locale → country, changelog parsing, catalogs complete), clippy,
+  fmt. Screenshots under Xvfb: Lab in Persian with `fa_IR` (Iran's sites first and selected, rows wrap, Persian pack
+  names), wizard in Arabic with `ar_EG` (Egyptian media first), the "What's new" dialog in Arabic after setting
+  `last_version = "0.2.9"`. Arabic and Persian text shape and run right to left correctly; the layout itself is not
+  mirrored (DECISIONS #44). Every new probe host answered HTTPS from here; hosts behind bot checks are not probes.
+- **Open/next:** not tested on Windows yet (region from "Country or region", fonts for Arabic script in Segoe UI);
+  the Android app's country work should use the same lists. At the smallest window (760 px) the chips wrap to the
+  area, but the Lab's engine and strategy rows are wider than the page (already so before; a window manager keeps
+  the window at the layout's minimum, Xvfb does not).
+
+### 2026-10-01 (38) — 0.2.9: profile shortcuts bring up the tray
+- **Owner's report:** opening a profile shortcut starts the profile and the app, but no main window or tray
+  appears, so there is nothing to switch the profile off with.
+- **Done:** the launcher starts `dpimech --minimized` (the main app, in the tray) when no main instance runs.
+  `single::is_running()` checks without making a running instance show its window (Windows: OpenMutexW;
+  Unix: connect without a byte). The main app is started from `$APPIMAGE`, not the launcher's AppImage mount,
+  which goes away when the launcher exits ("Open DPIMech" on the error page had the same problem).
+- **Verified (Linux, Xvfb):** shortcut with no main app: launcher window, then `dpimech --minimized` keeps
+  running with no window; shortcut again: no second instance, window stays hidden. fmt, clippy (Linux +
+  Windows), tests. Not run on Windows yet.
+- **Owner's report:** right-click → "Create shortcut…" on a profile card did nothing (the editor button worked).
+  Cause: every status event replaced the whole profile model, destroying the card whose menu was open; the
+  menu's activation was lost and the click fell through to the new card (opens the editor). Reproduced under
+  Xvfb by changing a profile's status while its menu was open.
+- **Done:** `apply_profiles` updates rows in place when the same profiles are listed; `ProfileCard` resets its
+  switch from `item.on` on every change (the reason for the old wholesale replacement).
+- **Verified (Xvfb):** status change with the menu open, then "Create shortcut…" → dialog opens; switch on via
+  click, off via the service → switch shows off; on/off clicks stay consistent.
+
+### 2026-10-01 (37) — 0.2.8: AppImage starts without libxdo
+- **Report (CachyOS, AppImage 0.2.7):** `error while loading shared libraries: libxdo.so.3`. The AppImage bundles
+  no libraries, and tray-icon's default `libxdo` feature linked it (only for predefined Copy/Paste menu items,
+  which the tray does not use).
+- **Done:** tray-icon without default features (`gtk` only); libxdo dropped from rpm requires, Fedora spec, CI,
+  release workflow and READMEs. The binary now needs only GTK3/glib/fontconfig. libayatana-appindicator is
+  loaded at runtime and its binding panics when missing: the tray thread catches that, and without a tray
+  closing the window quits and `--minimized` shows the window after 3 s instead of running invisibly.
+  The AppImage bundles libayatana-appindicator3 + libayatana-indicator3, libayatana-ido3, libdbusmenu-glib/-gtk3
+  (owner: the tray must always be there); the GUI loads them by path only when the system has none, so no
+  LD_LIBRARY_PATH leaks into apps it starts. The tray-less fallback stays for systems where even that fails.
+- **Verified (bundling):** with all five hidden from the system, the AppImage loads its own copies
+  (/proc/<pid>/maps) and the tray comes up; with them installed it uses the system copies.
+- **Verified:** built the AppImage, hid libxdo + appindicator from the system: window opens, close quits,
+  `--minimized` shows the window; with the libraries back: close keeps it in the tray, `--minimized` stays hidden.
+  `readelf -d`: no libxdo. fmt, clippy (Linux + Windows), tests.
+
+### 2026-10-01 (36) — 0.2.7: Fedora build fixed, lockfile checked in CI
+- **Problem:** COPR build 11060164 failed while making the source RPM: `cargo vendor --locked` refused the
+  v0.2.6 tag, whose Cargo.lock still said 0.2.5 (the lockfile commit landed after PR #9 was merged and tagged).
+- **Done:** version 0.2.7 (no app changes) so COPR builds a tag with a matching lockfile; CI runs clippy and
+  tests with `--locked`, so a version bump without its Cargo.lock fails the pull request.
+- **Verified:** `cargo vendor --locked` succeeds on this commit (the step that failed on COPR).
+- **Next:** after the merge, check the COPR build for 0.2.7.
+
+### 2026-10-01 (35) — Linux no longer "preview"
+- **Done (owner's call: Linux works on their machines):** READMEs (en/tr/ru) and the site call Linux ready;
+  the "only tested in a container" note and the "Upgrading from dpimngr 0.1.x" section are gone.
+  macOS stays "early preview". The dpimngr migration code stays in the app.
+
+### 2026-10-01 (34) — screenshots in the READMEs and on the site
+- **Done:** four screenshots in `site/screenshots/` (Windows ones from the owner, Linux ones taken under Xvfb
+  with a demo data dir), shown in README (en/tr/ru) under the status table and in a "Screenshots" section
+  on the site. One copy: the READMEs link into `site/`, which is what Pages publishes.
+- **Verified:** site rendered with Chromium at 1100 px and 375 px (no horizontal scroll).
+
+### 2026-10-01 (33) — 0.2.6: shortcuts from older versions, driver update error
+- **Owner's reports (Windows, 0.2.4/0.2.5):** Settings said "0" shortcuts while "Discord wDPI" was on the desktop
+  (made with 0.2.1, before `shortcuts.toml` existed); the hint showed "(or  )" because the ⋯ glyph is not in
+  the text font. Updating Windows Packet Filter from the Engines page failed with msiexec 1603, labelled
+  "needs administrator rights?" (wrong: the service is SYSTEM), and the card then showed "Install" — the old
+  driver was gone.
+- **Done:** shortcuts are also found by scanning the desktop and menu folders (Windows known folders, so a
+  OneDrive desktop counts; Linux desktop + applications; macOS Desktop + Applications) for ones whose command
+  is `dpimech --launch <profile>`; they count, are replaced on recreate and removed with their profile.
+  Hint text without the glyph. Driver install refused while per-app profiles run (ProxiFyre holds the
+  driver); msiexec writes a verbose log to `<data>/logs/driver-install.log` and the error shows its first
+  "Error NNNN." line; 1603 now says to restart Windows and press Install again.
+- **Verified:** unit tests for reading the profile from .lnk/.desktop/.app commands and for the MSI log
+  line; Windows cross clippy clean. Not verified on Windows yet: the scan, the driver reinstall.
+- **Next (owner):** restart Windows, Engines → Windows Packet Filter → Install; per-app profiles need it.
+### 2026-10-01 (33) — Landing page links to the Android version
+- **Done:** `site/` gets a Desktop / Android switcher (same one on the Android page,
+  <https://halilkhrmn.github.io/dpimech-android/>), an "On a phone?" note, an Android row in the platform
+  table and a footer link. Android visitors get the main button pointed at the Android page.
+- **Verified (container):** page rendered in Chromium at 1000 px and 390 px: no script errors, no sideways scroll.
+- **Next:** the Android repository needs Pages set to "GitHub Actions" once, like this one.
 
 ### 2026-09-30 (32) — 0.2.5: standard strategies as a JSON file in the repository
 - **Done:** the standard strategies moved from Rust tables to `strategies/default.json` (DECISIONS #42). The app

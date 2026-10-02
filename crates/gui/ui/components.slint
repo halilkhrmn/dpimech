@@ -116,6 +116,12 @@ export component ProfileCard inherits Rectangle {
     background: touch.has-hover ? Theme.card-hover : Theme.card;
     animate background { duration: 120ms; }
 
+    // Cards are updated in place (an open menu must survive a status update), and clicking the
+    // switch replaces its binding to item.on: put the service's state back on every update.
+    changed item => {
+        switch.checked = item.on;
+    }
+
     touch := TouchArea { mouse-cursor: pointer; clicked => { root.clicked(); } }
     // Right click anywhere on the card, or the ⋯ button, opens the same menu. It sits above
     // the TouchArea, which would otherwise swallow the right button too.
@@ -154,7 +160,7 @@ export component ProfileCard inherits Rectangle {
                     clicked => { menu.show({ x: more.x + 16px, y: more.y + more.height + 16px }); }
                 }
             }
-            Switch {
+            switch := Switch {
                 accessible-label: item.name;
                 checked: item.on;
                 toggled => { root.toggled(self.checked); }

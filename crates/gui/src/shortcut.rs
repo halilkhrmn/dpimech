@@ -143,8 +143,10 @@ pub fn create(req: &Request) -> anyhow::Result<Vec<PathBuf>> {
     }
     let made = platform::create(req, &name, &args, &icon)?;
     let mut registry = Registry::load();
-    for old in registry.take(&req.profile_id) {
-        if !made.contains(&old) {
+    let mut old = registry.take(&req.profile_id);
+    old.extend(unrecorded(&req.profile_id));
+    for old in old {
+        if !made.iter().any(|m| same_path(m, &old)) {
             remove_shortcut(&old);
         }
     }
@@ -161,6 +163,7 @@ pub fn create(req: &Request) -> anyhow::Result<Vec<PathBuf>> {
 pub fn remove_for(profile_id: &str) -> usize {
     let mut registry = Registry::load();
     let mut paths = registry.take(profile_id);
+    paths.extend(unrecorded(profile_id));
     // Menu entries have a fixed name, so they are found even without the list.
     if let Some(menu) = platform::menu_entry(profile_id)
         && !paths.contains(&menu)
@@ -174,22 +177,64 @@ pub fn remove_for(profile_id: &str) -> usize {
 
 /// Deletes every shortcut DPIMech made (Settings); returns how many.
 pub fn remove_all() -> usize {
-    let mut profiles: Vec<String> = Registry::load()
-        .entries
-        .into_iter()
-        .map(|e| e.profile)
-        .collect();
+    let mut profiles: Vec<String> = existing().into_iter().map(|e| e.profile).collect();
+    profiles.sort();
     profiles.dedup();
     profiles.iter().map(|p| remove_for(p)).sum()
 }
 
 /// Shortcuts that still exist.
 pub fn count() -> usize {
-    Registry::load()
+    existing().len()
+}
+
+/// Recorded shortcuts that still exist, plus ours found in the usual folders without a record:
+/// made before 0.2.2 (no list yet), or the list was lost.
+fn existing() -> Vec<Entry> {
+    let mut out: Vec<Entry> = Registry::load()
         .entries
-        .iter()
+        .into_iter()
         .filter(|e| e.path.exists())
-        .count()
+        .collect();
+    for found in scan() {
+        if !out.iter().any(|e| same_path(&e.path, &found.path)) {
+            out.push(found);
+        }
+    }
+    out
+}
+
+/// Our shortcuts for `profile_id` that are not in the list.
+fn unrecorded(profile_id: &str) -> Vec<PathBuf> {
+    let recorded = Registry::load().entries;
+    scan()
+        .into_iter()
+        .filter(|f| f.profile == profile_id)
+        .filter(|f| !recorded.iter().any(|e| same_path(&e.path, &f.path)))
+        .map(|f| f.path)
+        .collect()
+}
+
+/// Shortcuts in the desktop and menu folders whose command is `dpimech --launch <profile>`.
+fn scan() -> Vec<Entry> {
+    platform::shortcut_dirs()
+        .iter()
+        .filter_map(|dir| std::fs::read_dir(dir).ok())
+        .flat_map(|entries| entries.flatten().map(|e| e.path()))
+        .filter_map(|path| {
+            let profile = launch_profile(&path)?;
+            Some(Entry { profile, path })
+        })
+        .collect()
+}
+
+/// Windows paths differ only in case when they are the same file.
+fn same_path(a: &Path, b: &Path) -> bool {
+    if cfg!(windows) {
+        a.to_string_lossy().to_lowercase() == b.to_string_lossy().to_lowercase()
+    } else {
+        a == b
+    }
 }
 
 /// Where each shortcut went, so it can be replaced or removed later (`shortcuts.toml`).
@@ -250,29 +295,49 @@ fn remove_shortcut(path: &Path) -> bool {
 }
 
 fn is_our_shortcut(path: &Path) -> bool {
+    launch_profile(path).is_some()
+}
+
+/// The profile a shortcut starts, if its command is `dpimech --launch <profile>`.
+fn launch_profile(path: &Path) -> Option<String> {
     let ext = path
         .extension()
         .and_then(|e| e.to_str())
         .unwrap_or_default()
         .to_ascii_lowercase();
-    let contents = match ext.as_str() {
+    let command = match ext.as_str() {
         // .lnk files store the arguments as UTF-16.
-        "lnk" => std::fs::read(path).ok().map(|b| {
+        "lnk" => {
+            let bytes = std::fs::read(path).ok()?;
             let wide: Vec<u8> = LAUNCH_FLAG
                 .encode_utf16()
                 .flat_map(u16::to_le_bytes)
                 .collect();
-            b.windows(wide.len()).any(|w| w == wide.as_slice())
-        }),
-        "desktop" => std::fs::read_to_string(path)
-            .ok()
-            .map(|t| t.contains(LAUNCH_FLAG)),
-        "app" => std::fs::read_to_string(path.join("Contents/MacOS/launch"))
-            .ok()
-            .map(|t| t.contains(LAUNCH_FLAG)),
-        _ => None,
+            let at = bytes
+                .windows(wide.len())
+                .position(|w| w == wide.as_slice())?;
+            let units: Vec<u16> = bytes[at..]
+                .chunks_exact(2)
+                .take(200)
+                .map(|c| u16::from_le_bytes([c[0], c[1]]))
+                .collect();
+            String::from_utf16_lossy(&units)
+        }
+        "desktop" => std::fs::read_to_string(path).ok()?,
+        "app" => std::fs::read_to_string(path.join("Contents/MacOS/launch")).ok()?,
+        _ => return None,
     };
-    contents.unwrap_or(false)
+    profile_after_flag(&command)
+}
+
+fn profile_after_flag(command: &str) -> Option<String> {
+    let rest = &command[command.find(LAUNCH_FLAG)? + LAUNCH_FLAG.len()..];
+    let rest = rest.trim_start_matches(|c: char| c == '"' || c == '\'' || c.is_whitespace());
+    let id: String = rest
+        .chars()
+        .take_while(|c| c.is_ascii_alphanumeric() || *c == '-' || *c == '_')
+        .collect();
+    (!id.is_empty()).then_some(id)
 }
 
 /// Icon files are named `<profile>-<timestamp>.<ext>`; `keep_newest` keeps the one just made.
@@ -315,7 +380,7 @@ fn safe_id(profile_id: &str) -> String {
 }
 
 /// The program a shortcut should start: the AppImage itself rather than its temporary mount.
-fn launcher_exe() -> anyhow::Result<PathBuf> {
+pub fn launcher_exe() -> anyhow::Result<PathBuf> {
     if let Some(appimage) = std::env::var_os("APPIMAGE") {
         return Ok(PathBuf::from(appimage));
     }
@@ -586,6 +651,33 @@ mod platform {
         None
     }
 
+    /// Where shortcuts are made: the desktop and the Start menu (known folders, so a desktop
+    /// moved to OneDrive is found too).
+    pub fn shortcut_dirs() -> Vec<PathBuf> {
+        use windows_sys::Win32::System::Com::CoTaskMemFree;
+        use windows_sys::Win32::UI::Shell::{
+            FOLDERID_Desktop, FOLDERID_Programs, KF_FLAG_DEFAULT, SHGetKnownFolderPath,
+        };
+        [FOLDERID_Desktop, FOLDERID_Programs]
+            .iter()
+            .filter_map(|id| {
+                let mut raw = std::ptr::null_mut();
+                // SAFETY: `raw` receives a CoTaskMem string that is freed below in every case.
+                let hr = unsafe {
+                    SHGetKnownFolderPath(id, KF_FLAG_DEFAULT as u32, std::ptr::null_mut(), &mut raw)
+                };
+                let path = (hr == 0 && !raw.is_null()).then(|| {
+                    // SAFETY: on success `raw` is a NUL-terminated wide string.
+                    let len = (0..).take_while(|&i| unsafe { *raw.add(i) } != 0).count();
+                    let wide = unsafe { std::slice::from_raw_parts(raw, len) };
+                    PathBuf::from(String::from_utf16_lossy(wide))
+                });
+                unsafe { CoTaskMemFree(raw.cast()) };
+                path
+            })
+            .collect()
+    }
+
     /// WScript.Shell through PowerShell: writing .lnk files by hand means implementing
     /// MS-SHLLINK, and windows-sys has no IShellLink bindings. Values travel in environment
     /// variables, never inside the script text.
@@ -718,6 +810,12 @@ mod platform {
         Some(super::linux::data_home()?.join("dpimech").join("shortcuts"))
     }
 
+    pub fn shortcut_dirs() -> Vec<PathBuf> {
+        let mut dirs = vec![super::linux::desktop_dir()];
+        dirs.extend(super::linux::data_home().map(|d| d.join("applications")));
+        dirs
+    }
+
     pub fn menu_entry(profile_id: &str) -> Option<PathBuf> {
         Some(
             super::linux::data_home()?
@@ -825,6 +923,13 @@ mod platform {
 
     pub fn menu_entry(_profile_id: &str) -> Option<PathBuf> {
         None
+    }
+
+    pub fn shortcut_dirs() -> Vec<PathBuf> {
+        std::env::var_os("HOME")
+            .map(PathBuf::from)
+            .map(|home| vec![home.join("Desktop"), home.join("Applications")])
+            .unwrap_or_default()
     }
 
     fn sh_quote(s: &str) -> String {
@@ -1026,6 +1131,25 @@ mod tests {
             icns.len()
         );
         assert!(decode_png(&encode_png(&img)).is_some());
+    }
+
+    #[test]
+    fn profile_is_read_from_the_launch_command() {
+        let id = "0123456789abcdef0123456789abcdef";
+        // .lnk arguments (quoted), .desktop Exec, macOS launch script.
+        for command in [
+            format!("\"--launch\" \"{id}\" \"--open\" \"x\""),
+            format!("Exec=/usr/bin/dpimech --launch {id} --open firefox"),
+            format!("exec '/Applications/DPIMech.app/x' --launch '{id}'"),
+        ] {
+            assert_eq!(
+                profile_after_flag(&command).as_deref(),
+                Some(id),
+                "{command}"
+            );
+        }
+        assert_eq!(profile_after_flag("Exec=/usr/bin/dpimech"), None);
+        assert_eq!(profile_after_flag("--launch \"\""), None);
     }
 
     #[test]

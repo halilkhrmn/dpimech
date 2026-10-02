@@ -149,6 +149,9 @@ impl Supervisor {
                 if let Err(e) = lab.update_standard_strategies().await {
                     tracing::warn!("{e:#}");
                 }
+                if let Err(e) = lab.update_domain_packs().await {
+                    tracing::warn!("{e:#}");
+                }
                 if let Ok(Some(version)) = packages.check_app_update().await {
                     let _ = events.send(Event::AppUpdateAvailable {
                         url: format!(
@@ -382,6 +385,32 @@ impl Supervisor {
             }
         }
         self.lab.start(request).await
+    }
+
+    /// The driver cannot be replaced while ProxiFyre has it open: its installer then fails with
+    /// 1603 after the old version is already gone.
+    pub async fn install_package(&self, id: PackageId) -> anyhow::Result<()> {
+        if id == PackageId::PacketFilterDriver {
+            let users: Vec<String> = {
+                let state = self.state.lock().await;
+                state
+                    .config
+                    .profiles
+                    .iter()
+                    .filter(|p| state.running.contains_key(&p.id))
+                    .filter(|p| p.routing.mode() == RoutingMode::PerApp)
+                    .map(|p| p.name.clone())
+                    .collect()
+            };
+            if !users.is_empty() {
+                bail!(
+                    "{} is in use by: {} — stop those profiles first",
+                    id.display_name(),
+                    users.join(", ")
+                );
+            }
+        }
+        self.packages.install(id).await
     }
 
     /// Refuses to delete a package that a running profile depends on.

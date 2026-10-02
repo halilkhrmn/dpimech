@@ -20,12 +20,13 @@ mod shortcutui;
 mod single;
 mod state;
 mod tray;
+mod whatsnew;
 mod wizard;
 
 use crate::i18n::tr;
 use dpimech_core::model::{EngineKind, Os, ProfileState, RoutingMode};
 use dpimech_core::packages::PackageId;
-use slint::{CloseRequestResponse, ComponentHandle, ModelRc, SharedString, VecModel};
+use slint::{CloseRequestResponse, ComponentHandle, Model, ModelRc, SharedString, VecModel};
 use tokio::sync::mpsc;
 
 use crate::bridge::Command;
@@ -109,18 +110,22 @@ fn main() -> anyhow::Result<()> {
     ui.set_engine_names(string_model(engines.iter().map(|e| e.display_name())));
     ui.set_logs(ModelRc::new(VecModel::<LogItem>::default()));
     ui.set_draft_apps(DRAFT_APPS.with(|m| ModelRc::from(m.clone())));
-    ui.set_domain_pack_names(string_model(
-        dpimech_core::catalog::domain_packs()
-            .iter()
-            .map(|p| p.name.as_str()),
-    ));
+    set_domain_packs(&ui);
+    ui.on_editor_packs_width({
+        let weak = ui.as_weak();
+        move |w| {
+            if convert::Chips::Editor.set_width(w) {
+                set_domain_packs(&weak.unwrap());
+            }
+        }
+    });
     ui.on_add_domain_pack({
         let weak = ui.as_weak();
         move |index| {
             let ui = weak.unwrap();
             let Some(pack) = usize::try_from(index)
                 .ok()
-                .and_then(|i| dpimech_core::catalog::domain_packs().get(i))
+                .and_then(|i| dpimech_core::catalog::domain_packs().get(i).cloned())
             else {
                 return;
             };
@@ -292,6 +297,7 @@ fn main() -> anyhow::Result<()> {
 
     // Language: the system's unless chosen in Settings; switching applies at once.
     i18n::apply(&prefs.borrow().language);
+    refresh_pack_lists(&ui); // pack names can be translated
     let language_names = || -> Vec<String> {
         i18n::choices()
             .iter()
@@ -330,6 +336,7 @@ fn main() -> anyhow::Result<()> {
             // Text built in Rust is refreshed from the current state.
             let profiles = PROFILES.with_borrow(|p| p.clone());
             apply_profiles(&ui, profiles);
+            refresh_pack_lists(&ui);
         }
     });
     let show_log_settings = {
@@ -534,6 +541,14 @@ fn main() -> anyhow::Result<()> {
         let weak = ui.as_weak();
         move |i| wizard::toggle_pack(&weak.unwrap(), i)
     });
+    ui.on_wizard_packs_width({
+        let weak = ui.as_weak();
+        move |w| {
+            if convert::Chips::Wizard.set_width(w) {
+                wizard::refresh_packs(&weak.unwrap());
+            }
+        }
+    });
     ui.on_wizard_set_where({
         let weak = ui.as_weak();
         move |i| wizard::set_where(&weak.unwrap(), i)
@@ -604,6 +619,15 @@ fn main() -> anyhow::Result<()> {
     });
     if !prefs.borrow().onboarded {
         wizard::open(&ui, true);
+    } else if let Some(notes) = whatsnew::pending(&prefs.borrow().last_version) {
+        ui.set_whats_new_version(dpimech_core::VERSION.into());
+        ui.set_whats_new_notes(notes.into());
+        ui.set_whats_new_open(true);
+    }
+    if prefs.borrow().last_version != dpimech_core::VERSION {
+        let mut p = prefs.borrow_mut();
+        p.last_version = dpimech_core::VERSION.to_owned();
+        prefs::save(&p);
     }
 
     labui::init(&ui);
@@ -621,6 +645,14 @@ fn main() -> anyhow::Result<()> {
     ui.on_lab_toggle_pack({
         let weak = ui.as_weak();
         move |i| labui::toggle_pack(&weak.unwrap(), i)
+    });
+    ui.on_lab_packs_width({
+        let weak = ui.as_weak();
+        move |w| {
+            if convert::Chips::Lab.set_width(w) {
+                labui::refresh_packs(&weak.unwrap());
+            }
+        }
     });
     ui.on_lab_refresh({
         let weak = ui.as_weak();
@@ -707,8 +739,15 @@ fn main() -> anyhow::Result<()> {
     });
 
     // Closing the window keeps the app in the tray; quitting happens from the tray menu.
-    ui.window()
-        .on_close_requested(|| CloseRequestResponse::HideWindow);
+    // Without a tray the window could not be brought back, so closing quits.
+    ui.window().on_close_requested(|| {
+        if tray::available() {
+            CloseRequestResponse::HideWindow
+        } else {
+            let _ = slint::quit_event_loop();
+            CloseRequestResponse::HideWindow
+        }
+    });
     // macOS only accepts a status-bar item once the application's event loop runs.
     #[cfg(target_os = "macos")]
     {
@@ -764,6 +803,17 @@ fn main() -> anyhow::Result<()> {
     // Launched at sign-in with --minimized: stay in the tray until the user opens the window.
     if !std::env::args().any(|a| a == autostart::MINIMIZED_FLAG) {
         ui.show()?;
+    } else {
+        // The Linux tray comes up on its own thread; if it never does, show the window instead
+        // of running invisibly.
+        let weak = ui.as_weak();
+        slint::Timer::single_shot(std::time::Duration::from_secs(3), move || {
+            if !tray::available()
+                && let Some(ui) = weak.upgrade()
+            {
+                let _ = ui.show();
+            }
+        });
     }
     slint::run_event_loop_until_quit()?;
     Ok(())
@@ -779,12 +829,45 @@ pub fn set_app_update(ui: &AppWindow, text: String, url: Option<String>) {
     APP_UPDATE_URL.set(url);
 }
 
-/// Replaces the profile list; recreating the model resets per-card switch state.
+/// Updates the profile cards. Rows change in place while the same profiles are listed, so a card
+/// keeps its open menu when a status update arrives; a new model only when profiles come or go.
 pub fn apply_profiles(ui: &AppWindow, profiles: Vec<ProfileState>) {
     let items: Vec<ProfileItem> = profiles.iter().map(convert::profile_item).collect();
-    ui.set_profiles(ModelRc::new(VecModel::from(items)));
+    let current = ui.get_profiles();
+    let same_list = current.row_count() == items.len()
+        && items
+            .iter()
+            .enumerate()
+            .all(|(i, item)| current.row_data(i).is_some_and(|row| row.id == item.id));
+    match current.as_any().downcast_ref::<VecModel<ProfileItem>>() {
+        Some(model) if same_list => {
+            for (i, item) in items.into_iter().enumerate() {
+                if model.row_data(i).as_ref() != Some(&item) {
+                    model.set_row_data(i, item);
+                }
+            }
+        }
+        _ => ui.set_profiles(ModelRc::new(VecModel::from(items))),
+    }
     tray::update_profiles(&profiles);
     PROFILES.set(profiles);
+}
+
+fn set_domain_packs(ui: &AppWindow) {
+    ui.set_domain_packs(convert::pack_rows(convert::Chips::Editor, &[]));
+}
+
+/// The service sent its domain packs (possibly newer than the built-in ones).
+pub fn apply_domain_packs(ui: &AppWindow, packs: Vec<dpimech_core::catalog::DomainPack>) {
+    if dpimech_core::catalog::set_domain_packs(packs) {
+        refresh_pack_lists(ui);
+    }
+}
+
+fn refresh_pack_lists(ui: &AppWindow) {
+    set_domain_packs(ui);
+    labui::refresh_packs(ui);
+    wizard::refresh_packs(ui);
 }
 
 fn string_model<'a>(items: impl Iterator<Item = &'a str>) -> ModelRc<SharedString> {

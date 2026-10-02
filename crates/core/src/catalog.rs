@@ -9,83 +9,177 @@
 use std::collections::HashMap;
 use std::sync::OnceLock;
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 use crate::model::EngineKind;
 
-/// A ready-made site pack, from `strategies/packs.json` (shared with the Android app).
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct DomainPack {
     pub id: String,
     pub name: String,
     /// Everything the engine should act on (goes into the hostlist).
     pub domains: Vec<String>,
-    /// Hosts the Strategy Lab requests. Each answers HTTPS on `/`; apex domains without an
-    /// A record (e.g. `discordapp.net`) would fail regardless of the strategy and make every
-    /// result look worse.
+    /// Hosts the Strategy Lab and the connection check request. Each must answer HTTPS on `/`:
+    /// apex domains without an A record (e.g. `discordapp.net`) would fail regardless of the
+    /// strategy and make every result look worse.
     pub probes: Vec<String>,
-    // `android_packages` (Android apps that use these sites) is only read by the Android app.
+    /// ISO codes of the countries where the site is widely reported blocked; `*` = offered first
+    /// everywhere. The wizard preselects a country's packs and every list shows them first.
+    #[serde(default)]
+    pub countries: Vec<String>,
+    /// `name` in other languages, by language code ("fa", "ar", …); brand names need none.
+    #[serde(default)]
+    pub names: std::collections::BTreeMap<String, String>,
 }
 
-/// The site packs, from `strategies/packs.json` in the repository. Discord stays first: the
-/// wizard and the Lab preselect it.
-pub const EMBEDDED_PACKS: &str = include_str!("../../../strategies/packs.json");
-/// The pack file format this build understands.
-const PACK_FORMAT: u32 = 1;
+impl DomainPack {
+    pub fn display_name(&self, lang: &str) -> &str {
+        self.names.get(lang).map_or(&self.name, String::as_str)
+    }
+}
+
+/// The sites offered by the wizard, the Lab and the editor, from `strategies/domains.json`. Like
+/// the strategies, the service fetches the file from `main` ([`DOMAINS_URL`]) so a new blocked
+/// site reaches users without a release; this copy is the fallback.
+pub const EMBEDDED_DOMAINS: &str = include_str!("../../../strategies/domains.json");
+pub const DOMAINS_URL: &str =
+    "https://raw.githubusercontent.com/halilkhrmn/dpimech/main/strategies/domains.json";
+const DOMAINS_FORMAT: u32 = 1;
 
 #[derive(Deserialize)]
-struct PackFile {
+struct DomainFile {
     format: u32,
     packs: Vec<DomainPack>,
 }
 
-/// Parses and checks a pack file: unique ids, plain host names, at least one probe each.
-pub fn parse_packs(text: &str) -> anyhow::Result<Vec<DomainPack>> {
-    let file: PackFile = serde_json::from_str(text)?;
-    if file.format != PACK_FORMAT {
-        anyhow::bail!("unsupported pack file format {}", file.format);
+/// Parses and checks a domain pack file. The domains end up in engine hostlists and in requests
+/// the service makes, so each must be a plain host name.
+pub fn parse_domain_packs(text: &str) -> anyhow::Result<Vec<DomainPack>> {
+    let file: DomainFile = serde_json::from_str(text)?;
+    if file.format != DOMAINS_FORMAT {
+        anyhow::bail!("unsupported domain pack format {}", file.format);
     }
-    if file.packs.is_empty() {
-        anyhow::bail!("the pack file has no packs");
+    if file.packs.is_empty() || file.packs.len() > 100 {
+        anyhow::bail!("{} domain packs", file.packs.len());
     }
     let mut ids = std::collections::HashSet::new();
-    for p in &file.packs {
-        if p.id.is_empty() || p.name.trim().is_empty() || !ids.insert(p.id.as_str()) {
-            anyhow::bail!("pack \"{}\": missing or repeated id or name", p.id);
+    for pack in &file.packs {
+        let id_ok = !pack.id.is_empty()
+            && pack.id.len() <= 40
+            && pack
+                .id
+                .bytes()
+                .all(|b| b.is_ascii_lowercase() || b.is_ascii_digit() || b == b'-');
+        if !id_ok || !ids.insert(pack.id.as_str()) {
+            anyhow::bail!("bad or repeated pack id \"{}\"", pack.id);
         }
-        if p.domains.is_empty() || p.probes.is_empty() {
-            anyhow::bail!("pack \"{}\": no domains or no probes", p.id);
+        if std::iter::once(&pack.name)
+            .chain(pack.names.values())
+            .any(|n| n.trim().is_empty() || n.len() > 120)
+        {
+            anyhow::bail!("{}: bad name", pack.id);
         }
-        if let Some(bad) = p.domains.iter().chain(&p.probes).find(|h| !is_host(h)) {
-            anyhow::bail!("pack \"{}\": \"{bad}\" is not a host name", p.id);
+        if pack.domains.is_empty() || pack.probes.is_empty() {
+            anyhow::bail!("{}: needs domains and probes", pack.id);
+        }
+        if pack.domains.len() > 200 || pack.probes.len() > 20 {
+            anyhow::bail!("{}: too many domains", pack.id);
+        }
+        if let Some(bad) = pack.countries.iter().find(|c| {
+            c.as_str() != "*" && !(c.len() == 2 && c.bytes().all(|b| b.is_ascii_uppercase()))
+        }) {
+            anyhow::bail!("{}: \"{bad}\" is not a country code", pack.id);
+        }
+        if let Some(bad) = pack
+            .domains
+            .iter()
+            .chain(&pack.probes)
+            .find(|d| !is_host_name(d))
+        {
+            anyhow::bail!("{}: \"{bad}\" is not a host name", pack.id);
         }
     }
     Ok(file.packs)
 }
 
-/// A lower-case DNS name with at least one dot: what a hosts file and a probe accept.
-fn is_host(h: &str) -> bool {
-    h.len() <= 253
-        && h.contains('.')
-        && h.split('.').all(|label| {
+fn is_host_name(s: &str) -> bool {
+    !s.is_empty()
+        && s.len() <= 253
+        && s.contains('.')
+        && s.split('.').all(|label| {
             !label.is_empty()
                 && label.len() <= 63
                 && !label.starts_with('-')
                 && !label.ends_with('-')
                 && label
                     .bytes()
-                    .all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == b'-')
+                    .all(|b| b.is_ascii_lowercase() || b.is_ascii_digit() || b == b'-')
         })
 }
 
-/// The packs built into this binary.
-pub fn domain_packs() -> &'static [DomainPack] {
-    static PACKS: OnceLock<Vec<DomainPack>> = OnceLock::new();
-    PACKS.get_or_init(|| parse_packs(EMBEDDED_PACKS).expect("valid packs.json"))
+static CURRENT_PACKS: std::sync::RwLock<Option<std::sync::Arc<Vec<DomainPack>>>> =
+    std::sync::RwLock::new(None);
+
+/// The packs in use: the set handed to [`set_domain_packs`] (the GUI gets it from the service),
+/// else the copy built into this binary.
+pub fn domain_packs() -> std::sync::Arc<Vec<DomainPack>> {
+    if let Some(packs) = CURRENT_PACKS.read().unwrap().as_ref() {
+        return packs.clone();
+    }
+    static EMBEDDED: OnceLock<std::sync::Arc<Vec<DomainPack>>> = OnceLock::new();
+    EMBEDDED
+        .get_or_init(|| {
+            std::sync::Arc::new(parse_domain_packs(EMBEDDED_DOMAINS).expect("valid domains.json"))
+        })
+        .clone()
 }
 
-pub fn domain_pack(id: &str) -> Option<&'static DomainPack> {
-    domain_packs().iter().find(|p| p.id == id)
+/// Replaces the packs in use; returns whether they changed.
+pub fn set_domain_packs(packs: Vec<DomainPack>) -> bool {
+    if *domain_packs() == packs {
+        return false;
+    }
+    *CURRENT_PACKS.write().unwrap() = Some(std::sync::Arc::new(packs));
+    true
+}
+
+pub fn domain_pack(id: &str) -> Option<DomainPack> {
+    domain_packs().iter().find(|p| p.id == id).cloned()
+}
+
+/// Indexes into `packs` in the order to show them to a user in `country` (ISO code, may be
+/// empty): that country's sites, then the ones offered everywhere, then the rest.
+pub fn pack_order(packs: &[DomainPack], country: &str) -> Vec<usize> {
+    let rank = |p: &DomainPack| {
+        if !country.is_empty() && p.countries.iter().any(|c| c == country) {
+            0
+        } else if p.countries.iter().any(|c| c == "*") {
+            1
+        } else {
+            2
+        }
+    };
+    let mut order: Vec<usize> = (0..packs.len()).collect();
+    order.sort_by_key(|&i| rank(&packs[i])); // stable: file order within a rank
+    order
+}
+
+/// The packs to preselect for a user in `country`: the country's own, else the first one
+/// offered everywhere.
+pub fn country_preset(packs: &[DomainPack], country: &str) -> Vec<String> {
+    let own: Vec<String> = packs
+        .iter()
+        .filter(|p| !country.is_empty() && p.countries.iter().any(|c| c == country))
+        .map(|p| p.id.clone())
+        .collect();
+    if !own.is_empty() {
+        return own;
+    }
+    packs
+        .iter()
+        .find(|p| p.countries.iter().any(|c| c == "*"))
+        .map(|p| vec![p.id.clone()])
+        .unwrap_or_default()
 }
 
 /// Where DPIMech itself is released (update notifications).
@@ -350,32 +444,6 @@ mod tests {
     use super::*;
 
     #[test]
-    fn embedded_packs_parse_with_discord_first() {
-        let packs = domain_packs();
-        assert_eq!(packs[0].id, "discord");
-        assert!(domain_pack("youtube").is_some());
-        assert!(packs.len() >= 6);
-    }
-
-    #[test]
-    fn pack_file_rejects_bad_hosts_and_formats() {
-        let ok = r#"{"format":1,"packs":[{"id":"a","name":"A","domains":["a.com"],"probes":["a.com"]}]}"#;
-        assert_eq!(parse_packs(ok).unwrap()[0].domains, ["a.com"]);
-        for bad in [
-            ok.replace("\"format\":1", "\"format\":2"),
-            ok.replace("[\"a.com\"],\"probes", "[\"a.com/x\"],\"probes"),
-            ok.replace("[\"a.com\"],\"probes", "[\"-a.com\"],\"probes"),
-            ok.replace("\"probes\":[\"a.com\"]", "\"probes\":[]"),
-            ok.replace(
-                "}]}",
-                "},{\"id\":\"a\",\"name\":\"B\",\"domains\":[\"b.com\"],\"probes\":[\"b.com\"]}]}",
-            ),
-        ] {
-            assert!(parse_packs(&bad).is_err(), "{bad}");
-        }
-    }
-
-    #[test]
     fn nfqws_strategies_lose_only_the_windivert_filters() {
         for s in builtin_strategies(EngineKind::ZapretNfqws) {
             let args = adapt_args(EngineKind::ZapretNfqws, &s.args);
@@ -441,5 +509,62 @@ mod tests {
             "bye_dpi": [{"name": "b", "args": "-s1"}]}}"#;
         let file = StrategyFile::parse(extra).unwrap();
         assert_eq!(file.for_engine(EngineKind::ByeDpi).len(), 1);
+    }
+
+    #[test]
+    fn country_presets_come_first() {
+        let packs = domain_packs();
+        let ir = country_preset(&packs, "IR");
+        assert!(ir.contains(&"telegram".to_owned()) && !ir.contains(&"roblox".to_owned()));
+        let order = pack_order(&packs, "IR");
+        assert!(order[..ir.len()].iter().all(|&i| ir.contains(&packs[i].id)));
+        assert_eq!(order.len(), packs.len());
+        // No country of its own: the first pack offered everywhere.
+        assert_eq!(country_preset(&packs, "DE"), ["discord"]);
+        assert_eq!(country_preset(&packs, ""), ["discord"]);
+        for c in ["TR", "RU", "IR", "KZ", "BY", "EG"] {
+            assert!(!country_preset(&packs, c).is_empty(), "{c}");
+        }
+    }
+
+    #[test]
+    fn domain_packs_parse_and_reject_bad_files() {
+        let packs = domain_packs();
+        assert!(packs.iter().any(|p| p.id == "discord"));
+        assert!(domain_pack("youtube").is_some_and(|p| p.domains.contains(&"youtube.com".into())));
+
+        let pack = |id: &str, domain: &str| {
+            format!(
+                r#"{{"format":1,"packs":[{{"id":"{id}","name":"X","domains":["{domain}"],"probes":["{domain}"]}}]}}"#
+            )
+        };
+        assert!(parse_domain_packs(&pack("x", "x.com")).is_ok());
+        // Domains end up in hostlist files and requests: nothing but host names.
+        for bad in [
+            "x.com/a",
+            "-x.com",
+            "x",
+            "x..com",
+            "X.com",
+            "x.com\\n--debug=@f",
+        ] {
+            assert!(parse_domain_packs(&pack("x", bad)).is_err(), "{bad}");
+        }
+        assert!(parse_domain_packs(&pack("Bad Id", "x.com")).is_err());
+        let country = |c: &str| {
+            pack("x", "x.com").replace(r#""probes""#, &format!(r#""countries":["{c}"],"probes""#))
+        };
+        assert!(parse_domain_packs(&country("IR")).is_ok());
+        assert!(parse_domain_packs(&country("*")).is_ok());
+        assert!(parse_domain_packs(&country("ir")).is_err());
+        assert!(parse_domain_packs(&country("IRN")).is_err());
+        let twice = r#"{"format":1,"packs":[
+            {"id":"a","name":"A","domains":["a.com"],"probes":["a.com"]},
+            {"id":"a","name":"B","domains":["b.com"],"probes":["b.com"]}]}"#;
+        assert!(parse_domain_packs(twice).is_err());
+        assert!(
+            parse_domain_packs(&pack("x", "x.com").replace(r#""format":1"#, r#""format":2"#))
+                .is_err()
+        );
     }
 }

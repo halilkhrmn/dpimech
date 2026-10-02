@@ -1,1229 +1,1229 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Language: tr\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: ar\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5);\n"
 
 #: ui/app.slint:211
 msgid "Profiles"
-msgstr "Profiller"
+msgstr "الملفات الشخصية"
 
 #: ui/app.slint:216
 msgid "Strategy Lab"
-msgstr "Strateji Laboratuvarı"
+msgstr "مختبر الإستراتيجيات"
 
 #: ui/app.slint:221
 msgid "Engines"
-msgstr "Motorlar"
+msgstr "المحركات"
 
 #: ui/app.slint:227
 msgid "Logs"
-msgstr "Kayıtlar"
+msgstr "السجلات"
 
 #: ui/app.slint:233
 msgid "Settings"
-msgstr "Ayarlar"
+msgstr "الإعدادات"
 
 #: ui/app.slint:276
 msgid "Another DPI tool is running: {}. Two tools on the same traffic break connections — close it, or turn DPIMech's profiles off."
-msgstr "Başka bir DPI aracı çalışıyor: {}. Aynı trafikte iki araç bağlantıları bozar — onu kapat ya da DPIMech profillerini kapat."
+msgstr "أداة أخرى لتجاوز DPI قيد التشغيل: {}. أداتان على نفس حركة المرور تُفسدان الاتصالات — أغلقها أو أوقف ملفات DPIMech الشخصية."
 
 #: ui/app.slint:294
 msgid "DPIMech {} is ready to install."
-msgstr "DPIMech {} kurulmaya hazır."
+msgstr "DPIMech {} جاهز للتثبيت."
 
 #: ui/app.slint:298
 msgid "Restart and update"
-msgstr "Yeniden başlat ve güncelle"
+msgstr "إعادة التشغيل والتحديث"
 
 #: ui/app.slint:310
 msgid "Background service is not running. Engines can't be started until it is."
-msgstr "Arka plan servisi çalışmıyor. Servis çalışmadan motorlar başlatılamaz."
+msgstr "خدمة الخلفية لا تعمل. لا يمكن تشغيل المحركات حتى تعمل."
 
 #: ui/components.slint:132
 msgid "Edit"
-msgstr "Düzenle"
+msgstr "تعديل"
 
 #: ui/components.slint:133
 msgid "Create shortcut…"
-msgstr "Kısayol oluştur…"
+msgstr "إنشاء اختصار…"
 
 #: ui/components.slint:155
 msgid "More actions"
-msgstr "Diğer işlemler"
+msgstr "إجراءات أخرى"
 
 #: ui/components.slint:198
 msgid "Check the connection now"
-msgstr "Bağlantıyı şimdi kontrol et"
+msgstr "افحص الاتصال الآن"
 
 #: ui/editor.slint:78
 msgid "running"
-msgstr "çalışıyor"
+msgstr "قيد التشغيل"
 
 #: ui/editor.slint:116
 msgid "Add application"
-msgstr "Uygulama ekle"
+msgstr "إضافة تطبيق"
 
 #: ui/editor.slint:117
 msgid "Close"
-msgstr "Kapat"
+msgstr "إغلاق"
 
 #: ui/editor.slint:120
 msgid "Search running and installed apps…"
-msgstr "Çalışan ve yüklü uygulamalarda ara…"
+msgstr "ابحث في التطبيقات العاملة والمثبتة…"
 
 #: ui/editor.slint:131
 msgid "Looking for apps…"
-msgstr "Uygulamalar aranıyor…"
+msgstr "جارٍ البحث عن التطبيقات…"
 
 #: ui/editor.slint:146
 msgid "Or type a name (discord) or path…"
-msgstr "Ya da bir ad (discord) veya yol yaz…"
+msgstr "أو اكتب اسمًا (discord) أو مسارًا…"
 
 #: ui/editor.slint:150
 msgid "Add"
-msgstr "Ekle"
+msgstr "إضافة"
 
 #: ui/editor.slint:154
 msgid "Browse…"
-msgstr "Gözat…"
+msgstr "استعراض…"
 
 #: ui/editor.slint:186
 msgid "New profile"
-msgstr "Yeni profil"
+msgstr "ملف شخصي جديد"
 
 #: ui/editor.slint:186
 msgid "Edit profile"
-msgstr "Profili düzenle"
+msgstr "تعديل الملف الشخصي"
 
 #: ui/editor.slint:188
 msgid "Back"
-msgstr "Geri"
+msgstr "رجوع"
 
 #: ui/editor.slint:204
 msgid "Name"
-msgstr "Ad"
+msgstr "الاسم"
 
 #: ui/editor.slint:207
 msgid "e.g. Discord"
-msgstr "örn. Discord"
+msgstr "مثلًا Discord"
 
 #: ui/editor.slint:212
 msgid "Engine"
-msgstr "Motor"
+msgstr "المحرك"
 
 #: ui/editor.slint:224
 msgid "Routing"
-msgstr "Yönlendirme"
+msgstr "التوجيه"
 
 #: ui/editor.slint:232
 msgid "Local proxy port"
-msgstr "Yerel proxy portu"
+msgstr "منفذ الوكيل المحلي"
 
 #: ui/editor.slint:241
 msgid "Start with service"
-msgstr "Servisle birlikte başlat"
+msgstr "التشغيل مع الخدمة"
 
 #: ui/editor.slint:251
 msgid "Games with strict anti-cheat (for example Valorant or FACEIT) may refuse to start or disconnect you while a packet driver is active. Turn this off before playing, or unblock only the apps you need."
-msgstr "Sıkı hile korumalı oyunlar (örneğin Valorant ya da FACEIT) bir paket sürücüsü çalışırken açılmayabilir ya da seni oyundan atabilir. Oynamadan önce bunu kapat ya da sadece ihtiyacın olan uygulamaları seç."
+msgstr "الألعاب ذات أنظمة مكافحة الغش الصارمة (مثل Valorant أو FACEIT) قد ترفض التشغيل أو تقطع اتصالك أثناء عمل برنامج تشغيل الحزم. أوقفه قبل اللعب، أو ألغِ الحجب عن التطبيقات التي تحتاجها فقط."
 
 #: ui/editor.slint:252
 msgid "Sites to unblock"
-msgstr "Açılacak siteler"
+msgstr "المواقع المراد فك حجبها"
 
 #: ui/editor.slint:254
 msgid "The engine only touches these domains. One per line; subdomains are included."
-msgstr "Motor sadece bu alan adlarına dokunur. Her satıra bir tane; alt alan adları dahildir."
+msgstr "لا يتعامل المحرك إلا مع هذه النطاقات. نطاق في كل سطر؛ النطاقات الفرعية مشمولة."
 
 #: ui/editor.slint:282
 msgid "Applications"
-msgstr "Uygulamalar"
+msgstr "التطبيقات"
 
 #: ui/editor.slint:283
 msgid "Add app"
-msgstr "Uygulama ekle"
+msgstr "إضافة تطبيق"
 
 #: ui/editor.slint:294
 msgid "Only the apps listed here will go through the engine."
-msgstr "Sadece burada listelenen uygulamalar motordan geçer."
+msgstr "فقط التطبيقات المدرجة هنا ستمر عبر المحرك."
 
 #: ui/editor.slint:309
 msgid "Connection check"
-msgstr "Bağlantı kontrolü"
+msgstr "فحص الاتصال"
 
 #: ui/editor.slint:311
 msgid "DPIMech opens these sites through the engine every few minutes. If they get much slower than usual or stop answering, it can restart the engine for you."
-msgstr "DPIMech bu siteleri birkaç dakikada bir motor üzerinden açar. Her zamankinden çok yavaşlarsa ya da cevap vermezlerse motoru senin için yeniden başlatabilir."
+msgstr "يفتح DPIMech هذه المواقع عبر المحرك كل بضع دقائق. إذا أصبحت أبطأ بكثير من المعتاد أو توقفت عن الاستجابة، يمكنه إعادة تشغيل المحرك نيابةً عنك."
 
 #: ui/editor.slint:325
 msgid "Check every"
-msgstr "Kontrol sıklığı"
+msgstr "الفحص كل"
 
 #: ui/editor.slint:327
 msgid "Off"
-msgstr "Kapalı"
+msgstr "إيقاف"
 
 #: ui/editor.slint:327
 msgid "1 minute"
-msgstr "1 dakika"
+msgstr "دقيقة واحدة"
 
 #: ui/editor.slint:327
 msgid "3 minutes"
-msgstr "3 dakika"
+msgstr "3 دقائق"
 
 #: ui/editor.slint:327
 msgid "5 minutes"
-msgstr "5 dakika"
+msgstr "5 دقائق"
 
 #: ui/editor.slint:327
 msgid "10 minutes"
-msgstr "10 dakika"
+msgstr "10 دقائق"
 
 #: ui/editor.slint:333
 msgid "When it gets slow"
-msgstr "Yavaşlayınca"
+msgstr "عندما يصبح بطيئًا"
 
 #: ui/editor.slint:335
 msgid "Restart the engine automatically"
-msgstr "Motoru otomatik yeniden başlat"
+msgstr "أعد تشغيل المحرك تلقائيًا"
 
 #: ui/editor.slint:335
 msgid "Only warn me"
-msgstr "Sadece uyar"
+msgstr "نبّهني فقط"
 
 #: ui/editor.slint:341
 msgid "Sites to check"
-msgstr "Kontrol edilecek siteler"
+msgstr "المواقع المراد فحصها"
 
 #: ui/editor.slint:344
 msgid "Empty = the sites above"
-msgstr "Boş = yukarıdaki siteler"
+msgstr "فارغ = المواقع أعلاه"
 
 #: ui/editor.slint:344
 msgid "e.g. discord.com, gateway.discord.gg"
-msgstr "örn. discord.com, gateway.discord.gg"
+msgstr "مثلًا discord.com, gateway.discord.gg"
 
 #: ui/editor.slint:350
 msgid "Reliability"
-msgstr "Güvenilirlik"
+msgstr "الموثوقية"
 
 #: ui/editor.slint:356
 msgid "Auto-restart when stuck or crashed"
-msgstr "Takılır ya da çökerse otomatik yeniden başlat"
+msgstr "إعادة التشغيل التلقائي عند التعليق أو التعطل"
 
 #: ui/editor.slint:358
 msgid "Fixes the “ping jumps to thousands after a few hours” problem without touching other profiles."
-msgstr "“Birkaç saat sonra ping binlere çıkıyor” sorununu diğer profillere dokunmadan çözer."
+msgstr "يحل مشكلة «قفز البينغ إلى الآلاف بعد بضع ساعات» دون المساس بالملفات الشخصية الأخرى."
 
 #: ui/editor.slint:371
 msgid "Preventive restart every (hours)"
-msgstr "Önleyici yeniden başlatma (saatte bir)"
+msgstr "إعادة تشغيل وقائية كل (ساعات)"
 
 #: ui/editor.slint:372
 msgid "0 = never. Takes well under a second."
-msgstr "0 = hiç. Bir saniyeden çok daha kısa sürer."
+msgstr "0 = أبدًا. تستغرق أقل من ثانية بكثير."
 
 #: ui/editor.slint:383
 msgid "TCP only"
-msgstr "Sadece TCP"
+msgstr "TCP فقط"
 
 #: ui/editor.slint:385
 msgid "Voice/UDP goes direct. Fewer connections through the engine."
-msgstr "Ses/UDP doğrudan gider. Motordan daha az bağlantı geçer."
+msgstr "الصوت/UDP يمر مباشرة. اتصالات أقل عبر المحرك."
 
 #: ui/editor.slint:398
 msgid "Strategy arguments"
-msgstr "Strateji argümanları"
+msgstr "معاملات الإستراتيجية"
 
 #: ui/editor.slint:406
 msgid "Tip: the Strategy Lab finds working arguments for your connection."
-msgstr "İpucu: Strateji Laboratuvarı bağlantında çalışan argümanları bulur."
+msgstr "نصيحة: يجد مختبر الإستراتيجيات المعاملات التي تعمل على اتصالك."
 
 #: ui/editor.slint:421
 msgid "Save"
-msgstr "Kaydet"
+msgstr "حفظ"
 
 #: ui/editor.slint:426
 msgid "Cancel"
-msgstr "İptal"
+msgstr "إلغاء"
 
 #: ui/editor.slint:430
 msgid "Delete"
-msgstr "Sil"
+msgstr "حذف"
 
 #: ui/engines.slint:53
 msgid "{} available"
-msgstr "{} mevcut"
+msgstr "{} متاح"
 
 #: ui/engines.slint:68
 msgid "Install"
-msgstr "Kur"
+msgstr "تثبيت"
 
 #: ui/engines.slint:74
 msgid "Update"
-msgstr "Güncelle"
+msgstr "تحديث"
 
 #: ui/engines.slint:80
 msgid "Remove"
-msgstr "Kaldır"
+msgstr "إزالة"
 
 #: ui/engines.slint:95
 msgid "Installing…"
-msgstr "Kuruluyor…"
+msgstr "جارٍ التثبيت…"
 
 #: ui/engines.slint:95
 msgid "Downloading… {}%"
-msgstr "İndiriliyor… %{}"
+msgstr "جارٍ التنزيل… {}%"
 
 #: ui/engines.slint:110
 msgid "Hide what's new"
-msgstr "Yenilikleri gizle"
+msgstr "إخفاء الجديد"
 
 #: ui/engines.slint:110
 msgid "What's new in {}"
-msgstr "{} sürümündeki yenilikler"
+msgstr "الجديد في {}"
 
 #: ui/engines.slint:142
 msgid "Downloaded from the official GitHub releases and verified with SHA-256."
-msgstr "Resmî GitHub sürümlerinden indirilir ve SHA-256 ile doğrulanır."
+msgstr "تم تنزيله من إصدارات GitHub الرسمية والتحقق منه بـ SHA-256."
 
 #: ui/engines.slint:144
 msgid "Checking…"
-msgstr "Kontrol ediliyor…"
+msgstr "جارٍ الفحص…"
 
 #: ui/engines.slint:144
 msgid "Check for updates"
-msgstr "Güncellemeleri kontrol et"
+msgstr "التحقق من التحديثات"
 
 #: ui/engines.slint:159
 msgid "zapret and GoodbyeDPI use WinDivert, a legitimate packet driver that some antivirus programs flag by mistake. If Windows Security deletes it, add an exclusion for DPIMech's engine folder (only administrators can write there)."
-msgstr "zapret ve GoodbyeDPI, bazı antivirüs programlarının yanlışlıkla zararlı sandığı meşru bir paket sürücüsü olan WinDivert'i kullanır. Windows Güvenliği onu silerse DPIMech'in motor klasörü için bir istisna ekle (oraya sadece yöneticiler yazabilir)."
+msgstr "يستخدم zapret وGoodbyeDPI برنامج WinDivert، وهو برنامج تشغيل حزم مشروع تصنّفه بعض برامج مكافحة الفيروسات خطأً. إذا حذفه أمن Windows، أضف استثناءً لمجلد محركات DPIMech (لا يمكن الكتابة فيه إلا للمسؤولين)."
 
 #: ui/engines.slint:167
 msgid "Add Windows Security exclusion"
-msgstr "Windows Güvenliği istisnası ekle"
+msgstr "إضافة استثناء في أمن Windows"
 
 #: ui/engines.slint:171
 msgid "Working…"
-msgstr "Çalışıyor…"
+msgstr "جارٍ العمل…"
 
 #: ui/engines.slint:179
 msgid "Exclusion added"
-msgstr "İstisna eklendi"
+msgstr "تمت إضافة الاستثناء"
 
 #: ui/lab.slint:116
 msgid "Use"
-msgstr "Kullan"
+msgstr "استخدام"
 
 #: ui/lab.slint:153
 msgid "Finds the settings that work on your connection by trying them on real sites."
-msgstr "Ayarları gerçek sitelerde deneyerek bağlantında çalışanları bulur."
+msgstr "يجد الإعدادات التي تعمل على اتصالك بتجربتها على مواقع حقيقية."
 
 #: ui/lab.slint:179
 msgid "Detect my ISP"
-msgstr "İnternet sağlayıcımı bul"
+msgstr "اكتشف مزود الإنترنت"
 
 #: ui/lab.slint:187
 msgid "Sites"
-msgstr "Siteler"
+msgstr "المواقع"
 
 #: ui/lab.slint:208
 msgid "Other sites, e.g. example.com, another.org"
-msgstr "Diğer siteler, örn. example.com, another.org"
+msgstr "مواقع أخرى، مثلًا example.com, another.org"
 
 #: ui/lab.slint:215
 msgid "Strategies"
-msgstr "Stratejiler"
+msgstr "الإستراتيجيات"
 
 #: ui/lab.slint:218
 msgid "Update online lists"
-msgstr "Çevrimiçi listeleri güncelle"
+msgstr "تحديث القوائم عبر الإنترنت"
 
 #: ui/lab.slint:222
 msgid "Tries per site"
-msgstr "Site başına deneme"
+msgstr "محاولات لكل موقع"
 
 #: ui/lab.slint:236
 msgid "Start test"
-msgstr "Testi başlat"
+msgstr "بدء الاختبار"
 
 #: ui/lab.slint:277
 msgid "Results appear here, best first."
-msgstr "Sonuçlar burada görünür, en iyisi en üstte."
+msgstr "تظهر النتائج هنا، الأفضل أولًا."
 
 #: ui/launch.slint:62
 msgid "Open DPIMech"
-msgstr "DPIMech'i aç"
+msgstr "فتح DPIMech"
 
 #: ui/pages.slint:20
 msgid "Each profile runs one engine with one strategy."
-msgstr "Her profil tek bir motoru tek bir stratejiyle çalıştırır."
+msgstr "كل ملف شخصي يشغّل محركًا واحدًا بإستراتيجية واحدة."
 
 #: ui/pages.slint:23
 msgid "Set up something new"
-msgstr "Yeni bir şey kur"
+msgstr "إعداد شيء جديد"
 
 #: ui/pages.slint:23
 msgid "Quick setup"
-msgstr "Hızlı kurulum"
+msgstr "إعداد سريع"
 
 #: ui/pages.slint:36
 msgid "No profiles yet"
-msgstr "Henüz profil yok"
+msgstr "لا توجد ملفات شخصية بعد"
 
 #: ui/pages.slint:37
 msgid "Create a profile to pick an engine, a strategy and what to route through it."
-msgstr "Bir motor, bir strateji ve nelerin ondan geçeceğini seçmek için bir profil oluştur."
+msgstr "أنشئ ملفًا شخصيًا لاختيار محرك وإستراتيجية وما يمر عبره."
 
 #: ui/pages.slint:70
 msgid "Newest first. Engine output and service events."
-msgstr "En yenisi en üstte. Motor çıktısı ve servis olayları."
+msgstr "الأحدث أولًا. مخرجات المحركات وأحداث الخدمة."
 
 #: ui/pages.slint:71
 msgid "Clear"
-msgstr "Temizle"
+msgstr "مسح"
 
 #: ui/pages.slint:117
 msgid "Coming soon"
-msgstr "Yakında"
+msgstr "قريبًا"
 
 #: ui/pages.slint:173
 msgid "Interface"
-msgstr "Arayüz"
+msgstr "الواجهة"
 
 #: ui/pages.slint:180
 msgid "Easy mode"
-msgstr "Kolay mod"
+msgstr "الوضع السهل"
 
 #: ui/pages.slint:182
 msgid "Fewer menus; the setup wizard does the work. Turn off for engines, the Strategy Lab and logs."
-msgstr "Daha az menü; işi kurulum sihirbazı yapar. Motorlar, Strateji Laboratuvarı ve kayıtlar için kapat."
+msgstr "قوائم أقل؛ معالج الإعداد يتولى العمل. أوقفه للوصول إلى المحركات ومختبر الإستراتيجيات والسجلات."
 
 #: ui/pages.slint:195
 msgid "Language"
-msgstr "Dil"
+msgstr "اللغة"
 
 #: ui/pages.slint:203
 msgid "Run the setup wizard again"
-msgstr "Kurulum sihirbazını yeniden çalıştır"
+msgstr "تشغيل معالج الإعداد مجددًا"
 
 #: ui/pages.slint:204
 msgid "Open wizard"
-msgstr "Sihirbazı aç"
+msgstr "فتح المعالج"
 
 #: ui/pages.slint:210
 msgid "Startup"
-msgstr "Başlangıç"
+msgstr "بدء التشغيل"
 
 #: ui/pages.slint:217
 msgid "Start DPIMech when I sign in"
-msgstr "Oturum açınca DPIMech'i başlat"
+msgstr "شغّل DPIMech عند تسجيل دخولي"
 
 #: ui/pages.slint:219
 msgid "The background service always starts with the computer; this brings back the tray icon."
-msgstr "Arka plan servisi her zaman bilgisayarla başlar; bu, tepsi simgesini geri getirir."
+msgstr "تبدأ خدمة الخلفية دائمًا مع الحاسوب؛ هذا الخيار يعيد أيقونة شريط المهام."
 
 #: ui/pages.slint:232
 msgid "Start minimized to the tray"
-msgstr "Tepside küçültülmüş başlat"
+msgstr "البدء مصغّرًا في شريط المهام"
 
 #: ui/pages.slint:244
 msgid "Log"
-msgstr "Kayıt"
+msgstr "السجل"
 
 #: ui/pages.slint:251
 msgid "Save the log to daily files"
-msgstr "Kaydı günlük dosyalara yaz"
+msgstr "حفظ السجل في ملفات يومية"
 
 #: ui/pages.slint:253
 msgid "One file per day while DPIMech is open; files older than 14 days are deleted. Even when this is off, the recent log is saved to this folder if a profile stops with an error."
-msgstr "DPIMech açıkken her gün için bir dosya; 14 günden eski dosyalar silinir. Bu kapalıyken bile bir profil hatayla durursa son kayıtlar bu klasöre kaydedilir."
+msgstr "ملف لكل يوم أثناء فتح DPIMech؛ تُحذف الملفات الأقدم من 14 يومًا. حتى عند إيقاف هذا الخيار، يُحفظ السجل الأخير في هذا المجلد إذا توقف ملف شخصي بسبب خطأ."
 
 #: ui/pages.slint:268
 msgid "Detailed log"
-msgstr "Ayrıntılı kayıt"
+msgstr "سجل مفصّل"
 
 #: ui/pages.slint:270
 msgid "Also logs every connection (site, address, how it ended) and each tested strategy. Turn it on to find out why something does not open; it makes the log much longer."
-msgstr "Her bağlantıyı (site, adres, nasıl bittiği) ve denenen her stratejiyi de kaydeder. Bir şeyin neden açılmadığını bulmak için aç; kayıtları çok uzatır."
+msgstr "يسجّل أيضًا كل اتصال (الموقع والعنوان وكيف انتهى) وكل إستراتيجية مُختبرة. فعّله لمعرفة سبب عدم فتح شيء ما؛ يجعل السجل أطول بكثير."
 
 #: ui/pages.slint:293
 msgid "Change folder…"
-msgstr "Klasörü değiştir…"
+msgstr "تغيير المجلد…"
 
 #: ui/pages.slint:294
 msgid "Open folder"
-msgstr "Klasörü aç"
+msgstr "فتح المجلد"
 
 #: ui/pages.slint:301
 msgid "Shortcuts"
-msgstr "Kısayollar"
+msgstr "الاختصارات"
 
 #: ui/pages.slint:308
 msgid "Profile shortcuts on the desktop and in the menu: {}"
-msgstr "Masaüstündeki ve menüdeki profil kısayolları: {}"
+msgstr "اختصارات الملفات الشخصية على سطح المكتب وفي القائمة: {}"
 
 #: ui/pages.slint:312
 msgid "Create one by right-clicking a profile or with its menu button. Deleting a profile removes its shortcuts."
-msgstr "Bir profile sağ tıklayarak ya da menü düğmesiyle oluşturun. Profil silinince kısayolları da silinir."
+msgstr "أنشئ اختصارًا بالنقر بزر الفأرة الأيمن على ملف شخصي أو بزر قائمته. حذف الملف الشخصي يزيل اختصاراته."
 
 #: ui/pages.slint:319
 msgid "Remove all shortcuts"
-msgstr "Tüm kısayolları kaldır"
+msgstr "إزالة كل الاختصارات"
 
 #: ui/pages.slint:327
 msgid "Background service"
-msgstr "Arka plan servisi"
+msgstr "خدمة الخلفية"
 
 #: ui/pages.slint:330
 msgid "Connected"
-msgstr "Bağlı"
+msgstr "متصل"
 
 #: ui/pages.slint:330
 msgid "Not running"
-msgstr "Çalışmıyor"
+msgstr "لا تعمل"
 
 #: ui/pages.slint:334
 msgid "Install the service"
-msgstr "Servisi kur"
+msgstr "تثبيت الخدمة"
 
 #: ui/pages.slint:340
 msgid "About"
-msgstr "Hakkında"
+msgstr "حول"
 
 #: ui/pages.slint:345
 msgid "Opens sites and apps that your internet provider blocks by running well-known open-source DPI bypass tools on your computer. It is not a VPN: your traffic still goes straight to the sites, nothing is sent through another server."
-msgstr "İnternet sağlayıcının engellediği siteleri ve uygulamaları, bilgisayarında bilinen açık kaynaklı DPI aşma araçlarını çalıştırarak açar. Bir VPN değildir: trafiğin yine doğrudan sitelere gider, hiçbir şey başka bir sunucudan geçmez."
+msgstr "يفتح المواقع والتطبيقات التي يحجبها مزود الإنترنت لديك بتشغيل أدوات معروفة ومفتوحة المصدر لتجاوز DPI على حاسوبك. إنه ليس VPN: تذهب حركة مرورك مباشرةً إلى المواقع، ولا يُرسل شيء عبر خادم آخر."
 
 #: ui/pages.slint:349
 msgid "Platform: {}"
-msgstr "Platform: {}"
+msgstr "المنصة: {}"
 
 #: ui/pages.slint:350
 msgid "Free software under the GNU GPL v3 or later."
-msgstr "GNU GPL v3 veya sonrası lisanslı özgür yazılım."
+msgstr "برنامج حر بموجب GNU GPL الإصدار 3 أو أحدث."
 
 #: ui/pages.slint:354
 msgid "Source code"
-msgstr "Kaynak kod"
+msgstr "الشيفرة المصدرية"
 
 #: ui/pages.slint:355
 msgid "Report a problem"
-msgstr "Sorun bildir"
+msgstr "الإبلاغ عن مشكلة"
 
 #: ui/pages.slint:363
 msgid "Download"
-msgstr "İndir"
+msgstr "تنزيل"
 
 #: ui/pages.slint:369
 msgid "Thanks"
-msgstr "Teşekkürler"
+msgstr "شكر"
 
 #: ui/pages.slint:373
 msgid "DPIMech only manages these projects; the real work is theirs."
-msgstr "DPIMech bu projeleri sadece yönetir; asıl işi onlar yapar."
+msgstr "DPIMech يدير هذه المشاريع فقط؛ العمل الحقيقي من صنعها."
 
 #: ui/report.slint:33
 msgid "What happened? A sentence or two helps a lot (optional)."
-msgstr "Ne oldu? Bir iki cümle çok yardımcı olur (isteğe bağlı)."
+msgstr "ماذا حدث؟ جملة أو جملتان تساعدان كثيرًا (اختياري)."
 
 #: ui/report.slint:39
 msgid "e.g. Discord stopped working after an hour"
-msgstr "örn. Discord bir saat sonra çalışmayı bıraktı"
+msgstr "مثلًا توقف Discord عن العمل بعد ساعة"
 
 #: ui/report.slint:42
 msgid "This is what will be shared. It contains your DPIMech settings and the recent log (site names, your internet provider if you detected it) — no passwords or browsing history."
-msgstr "Paylaşılacak olan bu. DPIMech ayarlarını ve son kayıtları içerir (site adları, tespit ettiysen internet sağlayıcın) — şifre ya da tarama geçmişi yok."
+msgstr "هذا ما ستتم مشاركته. يحتوي على إعدادات DPIMech والسجل الأخير (أسماء المواقع، ومزود الإنترنت إن اكتشفته) — دون كلمات مرور أو سجل تصفح."
 
 #: ui/report.slint:54
 msgid "Full report saved as {}"
-msgstr "Tam rapor şuraya kaydedildi: {}"
+msgstr "تم حفظ التقرير الكامل باسم {}"
 
 #: ui/report.slint:60
 msgid "Have a GitHub account? Open an issue and drag the saved file into it. No account? Send it by e-mail to {} and attach the saved file."
-msgstr "GitHub hesabın var mı? Bir issue aç ve kaydedilen dosyayı içine sürükle. Hesabın yoksa {} adresine e-postayla gönder ve kaydedilen dosyayı ekle."
+msgstr "لديك حساب GitHub؟ افتح بلاغًا واسحب الملف المحفوظ إليه. ليس لديك حساب؟ أرسله بالبريد الإلكتروني إلى {} وأرفق الملف المحفوظ."
 
 #: ui/report.slint:67
 msgid "Show file"
-msgstr "Dosyayı göster"
+msgstr "إظهار الملف"
 
 #: ui/report.slint:68
 msgid "Send by e-mail"
-msgstr "E-postayla gönder"
+msgstr "إرسال بالبريد الإلكتروني"
 
 #: ui/report.slint:69
 msgid "Open a GitHub issue"
-msgstr "GitHub'da issue aç"
+msgstr "فتح بلاغ في GitHub"
 
 #: ui/shortcut.slint:38
 msgid "Create a shortcut"
-msgstr "Kısayol oluştur"
+msgstr "إنشاء اختصار"
 
 #: ui/shortcut.slint:40
 msgid "One click turns \"{}\" on and then opens the app you choose."
-msgstr "Tek tıkla \"{}\" açılır, ardından seçtiğin uygulama başlar."
+msgstr "نقرة واحدة تشغّل «{}» ثم تفتح التطبيق الذي تختاره."
 
 #: ui/shortcut.slint:58
 msgid "Then open"
-msgstr "Sonra aç"
+msgstr "ثم افتح"
 
 #: ui/shortcut.slint:62
 msgid "Looking for your apps…"
-msgstr "Uygulamaların aranıyor…"
+msgstr "جارٍ البحث عن تطبيقاتك…"
 
 #: ui/shortcut.slint:73
 msgid "Desktop"
-msgstr "Masaüstü"
+msgstr "سطح المكتب"
 
 #: ui/shortcut.slint:88
 msgid "Create"
-msgstr "Oluştur"
+msgstr "إنشاء"
 
 #: ui/shortcut.slint:93
 msgid "Done"
-msgstr "Tamam"
+msgstr "تم"
 
 #: ui/whatsnew.slint:26
 msgid "What's new in DPIMech {}"
-msgstr "DPIMech {} ile gelen yenilikler"
+msgstr "الجديد في DPIMech {}"
 
 #: ui/whatsnew.slint:36
 msgid "Got it"
-msgstr "Tamam"
+msgstr "حسنًا"
 
 #: ui/wizard.slint:114
 msgid "Welcome!"
-msgstr "Hoş geldin!"
+msgstr "مرحبًا!"
 
 #: ui/wizard.slint:116
 msgid "DPIMech opens sites and apps that your internet provider blocks, without a VPN. How would you like to start?"
-msgstr "DPIMech, internet sağlayıcının engellediği siteleri ve uygulamaları VPN olmadan açar. Nasıl başlamak istersin?"
+msgstr "يفتح DPIMech المواقع والتطبيقات التي يحجبها مزود الإنترنت لديك، دون VPN. كيف تريد أن تبدأ؟"
 
 #: ui/wizard.slint:121
 msgid "Just make it work"
-msgstr "Sadece çalışsın"
+msgstr "فقط اجعله يعمل"
 
 #: ui/wizard.slint:122
 msgid "Answer three simple questions; DPIMech installs what it needs, finds settings that work on your connection and turns them on. You can switch to the full interface later in Settings."
-msgstr "Üç basit soruyu cevapla; DPIMech gerekenleri kurar, bağlantında çalışan ayarları bulur ve açar. Tam arayüze daha sonra Ayarlar'dan geçebilirsin."
+msgstr "أجب عن ثلاثة أسئلة بسيطة؛ يثبّت DPIMech ما يحتاجه، ويجد الإعدادات التي تعمل على اتصالك ويفعّلها. يمكنك التبديل إلى الواجهة الكاملة لاحقًا من الإعدادات."
 
 #: ui/wizard.slint:126
 msgid "I know what I'm doing"
-msgstr "Ne yaptığımı biliyorum"
+msgstr "أعرف ما أفعله"
 
 #: ui/wizard.slint:127
 msgid "Open the full interface: engines, profiles, strategy arguments and the Strategy Lab."
-msgstr "Tam arayüzü aç: motorlar, profiller, strateji argümanları ve Strateji Laboratuvarı."
+msgstr "افتح الواجهة الكاملة: المحركات والملفات الشخصية ومعاملات الإستراتيجيات ومختبر الإستراتيجيات."
 
 #: ui/wizard.slint:135
 msgid "What do you want to open?"
-msgstr "Neyi açmak istiyorsun?"
+msgstr "ماذا تريد أن تفتح؟"
 
 #: ui/wizard.slint:136
 msgid "Pick one or more. You can add other sites too."
-msgstr "Bir ya da daha fazlasını seç. Başka siteler de ekleyebilirsin."
+msgstr "اختر واحدًا أو أكثر. يمكنك إضافة مواقع أخرى أيضًا."
 
 #: ui/wizard.slint:152
 msgid "Other sites, e.g. example.com"
-msgstr "Diğer siteler, örn. example.com"
+msgstr "مواقع أخرى، مثلًا example.com"
 
 #: ui/wizard.slint:160
 msgid "Where should it work?"
-msgstr "Nerede çalışsın?"
+msgstr "أين يجب أن يعمل؟"
 
 #: ui/wizard.slint:162
 msgid "Only in some apps (recommended)"
-msgstr "Sadece bazı uygulamalarda (önerilen)"
+msgstr "في بعض التطبيقات فقط (موصى به)"
 
 #: ui/wizard.slint:163
 msgid "For example only Discord. Everything else stays exactly as it is."
-msgstr "Örneğin sadece Discord. Geri kalan her şey olduğu gibi kalır."
+msgstr "مثلًا Discord فقط. يبقى كل شيء آخر كما هو تمامًا."
 
 #: ui/wizard.slint:181
 msgid "The whole computer"
-msgstr "Tüm bilgisayar"
+msgstr "الحاسوب بأكمله"
 
 #: ui/wizard.slint:182
 msgid "Every app, including games and voice. Uses zapret and needs the DPIMech service."
-msgstr "Oyunlar ve sesli sohbet dahil tüm uygulamalar. zapret kullanır ve DPIMech servisi gerekir."
+msgstr "كل التطبيقات، بما فيها الألعاب والصوت. يستخدم zapret ويحتاج إلى خدمة DPIMech."
 
 #: ui/wizard.slint:188
 msgid "Only when I choose (proxy)"
-msgstr "Sadece ben seçtiğimde (proxy)"
+msgstr "فقط عندما أختار (وكيل)"
 
 #: ui/wizard.slint:189
 msgid "Creates a local proxy (127.0.0.1) you can set in a browser or app."
-msgstr "Tarayıcıda ya da bir uygulamada ayarlayabileceğin yerel bir proxy (127.0.0.1) oluşturur."
+msgstr "ينشئ وكيلًا محليًا (127.0.0.1) يمكنك ضبطه في متصفح أو تطبيق."
 
 #: ui/wizard.slint:198
 msgid "Your internet provider"
-msgstr "İnternet sağlayıcın"
+msgstr "مزود الإنترنت لديك"
 
 #: ui/wizard.slint:200
 msgid "Knowing your provider lets DPIMech try settings made for it first. This sends your public IP address to ipwho.is. You can skip it."
-msgstr "Sağlayıcını bilmek, DPIMech'in önce ona özel ayarları denemesini sağlar. Bu, genel IP adresini ipwho.is'e gönderir. Atlayabilirsin."
+msgstr "معرفة مزودك تتيح لـ DPIMech تجربة الإعدادات المصممة له أولًا. يرسل هذا عنوان IP العام الخاص بك إلى ipwho.is. يمكنك تخطيه."
 
 #: ui/wizard.slint:207
 msgid "Detect my provider"
-msgstr "Sağlayıcımı bul"
+msgstr "اكتشف مزودي"
 
 #: ui/wizard.slint:213
 msgid "DPIMech's background service is not installed yet. It is needed to run the engines. Your computer asks for administrator permission once."
-msgstr "DPIMech'in arka plan servisi henüz kurulu değil. Motorları çalıştırmak için gerekli. Bilgisayarın bir kez yönetici izni ister."
+msgstr "خدمة الخلفية لـ DPIMech غير مثبتة بعد. وهي لازمة لتشغيل المحركات. سيطلب حاسوبك إذن المسؤول مرة واحدة."
 
 #: ui/wizard.slint:227
 msgid "Setting things up…"
-msgstr "Hazırlanıyor…"
+msgstr "جارٍ الإعداد…"
 
 #: ui/wizard.slint:254
 msgid "Details"
-msgstr "Ayrıntılar"
+msgstr "التفاصيل"
 
 #: ui/wizard.slint:282
 msgid "All set!"
-msgstr "Hazır!"
+msgstr "كل شيء جاهز!"
 
 #: ui/wizard.slint:292
 msgid "Start"
-msgstr "Başlat"
+msgstr "ابدأ"
 
 #: ui/wizard.slint:292
 msgid "Next"
-msgstr "İleri"
+msgstr "التالي"
 
 #: ui/wizard.slint:296
 msgid "Report this problem"
-msgstr "Bu sorunu bildir"
+msgstr "الإبلاغ عن هذه المشكلة"
 
 #: ui/wizard.slint:298
 msgid "Try again"
-msgstr "Tekrar dene"
+msgstr "حاول مجددًا"
 
 #: ui/wizard.slint:299
 msgid "Finish"
-msgstr "Bitir"
+msgstr "إنهاء"
 
 #: src/bridge.rs:72
 msgid "Start it with: dpimech-service run"
-msgstr "Şununla başlat: dpimech-service run"
+msgstr "شغّلها بالأمر: dpimech-service run"
 
 #: src/bridge.rs:88
 msgid "Version {} · data in {}"
-msgstr "Sürüm {} · veriler: {}"
+msgstr "الإصدار {} · البيانات في {}"
 
 #: src/bridge.rs:175
 msgid "Could not update: {}"
-msgstr "Güncellenemedi: {}"
+msgstr "تعذّر التحديث: {}"
 
 #: src/bridge.rs:190
 msgid "You have the latest version ({})."
-msgstr "En son sürümü kullanıyorsun ({})."
+msgstr "لديك أحدث إصدار ({})."
 
 #: src/bridge.rs:193
 msgid "Could not check for updates: {}"
-msgstr "Güncellemeler kontrol edilemedi: {}"
+msgstr "تعذّر التحقق من التحديثات: {}"
 
 #: src/bridge.rs:255
 msgid "Could not load strategies: {}"
-msgstr "Stratejiler yüklenemedi: {}"
+msgstr "تعذّر تحميل الإستراتيجيات: {}"
 
 #: src/bridge.rs:267
 msgid "ISP lookup failed: {}"
-msgstr "İnternet sağlayıcısı bulunamadı: {}"
+msgstr "فشل اكتشاف مزود الإنترنت: {}"
 
 #: src/bridge.rs:372
 msgid "DPIMech {} is downloaded. Restart DPIMech to update."
-msgstr "DPIMech {} indirildi. Güncellemek için DPIMech'i yeniden başlat."
+msgstr "تم تنزيل DPIMech {}. أعد تشغيل DPIMech للتحديث."
 
 #: src/bridge.rs:386
 msgid "Version {} is available."
-msgstr "{} sürümü çıktı."
+msgstr "الإصدار {} متاح."
 
 #: src/bridge.rs:401
 msgid "Downloading DPIMech {}…"
-msgstr "DPIMech {} indiriliyor…"
+msgstr "جارٍ تنزيل DPIMech {}…"
 
 #: src/bridge.rs:433
 msgid "Saved the log to {}"
-msgstr "Kayıtlar şuraya kaydedildi: {}"
+msgstr "تم حفظ السجل في {}"
 
 #: src/bridge.rs:473
 msgid "Looking up…"
-msgstr "Aranıyor…"
+msgstr "جارٍ البحث…"
 
 #: src/bridge.rs:475
 msgid "This needs the background service."
-msgstr "Bunun için arka plan servisi gerekli."
+msgstr "يتطلب هذا خدمة الخلفية."
 
 #: src/convert.rs:141
 msgid "Give the profile a name."
-msgstr "Profile bir ad ver."
+msgstr "أعطِ الملف الشخصي اسمًا."
 
 #: src/convert.rs:146
 msgid "Choose an engine."
-msgstr "Bir motor seç."
+msgstr "اختر محركًا."
 
 #: src/convert.rs:150
 msgid "Choose a routing mode."
-msgstr "Bir yönlendirme modu seç."
+msgstr "اختر وضع التوجيه."
 
 #: src/convert.rs:154
 msgid "Port must be between 1024 and 65535."
-msgstr "Port 1024 ile 65535 arasında olmalı."
+msgstr "يجب أن يكون المنفذ بين 1024 و65535."
 
 #: src/convert.rs:162
 msgid "Add at least one application for per-app routing."
-msgstr "Uygulama bazlı yönlendirme için en az bir uygulama ekle."
+msgstr "أضف تطبيقًا واحدًا على الأقل للتوجيه حسب التطبيق."
 
 #: src/convert.rs:203
 msgid "{} · port {}"
-msgstr "{} · port {}"
+msgstr "{} · المنفذ {}"
 
 #: src/convert.rs:212
 msgid "All matching traffic"
-msgstr "Eşleşen tüm trafik"
+msgstr "كل حركة المرور المطابقة"
 
 #: src/convert.rs:213
 msgid "{} site(s): {}"
-msgstr "{} site: {}"
+msgstr "عدد المواقع {}: {}"
 
 #: src/convert.rs:226
 msgid "Stopped"
-msgstr "Durdu"
+msgstr "متوقف"
 
 #: src/convert.rs:227
 msgid "Starting…"
-msgstr "Başlıyor…"
+msgstr "جارٍ البدء…"
 
 #: src/convert.rs:235
 msgid "1 auto-restart"
-msgstr "1 otomatik yeniden başlatma"
+msgstr "إعادة تشغيل تلقائية واحدة"
 
 #: src/convert.rs:236
 msgid "{} auto-restarts"
-msgstr "{} otomatik yeniden başlatma"
+msgstr "عدد مرات إعادة التشغيل التلقائي: {}"
 
 #: src/convert.rs:245
 msgid "Sites not answering ({}/{})"
-msgstr "Siteler cevap vermiyor ({}/{})"
+msgstr "المواقع لا تستجيب ({}/{})"
 
 #: src/convert.rs:247
 msgid "Slow: avg. {} ms (usually {} ms)"
-msgstr "Yavaş: ort. {} ms (normalde {} ms)"
+msgstr "بطيء: المتوسط {} ms (عادةً {} ms)"
 
 #: src/convert.rs:249
 msgid "Only {}/{} sites answer"
-msgstr "Sadece {}/{} site cevap veriyor"
+msgstr "فقط {}/{} من المواقع تستجيب"
 
 #: src/convert.rs:256
 msgid "Running · {}"
-msgstr "Çalışıyor · {}"
+msgstr "قيد التشغيل · {}"
 
 #: src/convert.rs:257
 msgid "avg. {} ms"
-msgstr "ort. {} ms"
+msgstr "المتوسط {} ms"
 
 #: src/convert.rs:365
 msgid "just now"
-msgstr "az önce"
+msgstr "الآن"
 
 #: src/convert.rs:366
 msgid "{} min"
-msgstr "{} dk"
+msgstr "{} دقيقة"
 
 #: src/convert.rs:367
 msgid "{} h {} min"
-msgstr "{} sa {} dk"
+msgstr "{} ساعة {} دقيقة"
 
 #: src/convert.rs:379
 msgid "Last check: {}/{} sites answered"
-msgstr "Son kontrol: {}/{} site cevap verdi"
+msgstr "آخر فحص: استجاب {}/{} من المواقع"
 
 #: src/convert.rs:385
 msgid "(usually {} ms)"
-msgstr "(normalde {} ms)"
+msgstr "(عادةً {} ms)"
 
 #: src/i18n.rs (EXTRA_TEXTS)
 msgid "Automatic"
-msgstr "Otomatik"
+msgstr "تلقائي"
 
 #: src/i18n.rs (EXTRA_TEXTS)
 msgid "Restarting did not help. This setting may have stopped working on your connection — run the Strategy Lab."
-msgstr "Yeniden başlatmak işe yaramadı. Bu ayar bağlantında artık çalışmıyor olabilir — Strateji Laboratuvarı'nı çalıştır."
+msgstr "لم تُجدِ إعادة التشغيل. ربما توقف هذا الإعداد عن العمل على اتصالك — شغّل مختبر الإستراتيجيات."
 
 #: src/i18n.rs (EXTRA_TEXTS)
 msgid "This setting does not open this profile's sites on your connection. Find a working one in the Strategy Lab, or try another engine."
-msgstr "Bu ayar, bağlantınızda bu profilin sitelerini açmıyor. Strateji Laboratuvarı'nda çalışan bir ayar bulun ya da başka bir motor deneyin."
+msgstr "هذا الإعداد لا يفتح مواقع هذا الملف الشخصي على اتصالك. ابحث عن إعداد يعمل في مختبر الإستراتيجيات، أو جرّب محركًا آخر."
 
 #: src/i18n.rs (EXTRA_TEXTS)
 msgid "Per-app"
-msgstr "Uygulama bazlı"
+msgstr "حسب التطبيق"
 
 #: src/i18n.rs (EXTRA_TEXTS)
 msgid "System-wide"
-msgstr "Tüm sistem"
+msgstr "على مستوى النظام"
 
 #: src/i18n.rs (EXTRA_TEXTS)
 msgid "Local proxy"
-msgstr "Yerel proxy"
+msgstr "وكيل محلي"
 
 #: src/labui.rs:52
 msgid "ISP not detected"
-msgstr "İnternet sağlayıcısı bulunmadı"
+msgstr "لم يُكتشف مزود الإنترنت"
 
 #: src/labui.rs:53
 msgid "Pick sites and press Start."
-msgstr "Siteleri seç ve Başlat'a bas."
+msgstr "اختر المواقع واضغط «بدء»."
 
 #: src/labui.rs:92
 msgid "{} to try: {} from the DPIMech standard set"
-msgstr "Denenecek {} strateji: DPIMech standart setinden {}"
+msgstr "{} للتجربة: {} من المجموعة القياسية لـ DPIMech"
 
 #: src/labui.rs:107
 msgid "{} from {}"
-msgstr "{}: {} kaynağından"
+msgstr "{} من {}"
 
 #: src/labui.rs:111
 msgid "“Update online lists” adds more"
-msgstr "“Çevrimiçi listeleri güncelle” daha fazlasını ekler"
+msgstr "«تحديث القوائم عبر الإنترنت» يضيف المزيد"
 
 #: src/labui.rs:115
 msgid "★ {} made for your ISP"
-msgstr "★ {} tanesi senin sağlayıcına özel"
+msgstr "★ {} مصممة لمزودك"
 
 #: src/labui.rs:119
 msgid "Standard set: well-known settings that ship with DPIMech."
-msgstr "Standart set: DPIMech ile gelen bilinen ayarlar."
+msgstr "المجموعة القياسية: إعدادات معروفة تأتي مع DPIMech."
 
 #: src/labui.rs:122
 msgid "{}: downloaded from {}."
-msgstr "{}: {} kaynağından indirildi."
+msgstr "{}: تم تنزيلها من {}."
 
 #: src/labui.rs:187
 msgid "Testing {} strategies… engines run briefly in the background."
-msgstr "{} strateji deneniyor… motorlar arka planda kısa süreliğine çalışır."
+msgstr "جارٍ اختبار {} إستراتيجية… تعمل المحركات لفترة وجيزة في الخلفية."
 
 #: src/labui.rs:200
 msgid "Without any bypass every test site already works — nothing to fix on this network for these sites."
-msgstr "Hiçbir aşma yöntemi olmadan da tüm test siteleri çalışıyor — bu ağda bu siteler için düzeltilecek bir şey yok."
+msgstr "كل مواقع الاختبار تعمل دون أي تجاوز — لا شيء يحتاج إلى إصلاح على هذه الشبكة لهذه المواقع."
 
 #: src/labui.rs:204
 msgid "Without any bypass only {}/{} requests succeed. Blocked: {}."
-msgstr "Aşma yöntemi olmadan sadece {}/{} istek başarılı. Engelli: {}."
+msgstr "دون تجاوز تنجح {}/{} من الطلبات فقط. المحجوب: {}."
 
 #: src/labui.rs:235
 msgid "Cancelled."
-msgstr "İptal edildi."
+msgstr "أُلغي."
 
 #: src/labui.rs:236
 msgid "Stopped: {}"
-msgstr "Durdu: {}"
+msgstr "توقف: {}"
 
 #: src/labui.rs:237
 msgid "Done — {} strategies opened every site in every round. Press “Use” on the top one."
-msgstr "Bitti — {} strateji her turda tüm siteleri açtı. En üsttekinde “Kullan”a basın."
+msgstr "تم — {} إستراتيجية فتحت كل المواقع في كل الجولات. اضغط «استخدام» على أعلاها."
 
 #: src/labui.rs:241
 msgid "Done — none opened every site in every round. Try another engine, more tries per site, or updated online lists."
-msgstr "Bitti — hiçbiri her turda tüm siteleri açmadı. Başka bir motor, site başına daha fazla deneme ya da güncel çevrim içi listeler deneyin."
+msgstr "تم — لم تفتح أي منها كل المواقع في كل الجولات. جرّب محركًا آخر، أو محاولات أكثر لكل موقع، أو قوائم محدّثة عبر الإنترنت."
 
 #: src/labui.rs:271
 msgid "No bypass"
-msgstr "Aşma yok"
+msgstr "دون تجاوز"
 
 #: src/launcher.rs:45
 msgid "Connecting to the DPIMech service…"
-msgstr "DPIMech hizmetine bağlanılıyor…"
+msgstr "جارٍ الاتصال بخدمة DPIMech…"
 
 #: src/launcher.rs:68
 msgid "Opening {}…"
-msgstr "{} açılıyor…"
+msgstr "جارٍ فتح {}…"
 
 #: src/launcher.rs:71
 msgid "Could not open {}: {}"
-msgstr "{} açılamadı: {}"
+msgstr "تعذّر فتح {}: {}"
 
 #: src/launcher.rs:77
 msgid "{} is on"
-msgstr "{} açık"
+msgstr "{} مُفعّل"
 
 #: src/launcher.rs:85
 msgid "Could not start"
-msgstr "Başlatılamadı"
+msgstr "تعذّر البدء"
 
 #: src/launcher.rs:103
 msgid "The DPIMech service is not running. Open DPIMech to set it up."
-msgstr "DPIMech hizmeti çalışmıyor. Kurmak için DPIMech'i aç."
+msgstr "خدمة DPIMech لا تعمل. افتح DPIMech لإعدادها."
 
 #: src/launcher.rs:109
 msgid "The profile of this shortcut no longer exists."
-msgstr "Bu kısayolun profili artık yok."
+msgstr "الملف الشخصي لهذا الاختصار لم يعد موجودًا."
 
 #: src/launcher.rs:111
 msgid "Starting {}"
-msgstr "{} başlatılıyor"
+msgstr "جارٍ بدء {}"
 
 #: src/launcher.rs:116
 msgid "Turning the profile on…"
-msgstr "Profil açılıyor…"
+msgstr "جارٍ تفعيل الملف الشخصي…"
 
 #: src/launcher.rs:132
 msgid "The profile stopped right after starting. The Logs page in DPIMech shows why."
-msgstr "Profil başlar başlamaz durdu. Nedenini DPIMech'teki Kayıtlar sayfası gösterir."
+msgstr "توقف الملف الشخصي فور بدئه. تُظهر صفحة السجلات في DPIMech السبب."
 
 #: src/launcher.rs:137
 msgid "The profile is taking too long to start. The Logs page in DPIMech shows why."
-msgstr "Profilin başlaması çok uzun sürüyor. Nedenini DPIMech'teki Kayıtlar sayfası gösterir."
+msgstr "يستغرق بدء الملف الشخصي وقتًا طويلًا. تُظهر صفحة السجلات في DPIMech السبب."
 
 #: src/launcher.rs:253
 msgid "the menu entry has no command"
-msgstr "menü girdisinde komut yok"
+msgstr "عنصر القائمة بلا أمر"
 
 #: src/main.rs:386
 msgid "Folder for DPIMech log files"
-msgstr "DPIMech kayıt dosyaları için klasör"
+msgstr "مجلد ملفات سجل DPIMech"
 
 #: src/main.rs:582
 msgid "The service is installed. Connecting…"
-msgstr "Servis kuruldu. Bağlanılıyor…"
+msgstr "تم تثبيت الخدمة. جارٍ الاتصال…"
 
 #: src/main.rs:583
 msgid "Installing the service failed: {}"
-msgstr "Servis kurulamadı: {}"
+msgstr "فشل تثبيت الخدمة: {}"
 
 #: src/main.rs:591
 msgid "Installing… confirm the prompt. DPIMech connects by itself when the service is ready."
-msgstr "Kuruluyor… izin penceresini onayla. Servis hazır olunca DPIMech kendiliğinden bağlanır."
+msgstr "جارٍ التثبيت… وافق على الطلب. سيتصل DPIMech تلقائيًا عندما تجهز الخدمة."
 
 #: src/main.rs:592
 msgid "Could not start the installer: {}"
-msgstr "Kurulum başlatılamadı: {}"
+msgstr "تعذّر تشغيل المثبّت: {}"
 
 #: src/main.rs:663
 msgid "Downloading online lists…"
-msgstr "Çevrimiçi listeler indiriliyor…"
+msgstr "جارٍ تنزيل القوائم عبر الإنترنت…"
 
 #: src/notify.rs:54
 msgid "{} stopped"
-msgstr "{} durdu"
+msgstr "توقف {}"
 
 #: src/notify.rs:62
 msgid "{} needs attention"
-msgstr "{} ilgi bekliyor"
+msgstr "{} يحتاج إلى انتباه"
 
 #: src/notify.rs:68
 msgid "the sites stopped answering"
-msgstr "siteler cevap vermeyi bıraktı"
+msgstr "توقفت المواقع عن الاستجابة"
 
 #: src/notify.rs:70
 msgid "{} ms instead of the usual {} ms"
-msgstr "normalde {1} ms iken şimdi {0} ms"
+msgstr "{} ms بدلًا من {} ms المعتادة"
 
 #: src/notify.rs:72
 msgid "only {}/{} sites answer"
-msgstr "sadece {}/{} site cevap veriyor"
+msgstr "فقط {}/{} من المواقع تستجيب"
 
 #: src/notify.rs:75
 msgid "{} is slow"
-msgstr "{} yavaş"
+msgstr "{} بطيء"
 
 #: src/notify.rs:76
 msgid "Connection check: {}."
-msgstr "Bağlantı kontrolü: {}."
+msgstr "فحص الاتصال: {}."
 
 #: src/notify.rs:82
 msgid "{} was restarted"
-msgstr "{} yeniden başlatıldı"
+msgstr "أُعيد تشغيل {}"
 
 #: src/notify.rs:83
 msgid "DPIMech restarted the engine to fix the connection."
-msgstr "DPIMech bağlantıyı düzeltmek için motoru yeniden başlattı."
+msgstr "أعاد DPIMech تشغيل المحرك لإصلاح الاتصال."
 
 #: src/notify.rs:168
 msgid "DPIMech update available"
-msgstr "DPIMech güncellemesi var"
+msgstr "يتوفر تحديث لـ DPIMech"
 
 #: src/notify.rs:169
 msgid "Version {} is out. Settings → About shows how to get it."
-msgstr "{} sürümü çıktı. Nasıl alacağını Ayarlar → Hakkında gösterir."
+msgstr "صدر الإصدار {}. الإعدادات ← حول تُظهر كيفية الحصول عليه."
 
 #: src/notify.rs:184
 msgid "DPIMech {} is ready"
-msgstr "DPIMech {} hazır"
+msgstr "DPIMech {} جاهز"
 
 #: src/notify.rs:185
 msgid "Restart DPIMech to update: use the button at the top of the window."
-msgstr "Güncellemek için DPIMech'i yeniden başlat: pencerenin üstündeki düğmeyi kullan."
+msgstr "أعد تشغيل DPIMech للتحديث: استخدم الزر أعلى النافذة."
 
 #: src/picker.rs:92
 msgid "Choose an application"
-msgstr "Bir uygulama seç"
+msgstr "اختر تطبيقًا"
 
 #: src/selfupdate.rs:34
 msgid "Update it with your package manager (Fedora: sudo dnf upgrade), or download it."
-msgstr "Paket yöneticinle güncelle (Fedora: sudo dnf upgrade) ya da indir."
+msgstr "حدّثه بمدير الحزم لديك (Fedora: sudo dnf upgrade)، أو نزّله."
 
 #: src/selfupdate.rs:36
 msgid "Download it from the releases page."
-msgstr "Sürümler sayfasından indir."
+msgstr "نزّله من صفحة الإصدارات."
 
 #: src/selfupdate.rs:73
 msgid "No update has been downloaded yet."
-msgstr "Henüz indirilmiş bir güncelleme yok."
+msgstr "لم يُنزّل أي تحديث بعد."
 
 #: src/selfupdate.rs:75
 msgid "This copy is not an AppImage."
-msgstr "Bu kopya bir AppImage değil."
+msgstr "هذه النسخة ليست AppImage."
 
 #: src/selfupdate.rs:165
 msgid "Installing the update…"
-msgstr "Güncelleme kuruluyor…"
+msgstr "جارٍ تثبيت التحديث…"
 
 #: src/shortcut.rs:131
 msgid "Choose where to put the shortcut."
-msgstr "Kısayolun nereye konacağını seç."
+msgstr "اختر مكان وضع الاختصار."
 
 #: src/shortcut.rs:135
 msgid "Give the shortcut a name."
-msgstr "Kısayola bir ad ver."
+msgstr "أعطِ الاختصار اسمًا."
 
 #: src/shortcut.rs:714
 msgid "Starts the DPIMech profile \"{}\""
-msgstr "DPIMech profili \"{}\" başlatır"
+msgstr "يبدأ ملف DPIMech الشخصي «{}»"
 
 #: src/shortcutui.rs:25
 msgid "Start menu"
-msgstr "Başlat menüsü"
+msgstr "قائمة ابدأ"
 
 #: src/shortcutui.rs:27
 msgid "Applications folder"
-msgstr "Uygulamalar klasörü"
+msgstr "مجلد التطبيقات"
 
 #: src/shortcutui.rs:29
 msgid "Applications menu"
-msgstr "Uygulamalar menüsü"
+msgstr "قائمة التطبيقات"
 
 #: src/shortcutui.rs:109
 msgid "Shortcut created: {}"
-msgstr "Kısayol oluşturuldu: {}"
+msgstr "تم إنشاء الاختصار: {}"
 
 #: src/shortcutui.rs:115
 msgid "Could not create the shortcut: {}"
-msgstr "Kısayol oluşturulamadı: {}"
+msgstr "تعذّر إنشاء الاختصار: {}"
 
 #: src/shortcutui.rs:130
 msgid "Nothing, only turn the profile on"
-msgstr "Hiçbiri, sadece profili aç"
+msgstr "لا شيء، فعّل الملف الشخصي فقط"
 
 #: src/shortcutui.rs:142
 msgid "Removed {} shortcut(s) of the deleted profile"
-msgstr "Silinen profilin {} kısayolu kaldırıldı"
+msgstr "أُزيل {} من اختصارات الملف الشخصي المحذوف"
 
 #: src/shortcutui.rs:154
 msgid "Removed {} shortcut(s)."
-msgstr "{} kısayol kaldırıldı."
+msgstr "أُزيل {} من الاختصارات."
 
 #: src/tray.rs:195
 msgid "idle"
-msgstr "boşta"
+msgstr "خامل"
 
 #: src/tray.rs:196
 msgid "{} profile(s) running"
-msgstr "{} profil çalışıyor"
+msgstr "عدد الملفات الشخصية العاملة: {}"
 
 #: src/tray.rs:205
 msgid "Show DPIMech"
-msgstr "DPIMech'i göster"
+msgstr "إظهار DPIMech"
 
 #: src/tray.rs:220
 msgid "Report a problem…"
-msgstr "Sorun bildir…"
+msgstr "الإبلاغ عن مشكلة…"
 
 #: src/tray.rs:224
 msgid "Quit"
-msgstr "Çık"
+msgstr "خروج"
 
 #: src/wizard.rs:207
 msgid "Pick at least one site."
-msgstr "En az bir site seç."
+msgstr "اختر موقعًا واحدًا على الأقل."
 
 #: src/wizard.rs:218
 msgid "Add at least one app (for example Discord)."
-msgstr "En az bir uygulama ekle (örneğin Discord)."
+msgstr "أضف تطبيقًا واحدًا على الأقل (مثلًا Discord)."
 
 #: src/wizard.rs:274
 msgid "The DPIMech background service is not running. Go back and press “Install the service”."
-msgstr "DPIMech arka plan servisi çalışmıyor. Geri dön ve “Servisi kur”a bas."
+msgstr "خدمة الخلفية لـ DPIMech لا تعمل. ارجع واضغط «تثبيت الخدمة»."
 
 #: src/wizard.rs:319
 msgid "Installing {} failed: {}"
-msgstr "{} kurulamadı: {}"
+msgstr "فشل تثبيت {}: {}"
 
 #: src/wizard.rs:392
 msgid "The test was cancelled."
-msgstr "Test iptal edildi."
+msgstr "أُلغي الاختبار."
 
 #: src/wizard.rs:396
 msgid "The test failed: {}"
-msgstr "Test başarısız oldu: {}"
+msgstr "فشل الاختبار: {}"
 
 #: src/wizard.rs:404
 msgid "Good news: these sites already open normally on your connection, so nothing needs to be changed."
-msgstr "İyi haber: bu siteler bağlantında zaten normal açılıyor, değiştirilecek bir şey yok."
+msgstr "خبر سار: هذه المواقع تُفتح بشكل طبيعي على اتصالك، فلا حاجة لتغيير شيء."
 
 #: src/wizard.rs:443
 msgid "My sites"
-msgstr "Sitelerim"
+msgstr "مواقعي"
 
 #: src/wizard.rs:464
 msgid "Could not create the profile: {}"
-msgstr "Profil oluşturulamadı: {}"
+msgstr "تعذّر إنشاء الملف الشخصي: {}"
 
 #: src/wizard.rs:470
 msgid "“{}” is on and starts automatically with the computer."
-msgstr "“{}” açık ve bilgisayarla birlikte otomatik başlar."
+msgstr "«{}» مُفعّل ويبدأ تلقائيًا مع الحاسوب."
 
 #: src/wizard.rs:476
 msgid "{}/{} test requests worked ({} ms on average)."
-msgstr "{}/{} test isteği başarılı (ortalama {} ms)."
+msgstr "نجح {}/{} من طلبات الاختبار ({} ms في المتوسط)."
 
 #: src/wizard.rs:484
 msgid "No setting worked every time, so this one may be unreliable. If the connection fails, try “The whole computer” (zapret) or the Strategy Lab."
-msgstr "Hiçbir ayar her seferinde çalışmadı, bu yüzden bu ayar güvenilir olmayabilir. Bağlantı kurulamazsa “Tüm bilgisayar” (zapret) seçeneğini ya da Strateji Laboratuvarı'nı deneyin."
+msgstr "لم ينجح أي إعداد في كل مرة، لذا قد يكون هذا غير موثوق. إذا فشل الاتصال، جرّب «الحاسوب بأكمله» (zapret) أو مختبر الإستراتيجيات."
 
 #: src/wizard.rs:492
 msgid "Set your browser or app to use the SOCKS5 proxy 127.0.0.1:{}."
-msgstr "Tarayıcını ya da uygulamanı SOCKS5 proxy 127.0.0.1:{} kullanacak şekilde ayarla."
+msgstr "اضبط متصفحك أو تطبيقك لاستخدام وكيل SOCKS5 127.0.0.1:{}."
 
 #: src/wizard.rs:499
 msgid "Restart the chosen apps if they were already open."
-msgstr "Seçtiğin uygulamalar zaten açıksa onları yeniden başlat."
+msgstr "أعد تشغيل التطبيقات المختارة إذا كانت مفتوحة."
 
 #: src/wizard.rs:525
 msgid "The engine could not run on this computer: {}."
-msgstr "Motor bu bilgisayarda çalışamadı: {}."
+msgstr "تعذّر تشغيل المحرك على هذا الحاسوب: {}."
 
 #: src/wizard.rs:531
 msgid "Try again later, add other sites, or run the Strategy Lab from the full interface to test more settings."
-msgstr "Daha sonra tekrar dene, başka siteler ekle ya da daha fazla ayar denemek için tam arayüzden Strateji Laboratuvarı'nı çalıştır."
+msgstr "حاول لاحقًا، أو أضف مواقع أخرى، أو شغّل مختبر الإستراتيجيات من الواجهة الكاملة لاختبار إعدادات أكثر."
 
 #: src/wizard.rs:535
 msgid "Try “The whole computer” (zapret) or run the Strategy Lab from the full interface."
-msgstr "“Tüm bilgisayar” (zapret) seçeneğini dene ya da tam arayüzden Strateji Laboratuvarı'nı çalıştır."
+msgstr "جرّب «الحاسوب بأكمله» (zapret) أو شغّل مختبر الإستراتيجيات من الواجهة الكاملة."
 
 #: src/wizard.rs:540
 msgid "No setting worked on your connection for these sites."
-msgstr "Bu siteler için bağlantında hiçbir ayar çalışmadı."
+msgstr "لم ينجح أي إعداد على اتصالك لهذه المواقع."
 
 #: src/wizard.rs:606
 msgid "Install {}"
-msgstr "{} kur"
+msgstr "تثبيت {}"
 
 #: src/wizard.rs:622
 msgid "Find a setting that works on your connection"
-msgstr "Bağlantında çalışan bir ayar bul"
+msgstr "إيجاد إعداد يعمل على اتصالك"
 
 #: src/wizard.rs:631
 msgid "Create the profile and turn it on"
-msgstr "Profili oluştur ve aç"
+msgstr "إنشاء الملف الشخصي وتفعيله"

@@ -36,7 +36,7 @@ crates/core/      shared library (no UI, no OS service code)
   src/config.rs     ServiceConfig (TOML, atomic save)
   src/paths.rs      data-dir layout
   src/packages.rs   downloadable packages catalog (repo, asset matching, extract rules, pinned hashes)
-  src/catalog.rs    domain packs (strategies/packs.json), standard strategies (strategies/default.json), online sources, ISP table
+  src/catalog.rs    domain packs (+ probe hosts), standard strategies (strategies/default.json), online sources, ISP table
   src/lab.rs        Strategy Lab request/result types
   src/args.rs       quote-aware argument splitter
   src/argpolicy.rs  engine argument allowlist (getopt-aware; blocks file writes, arbitrary reads, listen overrides)
@@ -83,7 +83,8 @@ crates/gui/       dpimech binary (Slint)
   src/shortcut.rs   profile shortcuts: composed icon (logo + app), .lnk / .desktop / .app per OS;
                     shortcuts.toml records them (replace on recreate, remove with the profile / "remove all")
   src/shortcutui.rs "Create shortcut" dialog state; ui/shortcut.slint
-  src/launcher.rs   `dpimech --launch <id> [--open <app>]`: progress window, start profile, open app; ui/launch.slint
+  src/launcher.rs   `dpimech --launch <id> [--open <app>]`: progress window, start profile, open app, start the
+                    main app in the tray if it is not running; ui/launch.slint
   src/prefs.rs      per-user GUI prefs (easy mode, onboarded) + elevated service install
   src/selfupdate.rs in-app update: service downloads + verifies, Windows installer run silently by the
                     service, AppImage swapped by the GUI; banner "Restart and update"
@@ -91,7 +92,9 @@ crates/gui/       dpimech binary (Slint)
   src/single.rs     single GUI instance (Windows mutex + event, Unix socket)
   src/logfile.rs    daily log files (opt-in) and error snapshots written by the GUI (never by the service)
   src/report.rs     "Report a problem": report text, GitHub issue / mailto links; ui/report.slint
-  src/i18n.rs       translations for Rust-built text + language choice; lang/ holds the .po catalogs
+  src/i18n.rs       translations for Rust-built text + language choice (tr, ru, fa, ar) and the user's
+                    country from the locale; lang/ holds the .po catalogs
+  src/whatsnew.rs   "What's new" dialog after an update (ui/whatsnew.slint)
   assets/           logo-source.png (master) → logo.png (UI), dpimech.ico/.png (exe, notifications),
                     tray-32.rgba (tray; status dot drawn at runtime) — regenerate with tools/make_icon.py
   src/apps.rs       process + Start Menu discovery with icons (Win32)
@@ -107,9 +110,10 @@ packaging/fedora/ dpimech.spec + make-srpm.sh (source RPM with vendored crates) 
 .github/workflows ci.yml (fmt, clippy, tests), release.yml (new version on main or tag v* → GitHub release),
                   pages.yml (site/ → GitHub Pages), copr.yml (manual COPR build / webhook test)
 strategies/       default.json: the standard strategies per engine; embedded in the app and fetched from
-                  `main` by the service, so editing it reaches users without a release;
-                  packs.json: site packs (domains, probe hosts, Android package names), embedded here and
-                  in the Android app, which also fetches it from `main`
+                  `main` by the service, so editing it reaches users without a release; domains.json: the
+                  site packs (with the countries where each is blocked), handled the same way
+changelog/        en.md + tr/ru/fa/ar.md: user-facing notes per version, shown once after an update
+                  ("What's new", src/whatsnew.rs) and used as the GitHub release text
 site/             landing page (plain HTML, no build step; reads the newest release via the GitHub API)
 docs/             PLAN, PROGRESS, DECISIONS, RELEASING (release steps, COPR setup)
 ```
@@ -165,7 +169,9 @@ sh packaging/fedora/make-srpm.sh target/srpm
 - **Style:** `cargo fmt`, no warnings. Comments explain *why*, not *what*. Match the surrounding code.
 - **Layering:** `core` must not depend on UI or OS-service crates. OS-specific code lives behind `cfg(...)` in the smallest possible module.
 - **UI:** Slint with the `fluent` style and the **software renderer** (GPU renderer costs ~90 MB extra RAM, see DECISIONS #4). Use `Palette.*` / `Theme.*` colours, never hardcoded ones in pages. Icons come from `Icons` in `theme.slint`.
-- **Model updates:** profile lists are replaced wholesale (new `VecModel`) so card switches never keep stale state; logs use an incremental `VecModel`.
+- **Model updates:** profile cards change in place (`set_row_data`) while the same profiles are listed, so an open card
+  menu survives status updates; `changed item` in `ProfileCard` puts the switch back on the service's state. A new
+  `VecModel` only when profiles are added, removed or reordered. Logs use an incremental `VecModel`.
 - **Budget:** GUI release build ≤ 40 MB working set when visible; service ≤ 20 MB idle. Re-measure after UI-heavy changes.
 
 ## Security rules (the service runs as SYSTEM/root)
