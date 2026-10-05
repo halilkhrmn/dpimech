@@ -130,12 +130,13 @@ impl EngineKind {
             // Proxy engines: per-app needs a redirector (ProxiFyre on Windows, cgroups on Linux).
             // Per-app: ProxiFyre on Windows, cgroups + nftables on Linux.
             EngineKind::ByeDpi | EngineKind::SpoofDpi => match os {
-                Os::Windows | Os::Linux => vec![PerApp, AppProxy, LocalProxy],
+                Os::Windows | Os::Linux => vec![PerApp, LocalProxy, AppProxy],
                 Os::MacOs => vec![LocalProxy, AppProxy],
             },
+            // "Open with proxy" is last everywhere: an option for people who want it, never offered.
             // Linux: whole computer through the same nftables redirect.
             EngineKind::ZapretTpws => match os {
-                Os::Linux => vec![SystemWide, PerApp, AppProxy, LocalProxy],
+                Os::Linux => vec![SystemWide, PerApp, LocalProxy, AppProxy],
                 _ => vec![LocalProxy, AppProxy],
             },
             EngineKind::ZapretWinws | EngineKind::ZapretNfqws | EngineKind::GoodbyeDpi => {

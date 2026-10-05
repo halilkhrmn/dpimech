@@ -348,3 +348,5 @@ own release), a launchd service and an unsigned universal `.dmg`. The wizard hid
 - **Limits:** only DPIMech's own launch uses the engine (an app opened another way, or already running, does
   not); voice/UDP goes direct; the editor warns when the app does not look like Chromium/Electron. ProxiFyre
   stays the default for per-app profiles because it catches the app however it starts.
+- **Never offered (owner's choice):** the wizard, the Strategy Lab and Easy mode never pick or suggest it; it is
+  the last routing option in the editor, for people who choose it themselves.
