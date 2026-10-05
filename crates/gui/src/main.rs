@@ -2,6 +2,7 @@
 
 #[macro_use]
 mod i18n;
+mod appproxy;
 mod apps;
 mod autostart;
 mod bridge;
@@ -26,7 +27,7 @@ mod whatsnew;
 mod wizard;
 
 use crate::i18n::tr;
-use dpimech_core::model::{EngineKind, Os, ProfileState, RoutingMode};
+use dpimech_core::model::{EngineKind, Os, ProfileState, Routing, RoutingMode};
 use dpimech_core::packages::PackageId;
 use slint::{CloseRequestResponse, ComponentHandle, Model, ModelRc, SharedString, VecModel};
 use tokio::sync::mpsc;
@@ -164,6 +165,7 @@ fn main() -> anyhow::Result<()> {
             let index_of =
                 |m: RoutingMode| modes.iter().position(|x| *x == m).map_or(-1, |i| i as i32);
             ui.set_per_app_index(index_of(RoutingMode::PerApp));
+            ui.set_app_proxy_index(index_of(RoutingMode::AppProxy));
             ui.set_system_wide_index(index_of(RoutingMode::SystemWide));
             let names: Vec<String> = modes.iter().map(|m| tr(m.display_name())).collect();
             ui.set_routing_names(string_model(names.iter().map(String::as_str)));
@@ -197,8 +199,12 @@ fn main() -> anyhow::Result<()> {
             let (mut draft, apps) = convert::draft_from_profile(&profile.profile, &engines);
             draft.health = convert::health_text(&profile.status).into();
             set_routing_names(&ui, draft.engine_index);
-            picker::load_draft(&apps);
+            match &profile.profile.routing {
+                Routing::AppProxy { app, .. } => picker::load_draft_app(app),
+                _ => picker::load_draft(&apps),
+            }
             ui.set_draft(draft);
+            refresh_app_proxy_note(&ui);
             ui.set_editor_error(SharedString::new());
             ui.set_page(Page::Editor);
         }
@@ -214,7 +220,12 @@ fn main() -> anyhow::Result<()> {
         let weak = ui.as_weak();
         let engines = engines.clone();
         let tx = cmd_tx.clone();
-        move |draft| match convert::profile_from_draft(&draft, &engines, picker::draft_keys()) {
+        move |draft| match convert::profile_from_draft(
+            &draft,
+            &engines,
+            picker::draft_keys(),
+            picker::draft_app(),
+        ) {
             Ok(profile) => {
                 let _ = tx.send(Command::Save(profile));
             }
@@ -254,7 +265,11 @@ fn main() -> anyhow::Result<()> {
 
     ui.on_open_picker({
         let weak = ui.as_weak();
-        move || picker::open(&weak.unwrap())
+        move || {
+            let ui = weak.unwrap();
+            picker::set_single(ui.get_draft().routing_index == ui.get_app_proxy_index());
+            picker::open(&ui)
+        }
     });
     ui.on_picker_search({
         let weak = ui.as_weak();
@@ -262,15 +277,27 @@ fn main() -> anyhow::Result<()> {
     });
     ui.on_picker_pick({
         let weak = ui.as_weak();
-        move |app| picker::pick(&weak.unwrap(), app)
+        move |app| {
+            let ui = weak.unwrap();
+            picker::pick(&ui, app);
+            refresh_app_proxy_note(&ui);
+        }
     });
     ui.on_picker_add_manual({
         let weak = ui.as_weak();
-        move |text| picker::add_manual(&weak.unwrap(), &text)
+        move |text| {
+            let ui = weak.unwrap();
+            picker::add_manual(&ui, &text);
+            refresh_app_proxy_note(&ui);
+        }
     });
     ui.on_picker_browse({
         let weak = ui.as_weak();
-        move || picker::browse(&weak.unwrap())
+        move || {
+            let ui = weak.unwrap();
+            picker::browse(&ui);
+            refresh_app_proxy_note(&ui);
+        }
     });
     ui.on_remove_app(picker::remove);
 
@@ -871,7 +898,17 @@ pub fn apply_profiles(ui: &AppWindow, profiles: Vec<ProfileState>) {
         _ => ui.set_profiles(ModelRc::new(VecModel::from(items))),
     }
     tray::update_profiles(&profiles);
+    appproxy::on_profiles(&profiles);
     PROFILES.set(profiles);
+}
+
+/// Warns in the editor when the app-proxy app does not look like Chromium or Electron, which
+/// are the apps that understand the proxy switch.
+fn refresh_app_proxy_note(ui: &AppWindow) {
+    let doubtful = picker::draft_app()
+        .and_then(|app| appproxy::looks_chromium(&app))
+        .is_some_and(|chromium| !chromium);
+    ui.set_app_proxy_doubtful(doubtful);
 }
 
 fn set_domain_packs(ui: &AppWindow) {

@@ -158,6 +158,11 @@ pub fn register_identity() {
 #[cfg(target_os = "macos")]
 pub fn register_identity() {}
 
+/// A profile with "Open with proxy" is on, but its app could not be opened.
+pub fn app_open_failed(app: &str, error: &str) {
+    show(&trf!("Could not open {}", app), error);
+}
+
 /// Tells the user once per version that a new DPIMech release is out.
 pub fn app_update(version: &str) {
     static SHOWN: Mutex<Option<String>> = Mutex::new(None);

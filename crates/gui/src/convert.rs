@@ -131,10 +131,12 @@ pub fn draft_from_profile(p: &Profile, engines: &[EngineKind]) -> (ProfileDraft,
     (draft, apps)
 }
 
+/// `apps` are the per-app routing keys; `app` is what an app-proxy profile opens.
 pub fn profile_from_draft(
     d: &ProfileDraft,
     engines: &[EngineKind],
     apps: Vec<String>,
+    app: Option<String>,
 ) -> Result<Profile, String> {
     let name = d.name.trim();
     if name.is_empty() {
@@ -157,6 +159,14 @@ pub fn profile_from_draft(
             domains: parse_domains(&d.domains),
         },
         RoutingMode::LocalProxy => Routing::LocalProxy { port },
+        RoutingMode::AppProxy => {
+            let app = app.ok_or_else(|| tr("Choose the app DPIMech should open."))?;
+            // A bare name works on Linux (looked up in PATH); Windows needs the program itself.
+            if cfg!(windows) && !app.contains('\\') {
+                return Err(tr("Choose the app from the list or with Browse…"));
+            }
+            Routing::AppProxy { app, port }
+        }
         RoutingMode::PerApp => {
             if apps.is_empty() {
                 return Err(tr("Add at least one application for per-app routing."));
@@ -208,6 +218,9 @@ pub fn profile_item(s: &ProfileState) -> ProfileItem {
             }
         }
         Routing::LocalProxy { port } => format!("127.0.0.1:{port}"),
+        Routing::AppProxy { app, port } => {
+            trf!("{} · port {}", crate::launcher::display_name(app), port)
+        }
         Routing::SystemWide { domains } => match domains.len() {
             0 => tr("All matching traffic"),
             n => trf!(

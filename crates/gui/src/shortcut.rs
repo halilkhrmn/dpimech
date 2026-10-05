@@ -53,6 +53,12 @@ pub fn choices(profile: &Profile) -> Vec<Choice> {
             .filter_map(|key| found.iter().find(|a| a.exe.eq_ignore_ascii_case(key)))
             .map(to_choice)
             .collect(),
+        // The shortcut always opens the profile's own app (with the proxy setting).
+        Routing::AppProxy { app, .. } => vec![Choice {
+            title: crate::launcher::display_name(app),
+            launch: app.clone(),
+            icon_source: app.clone(),
+        }],
         _ => found.iter().filter(|a| a.listed).map(to_choice).collect(),
     }
 }

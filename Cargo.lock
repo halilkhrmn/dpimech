@@ -1177,6 +1177,7 @@ dependencies = [
  "dpimech-core",
  "global-hotkey",
  "gtk",
+ "libc",
  "libloading 0.8.9",
  "lnk",
  "png",
