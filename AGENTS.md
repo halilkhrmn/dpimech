@@ -139,7 +139,7 @@ cargo run -p dpimech-service -- run --data-dir .dev-data
 cargo run -p dpimech-gui
 
 # Screenshots of a specific page (debug builds only)
-DPIMECH_DEBUG_PAGE=engines|logs|editor|picker|shortcut  DPIMECH_DEBUG_PROFILE=<profile id>
+DPIMECH_DEBUG_PAGE=engines|logs|settings|editor|picker|shortcut  DPIMECH_DEBUG_PROFILE=<profile id>
 
 # Talk to a running service directly
 pwsh tools/ipc.ps1 -Requests '{"type":"list_packages"}' -ListenSeconds 2

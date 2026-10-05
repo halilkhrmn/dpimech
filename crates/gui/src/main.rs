@@ -102,20 +102,29 @@ fn main() -> anyhow::Result<()> {
         }
     });
     let startup = autostart::get();
+    if startup.enabled && !startup.minimized {
+        // From before "start minimized" stopped being a choice: the settings page now says it starts in the tray.
+        let _ = autostart::set(autostart::Autostart {
+            enabled: true,
+            minimized: true,
+        });
+    }
     ui.set_start_with_windows(startup.enabled);
-    ui.set_start_minimized(startup.minimized);
     ui.on_set_autostart({
         let weak = ui.as_weak();
-        move |enabled, minimized| {
+        move |enabled| {
             let ui = weak.unwrap();
-            let wanted = autostart::Autostart { enabled, minimized };
+            // Starting at sign-in always means starting in the tray: a window popping up at every
+            // sign-in is what nobody wants, so it is no longer a separate switch.
+            let wanted = autostart::Autostart {
+                enabled,
+                minimized: true,
+            };
             if let Err(e) = autostart::set(wanted) {
                 eprintln!("autostart: {e}");
             }
-            // Re-read so the switches always show what is really in the registry.
-            let actual = autostart::get();
-            ui.set_start_with_windows(actual.enabled);
-            ui.set_start_minimized(actual.minimized);
+            // Re-read so the switch always shows what is really in the registry.
+            ui.set_start_with_windows(autostart::get().enabled);
         }
     });
     ui.set_engine_names(string_model(engines.iter().map(|e| e.display_name())));
@@ -776,11 +785,12 @@ fn main() -> anyhow::Result<()> {
     // Warm the app list so icons are ready when the editor opens.
     picker::refresh(ui.as_weak());
 
-    // Development aid for screenshots: DPIMECH_DEBUG_PAGE=engines|logs|editor|picker|shortcut.
+    // Development aid for screenshots: DPIMECH_DEBUG_PAGE=engines|logs|settings|editor|picker|shortcut.
     #[cfg(debug_assertions)]
     match std::env::var("DPIMECH_DEBUG_PAGE").as_deref() {
         Ok("engines") => ui.set_page(Page::Engines),
         Ok("logs") => ui.set_page(Page::Logs),
+        Ok("settings") => ui.set_page(Page::Settings),
         Ok("shortcut") => {
             let weak = ui.as_weak();
             slint::Timer::single_shot(std::time::Duration::from_millis(1500), move || {

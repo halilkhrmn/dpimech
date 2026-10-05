@@ -121,6 +121,15 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-10-05 (43) — Simpler profile editor and settings
+- **Done:** profile editor: name, (engine, routing), "Start with service", one "Keep it working" switch; the rest
+  behind "Advanced settings", hidden in Easy mode. Settings: one sign-in switch (always starts in the tray; old
+  entries rewritten once), detailed log moved to the Logs page, Shortcuts group only when there are shortcuts.
+  Removed the unused placeholder page. New strings translated (tr, ru, fa, ar). DECISIONS #49.
+- **Verified:** check.sh (fmt, clippy, tests); screenshots of the editor (closed and open advanced section),
+  Settings and Logs under Xvfb (`DPIMECH_DEBUG_PAGE=settings` added for this).
+- **Next:** "proxy flag" routing for Chromium/Electron apps such as Discord (no packet driver), DoH toggle.
+
 ### 2026-10-02 (42) — 0.3.1: Arch package on the release page, AUR on hold
 - **Owner's note:** the AUR takes no new accounts, so `dpimech-bin` cannot be published there for now.
 - **Done:** the release workflow attaches the Arch package it already builds and installs in a clean Arch
