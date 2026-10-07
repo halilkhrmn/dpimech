@@ -260,6 +260,7 @@ fn logo_stamp() -> String {
 }
 
 /// The `--open` argument of a shortcut's command.
+#[cfg_attr(target_os = "macos", allow(dead_code))] // macOS shortcuts show no app icon yet
 fn arg_after_open(args: &[String]) -> Option<String> {
     let at = args.iter().position(|a| a == OPEN_FLAG)?;
     args.get(at + 1).cloned()

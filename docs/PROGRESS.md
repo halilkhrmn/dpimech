@@ -121,6 +121,11 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-10-07 (48) — 0.4.1
+- Done: 0.4.0 was published from the merge before the logo fix (#24), so it still left the old logo on
+  the taskbar and shortcuts; 0.4.1 ships the fix. Also fixed the macOS CI: `arg_after_open` is unused there.
+- Verified: fmt, clippy (Linux, Windows and macOS targets), tests.
+
 ### 2026-10-07 (47) — Old logo left on the taskbar and shortcuts after the update
 - Done: on the first start with a new logo (`shortcut-logo` marker = hash of the bundled logo) the GUI
   redraws the icons of earlier profile shortcuts (reads `--open` back from the .lnk / .desktop, points

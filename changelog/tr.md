@@ -1,5 +1,8 @@
 # Değişiklikler
 
+## 0.4.1
+- Yeni logo artık görev çubuğunda, Başlat menüsünde, Linux uygulama menüsünde ve güncellemeden önce oluşturulan profil kısayollarında da görünüyor; 0.4.0'a güncelleyince bunlarda eski logo kalıyordu.
+
 ## 0.4.0
 - Yeni logo: Kim De Vries'in elle çizdiği bir bukalemun.
 - Daha sade profil düzenleyici: bağlantıyla tek bir "Çalışır durumda tut" anahtarı ilgileniyor; port, kontrol ayarları ve strateji argümanları "Gelişmiş ayarlar" altında.
