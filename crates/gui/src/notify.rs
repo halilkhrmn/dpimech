@@ -134,9 +134,11 @@ pub fn register_identity() {
 }
 
 /// Puts the logo into the user's icon theme so notifications and the autostart entry can
-/// refer to it as `dpimech`.
+/// refer to it as `dpimech`. This copy wins over the packaged icon, so it is replaced when an
+/// update brings a new logo.
 #[cfg(all(unix, not(target_os = "macos")))]
 pub fn register_identity() {
+    const LOGO: &[u8] = include_bytes!("../assets/dpimech.png");
     let Some(base) = std::env::var_os("XDG_DATA_HOME")
         .map(std::path::PathBuf::from)
         .or_else(|| {
@@ -145,14 +147,19 @@ pub fn register_identity() {
     else {
         return;
     };
-    let icon = base.join("icons/hicolor/256x256/apps/dpimech.png");
-    if icon.exists() {
+    let theme = base.join("icons/hicolor");
+    let icon = theme.join("256x256/apps/dpimech.png");
+    if std::fs::read(&icon).is_ok_and(|old| old == LOGO) {
         return;
     }
     if let Some(dir) = icon.parent() {
         let _ = std::fs::create_dir_all(dir);
     }
-    let _ = std::fs::write(icon, include_bytes!("../assets/dpimech.png"));
+    if std::fs::write(&icon, LOGO).is_ok() {
+        // GTK notices icon theme changes by the theme folder's date.
+        let _ =
+            std::fs::File::open(&theme).and_then(|f| f.set_modified(std::time::SystemTime::now()));
+    }
 }
 
 #[cfg(target_os = "macos")]
