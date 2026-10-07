@@ -24,8 +24,8 @@ done
 iconset="$out/dpimech.iconset"
 mkdir -p "$iconset"
 for size in 16 32 128 256 512; do
-    sips -z $size $size crates/gui/assets/logo-source.png --out "$iconset/icon_${size}x${size}.png" >/dev/null
-    sips -z $((size * 2)) $((size * 2)) crates/gui/assets/logo-source.png --out "$iconset/icon_${size}x${size}@2x.png" >/dev/null
+    sips -z $size $size crates/gui/assets/icon-1024.png --out "$iconset/icon_${size}x${size}.png" >/dev/null
+    sips -z $((size * 2)) $((size * 2)) crates/gui/assets/icon-1024.png --out "$iconset/icon_${size}x${size}@2x.png" >/dev/null
 done
 iconutil -c icns "$iconset" -o "$app/Contents/Resources/dpimech.icns"
 rm -rf "$iconset"

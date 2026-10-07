@@ -203,8 +203,15 @@ export component AppWindow inherits Window {
                     padding: 8px;
                     padding-bottom: 20px;
                     spacing: 10px;
-                    Image { source: @image-url("../assets/logo.png"); width: 24px; height: 24px; }
-                    Text { text: "DPIMech"; font-size: 18px; font-weight: 700; vertical-alignment: center; }
+                    // The logo's "D" is the chameleon: it reads "DPIMECH" on its own.
+                    Image {
+                        source: @image-url("../assets/logo-long.png");
+                        height: 24px;
+                        image-fit: contain;
+                        horizontal-alignment: left;
+                        accessible-role: image;
+                        accessible-label: "DPIMech";
+                    }
                 }
                 NavItem {
                     icon: Icons.home; label: @tr("Profiles");
@@ -247,8 +254,16 @@ export component AppWindow inherits Window {
                     padding-left: 24px;
                     padding-right: 16px;
                     spacing: 10px;
-                    Image { source: @image-url("../assets/logo.png"); width: 24px; height: 24px; y: (parent.height - 24px) / 2; }
-                    Text { text: "DPIMech"; font-size: 18px; font-weight: 700; vertical-alignment: center; horizontal-stretch: 1; }
+                    Image {
+                        source: @image-url("../assets/logo-long.png");
+                        height: 24px;
+                        y: (parent.height - 24px) / 2;
+                        image-fit: contain;
+                        horizontal-alignment: left;
+                        horizontal-stretch: 1;
+                        accessible-role: image;
+                        accessible-label: "DPIMech";
+                    }
                     Rectangle {
                         width: 40px;
                         border-radius: 6px;

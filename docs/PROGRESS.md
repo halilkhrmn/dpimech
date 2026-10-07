@@ -121,6 +121,16 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-10-07 (45) — New hand-drawn logo, short READMEs
+- **Done:** logo by Kim De Vries (three SVGs in `crates/gui/assets/`) replaces the pixel-art octopus everywhere:
+  window/taskbar icon, sidebar and Easy-mode header (one-line logo), wizard, launcher, exe + installer icon, tray,
+  notifications, Linux packages, macOS icon, shortcut icons, website logo + favicon. `tools/make_icon.py` now
+  renders from the SVG (cairosvg). Logo credit in the READMEs, the website and Settings → Thanks. READMEs (5
+  languages) rewritten short; their detailed sections moved to `docs/guide/<lang>.md`. DECISIONS #51.
+- **Verified:** check.sh; icon sheet at 16–128 px on light and dark backgrounds; tray image; app under Xvfb shows the
+  new header logo; website screenshot (header tile, credits, footer).
+- **Not verified:** how the icon looks in the Windows taskbar/tray and the macOS Dock (needs those systems).
+
 ### 2026-10-05 (43) — Simpler profile editor and settings
 - **Done:** profile editor: name, (engine, routing), "Start with service", one "Keep it working" switch; the rest
   behind "Advanced settings", hidden in Easy mode. Settings: one sign-in switch (always starts in the tray; old

@@ -4,39 +4,39 @@ msgstr ""
 "Language: fa\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ui/app.slint:210
+#: ui/app.slint:217
 msgid "Profiles"
 msgstr "پروفایل‌ها"
 
-#: ui/app.slint:215
+#: ui/app.slint:222
 msgid "Strategy Lab"
 msgstr "آزمایشگاه راهبرد"
 
-#: ui/app.slint:220
+#: ui/app.slint:227
 msgid "Engines"
 msgstr "موتورها"
 
-#: ui/app.slint:226
+#: ui/app.slint:233
 msgid "Logs"
 msgstr "گزارش‌ها"
 
-#: ui/app.slint:232
+#: ui/app.slint:239
 msgid "Settings"
 msgstr "تنظیمات"
 
-#: ui/app.slint:275
+#: ui/app.slint:290
 msgid "Another DPI tool is running: {}. Two tools on the same traffic break connections — close it, or turn DPIMech's profiles off."
 msgstr "ابزار دیگری برای دور زدن DPI در حال اجراست: {}. دو ابزار روی یک ترافیک اتصال‌ها را خراب می‌کنند — آن را ببندید یا پروفایل‌های DPIMech را خاموش کنید."
 
-#: ui/app.slint:293
+#: ui/app.slint:308
 msgid "DPIMech {} is ready to install."
 msgstr "DPIMech {} آمادهٔ نصب است."
 
-#: ui/app.slint:297
+#: ui/app.slint:312
 msgid "Restart and update"
 msgstr "راه‌اندازی دوباره و به‌روزرسانی"
 
-#: ui/app.slint:309
+#: ui/app.slint:324
 msgid "Background service is not running. Engines can't be started until it is."
 msgstr "سرویس پس‌زمینه اجرا نمی‌شود. تا زمانی که اجرا نشود، موتورها راه‌اندازی نمی‌شوند."
 
@@ -512,6 +512,10 @@ msgstr "سپاس"
 msgid "DPIMech only manages these projects; the real work is theirs."
 msgstr "DPIMech فقط این پروژه‌ها را مدیریت می‌کند؛ کار اصلی را آن‌ها انجام می‌دهند."
 
+#: ui/pages.slint:370
+msgid "Logo, drawn by hand"
+msgstr "نشان، با دست کشیده شده"
+
 #: ui/report.slint:33
 msgid "What happened? A sentence or two helps a lot (optional)."
 msgstr "چه اتفاقی افتاد؟ یکی دو جمله خیلی کمک می‌کند (اختیاری)."
@@ -972,27 +976,27 @@ msgstr "شروع پروفایل بیش از حد طول می‌کشد. صفحه�
 msgid "the menu entry has no command"
 msgstr "مورد منو فرمانی ندارد"
 
-#: src/main.rs:400
+#: src/main.rs:406
 msgid "Folder for DPIMech log files"
 msgstr "پوشهٔ فایل‌های گزارش DPIMech"
 
-#: src/main.rs:596
+#: src/main.rs:602
 msgid "The service is installed. Connecting…"
 msgstr "سرویس نصب شد. در حال اتصال…"
 
-#: src/main.rs:597
+#: src/main.rs:603
 msgid "Installing the service failed: {}"
 msgstr "نصب سرویس ناموفق بود: {}"
 
-#: src/main.rs:605
+#: src/main.rs:611
 msgid "Installing… confirm the prompt. DPIMech connects by itself when the service is ready."
 msgstr "در حال نصب… پنجرهٔ تأیید را بپذیرید. DPIMech وقتی سرویس آماده شد خودش وصل می‌شود."
 
-#: src/main.rs:606
+#: src/main.rs:612
 msgid "Could not start the installer: {}"
 msgstr "اجرای نصب‌کننده ممکن نشد: {}"
 
-#: src/main.rs:677
+#: src/main.rs:683
 msgid "Downloading online lists…"
 msgstr "در حال دانلود فهرست‌های آنلاین…"
 
