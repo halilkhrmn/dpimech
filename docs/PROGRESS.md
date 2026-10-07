@@ -121,6 +121,13 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-10-07 (46) — 0.4.0
+- **Done:** version 0.4.0 (Cargo.toml, installer, Fedora spec), changelog in all five languages: new logo, simpler
+  profile editor and settings. "Open with proxy" is left out of the notes on purpose: they are shown in the app
+  as "What's new", and the owner does not want the app to suggest that option (DECISIONS #50).
+- **Verified:** check.sh (the changelog test needs the 0.4.0 section in every language).
+- **Next:** merging publishes the release (release.yml with smoke tests); check the new icon on Windows and macOS.
+
 ### 2026-10-07 (45) — New hand-drawn logo, short READMEs
 - **Done:** logo by Kim De Vries (three SVGs in `crates/gui/assets/`) replaces the pixel-art octopus everywhere:
   window/taskbar icon, sidebar and Easy-mode header (one-line logo), wizard, launcher, exe + installer icon, tray,
