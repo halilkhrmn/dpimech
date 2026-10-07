@@ -4,39 +4,39 @@ msgstr ""
 "Language: ru\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ui/app.slint:212
+#: ui/app.slint:219
 msgid "Profiles"
 msgstr "Профили"
 
-#: ui/app.slint:217
+#: ui/app.slint:224
 msgid "Strategy Lab"
 msgstr "Лаборатория"
 
-#: ui/app.slint:222
+#: ui/app.slint:229
 msgid "Engines"
 msgstr "Движки"
 
-#: ui/app.slint:228
+#: ui/app.slint:235
 msgid "Logs"
 msgstr "Журнал"
 
-#: ui/app.slint:234
+#: ui/app.slint:241
 msgid "Settings"
 msgstr "Настройки"
 
-#: ui/app.slint:277
+#: ui/app.slint:292
 msgid "Another DPI tool is running: {}. Two tools on the same traffic break connections — close it, or turn DPIMech's profiles off."
 msgstr "Работает другой инструмент обхода DPI: {}. Два инструмента на одном трафике ломают соединения — закройте его или выключите профили DPIMech."
 
-#: ui/app.slint:295
+#: ui/app.slint:310
 msgid "DPIMech {} is ready to install."
 msgstr "DPIMech {} готов к установке."
 
-#: ui/app.slint:299
+#: ui/app.slint:314
 msgid "Restart and update"
 msgstr "Перезапустить и обновить"
 
-#: ui/app.slint:311
+#: ui/app.slint:326
 msgid "Background service is not running. Engines can't be started until it is."
 msgstr "Фоновая служба не запущена. Пока она не работает, движки нельзя запустить."
 
@@ -536,6 +536,10 @@ msgstr "Благодарности"
 msgid "DPIMech only manages these projects; the real work is theirs."
 msgstr "DPIMech только управляет этими проектами, основная работа — их."
 
+#: ui/pages.slint:370
+msgid "Logo, drawn by hand"
+msgstr "Логотип, нарисован вручную"
+
 #: ui/report.slint:33
 msgid "What happened? A sentence or two helps a lot (optional)."
 msgstr "Что случилось? Пара предложений очень поможет (необязательно)."
@@ -716,19 +720,19 @@ msgstr "Повторить"
 msgid "Finish"
 msgstr "Готово"
 
-#: src/appproxy.rs:193
+#: src/appproxy.rs:201
 msgid "DPIMech only opens apps from Program Files or your own user folder."
 msgstr "DPIMech открывает приложения только из Program Files или вашей папки пользователя."
 
-#: src/appproxy.rs:198
+#: src/appproxy.rs:206
 msgid "the app is no longer there; choose it again in the profile"
 msgstr "приложения больше нет на месте; выберите его в профиле заново"
 
-#: src/appproxy.rs:224
+#: src/appproxy.rs:236
 msgid "DPIMech only opens apps that belong to the system or to you and that other users cannot change."
 msgstr "DPIMech открывает только приложения, которые принадлежат системе или вам и которые другие пользователи не могут изменить."
 
-#: src/appproxy.rs:249
+#: src/appproxy.rs:262
 msgid "the menu entry has no command"
 msgstr "в пункте меню нет команды"
 
@@ -820,67 +824,67 @@ msgstr "Добавьте хотя бы одно приложение для ма
 msgid "{} · port {}"
 msgstr "{} · порт {}"
 
-#: src/convert.rs:227
+#: src/convert.rs:225
 msgid "All matching traffic"
 msgstr "Весь подходящий трафик"
 
-#: src/convert.rs:228
+#: src/convert.rs:226
 msgid "{} site(s): {}"
 msgstr "Сайтов: {} — {}"
 
-#: src/convert.rs:241
+#: src/convert.rs:239
 msgid "Stopped"
 msgstr "Остановлен"
 
-#: src/convert.rs:242
+#: src/convert.rs:240
 msgid "Starting…"
 msgstr "Запуск…"
 
-#: src/convert.rs:250
+#: src/convert.rs:248
 msgid "1 auto-restart"
 msgstr "1 автоперезапуск"
 
-#: src/convert.rs:251
+#: src/convert.rs:249
 msgid "{} auto-restarts"
 msgstr "автоперезапусков: {}"
 
-#: src/convert.rs:260
+#: src/convert.rs:258
 msgid "Sites not answering ({}/{})"
 msgstr "Сайты не отвечают ({}/{})"
 
-#: src/convert.rs:262
+#: src/convert.rs:260
 msgid "Slow: avg. {} ms (usually {} ms)"
 msgstr "Медленно: в среднем {} мс (обычно {} мс)"
 
-#: src/convert.rs:264
+#: src/convert.rs:262
 msgid "Only {}/{} sites answer"
 msgstr "Отвечают только {}/{} сайтов"
 
-#: src/convert.rs:271
+#: src/convert.rs:269
 msgid "Running · {}"
 msgstr "Работает · {}"
 
-#: src/convert.rs:272
+#: src/convert.rs:270
 msgid "avg. {} ms"
 msgstr "в среднем {} мс"
 
-#: src/convert.rs:380
+#: src/convert.rs:378
 msgid "just now"
 msgstr "только что"
 
-#: src/convert.rs:381
+#: src/convert.rs:379
 msgid "{} min"
 msgstr "{} мин"
 
-#: src/convert.rs:382
+#: src/convert.rs:380
 msgid "{} h {} min"
 msgstr "{} ч {} мин"
 
-#: src/convert.rs:394
+#: src/convert.rs:392
 msgid "Last check: {}/{} sites answered"
 msgstr "Последняя проверка: ответили {}/{} сайтов"
 
-#: src/convert.rs:400
+#: src/convert.rs:398
 msgid "(usually {} ms)"
 msgstr "(обычно {} мс)"
 

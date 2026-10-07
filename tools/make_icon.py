@@ -1,119 +1,76 @@
-"""Builds DPIMech's icons from the pixel-art logo.
+"""Builds DPIMech's icons and logo images from the hand-drawn SVG logo.
 
-Usage: python tools/make_icon.py [source image]   (default: crates/gui/assets/logo-source.png)
-Needs Pillow (pip install pillow). Writes into crates/gui/assets/:
-  logo.png        512 px, transparent, used by the UI (window icon, header, About)
-  dpimech.png     256 px, used for Windows notifications
-  dpimech.ico     16–256 px, embedded into both executables
+Usage: python tools/make_icon.py
+Needs CairoSVG and Pillow (pip install cairosvg pillow; CairoSVG needs the cairo library, which
+Linux and macOS usually have). Sources in crates/gui/assets/:
+  logo.svg              the mark: app icon everywhere
+  logo-long.svg         mark + "PIMECH" in one line: the window's header
+  logo-long-square.svg  mark above the name: README
+Writes into crates/gui/assets/:
+  logo.png        512 px mark on a transparent square (window icon, wizard, launcher)
+  logo-long.png   one-line logo, 96 px high (sidebar, Easy mode top bar)
+  dpimech.png     256 px mark (notifications, Linux menu icon, shortcut icons)
+  dpimech.ico     16–256 px, embedded into both executables and the installer
   tray-32.rgba    raw 32×32 RGBA for the tray icon (status dot is drawn on top at runtime)
+  icon-1024.png   1024 px mark for the macOS .icns (tools/build-macos-app.sh)
+and site/logo.svg + site/favicon.ico for the website.
 """
 
+import io
 import os
-import sys
-from collections import deque
+import shutil
 
+import cairosvg
 from PIL import Image
 
 ROOT = os.path.join(os.path.dirname(__file__), "..")
 ASSETS = os.path.join(ROOT, "crates", "gui", "assets")
-WHITE_THRESHOLD = 40  # distance from pure white still counted as background (JPEG noise)
+SITE = os.path.join(ROOT, "site")
+MARGIN = 0.06  # room around the mark so it does not touch the icon's edges
 
 
-def remove_background(img):
-    """Makes the white area connected to the image border transparent. White that is
-    enclosed by the drawing (eye highlights) stays."""
-    img = img.convert("RGBA")
-    w, h = img.size
-    px = img.load()
-
-    def is_bg(x, y):
-        r, g, b, _ = px[x, y]
-        return 255 * 3 - (r + g + b) <= WHITE_THRESHOLD * 3
-
-    seen = bytearray(w * h)
-    queue = deque()
-    for x in range(w):
-        queue.extend(((x, 0), (x, h - 1)))
-    for y in range(h):
-        queue.extend(((0, y), (w - 1, y)))
-    while queue:
-        x, y = queue.popleft()
-        i = y * w + x
-        if seen[i] or not is_bg(x, y):
-            continue
-        seen[i] = 1
-        px[x, y] = (0, 0, 0, 0)
-        if x > 0:
-            queue.append((x - 1, y))
-        if x < w - 1:
-            queue.append((x + 1, y))
-        if y > 0:
-            queue.append((x, y - 1))
-        if y < h - 1:
-            queue.append((x, y + 1))
-    return img
+def render(svg, width=None, height=None):
+    data = cairosvg.svg2png(url=svg, output_width=width, output_height=height)
+    return Image.open(io.BytesIO(data)).convert("RGBA")
 
 
-def clear_enclosed_holes(img, below=0.6):
-    """Background showing through the curled tentacles is enclosed by the drawing, so the
-    border flood fill misses it. Near-white islands in the lower part of the drawing are
-    holes; the eye highlights higher up stay white."""
-    px = img.load()
-    box = img.getbbox()
-    if not box:
-        return img
-    limit = box[1] + (box[3] - box[1]) * below
-    w, h = img.size
-    for y in range(int(limit), h):
-        for x in range(w):
-            r, g, b, a = px[x, y]
-            if a and 255 * 3 - (r + g + b) <= WHITE_THRESHOLD * 3:
-                px[x, y] = (0, 0, 0, 0)
-    return img
-
-
-def centered(img, margin=0.04):
-    """Crops to the drawing and centres it on a transparent square."""
-    box = img.getbbox()
-    if not box:
-        return img
-    drawing = img.crop(box)
-    w, h = drawing.size
-    side = int(max(w, h) * (1 + 2 * margin))
-    out = Image.new("RGBA", (side, side), (0, 0, 0, 0))
-    out.paste(drawing, ((side - w) // 2, (side - h) // 2))
+def mark(size):
+    """The mark drawn at this exact size (sharper than scaling one big image down),
+    centred on a transparent square."""
+    inner = round(size * (1 - 2 * MARGIN))
+    drawing = render(os.path.join(ASSETS, "logo.svg"), height=inner)
+    if drawing.width > inner:
+        drawing = render(os.path.join(ASSETS, "logo.svg"), width=inner)
+    out = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    out.paste(drawing, ((size - drawing.width) // 2, (size - drawing.height) // 2))
     return out
 
 
-def resized(img, size):
-    # Large sizes keep the pixel-art look; tiny ones need smoothing to stay readable.
-    method = Image.Resampling.NEAREST if size >= 128 else Image.Resampling.LANCZOS
-    return img.resize((size, size), method)
-
-
 def main():
-    source = sys.argv[1] if len(sys.argv) > 1 else os.path.join(ASSETS, "logo-source.png")
-    os.makedirs(ASSETS, exist_ok=True)
-    img = Image.open(source)
-    if img.mode != "RGBA" or img.getextrema()[3][0] == 255:
-        img = clear_enclosed_holes(remove_background(img))
-    logo = centered(img)
+    mark(512).save(os.path.join(ASSETS, "logo.png"), optimize=True)
+    mark(256).save(os.path.join(ASSETS, "dpimech.png"), optimize=True)
+    mark(1024).save(os.path.join(ASSETS, "icon-1024.png"), optimize=True)
+    render(os.path.join(ASSETS, "logo-long.svg"), height=96).save(
+        os.path.join(ASSETS, "logo-long.png"), optimize=True
+    )
 
-    resized(logo, 512).save(os.path.join(ASSETS, "logo.png"), optimize=True)
-    resized(logo, 256).save(os.path.join(ASSETS, "dpimech.png"), optimize=True)
     sizes = [16, 24, 32, 48, 64, 128, 256]
-    resized(logo, 256).save(
+    images = [mark(s) for s in sizes]
+    images[-1].save(
         os.path.join(ASSETS, "dpimech.ico"),
         sizes=[(s, s) for s in sizes],
-        append_images=[resized(logo, s) for s in sizes[:-1]],
+        append_images=images[:-1],
     )
     with open(os.path.join(ASSETS, "tray-32.rgba"), "wb") as f:
-        f.write(resized(logo, 32).tobytes())
-    # Keep a lossless master so the JPEG is not needed again.
-    master = os.path.join(ASSETS, "logo-source.png")
-    if os.path.abspath(source) != os.path.abspath(master):
-        resized(logo, 1024).save(master, optimize=True)
-    print("icons written to", os.path.normpath(ASSETS))
+        f.write(mark(32).tobytes())
+
+    shutil.copyfile(os.path.join(ASSETS, "logo.svg"), os.path.join(SITE, "logo.svg"))
+    images[2].save(
+        os.path.join(SITE, "favicon.ico"),
+        sizes=[(16, 16), (32, 32), (48, 48)],
+        append_images=[images[0], images[3]],
+    )
+    print("icons written to", os.path.normpath(ASSETS), "and", os.path.normpath(SITE))
 
 
 if __name__ == "__main__":

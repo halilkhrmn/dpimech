@@ -350,3 +350,16 @@ own release), a launchd service and an unsigned universal `.dmg`. The wizard hid
   stays the default for per-app profiles because it catches the app however it starts.
 - **Never offered (owner's choice):** the wizard, the Strategy Lab and Easy mode never pick or suggest it; it is
   the last routing option in the editor, for people who choose it themselves.
+
+## 51. Hand-drawn logo; short READMEs with a separate user guide (2026-10-07)
+- **Logo:** a chameleon by Kim De Vries (https://www.artstation.com/kdevries21), drawn by hand, no AI. Three
+  SVG masters in `crates/gui/assets/`: the mark (`logo.svg`) is the app icon everywhere (exe, installer, tray,
+  notifications, packages, shortcuts, macOS); the one-line logo (`logo-long.svg`, its chameleon is the "D") is the
+  window header; the stacked one (`logo-long-square.svg`) heads the READMEs. `tools/make_icon.py` renders every
+  icon size straight from the SVG (sharper than scaling one image down). The UI uses PNGs from it: Slint is built
+  without SVG support and the software renderer would rasterise them anyway. The website puts the mark on a white
+  tile because its title bar is blue.
+- **READMEs:** short, in the style of WallYou: logo, one line, badges, features, download table, screenshots,
+  contributions, credits (the logo credit says plainly it was drawn by hand), license, "Made with ❤️". Everything
+  that was in them (engines per OS, install details, countries, troubleshooting, safety) moved unchanged into
+  `docs/guide/<lang>.md`, one per README language, so nothing was lost or left untranslated.

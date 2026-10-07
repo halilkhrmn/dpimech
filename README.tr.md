@@ -1,227 +1,87 @@
 <p align="center"><a href="README.md">English</a> · <b>Türkçe</b> · <a href="README.ru.md">Русский</a> · <a href="README.fa.md">فارسی</a> · <a href="README.ar.md">العربية</a></p>
 
-<p align="center"><img src="crates/gui/assets/logo.png" width="128" alt="DPIMech logosu"></p>
+<!-- ---------- Başlık ---------- -->
+<div align="center">
+  <img src="crates/gui/assets/logo-long-square.svg" width="260" alt="DPIMech">
+  <p>İnternet sağlayıcının engellediği siteleri ve uygulamaları (Discord, YouTube, …) aç.<br>Ücretsiz ve açık kaynak; Windows, Linux ve macOS için.</p>
 
-# DPIMech
+  <img alt="Lisans" src="https://img.shields.io/github/license/halilkhrmn/dpimech?color=397256&style=flat-square">
+  <img alt="Sürüm" src="https://img.shields.io/github/v/release/halilkhrmn/dpimech?color=397256&style=flat-square">
+  <img alt="İndirme" src="https://img.shields.io/github/downloads/halilkhrmn/dpimech/total?color=397256&style=flat-square">
+  <img alt="Son commit" src="https://img.shields.io/github/last-commit/halilkhrmn/dpimech?color=397256&style=flat-square">
+  <img alt="Yıldız" src="https://img.shields.io/github/stars/halilkhrmn/dpimech?color=397256&style=flat-square">
+</div>
 
-**İnternet sağlayıcının engellediği siteleri ve uygulamaları (Discord, YouTube, …) aç.**
+> **DPIMech bir VPN değildir.** Bilinen, açık kaynaklı araçları çalıştırarak trafiğinin görünüşünü
+> değiştirir; böylece sağlayıcının derin paket incelemesi (DPI) onu engelleyemez. Trafiğin yine
+> doğrudan siteye gider: ping değişmez ama IP adresin gizlenmez.
 
-Bazı internet sağlayıcıları trafiğinin içine bakıp belirli siteleri engeller. Bu yönteme *DPI*
-(derin paket incelemesi) denir. DPIMech, bu engeli aşmak için bilinen, açık kaynaklı küçük araçları
-("motorlar") çalıştırır. Bu araçlar trafiğinin görünüşünü değiştirir ve engel işe yaramaz hâle gelir.
+<!-- ---------- Özellikler ---------- -->
+## Özellikler
 
-> **DPIMech bir VPN değildir.** Trafiğin yine doğrudan siteye gider, başka birinin sunucusundan
-> geçmez. Hız ve ping değişmez; ama IP adresin gizlenmez ve başka bir yolla (örneğin IP adresiyle)
-> engellenen siteler engelli kalır.
+- [x] Tek tıkla aç, tek tıkla kapat: her site ya da uygulama için hazır bir *profil*, örneğin Discord
+- [x] Sadece seçtiğin uygulamalar, tüm bilgisayar ya da yerel proxy
+- [x] *Strateji Laboratuvarı* bağlantında çalışan ayarları bulur
+- [x] Motorları kurar ve günceller; her indirme sağlama toplamıyla kontrol edilir
+- [x] Takılan motoru bir saniyeden kısa sürede kendiliğinden yeniden başlatır
+- [x] Profili açıp uygulamayı başlatan masaüstü kısayolları
+- [x] English, Türkçe, Русский, فارسی, العربية
+- [x] Hafif: pencere için yaklaşık 30 MB, arka plan servisi için 20 MB RAM
 
-| | Durum |
+<!-- ---------- İndir ---------- -->
+## İndir
+
+| Sistem | Nasıl |
 |---|---|
-| **Windows 10 / 11** | Hazır. Kurulum dosyası [Releases](https://github.com/halilkhrmn/dpimech/releases) sayfasında. |
-| **Linux** | Hazır: Releases sayfasında `.deb`, `.rpm` ve AppImage; Fedora için COPR (aşağıya bak). |
-| **macOS** | Erken önizleme: Releases sayfasında `.dmg`, sadece yerel proxy (aşağıya bak). |
+| **Windows 10 / 11** | [Releases](https://github.com/halilkhrmn/dpimech/releases/latest) sayfasından `dpimech-setup-<sürüm>.exe` |
+| **Ubuntu, Debian, Mint** | Releases'tan `.deb` → `sudo apt install ./dpimech_*_amd64.deb` |
+| **Fedora** | `sudo dnf copr enable halilkahraman/DPIMech && sudo dnf install dpimech` |
+| **Arch, CachyOS, Manjaro** | Releases'tan `.pkg.tar.zst` → `sudo pacman -U ./dpimech-bin-*.pkg.tar.zst` |
+| **openSUSE, RHEL** | Releases'tan `.rpm` → `sudo dnf install ./dpimech-*.x86_64.rpm` |
+| **Diğer Linux** | Releases'tan AppImage |
+| **macOS** *(erken önizleme)* | Releases'tan `.dmg` |
+
+Sonra DPIMech'i aç ve **Sadece çalışsın** seçeneğini seç. Motorlar, ülkeler, kaynak koddan derleme ve
+sorun giderme **[kullanım kılavuzunda](docs/guide/tr.md)**.
+
+<!-- ---------- Ekran görüntüleri ---------- -->
+## Ekran görüntüleri
 
 <p align="center">
-  <a href="site/screenshots/windows-profiles.png"><img src="site/screenshots/windows-profiles.png" width="49%" alt="Windows'ta DPIMech profiller sayfası"></a>
-  <a href="site/screenshots/windows-editor.png"><img src="site/screenshots/windows-editor.png" width="49%" alt="Windows'ta Discord profilini düzenleme"></a>
-  <br><sub>Windows: profiller ve Discord için uygulama başına profil</sub>
-</p>
-<p align="center">
-  <a href="site/screenshots/linux-profiles.png"><img src="site/screenshots/linux-profiles.png" width="49%" alt="Linux'ta DPIMech profiller sayfası"></a>
-  <a href="site/screenshots/linux-editor.png"><img src="site/screenshots/linux-editor.png" width="49%" alt="Linux'ta profil düzenleme"></a>
-  <br><sub>Linux: birlikte çalışan profiller, profil düzenleyici</sub>
+  <img src="site/screenshots/windows-profiles.png" width="49%" alt="Windows'ta profiller">
+  <img src="site/screenshots/windows-editor.png" width="49%" alt="Windows'ta bir Discord profili">
+  <img src="site/screenshots/linux-profiles.png" width="49%" alt="Linux'ta profiller">
+  <img src="site/screenshots/linux-editor.png" width="49%" alt="Linux'ta profil düzenleyici">
 </p>
 
-## Ne işe yarar?
+<!-- ---------- Katkı ---------- -->
+## Geri bildirim ve katkı
 
-- **Tek tıkla aç, tek tıkla kapat.** Her *profil* hazır bir ayardır, örneğin "Discord".
-- **Sadece istediğin yerde.** Sadece seçtiğin uygulamalar, tüm bilgisayar ya da yerel proxy.
-- **Sana uyan ayarı bulur.** *Strateji Laboratuvarı* onlarca ayarı gerçek sitelerde dener ve senin
-  bağlantında hangilerinin çalıştığını gösterir. İnternet sağlayıcını tespit edip ona özel hazır
-  ayarlar önerebilir (örneğin Türk Telekom ya da Superonline).
-- **Motorları senin yerine kurar ve günceller.** Resmî GitHub sayfalarından indirir ve her dosyayı
-  yayımlanan sağlama toplamıyla (checksum) doğrular.
-- **Çalışır durumda tutar.** Bir motor takılırsa (örneğin birkaç saat sonra Discord'da ping aniden
-  binlere çıkarsa) DPIMech onu bir saniyeden kısa sürede yeniden başlatır. Bağlantı kontrolü her
-  profilde ortalama pingi gösterir.
-- **Kısayollar.** Profile sağ tıkla (ya da ⋯) → *Kısayol oluştur*: masaüstünde ya da menüde bir simge;
-  tıklayınca profili açar, ardından uygulamayı (örneğin Discord) başlatır.
-- **Hafif:** Pencere yaklaşık 25–35 MB, arka plan servisi yaklaşık 20 MB RAM kullanır.
-- **Kendi dilinde:** Türkçe, İngilizce, Rusça, Farsça ve Arapça.
+***Her katkıya açığız!***
 
-## Windows
-
-### Başlarken
-
-1. [Releases](https://github.com/halilkhrmn/dpimech/releases) sayfasından
-   `dpimech-setup-<sürüm>.exe` dosyasını **indir ve çalıştır**. Windows bir kez izin ister; arka
-   plan servisi ondan sonra bilgisayarla birlikte kendiliğinden başlar.
-2. **DPIMech'i aç** ve **Just make it work** (Sadece çalışsın) seçeneğini seç. Siteleri (örneğin
-   Discord) ve nerede çalışacağını (sadece bazı uygulamalar, tüm bilgisayar ya da proxy) seç,
-   **Start**'a bas. DPIMech gerekenleri kurar, ayarları senin bağlantında dener ve en iyisini açar.
-3. Bu kadar. Sonra başka bir profil eklemek için **Quick setup**'a basabilir ya da motorları,
-   Strateji Laboratuvarı'nı ve kayıtları görmek için Ayarlar'dan *Easy mode*'u kapatabilirsin.
-
-İpucu: **Ayarlar**'dan DPIMech'in oturum açınca tepside gizli başlamasını sağlayabilirsin.
-
-### Windows'taki motorlar
-
-| Motor | Neyde iyi? | Gerekenler |
-|---|---|---|
-| **ByeDPI** | Yerel proxy. Basit ve güvenli. Sadece seçtiğin uygulamaları geçirmek için ProxiFyre ile kullan. | Ek bir şey gerekmez |
-| **ProxiFyre** *(yardımcı)* | Sadece seçtiğin uygulamaları ByeDPI'dan geçirir. | **Windows Packet Filter** sürücüsü (Motorlar sayfasından kurulur; yeniden başlatma gerekebilir) |
-| **zapret (winws)** | Tüm bilgisayarda çalışır, UDP'de de (Discord sesli sohbet, QUIC). En güçlü seçenek. | WinDivert kullanır (pakette gelir). Yönetici yetkisiyle DPIMech servisi üzerinden çalışır. |
-| **GoodbyeDPI** | Klasik, tüm bilgisayarda çalışan araç. Basit ama artık aktif geliştirilmiyor. | WinDivert kullanır (pakette gelir). Üsttekiyle aynı. |
-
-Aynı anda sadece **bir** WinDivert motoru (zapret ya da GoodbyeDPI) çalışabilir. Bazı antivirüs
-programları WinDivert'i yanlışlıkla zararlı sanar; DPIMech onu sadece motorların resmî
-sürümlerinden indirir.
-
-## Linux
-
-### Linux'taki motorlar
-
-| Motor | Mod | Gerekenler |
-|---|---|---|
-| **zapret (nfqws)** | Tüm bilgisayar. DPIMech çalışırken kendi nftables kurallarını ekler, sonra kaldırır. | `nftables`, `nft_queue` ve `nfnetlink_queue` çekirdek modülleri (çoğu dağıtımda hazır gelir) |
-| **zapret (tpws)** | Tüm bilgisayar, sadece bazı uygulamalar ya da yerel SOCKS proxy | Ek bir şey gerekmez ("sadece bazı uygulamalar" için cgroup v2) |
-| **ByeDPI** | Sadece bazı uygulamalar ya da yerel SOCKS proxy | Ek bir şey gerekmez ("sadece bazı uygulamalar" için cgroup v2) |
-| **SpoofDPI** | Sadece bazı uygulamalar ya da yerel SOCKS proxy. Adları HTTPS üzerinden (DoH) çözebilir; bu, DNS engelini de aşar | Ek bir şey gerekmez |
-
-"Sadece bazı uygulamalar" ve tüm bilgisayar için tpws sadece TCP trafiğini yönlendirir; UDP
-(örneğin sesli sohbet) doğrudan gider. Bir uygulamanın trafiği, uygulama açıldıktan yaklaşık bir
-saniye sonra yakalanır.
-
-### Kurulum
-
-[Releases](https://github.com/halilkhrmn/dpimech/releases) sayfasından indir:
-
-| Sistemin | Dosya | Kurulum |
-|---|---|---|
-| Ubuntu, Debian, Mint, Pop!_OS | `dpimech_<sürüm>_amd64.deb` | `sudo apt install ./dpimech_*_amd64.deb` |
-| Fedora | indirmeye gerek yok: [COPR deposu](https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/) | aşağıya bak |
-| Arch, CachyOS, EndeavourOS, Manjaro | `dpimech-bin-<sürüm>-1-x86_64.pkg.tar.zst` | `sudo pacman -U ./dpimech-bin-*.pkg.tar.zst` |
-| openSUSE, RHEL | `dpimech-<sürüm>-1.x86_64.rpm` | `sudo dnf install ./dpimech-*.x86_64.rpm` |
-| Diğer tüm dağıtımlar | `DPIMech-<sürüm>-x86_64.AppImage` | `chmod +x DPIMech-*.AppImage`, sonra çalıştır |
-
-[![Copr build status](https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/package/dpimech/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/package/dpimech/)
-
-**Fedora** — depoyu bir kez ekle, sonra güncellemeler sistemle birlikte gelir (`sudo dnf upgrade`):
-
-```sh
-sudo dnf copr enable halilkahraman/DPIMech
-sudo dnf install dpimech
-```
-
-**Arch, CachyOS, EndeavourOS, Manjaro** — Arch paketimiz (`dpimech-bin`) hazır, ama AUR şu anda yeni üye kaydı almadığı
-için henüz AUR'da değil. Aynı paket her sürümde indirilebilir: [Releases](https://github.com/halilkhrmn/dpimech/releases/latest)
-sayfasından `dpimech-bin-<sürüm>-1-x86_64.pkg.tar.zst` dosyasını indir ve kur (bağımlılıkları pacman getirir; yeni sürüm
-çıkınca DPIMech haber verir):
-
-```sh
-sudo pacman -U ./dpimech-bin-*-x86_64.pkg.tar.zst
-```
-
-Paketler (`.deb`, `.rpm`, COPR, Arch) arka plan servisini de kurar ve başlatır. AppImage kullanıyorsan DPIMech'i açıp bir
-kez **Install the service**'e bas (şifreni sorar). AppImage tepsi kütüphanesini
-kendi içinde getirir. GNOME'da tepsi simgesi için *AppIndicator and KStatusNotifierItem Support* eklentisi gerekir
-(Ubuntu'da hazır gelir).
-
-### Kaynak koddan derleme
-
-[Rust](https://rustup.rs), `systemd` ve pencereyi derlemek için GTK 3 ile AppIndicator geliştirme
-paketleri gerekir (Debian/Ubuntu'da:
-`sudo apt install build-essential libgtk-3-dev libayatana-appindicator3-dev libxkbcommon-x11-0`).
-
-```sh
-git clone https://github.com/halilkhrmn/dpimech && cd dpimech
-cargo build --release
-sudo target/release/dpimech-service install   # arka plan servisi (systemd birimi "dpimech")
-target/release/dpimech                         # pencere
-```
-
-Tepsi simgesi için masaüstünün StatusNotifier/AppIndicator desteği olmalı (GNOME'da: *AppIndicator*
-eklentisi). Servisi kaldırmak için: `sudo /usr/local/lib/dpimech/dpimech-service uninstall`.
-
-## macOS (erken önizleme)
-
-[Releases](https://github.com/halilkhrmn/dpimech/releases) sayfasından `DPIMech-<sürüm>.dmg`
-dosyasını indir ve DPIMech'i Uygulamalar klasörüne sürükle. Uygulama henüz imzalı değil: ilk
-açılışta sağ tıklayıp **Aç**'ı seç. Sonra bir kez **Install the service**'e bas (şifreni sorar).
-
-macOS'ta DPIMech şimdilik sadece **yerel SOCKS proxy** (zapret'in tpws aracı) çalıştırabiliyor;
-tarayıcında ya da uygulamanda `127.0.0.1:<port>` ayarlarsın. Tüm bilgisayar ve uygulama bazlı
-modlar planlanıyor. macOS'ta otomatik olarak derlenip kontrol ediliyor ama henüz bir Mac'te elle
-test edilmedi.
-
-## Ülkelere göre
-
-DPIMech ülkeni sistemin bölge ayarından tahmin eder ve orada engellendiği yaygın olarak bilinen siteleri
-listenin başında, kurulum sihirbazında da hazır seçili gösterir. İstediğin başka siteyi her zaman seçebilir
-ya da yazabilirsin. Liste [`strategies/domains.json`](strategies/domains.json) dosyasında durur ve yeni sürüm
-beklemeden güncellenir.
-
-| Ülke | Hazır seçili | Akılda tut |
-|---|---|---|
-| Türkiye | Discord, Roblox, Wattpad, Imgur | Pek çok engel DNS ile de yapılıyor: aşağıdaki "Hâlâ açılmıyor mu?" maddesine bak. |
-| Rusya | YouTube, Discord, Instagram, X, Facebook, LinkedIn, Signal, Viber | YouTube kesilmek yerine yavaşlatılıyor; genelde en iyi zapret çalışır. |
-| İran | YouTube, Instagram, X, Telegram, Facebook, Signal, Discord | Filtreleme IP adreslerini ve zaman zaman tüm uluslararası interneti de kapatıyor; o durumda DPIMech yardımcı olamaz. Telegram ve WhatsApp *uygulamaları* doğrudan IP adreslerine bağlandığı için yalnızca web siteleri fayda görür. |
-| Kazakistan | SoundCloud | Engellerin çoğu haber sitelerini ve VPN'leri hedefliyor, çoğunlukla IP adresiyle. İhtiyacın olan siteleri "Diğer siteler"e ekle. |
-| Belarus | TikTok, bağımsız medya (Zerkalo, Nasha Niva, Svaboda, Belsat, …) | Bazı yayınlar adreslerini sık değiştiriyor; güncel adresi "Diğer siteler"e ekle. |
-| Mısır | bağımsız medya (Mada Masr, Zawia3, Cairo 24) | WhatsApp ve benzeri uygulamalardaki sesli/görüntülü aramalar başka yolla engelleniyor ve engelli kalır. |
-
-Diğer ülkelerde Discord başta gelir. Eksik bir site ya da ülke mi var? `strategies/domains.json` için bir
-issue ya da pull request aç.
-
-## Bilmekte fayda var
-
-- **Oyunlar:** Windows'ta sıkı hile koruması olan oyunlar (örneğin Valorant ya da FACEIT) tüm
-  bilgisayar modu açıkken başlamayabilir ya da seni oyundan atabilir. Oynamadan önce o profili
-  kapat ya da sadece ihtiyacın olan uygulamaları seç.
-- **Aynı anda tek DPI aracı:** DPIMech'in yanında başka bir engel aşma aracı (GoodbyeDPI, zapret,
-  ByeDPI Manager, …) çalışırsa bağlantılar tuhaf şekillerde bozulur. DPIMech böyle bir araç görünce
-  seni uyarır.
-- **Hâlâ açılmıyor mu? DNS'ini kontrol et.** Bazı sağlayıcılar (örneğin Türkiye'de) siteleri,
-  adlarına yanlış adres vererek de engeller; bunu hiçbir motor düzeltemez. Strateji Laboratuvarı,
-  DNS'in 1.1.1.1'den farklı cevap verirse uyarır. O zaman DNS'ini `1.1.1.1` / `1.0.0.1` yap (ya da
-  sistemde veya tarayıcıda "DNS over HTTPS"i aç).
-- **Kayıtlar:** Ayarlar → *Kayıt*. Bir profil hatayla durursa son kayıtlar kendiliğinden bir dosyaya
-  kaydedilir. *Ayrıntılı kayıt* her bağlantıyı da (site, adres, nasıl bittiği) yazar; bir şeyin neden
-  açılmadığını bulmak için aç ve yardım isterken dosyayı ekle.
-
-## Güvenli mi?
-
-- Motorlar sadece kendi isteklerinin görünüşünü değiştirir.
-- Arka plan servisi yönetici yetkisiyle çalışır, çünkü bazı motorlar bunu gerektirir. Motorları
-  sadece kendi korumalı klasöründen başlatır; dosya yazabilecek ya da özel dosyaları okuyabilecek
-  ayarları reddeder.
-- İnternet sağlayıcını tespit etmek isteğe bağlıdır. Sadece *Detect my provider*'a bastığında
-  olur ve genel IP adresini `ipwho.is` sitesine gönderir.
-
-## Nasıl yapılıyor?
-
-DPIMech yapay zekâ desteğiyle (Claude) geliştiriliyor. Özellikler "bitti" sayılmadan önce elle
-test ediliyor; neyin nasıl test edildiği, henüz test edilmeyenler de dahil,
-[docs/PROGRESS.md](docs/PROGRESS.md) dosyasında yazıyor.
+- Hata bildirimi ve fikirler: [Issues](https://github.com/halilkhrmn/dpimech/issues) ya da uygulamanın ayarlarındaki *Sorun bildir*.
+- Kod: projeyi fork'la ve pull request aç; [CONTRIBUTING.md](CONTRIBUTING.md) nasıl yapılacağını anlatıyor.
+- Çeviriler [`crates/gui/lang`](crates/gui/lang) klasöründe, sıradan `.po` dosyaları olarak duruyor.
 
 ## Teşekkürler
 
-DPIMech bu projeleri sadece yönetir; asıl işi onlar yapar:
-[ByeDPI](https://github.com/hufrea/byedpi) ·
-[zapret](https://github.com/bol-van/zapret) ·
-[GoodbyeDPI](https://github.com/ValdikSS/GoodbyeDPI) ·
-[WinDivert](https://github.com/basil00/WinDivert) ·
-[ProxiFyre](https://github.com/wiresock/proxifyre) ·
-[Windows Packet Filter](https://github.com/wiresock/ndisapi).
-Strateji Laboratuvarı strateji listelerini
-[ByeDPI Manager](https://github.com/romanvht/ByeDPIManager) ve
-[SplitWire-Turkey](https://github.com/cagritaskn/SplitWire-Turkey) projelerinden indirebilir.
-Simgeler: [Fluent UI System Icons](https://github.com/microsoft/fluentui-system-icons) (MIT).
-[Slint](https://slint.dev) ile yapıldı.
+- **Logo:** [Kim De Vries](https://www.artstation.com/kdevries21) elle çizdi. Logoda yapay zekâ kullanılmadı.
+- DPIMech bu projeleri sadece yönetir; asıl işi onlar yapar:
+  [ByeDPI](https://github.com/hufrea/byedpi) ·
+  [zapret](https://github.com/bol-van/zapret) ·
+  [GoodbyeDPI](https://github.com/ValdikSS/GoodbyeDPI) ·
+  [WinDivert](https://github.com/basil00/WinDivert) ·
+  [ProxiFyre](https://github.com/wiresock/proxifyre) ·
+  [Windows Packet Filter](https://github.com/wiresock/ndisapi).
+- Strateji listeleri: [ByeDPI Manager](https://github.com/romanvht/ByeDPIManager),
+  [SplitWire-Turkey](https://github.com/cagritaskn/SplitWire-Turkey).
+  Simgeler: [Fluent UI System Icons](https://github.com/microsoft/fluentui-system-icons). [Slint](https://slint.dev) ile yapıldı.
+- Kod yapay zekâ desteğiyle (Claude) geliştiriliyor ve her özellik elle test ediliyor;
+  neyin nasıl test edildiği [docs/PROGRESS.md](docs/PROGRESS.md) dosyasında yazıyor.
 
 ## Lisans
 
 DPIMech, [GNU Genel Kamu Lisansı v3.0 veya sonrası](LICENSE) altında özgür yazılımdır: kullanabilir,
-paylaşabilir ve değiştirebilirsin; bunun üzerine kurulup dağıtılan her şey de aynı koşullarla açık
-kalmalıdır. İndirdiği motorlar kendi lisanslarını korur.
+inceleyebilir, paylaşabilir ve değiştirebilirsin. İndirdiği motorlar kendi lisanslarını korur.
 
-Yardım etmek ister misin? [CONTRIBUTING.md](CONTRIBUTING.md) dosyasına bak.
+<p align="center">❤️ ile yapıldı</p>

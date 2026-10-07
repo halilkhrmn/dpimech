@@ -4,39 +4,39 @@ msgstr ""
 "Language: ar\n"
 "Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5);\n"
 
-#: ui/app.slint:212
+#: ui/app.slint:219
 msgid "Profiles"
 msgstr "الملفات الشخصية"
 
-#: ui/app.slint:217
+#: ui/app.slint:224
 msgid "Strategy Lab"
 msgstr "مختبر الإستراتيجيات"
 
-#: ui/app.slint:222
+#: ui/app.slint:229
 msgid "Engines"
 msgstr "المحركات"
 
-#: ui/app.slint:228
+#: ui/app.slint:235
 msgid "Logs"
 msgstr "السجلات"
 
-#: ui/app.slint:234
+#: ui/app.slint:241
 msgid "Settings"
 msgstr "الإعدادات"
 
-#: ui/app.slint:277
+#: ui/app.slint:292
 msgid "Another DPI tool is running: {}. Two tools on the same traffic break connections — close it, or turn DPIMech's profiles off."
 msgstr "أداة أخرى لتجاوز DPI قيد التشغيل: {}. أداتان على نفس حركة المرور تُفسدان الاتصالات — أغلقها أو أوقف ملفات DPIMech الشخصية."
 
-#: ui/app.slint:295
+#: ui/app.slint:310
 msgid "DPIMech {} is ready to install."
 msgstr "DPIMech {} جاهز للتثبيت."
 
-#: ui/app.slint:299
+#: ui/app.slint:314
 msgid "Restart and update"
 msgstr "إعادة التشغيل والتحديث"
 
-#: ui/app.slint:311
+#: ui/app.slint:326
 msgid "Background service is not running. Engines can't be started until it is."
 msgstr "خدمة الخلفية لا تعمل. لا يمكن تشغيل المحركات حتى تعمل."
 
@@ -536,6 +536,10 @@ msgstr "شكر"
 msgid "DPIMech only manages these projects; the real work is theirs."
 msgstr "DPIMech يدير هذه المشاريع فقط؛ العمل الحقيقي من صنعها."
 
+#: ui/pages.slint:370
+msgid "Logo, drawn by hand"
+msgstr "الشعار، مرسوم يدويًا"
+
 #: ui/report.slint:33
 msgid "What happened? A sentence or two helps a lot (optional)."
 msgstr "ماذا حدث؟ جملة أو جملتان تساعدان كثيرًا (اختياري)."
@@ -716,19 +720,19 @@ msgstr "حاول مجددًا"
 msgid "Finish"
 msgstr "إنهاء"
 
-#: src/appproxy.rs:193
+#: src/appproxy.rs:201
 msgid "DPIMech only opens apps from Program Files or your own user folder."
 msgstr "لا يفتح DPIMech التطبيقات إلا من Program Files أو من مجلد المستخدم الخاص بك."
 
-#: src/appproxy.rs:198
+#: src/appproxy.rs:206
 msgid "the app is no longer there; choose it again in the profile"
 msgstr "لم يعد التطبيق موجودًا؛ اختره مرة أخرى في الملف الشخصي"
 
-#: src/appproxy.rs:224
+#: src/appproxy.rs:236
 msgid "DPIMech only opens apps that belong to the system or to you and that other users cannot change."
 msgstr "لا يفتح DPIMech إلا التطبيقات التي تخص النظام أو تخصك ولا يستطيع المستخدمون الآخرون تغييرها."
 
-#: src/appproxy.rs:249
+#: src/appproxy.rs:262
 msgid "the menu entry has no command"
 msgstr "عنصر القائمة بلا أمر"
 
@@ -820,67 +824,67 @@ msgstr "أضف تطبيقًا واحدًا على الأقل للتوجيه حس
 msgid "{} · port {}"
 msgstr "{} · المنفذ {}"
 
-#: src/convert.rs:227
+#: src/convert.rs:225
 msgid "All matching traffic"
 msgstr "كل حركة المرور المطابقة"
 
-#: src/convert.rs:228
+#: src/convert.rs:226
 msgid "{} site(s): {}"
 msgstr "عدد المواقع {}: {}"
 
-#: src/convert.rs:241
+#: src/convert.rs:239
 msgid "Stopped"
 msgstr "متوقف"
 
-#: src/convert.rs:242
+#: src/convert.rs:240
 msgid "Starting…"
 msgstr "جارٍ البدء…"
 
-#: src/convert.rs:250
+#: src/convert.rs:248
 msgid "1 auto-restart"
 msgstr "إعادة تشغيل تلقائية واحدة"
 
-#: src/convert.rs:251
+#: src/convert.rs:249
 msgid "{} auto-restarts"
 msgstr "عدد مرات إعادة التشغيل التلقائي: {}"
 
-#: src/convert.rs:260
+#: src/convert.rs:258
 msgid "Sites not answering ({}/{})"
 msgstr "المواقع لا تستجيب ({}/{})"
 
-#: src/convert.rs:262
+#: src/convert.rs:260
 msgid "Slow: avg. {} ms (usually {} ms)"
 msgstr "بطيء: المتوسط {} ms (عادةً {} ms)"
 
-#: src/convert.rs:264
+#: src/convert.rs:262
 msgid "Only {}/{} sites answer"
 msgstr "فقط {}/{} من المواقع تستجيب"
 
-#: src/convert.rs:271
+#: src/convert.rs:269
 msgid "Running · {}"
 msgstr "قيد التشغيل · {}"
 
-#: src/convert.rs:272
+#: src/convert.rs:270
 msgid "avg. {} ms"
 msgstr "المتوسط {} ms"
 
-#: src/convert.rs:380
+#: src/convert.rs:378
 msgid "just now"
 msgstr "الآن"
 
-#: src/convert.rs:381
+#: src/convert.rs:379
 msgid "{} min"
 msgstr "{} دقيقة"
 
-#: src/convert.rs:382
+#: src/convert.rs:380
 msgid "{} h {} min"
 msgstr "{} ساعة {} دقيقة"
 
-#: src/convert.rs:394
+#: src/convert.rs:392
 msgid "Last check: {}/{} sites answered"
 msgstr "آخر فحص: استجاب {}/{} من المواقع"
 
-#: src/convert.rs:400
+#: src/convert.rs:398
 msgid "(usually {} ms)"
 msgstr "(عادةً {} ms)"
 

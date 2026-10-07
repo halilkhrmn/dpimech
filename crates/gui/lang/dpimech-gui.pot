@@ -1,39 +1,39 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8\n"
 
-#: ui/app.slint:212
+#: ui/app.slint:219
 msgid "Profiles"
 msgstr ""
 
-#: ui/app.slint:217
+#: ui/app.slint:224
 msgid "Strategy Lab"
 msgstr ""
 
-#: ui/app.slint:222
+#: ui/app.slint:229
 msgid "Engines"
 msgstr ""
 
-#: ui/app.slint:228
+#: ui/app.slint:235
 msgid "Logs"
 msgstr ""
 
-#: ui/app.slint:234
+#: ui/app.slint:241
 msgid "Settings"
 msgstr ""
 
-#: ui/app.slint:277
+#: ui/app.slint:292
 msgid "Another DPI tool is running: {}. Two tools on the same traffic break connections — close it, or turn DPIMech's profiles off."
 msgstr ""
 
-#: ui/app.slint:295
+#: ui/app.slint:310
 msgid "DPIMech {} is ready to install."
 msgstr ""
 
-#: ui/app.slint:299
+#: ui/app.slint:314
 msgid "Restart and update"
 msgstr ""
 
-#: ui/app.slint:311
+#: ui/app.slint:326
 msgid "Background service is not running. Engines can't be started until it is."
 msgstr ""
 
@@ -533,6 +533,10 @@ msgstr ""
 msgid "DPIMech only manages these projects; the real work is theirs."
 msgstr ""
 
+#: ui/pages.slint:370
+msgid "Logo, drawn by hand"
+msgstr ""
+
 #: ui/report.slint:33
 msgid "What happened? A sentence or two helps a lot (optional)."
 msgstr ""
@@ -713,19 +717,19 @@ msgstr ""
 msgid "Finish"
 msgstr ""
 
-#: src/appproxy.rs:193
+#: src/appproxy.rs:201
 msgid "DPIMech only opens apps from Program Files or your own user folder."
 msgstr ""
 
-#: src/appproxy.rs:198
+#: src/appproxy.rs:206
 msgid "the app is no longer there; choose it again in the profile"
 msgstr ""
 
-#: src/appproxy.rs:224
+#: src/appproxy.rs:236
 msgid "DPIMech only opens apps that belong to the system or to you and that other users cannot change."
 msgstr ""
 
-#: src/appproxy.rs:249
+#: src/appproxy.rs:262
 msgid "the menu entry has no command"
 msgstr ""
 
@@ -817,67 +821,67 @@ msgstr ""
 msgid "{} · port {}"
 msgstr ""
 
-#: src/convert.rs:227
+#: src/convert.rs:225
 msgid "All matching traffic"
 msgstr ""
 
-#: src/convert.rs:228
+#: src/convert.rs:226
 msgid "{} site(s): {}"
 msgstr ""
 
-#: src/convert.rs:241
+#: src/convert.rs:239
 msgid "Stopped"
 msgstr ""
 
-#: src/convert.rs:242
+#: src/convert.rs:240
 msgid "Starting…"
 msgstr ""
 
-#: src/convert.rs:250
+#: src/convert.rs:248
 msgid "1 auto-restart"
 msgstr ""
 
-#: src/convert.rs:251
+#: src/convert.rs:249
 msgid "{} auto-restarts"
 msgstr ""
 
-#: src/convert.rs:260
+#: src/convert.rs:258
 msgid "Sites not answering ({}/{})"
 msgstr ""
 
-#: src/convert.rs:262
+#: src/convert.rs:260
 msgid "Slow: avg. {} ms (usually {} ms)"
 msgstr ""
 
-#: src/convert.rs:264
+#: src/convert.rs:262
 msgid "Only {}/{} sites answer"
 msgstr ""
 
-#: src/convert.rs:271
+#: src/convert.rs:269
 msgid "Running · {}"
 msgstr ""
 
-#: src/convert.rs:272
+#: src/convert.rs:270
 msgid "avg. {} ms"
 msgstr ""
 
-#: src/convert.rs:380
+#: src/convert.rs:378
 msgid "just now"
 msgstr ""
 
-#: src/convert.rs:381
+#: src/convert.rs:379
 msgid "{} min"
 msgstr ""
 
-#: src/convert.rs:382
+#: src/convert.rs:380
 msgid "{} h {} min"
 msgstr ""
 
-#: src/convert.rs:394
+#: src/convert.rs:392
 msgid "Last check: {}/{} sites answered"
 msgstr ""
 
-#: src/convert.rs:400
+#: src/convert.rs:398
 msgid "(usually {} ms)"
 msgstr ""
 

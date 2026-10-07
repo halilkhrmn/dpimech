@@ -4,39 +4,39 @@ msgstr ""
 "Language: fa\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ui/app.slint:212
+#: ui/app.slint:219
 msgid "Profiles"
 msgstr "پروفایل‌ها"
 
-#: ui/app.slint:217
+#: ui/app.slint:224
 msgid "Strategy Lab"
 msgstr "آزمایشگاه راهبرد"
 
-#: ui/app.slint:222
+#: ui/app.slint:229
 msgid "Engines"
 msgstr "موتورها"
 
-#: ui/app.slint:228
+#: ui/app.slint:235
 msgid "Logs"
 msgstr "گزارش‌ها"
 
-#: ui/app.slint:234
+#: ui/app.slint:241
 msgid "Settings"
 msgstr "تنظیمات"
 
-#: ui/app.slint:277
+#: ui/app.slint:292
 msgid "Another DPI tool is running: {}. Two tools on the same traffic break connections — close it, or turn DPIMech's profiles off."
 msgstr "ابزار دیگری برای دور زدن DPI در حال اجراست: {}. دو ابزار روی یک ترافیک اتصال‌ها را خراب می‌کنند — آن را ببندید یا پروفایل‌های DPIMech را خاموش کنید."
 
-#: ui/app.slint:295
+#: ui/app.slint:310
 msgid "DPIMech {} is ready to install."
 msgstr "DPIMech {} آمادهٔ نصب است."
 
-#: ui/app.slint:299
+#: ui/app.slint:314
 msgid "Restart and update"
 msgstr "راه‌اندازی دوباره و به‌روزرسانی"
 
-#: ui/app.slint:311
+#: ui/app.slint:326
 msgid "Background service is not running. Engines can't be started until it is."
 msgstr "سرویس پس‌زمینه اجرا نمی‌شود. تا زمانی که اجرا نشود، موتورها راه‌اندازی نمی‌شوند."
 
@@ -536,6 +536,10 @@ msgstr "سپاس"
 msgid "DPIMech only manages these projects; the real work is theirs."
 msgstr "DPIMech فقط این پروژه‌ها را مدیریت می‌کند؛ کار اصلی را آن‌ها انجام می‌دهند."
 
+#: ui/pages.slint:370
+msgid "Logo, drawn by hand"
+msgstr "نشان، با دست کشیده شده"
+
 #: ui/report.slint:33
 msgid "What happened? A sentence or two helps a lot (optional)."
 msgstr "چه اتفاقی افتاد؟ یکی دو جمله خیلی کمک می‌کند (اختیاری)."
@@ -716,19 +720,19 @@ msgstr "دوباره امتحان کن"
 msgid "Finish"
 msgstr "پایان"
 
-#: src/appproxy.rs:193
+#: src/appproxy.rs:201
 msgid "DPIMech only opens apps from Program Files or your own user folder."
 msgstr "DPIMech فقط برنامه‌های داخل Program Files یا پوشه کاربری خودتان را باز می‌کند."
 
-#: src/appproxy.rs:198
+#: src/appproxy.rs:206
 msgid "the app is no longer there; choose it again in the profile"
 msgstr "برنامه دیگر آنجا نیست؛ آن را دوباره در پروفایل انتخاب کنید"
 
-#: src/appproxy.rs:224
+#: src/appproxy.rs:236
 msgid "DPIMech only opens apps that belong to the system or to you and that other users cannot change."
 msgstr "DPIMech فقط برنامه‌هایی را باز می‌کند که متعلق به سیستم یا خودتان هستند و کاربران دیگر نمی‌توانند تغییرشان دهند."
 
-#: src/appproxy.rs:249
+#: src/appproxy.rs:262
 msgid "the menu entry has no command"
 msgstr "مورد منو فرمانی ندارد"
 
@@ -820,67 +824,67 @@ msgstr "برای مسیریابی برنامه‌محور دست‌کم یک ب�
 msgid "{} · port {}"
 msgstr "{} · درگاه {}"
 
-#: src/convert.rs:227
+#: src/convert.rs:225
 msgid "All matching traffic"
 msgstr "همهٔ ترافیک منطبق"
 
-#: src/convert.rs:228
+#: src/convert.rs:226
 msgid "{} site(s): {}"
 msgstr "{} سایت: {}"
 
-#: src/convert.rs:241
+#: src/convert.rs:239
 msgid "Stopped"
 msgstr "متوقف"
 
-#: src/convert.rs:242
+#: src/convert.rs:240
 msgid "Starting…"
 msgstr "در حال شروع…"
 
-#: src/convert.rs:250
+#: src/convert.rs:248
 msgid "1 auto-restart"
 msgstr "۱ راه‌اندازی دوبارهٔ خودکار"
 
-#: src/convert.rs:251
+#: src/convert.rs:249
 msgid "{} auto-restarts"
 msgstr "{} راه‌اندازی دوبارهٔ خودکار"
 
-#: src/convert.rs:260
+#: src/convert.rs:258
 msgid "Sites not answering ({}/{})"
 msgstr "سایت‌ها پاسخ نمی‌دهند ({}/{})"
 
-#: src/convert.rs:262
+#: src/convert.rs:260
 msgid "Slow: avg. {} ms (usually {} ms)"
 msgstr "کند: میانگین {} ms (معمولاً {} ms)"
 
-#: src/convert.rs:264
+#: src/convert.rs:262
 msgid "Only {}/{} sites answer"
 msgstr "فقط {}/{} سایت پاسخ می‌دهند"
 
-#: src/convert.rs:271
+#: src/convert.rs:269
 msgid "Running · {}"
 msgstr "در حال اجرا · {}"
 
-#: src/convert.rs:272
+#: src/convert.rs:270
 msgid "avg. {} ms"
 msgstr "میانگین {} ms"
 
-#: src/convert.rs:380
+#: src/convert.rs:378
 msgid "just now"
 msgstr "همین الان"
 
-#: src/convert.rs:381
+#: src/convert.rs:379
 msgid "{} min"
 msgstr "{} دقیقه"
 
-#: src/convert.rs:382
+#: src/convert.rs:380
 msgid "{} h {} min"
 msgstr "{} ساعت {} دقیقه"
 
-#: src/convert.rs:394
+#: src/convert.rs:392
 msgid "Last check: {}/{} sites answered"
 msgstr "آخرین بررسی: {}/{} سایت پاسخ دادند"
 
-#: src/convert.rs:400
+#: src/convert.rs:398
 msgid "(usually {} ms)"
 msgstr "(معمولاً {} ms)"
 

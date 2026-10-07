@@ -74,7 +74,7 @@ pub fn icon(app: Option<&Rgba>, size: u32) -> Rgba {
     let (px, py) = (size - plate, 0);
     let radius = plate as f32 * 0.22;
     let pixels = out.make_mut_slice();
-    // A light rounded plate keeps dark app icons visible on the purple logo.
+    // A light rounded plate keeps dark app icons visible on the green logo.
     for y in 0..plate {
         for x in 0..plate {
             let coverage =

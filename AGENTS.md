@@ -97,8 +97,10 @@ crates/gui/       dpimech binary (Slint)
   src/whatsnew.rs   "What's new" dialog after an update (ui/whatsnew.slint)
   src/bundled.rs    libraries the AppImage carries (tray), loaded only when the system lacks them; a clear
                     message instead of a crash when libxkbcommon-x11 is missing
-  assets/           logo-source.png (master) → logo.png (UI), dpimech.ico/.png (exe, notifications),
-                    tray-32.rgba (tray; status dot drawn at runtime) — regenerate with tools/make_icon.py
+  assets/           logo.svg / logo-long.svg / logo-long-square.svg: the hand-drawn logo by Kim De Vries (masters;
+                    mark, one-line, stacked) → logo.png + logo-long.png (UI), dpimech.ico/.png (exe, notifications),
+                    tray-32.rgba (tray; status dot drawn at runtime), icon-1024.png (macOS .icns), site/logo.svg +
+                    favicon — regenerate with tools/make_icon.py (needs cairosvg)
   src/apps.rs       process + Start Menu discovery with icons (Win32)
   src/appproxy.rs   "Open with proxy" profiles: opens the profile's app with `--proxy-server` (Chromium /
                     Electron) once the engine runs; Squirrel apps via Update.exe; only from trusted places
@@ -124,7 +126,8 @@ strategies/       default.json: the standard strategies per engine; embedded in 
 changelog/        en.md + tr/ru/fa/ar.md: user-facing notes per version, shown once after an update
                   ("What's new", src/whatsnew.rs) and used as the GitHub release text
 site/             landing page (plain HTML, no build step; reads the newest release via the GitHub API)
-docs/             PLAN, PROGRESS, DECISIONS, RELEASING (release steps, COPR setup)
+docs/             PLAN, PROGRESS, DECISIONS, RELEASING (release steps, COPR setup); guide/<lang>.md: the user
+                  guide (engines, install details, countries, troubleshooting) the short READMEs link to
 ```
 
 ## Commands

@@ -1,232 +1,87 @@
 <p align="center"><a href="README.md">English</a> · <a href="README.tr.md">Türkçe</a> · <b>Русский</b> · <a href="README.fa.md">فارسی</a> · <a href="README.ar.md">العربية</a></p>
 
-<p align="center"><img src="crates/gui/assets/logo.png" width="128" alt="Логотип DPIMech"></p>
+<!-- ---------- Заголовок ---------- -->
+<div align="center">
+  <img src="crates/gui/assets/logo-long-square.svg" width="260" alt="DPIMech">
+  <p>Открывает сайты и приложения, которые блокирует ваш провайдер (Discord, YouTube, …).<br>Бесплатно и с открытым кодом, для Windows, Linux и macOS.</p>
 
-# DPIMech
+  <img alt="Лицензия" src="https://img.shields.io/github/license/halilkhrmn/dpimech?color=397256&style=flat-square">
+  <img alt="Версия" src="https://img.shields.io/github/v/release/halilkhrmn/dpimech?color=397256&style=flat-square">
+  <img alt="Загрузки" src="https://img.shields.io/github/downloads/halilkhrmn/dpimech/total?color=397256&style=flat-square">
+  <img alt="Последний коммит" src="https://img.shields.io/github/last-commit/halilkhrmn/dpimech?color=397256&style=flat-square">
+  <img alt="Звёзды" src="https://img.shields.io/github/stars/halilkhrmn/dpimech?color=397256&style=flat-square">
+</div>
 
-**Открывайте сайты и приложения (Discord, YouTube, …), которые блокирует ваш провайдер.**
+> **DPIMech — не VPN.** Он запускает известные инструменты с открытым кодом, которые меняют вид вашего
+> трафика, поэтому глубокая инспекция пакетов (DPI) у провайдера перестаёт его блокировать. Трафик
+> по-прежнему идёт напрямую к сайту: пинг не меняется, но ваш IP-адрес не скрывается.
 
-Некоторые провайдеры заглядывают внутрь вашего трафика и блокируют определённые сайты. Этот метод
-называется *DPI* (глубокий анализ пакетов). DPIMech запускает небольшие известные программы с
-открытым исходным кодом («движки»). Они меняют то, как выглядит ваш трафик, и блокировка перестаёт
-работать.
+<!-- ---------- Возможности ---------- -->
+## Возможности
 
-> **DPIMech — это не VPN.** Трафик по-прежнему идёт напрямую на сайт, а не через чужой сервер.
-> Скорость и пинг не меняются, но ваш IP-адрес не скрывается, а сайты, заблокированные другим
-> способом (например, по IP-адресу), останутся заблокированными.
+- [x] Включение и выключение в один клик: готовый *профиль* для сайта или приложения, например Discord
+- [x] Только выбранные приложения, весь компьютер или локальный прокси
+- [x] *Лаборатория стратегий* находит настройки, которые работают на вашем подключении
+- [x] Устанавливает и обновляет движки, каждая загрузка проверяется по контрольной сумме
+- [x] Сам перезапускает зависший движок меньше чем за секунду
+- [x] Ярлыки на рабочем столе, которые включают профиль и открывают приложение
+- [x] English, Türkçe, Русский, فارسی, العربية
+- [x] Лёгкий: около 30 МБ памяти для окна и 20 МБ для фоновой службы
 
-| | Статус |
+<!-- ---------- Скачать ---------- -->
+## Скачать
+
+| Система | Как установить |
 |---|---|
-| **Windows 10 / 11** | Готово. Установщик на странице [Releases](https://github.com/halilkhrmn/dpimech/releases). |
-| **Linux** | Готово: `.deb`, `.rpm` и AppImage на странице Releases, для Fedora — COPR (см. ниже). |
-| **macOS** | Ранняя предварительная версия: `.dmg` на странице Releases, только локальный прокси (см. ниже). |
+| **Windows 10 / 11** | `dpimech-setup-<версия>.exe` со страницы [Releases](https://github.com/halilkhrmn/dpimech/releases/latest) |
+| **Ubuntu, Debian, Mint** | `.deb` из Releases → `sudo apt install ./dpimech_*_amd64.deb` |
+| **Fedora** | `sudo dnf copr enable halilkahraman/DPIMech && sudo dnf install dpimech` |
+| **Arch, CachyOS, Manjaro** | `.pkg.tar.zst` из Releases → `sudo pacman -U ./dpimech-bin-*.pkg.tar.zst` |
+| **openSUSE, RHEL** | `.rpm` из Releases → `sudo dnf install ./dpimech-*.x86_64.rpm` |
+| **Другой Linux** | AppImage из Releases |
+| **macOS** *(ранняя версия)* | `.dmg` из Releases |
+
+Затем откройте DPIMech и выберите **Просто сделай, чтобы работало**. Движки, страны, сборка из исходников
+и решение проблем — в **[руководстве](docs/guide/ru.md)**.
+
+<!-- ---------- Скриншоты ---------- -->
+## Скриншоты
 
 <p align="center">
-  <a href="site/screenshots/windows-profiles.png"><img src="site/screenshots/windows-profiles.png" width="49%" alt="Страница профилей DPIMech в Windows"></a>
-  <a href="site/screenshots/windows-editor.png"><img src="site/screenshots/windows-editor.png" width="49%" alt="Редактирование профиля Discord в Windows"></a>
-  <br><sub>Windows: профили и профиль для Discord по приложениям</sub>
-</p>
-<p align="center">
-  <a href="site/screenshots/linux-profiles.png"><img src="site/screenshots/linux-profiles.png" width="49%" alt="Страница профилей DPIMech в Linux"></a>
-  <a href="site/screenshots/linux-editor.png"><img src="site/screenshots/linux-editor.png" width="49%" alt="Редактирование профиля в Linux"></a>
-  <br><sub>Linux: несколько профилей одновременно, редактор профиля</sub>
+  <img src="site/screenshots/windows-profiles.png" width="49%" alt="Профили в Windows">
+  <img src="site/screenshots/windows-editor.png" width="49%" alt="Профиль Discord в Windows">
+  <img src="site/screenshots/linux-profiles.png" width="49%" alt="Профили в Linux">
+  <img src="site/screenshots/linux-editor.png" width="49%" alt="Редактор профиля в Linux">
 </p>
 
-## Что умеет
+<!-- ---------- Участие ---------- -->
+## Отзывы и участие
 
-- **Включение и выключение в один клик.** Каждый *профиль* — это готовая настройка, например
-  «Discord».
-- **Только там, где нужно.** Только выбранные приложения, весь компьютер или локальный прокси.
-- **Сам находит работающие настройки.** *Лаборатория стратегий* проверяет десятки настроек на
-  реальных сайтах и показывает, какие работают на вашем подключении. Она может определить вашего
-  провайдера и предложить готовые настройки для него.
-- **Сам устанавливает и обновляет движки** с их официальных страниц на GitHub и сверяет каждый
-  загруженный файл с опубликованной контрольной суммой.
-- **Следит за работой.** Если движок зависает (например, когда пинг в Discord через несколько часов
-  вдруг вырастает до тысяч), DPIMech перезапускает его меньше чем за секунду. Проверка соединения
-  показывает средний пинг на каждом профиле.
-- **Ярлыки.** Щёлкните профиль правой кнопкой (или ⋯) → *Создать ярлык*: значок на рабочем столе
-  или в меню, который включает профиль и затем открывает приложение, например Discord.
-- **Лёгкий:** окно занимает около 25–35 МБ памяти, фоновая служба — около 20 МБ.
-- **На вашем языке:** русский, английский, турецкий, персидский и арабский.
+***Любая помощь приветствуется!***
 
-## Windows
-
-### Начало работы
-
-1. **Скачайте и запустите** `dpimech-setup-<версия>.exe` со страницы
-   [Releases](https://github.com/halilkhrmn/dpimech/releases). Windows один раз попросит
-   разрешение; после этого фоновая служба сама запускается вместе с компьютером.
-2. **Откройте DPIMech** и выберите **Just make it work** («Просто сделай, чтобы работало»).
-   Выберите сайты (например, Discord) и где это должно работать (только в некоторых приложениях,
-   на всём компьютере или через прокси), нажмите **Start**. DPIMech сам установит нужное,
-   проверит настройки на вашем подключении и включит лучшую.
-3. Готово. Позже можно нажать **Quick setup**, чтобы добавить ещё профиль, или выключить
-   *Easy mode* в настройках, чтобы увидеть движки, лабораторию стратегий и журналы.
-
-Совет: в **Settings** можно включить запуск DPIMech при входе в систему, свёрнутым в трей.
-
-### Движки в Windows
-
-| Движок | Для чего хорош | Что нужно |
-|---|---|---|
-| **ByeDPI** | Локальный прокси. Простой и безопасный. Вместе с ProxiFyre пропускает только выбранные приложения. | Ничего дополнительно |
-| **ProxiFyre** *(помощник)* | Отправляет через ByeDPI только выбранные приложения. | Драйвер **Windows Packet Filter** (ставится со страницы Engines; может понадобиться перезагрузка) |
-| **zapret (winws)** | Работает для всего компьютера, в том числе для UDP (голос в Discord, QUIC). Самый мощный вариант. | Использует WinDivert (входит в пакет). Работает через службу DPIMech с правами администратора. |
-| **GoodbyeDPI** | Классический инструмент для всего компьютера. Простой, но больше активно не развивается. | Использует WinDivert (входит в пакет). То же, что выше. |
-
-Одновременно может работать только **один** движок на WinDivert (zapret или GoodbyeDPI). Некоторые
-антивирусы ошибочно считают WinDivert опасным. DPIMech скачивает его только из официальных выпусков
-движков.
-
-## Linux
-
-### Движки в Linux
-
-| Движок | Режим | Что нужно |
-|---|---|---|
-| **zapret (nfqws)** | Весь компьютер. Пока работает, DPIMech добавляет свои правила nftables, а потом удаляет их. | `nftables`, модули ядра `nft_queue` и `nfnetlink_queue` (есть в большинстве дистрибутивов) |
-| **zapret (tpws)** | Весь компьютер, только некоторые приложения или локальный SOCKS-прокси | Ничего дополнительно (для «только некоторых приложений» нужен cgroup v2) |
-| **ByeDPI** | Только некоторые приложения или локальный SOCKS-прокси | Ничего дополнительно (для «только некоторых приложений» нужен cgroup v2) |
-| **SpoofDPI** | Только некоторые приложения или локальный SOCKS-прокси. Умеет разрешать имена через HTTPS (DoH), что обходит и DNS-блокировку | Ничего дополнительно |
-
-Режимы «только некоторые приложения» и tpws для всего компьютера перенаправляют только TCP;
-UDP (например, голос) идёт напрямую. Трафик приложения подхватывается примерно через секунду
-после его запуска.
-
-### Установка
-
-Скачайте со страницы [Releases](https://github.com/halilkhrmn/dpimech/releases):
-
-| Ваша система | Файл | Установка |
-|---|---|---|
-| Ubuntu, Debian, Mint, Pop!_OS | `dpimech_<версия>_amd64.deb` | `sudo apt install ./dpimech_*_amd64.deb` |
-| Fedora | скачивать не нужно: [репозиторий COPR](https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/) | см. ниже |
-| Arch, CachyOS, EndeavourOS, Manjaro | `dpimech-bin-<версия>-1-x86_64.pkg.tar.zst` | `sudo pacman -U ./dpimech-bin-*.pkg.tar.zst` |
-| openSUSE, RHEL | `dpimech-<версия>-1.x86_64.rpm` | `sudo dnf install ./dpimech-*.x86_64.rpm` |
-| Любой другой дистрибутив | `DPIMech-<версия>-x86_64.AppImage` | `chmod +x DPIMech-*.AppImage`, затем запустите |
-
-[![Copr build status](https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/package/dpimech/status_image/last_build.png)](https://copr.fedorainfracloud.org/coprs/halilkahraman/DPIMech/package/dpimech/)
-
-**Fedora** — добавьте репозиторий один раз, дальше обновления приходят вместе с системой (`sudo dnf upgrade`):
-
-```sh
-sudo dnf copr enable halilkahraman/DPIMech
-sudo dnf install dpimech
-```
-
-**Arch, CachyOS, EndeavourOS, Manjaro** — пакет для Arch (`dpimech-bin`) есть, но в AUR его пока нет: AUR сейчас не
-регистрирует новых пользователей. Тот же пакет прикреплён к каждому релизу: скачайте
-`dpimech-bin-<версия>-1-x86_64.pkg.tar.zst` со страницы [Releases](https://github.com/halilkhrmn/dpimech/releases/latest) и установите
-(зависимости подтянет pacman; о новой версии сообщит сам DPIMech):
-
-```sh
-sudo pacman -U ./dpimech-bin-*-x86_64.pkg.tar.zst
-```
-
-Пакеты (`.deb`, `.rpm`, COPR, Arch) сразу устанавливают и запускают фоновую службу. С AppImage откройте
-DPIMech и один раз нажмите **Install the service** (спросит пароль). Библиотека для трея уже
-внутри AppImage. В GNOME для значка в трее нужно расширение *AppIndicator and KStatusNotifierItem Support*
-(в Ubuntu оно уже есть).
-
-### Сборка из исходников
-
-Нужны [Rust](https://rustup.rs), `systemd` и, для сборки окна, пакеты разработки GTK 3 и
-AppIndicator (в Debian/Ubuntu:
-`sudo apt install build-essential libgtk-3-dev libayatana-appindicator3-dev libxkbcommon-x11-0`).
-
-```sh
-git clone https://github.com/halilkhrmn/dpimech && cd dpimech
-cargo build --release
-sudo target/release/dpimech-service install   # фоновая служба (юнит systemd "dpimech")
-target/release/dpimech                         # окно
-```
-
-Для значка в трее нужна поддержка StatusNotifier/AppIndicator (в GNOME — расширение
-*AppIndicator*). Удалить службу: `sudo /usr/local/lib/dpimech/dpimech-service uninstall`.
-
-## macOS (ранняя предварительная версия)
-
-Скачайте `DPIMech-<версия>.dmg` со страницы [Releases](https://github.com/halilkhrmn/dpimech/releases)
-и перетащите DPIMech в «Программы». Приложение пока не подписано: при первом запуске нажмите на
-него правой кнопкой и выберите **Открыть**. Затем один раз нажмите **Install the service** (спросит
-пароль).
-
-На macOS DPIMech пока умеет только **локальный SOCKS-прокси** (tpws из zapret): укажите
-`127.0.0.1:<порт>` в браузере или приложении. Режимы «весь компьютер» и «по приложениям»
-запланированы. Сборка и проверки идут автоматически на macOS, но вручную на Mac ещё не
-тестировалось.
-
-## По странам
-
-DPIMech определяет страну по региональным настройкам системы и показывает первыми сайты, о блокировке
-которых там широко известно; в мастере настройки они уже выбраны. Вы всегда можете выбрать другие или
-ввести любой сайт. Список хранится в [`strategies/domains.json`](strategies/domains.json) и обновляется
-без новой версии.
-
-| Страна | Выбрано заранее | Учтите |
-|---|---|---|
-| Турция | Discord, Roblox, Wattpad, Imgur | Многие блокировки сделаны и через DNS: см. «Всё ещё заблокировано?» ниже. |
-| Россия | YouTube, Discord, Instagram, X, Facebook, LinkedIn, Signal, Viber | YouTube не блокируют, а замедляют; обычно лучше всего работает zapret. |
-| Иран | YouTube, Instagram, X, Telegram, Facebook, Signal, Discord | Фильтрация блокирует и IP-адреса, а временами весь международный интернет — тогда DPIMech не поможет. *Приложения* Telegram и WhatsApp подключаются напрямую к IP-адресам, поэтому помогает только с их сайтами. |
-| Казахстан | SoundCloud | Блокируют в основном новостные сайты и VPN, чаще по IP-адресу. Нужные сайты добавьте в «Другие сайты». |
-| Беларусь | TikTok, независимые СМИ (Зеркало, Наша Ніва, Свабода, Белсат, …) | Некоторые издания часто меняют адрес; добавьте актуальный в «Другие сайты». |
-| Египет | независимые СМИ (Mada Masr, Zawia3, Cairo 24) | Голосовые и видеозвонки в WhatsApp и похожих приложениях блокируются иначе и останутся заблокированными. |
-
-В остальных странах первым идёт Discord. Не хватает сайта или страны? Откройте issue или pull request
-для `strategies/domains.json`.
-
-## Полезно знать
-
-- **Игры:** в Windows игры со строгим античитом (например, Valorant или FACEIT) могут не
-  запуститься или отключить вас, пока включён движок для всего компьютера. Выключайте этот профиль
-  перед игрой или выбирайте только нужные приложения.
-- **Один инструмент обхода за раз:** если рядом с DPIMech работает другой инструмент обхода
-  (GoodbyeDPI, zapret, ByeDPI Manager, …), соединения ломаются странным образом. DPIMech
-  предупреждает, когда видит такой инструмент.
-- **Всё ещё заблокировано? Проверьте DNS.** Некоторые провайдеры (например, в Турции) блокируют
-  сайты ещё и неверным адресом для их имён — это не исправит ни один движок. Лаборатория стратегий
-  предупреждает, если ваш DNS отвечает иначе, чем 1.1.1.1. Тогда укажите DNS `1.1.1.1` / `1.0.0.1`
-  (или включите «DNS через HTTPS» в системе или браузере).
-- **Журналы:** Настройки → *Журнал*. Если профиль остановился с ошибкой, недавний журнал сам
-  сохраняется в файл. *Подробный журнал* записывает и каждое соединение (сайт, адрес, чем
-  закончилось) — включите его, чтобы понять, почему что-то не открывается, и приложите файл, когда
-  просите о помощи.
-
-## Это безопасно?
-
-- Движки меняют только то, как выглядят ваши собственные запросы.
-- Фоновая служба работает с правами администратора, потому что это нужно некоторым движкам. Она
-  запускает движки только из своей защищённой папки и отклоняет настройки, которые могли бы
-  записывать файлы или читать личные файлы.
-- Определение провайдера необязательно. Оно выполняется только по кнопке *Detect my provider* и
-  отправляет ваш внешний IP-адрес сервису `ipwho.is`.
-
-## Как это сделано
-
-DPIMech разрабатывается с помощью ИИ (Claude). Прежде чем функция считается готовой, её
-проверяют вручную; что и как проверялось, включая то, что ещё не проверено, записано в
-[docs/PROGRESS.md](docs/PROGRESS.md).
+- Ошибки и идеи: [Issues](https://github.com/halilkhrmn/dpimech/issues) или *Сообщить о проблеме* в настройках приложения.
+- Код: сделайте fork и откройте pull request; как это сделать, описано в [CONTRIBUTING.md](CONTRIBUTING.md).
+- Переводы лежат в [`crates/gui/lang`](crates/gui/lang) в виде обычных файлов `.po`.
 
 ## Благодарности
 
-DPIMech только управляет этими проектами, вся основная работа — их:
-[ByeDPI](https://github.com/hufrea/byedpi) ·
-[zapret](https://github.com/bol-van/zapret) ·
-[GoodbyeDPI](https://github.com/ValdikSS/GoodbyeDPI) ·
-[WinDivert](https://github.com/basil00/WinDivert) ·
-[ProxiFyre](https://github.com/wiresock/proxifyre) ·
-[Windows Packet Filter](https://github.com/wiresock/ndisapi).
-Лаборатория стратегий может загружать списки стратегий из проектов
-[ByeDPI Manager](https://github.com/romanvht/ByeDPIManager) и
-[SplitWire-Turkey](https://github.com/cagritaskn/SplitWire-Turkey).
-Значки: [Fluent UI System Icons](https://github.com/microsoft/fluentui-system-icons) (MIT).
-Сделано на [Slint](https://slint.dev).
+- **Логотип:** автор — [Kim De Vries](https://www.artstation.com/kdevries21), нарисован вручную. ИИ при его создании не использовался.
+- DPIMech только управляет этими проектами, вся настоящая работа — их:
+  [ByeDPI](https://github.com/hufrea/byedpi) ·
+  [zapret](https://github.com/bol-van/zapret) ·
+  [GoodbyeDPI](https://github.com/ValdikSS/GoodbyeDPI) ·
+  [WinDivert](https://github.com/basil00/WinDivert) ·
+  [ProxiFyre](https://github.com/wiresock/proxifyre) ·
+  [Windows Packet Filter](https://github.com/wiresock/ndisapi).
+- Списки стратегий: [ByeDPI Manager](https://github.com/romanvht/ByeDPIManager),
+  [SplitWire-Turkey](https://github.com/cagritaskn/SplitWire-Turkey).
+  Иконки: [Fluent UI System Icons](https://github.com/microsoft/fluentui-system-icons). Сделано на [Slint](https://slint.dev).
+- Код разрабатывается с помощью ИИ (Claude), каждая функция проверяется вручную;
+  что и как проверено, записано в [docs/PROGRESS.md](docs/PROGRESS.md).
 
 ## Лицензия
 
-DPIMech — свободная программа под [GNU General Public License v3.0 или новее](LICENSE): её можно
-использовать, распространять и изменять, а всё, что распространяется на её основе, должно оставаться
-открытым на тех же условиях. Загружаемые движки сохраняют свои лицензии.
+DPIMech — свободное ПО под лицензией [GNU GPL v3.0 или более поздней](LICENSE): его можно использовать,
+изучать, распространять и изменять. Загружаемые движки сохраняют свои лицензии.
 
-Хотите помочь? Смотрите [CONTRIBUTING.md](CONTRIBUTING.md).
+<p align="center">Сделано с ❤️</p>
