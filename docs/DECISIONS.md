@@ -333,6 +333,24 @@ own release), a launchd service and an unsigned universal `.dmg`. The wizard hid
 - **Kept:** "Detect my ISP" stays a button (Lab and wizard): it sends the public IP to ipwho.is, so it should
   not happen without a click. The crash-only auto-restart without site checks is no longer a separate switch.
 
+## 50. "Open with proxy": the app's own proxy switch instead of a packet driver (2026-10-05)
+- **Problem:** a profile for one Chromium/Electron app (Discord) used ProxiFyre and its packet driver, although
+  those apps take `--proxy-server` and can talk to the engine's SOCKS5 port directly. The driver is what clashes
+  with anti-cheat, and macOS had no way to route a single app at all.
+- **Decision:** a new routing mode `app_proxy { app, port }`. The service runs the engine exactly like "Local
+  proxy"; the GUI of whoever switches the profile on (window, tray or shortcut) opens the app with
+  `--proxy-server=socks5://127.0.0.1:<port>` once the engine runs. Squirrel installs (Discord, Slack…) start
+  through `Update.exe --processStart <exe> --process-start-args`, so the profile survives app updates that move
+  the exe into a new `app-<version>` folder. Profiles the service starts by itself (at boot) open nothing.
+- **Security:** profiles are shared by every user, so user A could name a program for user B to run. The GUI only
+  opens apps from Program Files, Windows or the user's own app folders (Windows), or files owned by root or the
+  user that nobody else can change, checked on the real file and its folder (Linux, macOS).
+- **Limits:** only DPIMech's own launch uses the engine (an app opened another way, or already running, does
+  not); voice/UDP goes direct; the editor warns when the app does not look like Chromium/Electron. ProxiFyre
+  stays the default for per-app profiles because it catches the app however it starts.
+- **Never offered (owner's choice):** the wizard, the Strategy Lab and Easy mode never pick or suggest it; it is
+  the last routing option in the editor, for people who choose it themselves.
+
 ## 51. Hand-drawn logo; short READMEs with a separate user guide (2026-10-07)
 - **Logo:** a chameleon by Kim De Vries (https://www.artstation.com/kdevries21), drawn by hand, no AI. Three
   SVG masters in `crates/gui/assets/`: the mark (`logo.svg`) is the app icon everywhere (exe, installer, tray,

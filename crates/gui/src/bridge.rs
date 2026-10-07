@@ -157,7 +157,11 @@ async fn handle_command(
     let (request, is_editor) = match cmd {
         Command::Save(profile) => (Request::SaveProfile { profile }, true),
         Command::Delete(id) => (Request::DeleteProfile { id }, true),
-        Command::Start(id) => (Request::StartProfile { id }, false),
+        Command::Start(id) => {
+            // Switched on by the user (window or tray): an app-proxy profile opens its app.
+            crate::appproxy::open_when_running(&id);
+            (Request::StartProfile { id }, false)
+        }
         Command::CheckProfile(id) => (Request::CheckProfile { id }, false),
         Command::SetDetailedLog(on) => (Request::SetDetailedLog { on }, false),
         Command::InstallUpdate => {

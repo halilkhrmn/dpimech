@@ -6,12 +6,12 @@
 use std::time::{Duration, Instant};
 
 use dpimech_core::ipc::{Client, Reply, Request};
-use dpimech_core::model::ProfileStatus;
+use dpimech_core::model::{ProfileStatus, Routing};
 use slint::{ComponentHandle, Image, SharedString, Weak};
 
 use crate::i18n::tr;
 use crate::shortcut::{self, Choice};
-use crate::{LaunchWindow, autostart, prefs, single};
+use crate::{LaunchWindow, appproxy, autostart, prefs, single};
 
 /// Engines normally come up in a second or two; ProxiFyre and the driver can take longer.
 const START_TIMEOUT: Duration = Duration::from_secs(60);
@@ -63,14 +63,21 @@ pub fn run(profile_id: String, open: Option<String>) -> anyhow::Result<()> {
             .build()
             .expect("tokio runtime");
         let result = runtime.block_on(start_profile(&weak, &profile_id));
-        let result = result.and_then(|name| match &open {
-            Some(target) => {
+        let result = result.and_then(|(name, routing)| match (&routing, &open) {
+            // The app only uses the engine when DPIMech opens it with the proxy switch.
+            (Routing::AppProxy { app, port }, _) => {
+                set(&weak, None, Some(trf!("Opening {}…", display_name(app))));
+                appproxy::open(app, *port)
+                    .map(|()| name)
+                    .map_err(|e| trf!("Could not open {}: {}", display_name(app), e))
+            }
+            (_, Some(target)) => {
                 set(&weak, None, Some(trf!("Opening {}…", display_name(target))));
                 open_target(target)
                     .map(|()| name)
                     .map_err(|e| trf!("Could not open {}: {}", display_name(target), e))
             }
-            None => Ok(name),
+            (_, None) => Ok(name),
         });
         let _ = weak.upgrade_in_event_loop(move |ui| match result {
             Ok(name) => {
@@ -96,8 +103,8 @@ pub fn run(profile_id: String, open: Option<String>) -> anyhow::Result<()> {
 }
 
 /// Switches the profile on (if it is not already) and waits until it runs.
-/// Returns the profile's name.
-async fn start_profile(ui: &Weak<LaunchWindow>, id: &str) -> Result<String, String> {
+/// Returns the profile's name and routing.
+async fn start_profile(ui: &Weak<LaunchWindow>, id: &str) -> Result<(String, Routing), String> {
     let (client, _events) = Client::connect()
         .await
         .map_err(|_| tr("The DPIMech service is not running. Open DPIMech to set it up."))?;
@@ -108,9 +115,10 @@ async fn start_profile(ui: &Weak<LaunchWindow>, id: &str) -> Result<String, Stri
     let state = find(client.request(Request::ListProfiles).await)
         .ok_or_else(|| tr("The profile of this shortcut no longer exists."))?;
     let name = state.profile.name.clone();
+    let routing = state.profile.routing.clone();
     set(ui, Some(trf!("Starting {}", name)), None);
     if matches!(state.status, ProfileStatus::Running { .. }) {
-        return Ok(name);
+        return Ok((name, routing));
     }
 
     set(ui, None, Some(tr("Turning the profile on…")));
@@ -126,7 +134,7 @@ async fn start_profile(ui: &Weak<LaunchWindow>, id: &str) -> Result<String, Stri
         let state = find(client.request(Request::ListProfiles).await)
             .ok_or_else(|| tr("The profile of this shortcut no longer exists."))?;
         match state.status {
-            ProfileStatus::Running { .. } => return Ok(name),
+            ProfileStatus::Running { .. } => return Ok((name, routing)),
             ProfileStatus::Error { message } => return Err(message),
             ProfileStatus::Stopped if started.elapsed() > Duration::from_secs(5) => {
                 return Err(tr(
@@ -175,7 +183,7 @@ fn set(ui: &Weak<LaunchWindow>, heading: Option<String>, status: Option<String>)
 }
 
 /// "Discord" for `…\Discord.lnk`, `/usr/share/applications/discord.desktop`, `…/Discord.exe`.
-fn display_name(target: &str) -> String {
+pub fn display_name(target: &str) -> String {
     #[cfg(all(unix, not(target_os = "macos")))]
     if target.ends_with(".desktop")
         && let Ok(text) = std::fs::read_to_string(target)

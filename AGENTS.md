@@ -102,6 +102,8 @@ crates/gui/       dpimech binary (Slint)
                     tray-32.rgba (tray; status dot drawn at runtime), icon-1024.png (macOS .icns), site/logo.svg +
                     favicon — regenerate with tools/make_icon.py (needs cairosvg)
   src/apps.rs       process + Start Menu discovery with icons (Win32)
+  src/appproxy.rs   "Open with proxy" profiles: opens the profile's app with `--proxy-server` (Chromium /
+                    Electron) once the engine runs; Squirrel apps via Update.exe; only from trusted places
   src/picker.rs     app picker logic; src/state.rs UI-thread state
 tools/            ipc.ps1 (raw IPC requests), uia.ps1 (drive the GUI via UI Automation),
                   build-installer.ps1, build-linux-packages.sh, build-macos-app.sh, i18n.py, make_icon.py,
@@ -196,3 +198,5 @@ sh packaging/fedora/make-srpm.sh target/srpm
 - The service binary lives in Program Files and the data dir is reset to SYSTEM/Admins-only write on every service start (`acl.rs`). Never launch anything from a user-writable path.
 - Use SIDs, not group names, in ACL/firewall code: names are localised.
 - Downloaded engines must be checksum-verified before being placed in the data dir.
+- Profiles are shared by all users, but the GUI runs as whoever uses it. The GUI only opens an app named in a
+  profile ("Open with proxy") from places other users cannot write to (`appproxy.rs`, DECISIONS #50).

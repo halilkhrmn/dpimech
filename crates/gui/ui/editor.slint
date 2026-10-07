@@ -162,6 +162,9 @@ export component ProfileEditorPage inherits VerticalLayout {
     in property <[string]> engine-names;
     in property <[string]> routing-names;
     in property <int> per-app-index: -1;
+    in property <int> app-proxy-index: -1;
+    /// The chosen app does not look like Chromium or Electron, so it may ignore the proxy.
+    in property <bool> app-proxy-doubtful;
     in property <int> system-wide-index: -1;
     in property <bool> is-windows;
     in property <[AppItem]> draft-apps;
@@ -179,6 +182,7 @@ export component ProfileEditorPage inherits VerticalLayout {
 
     in property <bool> easy-mode;
     property <bool> per-app: draft.routing-index == per-app-index;
+    property <bool> app-proxy: draft.routing-index == app-proxy-index;
     property <bool> show-advanced: false;
 
     padding: Theme.page-padding;
@@ -332,6 +336,39 @@ export component ProfileEditorPage inherits VerticalLayout {
                         }
                     }
                 }
+            }
+
+            if app-proxy: VerticalLayout {
+                spacing: 8px;
+                HorizontalLayout {
+                    Text { text: @tr("Application"); font-weight: 600; vertical-alignment: center; horizontal-stretch: 1; }
+                    Button { text: draft-apps.length == 0 ? @tr("Choose app") : @tr("Change"); clicked => { root.open-picker(); } }
+                }
+                Text {
+                    text: @tr("When you turn this profile on (switch, tray or shortcut), DPIMech opens the app with the engine as its proxy. No packet driver is needed. Works with Chromium and Electron apps such as Discord, Chrome, Edge or Brave. If the app is already open, close it fully first (also from its tray icon). Voice calls go direct.");
+                    font-size: 12px;
+                    color: Theme.muted;
+                    wrap: word-wrap;
+                }
+                Rectangle {
+                    border-radius: Theme.radius;
+                    border-width: 1px;
+                    border-color: Theme.border;
+                    background: Theme.card;
+                    min-height: 56px;
+                    VerticalLayout {
+                        padding: 6px;
+                        if draft-apps.length == 0: Text {
+                            text: @tr("No app chosen yet.");
+                            color: Theme.muted;
+                            horizontal-alignment: center;
+                            vertical-alignment: center;
+                            min-height: 44px;
+                        }
+                        for app in draft-apps: AppRow { app: app; }
+                    }
+                }
+                if app-proxy-doubtful: Note { text: @tr("This does not look like a Chromium or Electron app, so it may ignore the proxy setting. Per-app routing works with any app."); }
             }
 
             // Everything below has working defaults; most people never need it.

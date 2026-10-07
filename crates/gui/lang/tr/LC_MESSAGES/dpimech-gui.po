@@ -4,39 +4,39 @@ msgstr ""
 "Language: tr\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ui/app.slint:217
+#: ui/app.slint:219
 msgid "Profiles"
 msgstr "Profiller"
 
-#: ui/app.slint:222
+#: ui/app.slint:224
 msgid "Strategy Lab"
 msgstr "Strateji Laboratuvarı"
 
-#: ui/app.slint:227
+#: ui/app.slint:229
 msgid "Engines"
 msgstr "Motorlar"
 
-#: ui/app.slint:233
+#: ui/app.slint:235
 msgid "Logs"
 msgstr "Kayıtlar"
 
-#: ui/app.slint:239
+#: ui/app.slint:241
 msgid "Settings"
 msgstr "Ayarlar"
 
-#: ui/app.slint:290
+#: ui/app.slint:292
 msgid "Another DPI tool is running: {}. Two tools on the same traffic break connections — close it, or turn DPIMech's profiles off."
 msgstr "Başka bir DPI aracı çalışıyor: {}. Aynı trafikte iki araç bağlantıları bozar — onu kapat ya da DPIMech profillerini kapat."
 
-#: ui/app.slint:308
+#: ui/app.slint:310
 msgid "DPIMech {} is ready to install."
 msgstr "DPIMech {} kurulmaya hazır."
 
-#: ui/app.slint:312
+#: ui/app.slint:314
 msgid "Restart and update"
 msgstr "Yeniden başlat ve güncelle"
 
-#: ui/app.slint:324
+#: ui/app.slint:326
 msgid "Background service is not running. Engines can't be started until it is."
 msgstr "Arka plan servisi çalışmıyor. Servis çalışmadan motorlar başlatılamaz."
 
@@ -88,163 +88,187 @@ msgstr "Ekle"
 msgid "Browse…"
 msgstr "Gözat…"
 
-#: ui/editor.slint:188
+#: ui/editor.slint:192
 msgid "New profile"
 msgstr "Yeni profil"
 
-#: ui/editor.slint:188
+#: ui/editor.slint:192
 msgid "Edit profile"
 msgstr "Profili düzenle"
 
-#: ui/editor.slint:190
+#: ui/editor.slint:194
 msgid "Back"
 msgstr "Geri"
 
-#: ui/editor.slint:206
+#: ui/editor.slint:210
 msgid "Name"
 msgstr "Ad"
 
-#: ui/editor.slint:209
+#: ui/editor.slint:213
 msgid "e.g. Discord"
 msgstr "örn. Discord"
 
-#: ui/editor.slint:214
+#: ui/editor.slint:218
 msgid "Engine"
 msgstr "Motor"
 
-#: ui/editor.slint:226
+#: ui/editor.slint:230
 msgid "Routing"
 msgstr "Yönlendirme"
 
-#: ui/editor.slint:234
+#: ui/editor.slint:238
 msgid "Start with service"
 msgstr "Servisle birlikte başlat"
 
-#: ui/editor.slint:242
+#: ui/editor.slint:246
 msgid "Keep it working"
 msgstr "Çalışır durumda tut"
 
-#: ui/editor.slint:244
+#: ui/editor.slint:248
 msgid "Checks the connection every few minutes and restarts the engine if it gets stuck, slow or crashes. Other profiles are not touched."
 msgstr "Bağlantıyı birkaç dakikada bir dener; motor takılır, yavaşlar ya da çökerse yeniden başlatır. Diğer profillere dokunulmaz."
 
-#: ui/editor.slint:268
+#: ui/editor.slint:272
 msgid "Games with strict anti-cheat (for example Valorant or FACEIT) may refuse to start or disconnect you while a packet driver is active. Turn this off before playing, or unblock only the apps you need."
 msgstr "Sıkı hile korumalı oyunlar (örneğin Valorant ya da FACEIT) bir paket sürücüsü çalışırken açılmayabilir ya da seni oyundan atabilir. Oynamadan önce bunu kapat ya da sadece ihtiyacın olan uygulamaları seç."
 
-#: ui/editor.slint:269
+#: ui/editor.slint:273
 msgid "Sites to unblock"
 msgstr "Açılacak siteler"
 
-#: ui/editor.slint:271
+#: ui/editor.slint:275
 msgid "The engine only touches these domains. One per line; subdomains are included."
 msgstr "Motor sadece bu alan adlarına dokunur. Her satıra bir tane; alt alan adları dahildir."
 
-#: ui/editor.slint:310
+#: ui/editor.slint:314
 msgid "Applications"
 msgstr "Uygulamalar"
 
-#: ui/editor.slint:311
+#: ui/editor.slint:315
 msgid "Add app"
 msgstr "Uygulama ekle"
 
-#: ui/editor.slint:322
+#: ui/editor.slint:326
 msgid "Only the apps listed here will go through the engine."
 msgstr "Sadece burada listelenen uygulamalar motordan geçer."
 
-#: ui/editor.slint:341
+#: ui/editor.slint:344
+msgid "Application"
+msgstr "Uygulama"
+
+#: ui/editor.slint:345
+msgid "Choose app"
+msgstr "Uygulama seç"
+
+#: ui/editor.slint:345
+msgid "Change"
+msgstr "Değiştir"
+
+#: ui/editor.slint:348
+msgid "When you turn this profile on (switch, tray or shortcut), DPIMech opens the app with the engine as its proxy. No packet driver is needed. Works with Chromium and Electron apps such as Discord, Chrome, Edge or Brave. If the app is already open, close it fully first (also from its tray icon). Voice calls go direct."
+msgstr "Bu profili açtığında (anahtar, tepsi ya da kısayol) DPIMech uygulamayı, motoru proxy olarak kullanacak şekilde açar. Paket sürücüsü gerekmez. Discord, Chrome, Edge veya Brave gibi Chromium ve Electron uygulamalarıyla çalışır. Uygulama zaten açıksa önce tamamen kapat (tepsi simgesinden de). Sesli aramalar doğrudan gider."
+
+#: ui/editor.slint:362
+msgid "No app chosen yet."
+msgstr "Henüz uygulama seçilmedi."
+
+#: ui/editor.slint:371
+msgid "This does not look like a Chromium or Electron app, so it may ignore the proxy setting. Per-app routing works with any app."
+msgstr "Bu bir Chromium veya Electron uygulamasına benzemiyor; proxy ayarını yok sayabilir. Uygulama bazlı yönlendirme her uygulamayla çalışır."
+
+#: ui/editor.slint:378
 msgid "Hide advanced settings"
 msgstr "Gelişmiş ayarları gizle"
 
-#: ui/editor.slint:341
+#: ui/editor.slint:378
 msgid "Advanced settings"
 msgstr "Gelişmiş ayarlar"
 
-#: ui/editor.slint:351
+#: ui/editor.slint:388
 msgid "Local proxy port"
 msgstr "Yerel proxy portu"
 
-#: ui/editor.slint:360
+#: ui/editor.slint:397
 msgid "Check every"
 msgstr "Kontrol sıklığı"
 
-#: ui/editor.slint:362
+#: ui/editor.slint:399
 msgid "Off"
 msgstr "Kapalı"
 
-#: ui/editor.slint:362
+#: ui/editor.slint:399
 msgid "1 minute"
 msgstr "1 dakika"
 
-#: ui/editor.slint:362
+#: ui/editor.slint:399
 msgid "3 minutes"
 msgstr "3 dakika"
 
-#: ui/editor.slint:362
+#: ui/editor.slint:399
 msgid "5 minutes"
 msgstr "5 dakika"
 
-#: ui/editor.slint:362
+#: ui/editor.slint:399
 msgid "10 minutes"
 msgstr "10 dakika"
 
-#: ui/editor.slint:368
+#: ui/editor.slint:405
 msgid "When it gets slow"
 msgstr "Yavaşlayınca"
 
-#: ui/editor.slint:370
+#: ui/editor.slint:407
 msgid "Restart the engine automatically"
 msgstr "Motoru otomatik yeniden başlat"
 
-#: ui/editor.slint:370
+#: ui/editor.slint:407
 msgid "Only warn me"
 msgstr "Sadece uyar"
 
-#: ui/editor.slint:376
+#: ui/editor.slint:413
 msgid "Sites to check"
 msgstr "Kontrol edilecek siteler"
 
-#: ui/editor.slint:379
+#: ui/editor.slint:416
 msgid "Empty = the sites above"
 msgstr "Boş = yukarıdaki siteler"
 
-#: ui/editor.slint:379
+#: ui/editor.slint:416
 msgid "e.g. discord.com, gateway.discord.gg"
 msgstr "örn. discord.com, gateway.discord.gg"
 
-#: ui/editor.slint:385
+#: ui/editor.slint:422
 msgid "Preventive restart every (hours)"
 msgstr "Önleyici yeniden başlatma (saatte bir)"
 
-#: ui/editor.slint:386
+#: ui/editor.slint:423
 msgid "0 = never. Takes well under a second."
 msgstr "0 = hiç. Bir saniyeden çok daha kısa sürer."
 
-#: ui/editor.slint:397
+#: ui/editor.slint:434
 msgid "TCP only"
 msgstr "Sadece TCP"
 
-#: ui/editor.slint:399
+#: ui/editor.slint:436
 msgid "Voice/UDP goes direct. Fewer connections through the engine."
 msgstr "Ses/UDP doğrudan gider. Motordan daha az bağlantı geçer."
 
-#: ui/editor.slint:412
+#: ui/editor.slint:449
 msgid "Strategy arguments"
 msgstr "Strateji argümanları"
 
-#: ui/editor.slint:420
+#: ui/editor.slint:457
 msgid "Tip: the Strategy Lab finds working arguments for your connection."
 msgstr "İpucu: Strateji Laboratuvarı bağlantında çalışan argümanları bulur."
 
-#: ui/editor.slint:436
+#: ui/editor.slint:473
 msgid "Save"
 msgstr "Kaydet"
 
-#: ui/editor.slint:441
+#: ui/editor.slint:478
 msgid "Cancel"
 msgstr "İptal"
 
-#: ui/editor.slint:445
+#: ui/editor.slint:482
 msgid "Delete"
 msgstr "Sil"
 
@@ -696,6 +720,22 @@ msgstr "Tekrar dene"
 msgid "Finish"
 msgstr "Bitir"
 
+#: src/appproxy.rs:201
+msgid "DPIMech only opens apps from Program Files or your own user folder."
+msgstr "DPIMech uygulamaları yalnızca Program Files'tan veya kendi kullanıcı klasöründen açar."
+
+#: src/appproxy.rs:206
+msgid "the app is no longer there; choose it again in the profile"
+msgstr "uygulama artık orada değil; profilde yeniden seç"
+
+#: src/appproxy.rs:236
+msgid "DPIMech only opens apps that belong to the system or to you and that other users cannot change."
+msgstr "DPIMech yalnızca sisteme ya da sana ait olan ve diğer kullanıcıların değiştiremediği uygulamaları açar."
+
+#: src/appproxy.rs:262
+msgid "the menu entry has no command"
+msgstr "menü girdisinde komut yok"
+
 #: src/bridge.rs:72
 msgid "Start it with: dpimech-service run"
 msgstr "Şununla başlat: dpimech-service run"
@@ -704,47 +744,47 @@ msgstr "Şununla başlat: dpimech-service run"
 msgid "Version {} · data in {}"
 msgstr "Sürüm {} · veriler: {}"
 
-#: src/bridge.rs:175
+#: src/bridge.rs:179
 msgid "Could not update: {}"
 msgstr "Güncellenemedi: {}"
 
-#: src/bridge.rs:190
+#: src/bridge.rs:194
 msgid "You have the latest version ({})."
 msgstr "En son sürümü kullanıyorsun ({})."
 
-#: src/bridge.rs:193
+#: src/bridge.rs:197
 msgid "Could not check for updates: {}"
 msgstr "Güncellemeler kontrol edilemedi: {}"
 
-#: src/bridge.rs:255
+#: src/bridge.rs:259
 msgid "Could not load strategies: {}"
 msgstr "Stratejiler yüklenemedi: {}"
 
-#: src/bridge.rs:267
+#: src/bridge.rs:271
 msgid "ISP lookup failed: {}"
 msgstr "İnternet sağlayıcısı bulunamadı: {}"
 
-#: src/bridge.rs:372
+#: src/bridge.rs:376
 msgid "DPIMech {} is downloaded. Restart DPIMech to update."
 msgstr "DPIMech {} indirildi. Güncellemek için DPIMech'i yeniden başlat."
 
-#: src/bridge.rs:386
+#: src/bridge.rs:390
 msgid "Version {} is available."
 msgstr "{} sürümü çıktı."
 
-#: src/bridge.rs:401
+#: src/bridge.rs:405
 msgid "Downloading DPIMech {}…"
 msgstr "DPIMech {} indiriliyor…"
 
-#: src/bridge.rs:433
+#: src/bridge.rs:437
 msgid "Saved the log to {}"
 msgstr "Kayıtlar şuraya kaydedildi: {}"
 
-#: src/bridge.rs:473
+#: src/bridge.rs:477
 msgid "Looking up…"
 msgstr "Aranıyor…"
 
-#: src/bridge.rs:475
+#: src/bridge.rs:479
 msgid "This needs the background service."
 msgstr "Bunun için arka plan servisi gerekli."
 
@@ -752,91 +792,99 @@ msgstr "Bunun için arka plan servisi gerekli."
 msgid "DPIMech needs the libxkbcommon-x11 library to open its window. Install it with your package manager (Arch: sudo pacman -S libxkbcommon-x11) and start DPIMech again."
 msgstr "DPIMech'in penceresini açabilmesi için libxkbcommon-x11 kütüphanesi gerekiyor. Paket yöneticinle kur (Arch: sudo pacman -S libxkbcommon-x11) ve DPIMech'i yeniden başlat."
 
-#: src/convert.rs:141
+#: src/convert.rs:143
 msgid "Give the profile a name."
 msgstr "Profile bir ad ver."
 
-#: src/convert.rs:146
+#: src/convert.rs:148
 msgid "Choose an engine."
 msgstr "Bir motor seç."
 
-#: src/convert.rs:150
+#: src/convert.rs:152
 msgid "Choose a routing mode."
 msgstr "Bir yönlendirme modu seç."
 
-#: src/convert.rs:154
+#: src/convert.rs:156
 msgid "Port must be between 1024 and 65535."
 msgstr "Port 1024 ile 65535 arasında olmalı."
 
-#: src/convert.rs:162
+#: src/convert.rs:163
+msgid "Choose the app DPIMech should open."
+msgstr "DPIMech'in açacağı uygulamayı seç."
+
+#: src/convert.rs:166
+msgid "Choose the app from the list or with Browse…"
+msgstr "Uygulamayı listeden veya Gözat… ile seç"
+
+#: src/convert.rs:172
 msgid "Add at least one application for per-app routing."
 msgstr "Uygulama bazlı yönlendirme için en az bir uygulama ekle."
 
-#: src/convert.rs:203
+#: src/convert.rs:213
 msgid "{} · port {}"
 msgstr "{} · port {}"
 
-#: src/convert.rs:212
+#: src/convert.rs:225
 msgid "All matching traffic"
 msgstr "Eşleşen tüm trafik"
 
-#: src/convert.rs:213
+#: src/convert.rs:226
 msgid "{} site(s): {}"
 msgstr "{} site: {}"
 
-#: src/convert.rs:226
+#: src/convert.rs:239
 msgid "Stopped"
 msgstr "Durdu"
 
-#: src/convert.rs:227
+#: src/convert.rs:240
 msgid "Starting…"
 msgstr "Başlıyor…"
 
-#: src/convert.rs:235
+#: src/convert.rs:248
 msgid "1 auto-restart"
 msgstr "1 otomatik yeniden başlatma"
 
-#: src/convert.rs:236
+#: src/convert.rs:249
 msgid "{} auto-restarts"
 msgstr "{} otomatik yeniden başlatma"
 
-#: src/convert.rs:245
+#: src/convert.rs:258
 msgid "Sites not answering ({}/{})"
 msgstr "Siteler cevap vermiyor ({}/{})"
 
-#: src/convert.rs:247
+#: src/convert.rs:260
 msgid "Slow: avg. {} ms (usually {} ms)"
 msgstr "Yavaş: ort. {} ms (normalde {} ms)"
 
-#: src/convert.rs:249
+#: src/convert.rs:262
 msgid "Only {}/{} sites answer"
 msgstr "Sadece {}/{} site cevap veriyor"
 
-#: src/convert.rs:256
+#: src/convert.rs:269
 msgid "Running · {}"
 msgstr "Çalışıyor · {}"
 
-#: src/convert.rs:257
+#: src/convert.rs:270
 msgid "avg. {} ms"
 msgstr "ort. {} ms"
 
-#: src/convert.rs:365
+#: src/convert.rs:378
 msgid "just now"
 msgstr "az önce"
 
-#: src/convert.rs:366
+#: src/convert.rs:379
 msgid "{} min"
 msgstr "{} dk"
 
-#: src/convert.rs:367
+#: src/convert.rs:380
 msgid "{} h {} min"
 msgstr "{} sa {} dk"
 
-#: src/convert.rs:379
+#: src/convert.rs:392
 msgid "Last check: {}/{} sites answered"
 msgstr "Son kontrol: {}/{} site cevap verdi"
 
-#: src/convert.rs:385
+#: src/convert.rs:398
 msgid "(usually {} ms)"
 msgstr "(normalde {} ms)"
 
@@ -863,6 +911,10 @@ msgstr "Tüm sistem"
 #: src/i18n.rs (EXTRA_TEXTS)
 msgid "Local proxy"
 msgstr "Yerel proxy"
+
+#: src/i18n.rs (EXTRA_TEXTS)
+msgid "Open with proxy"
+msgstr "Proxy ayarıyla aç"
 
 #: src/labui.rs:52
 msgid "ISP not detected"
@@ -932,71 +984,67 @@ msgstr "Aşma yok"
 msgid "Connecting to the DPIMech service…"
 msgstr "DPIMech hizmetine bağlanılıyor…"
 
-#: src/launcher.rs:68
+#: src/launcher.rs:69
 msgid "Opening {}…"
 msgstr "{} açılıyor…"
 
-#: src/launcher.rs:71
+#: src/launcher.rs:72
 msgid "Could not open {}: {}"
 msgstr "{} açılamadı: {}"
 
-#: src/launcher.rs:77
+#: src/launcher.rs:84
 msgid "{} is on"
 msgstr "{} açık"
 
-#: src/launcher.rs:85
+#: src/launcher.rs:92
 msgid "Could not start"
 msgstr "Başlatılamadı"
 
-#: src/launcher.rs:103
+#: src/launcher.rs:110
 msgid "The DPIMech service is not running. Open DPIMech to set it up."
 msgstr "DPIMech hizmeti çalışmıyor. Kurmak için DPIMech'i aç."
 
-#: src/launcher.rs:109
+#: src/launcher.rs:116
 msgid "The profile of this shortcut no longer exists."
 msgstr "Bu kısayolun profili artık yok."
 
-#: src/launcher.rs:111
+#: src/launcher.rs:119
 msgid "Starting {}"
 msgstr "{} başlatılıyor"
 
-#: src/launcher.rs:116
+#: src/launcher.rs:124
 msgid "Turning the profile on…"
 msgstr "Profil açılıyor…"
 
-#: src/launcher.rs:132
+#: src/launcher.rs:140
 msgid "The profile stopped right after starting. The Logs page in DPIMech shows why."
 msgstr "Profil başlar başlamaz durdu. Nedenini DPIMech'teki Kayıtlar sayfası gösterir."
 
-#: src/launcher.rs:137
+#: src/launcher.rs:145
 msgid "The profile is taking too long to start. The Logs page in DPIMech shows why."
 msgstr "Profilin başlaması çok uzun sürüyor. Nedenini DPIMech'teki Kayıtlar sayfası gösterir."
 
-#: src/launcher.rs:253
-msgid "the menu entry has no command"
-msgstr "menü girdisinde komut yok"
-
-#: src/main.rs:406
+#: src/main.rs:433
 msgid "Folder for DPIMech log files"
 msgstr "DPIMech kayıt dosyaları için klasör"
 
-#: src/main.rs:602
+#: src/main.rs:629
 msgid "The service is installed. Connecting…"
 msgstr "Servis kuruldu. Bağlanılıyor…"
 
-#: src/main.rs:603
+#: src/main.rs:630
 msgid "Installing the service failed: {}"
 msgstr "Servis kurulamadı: {}"
 
-#: src/main.rs:611
+#: src/main.rs:638
 msgid "Installing… confirm the prompt. DPIMech connects by itself when the service is ready."
 msgstr "Kuruluyor… izin penceresini onayla. Servis hazır olunca DPIMech kendiliğinden bağlanır."
 
-#: src/main.rs:612
+#: src/main.rs:639
 msgid "Could not start the installer: {}"
 msgstr "Kurulum başlatılamadı: {}"
 
-#: src/main.rs:683
+#: src/main.rs:710
 msgid "Downloading online lists…"
 msgstr "Çevrimiçi listeler indiriliyor…"
 
@@ -1036,23 +1084,27 @@ msgstr "{} yeniden başlatıldı"
 msgid "DPIMech restarted the engine to fix the connection."
 msgstr "DPIMech bağlantıyı düzeltmek için motoru yeniden başlattı."
 
-#: src/notify.rs:168
+#: src/notify.rs:163
+msgid "Could not open {}"
+msgstr "{} açılamadı"
+
+#: src/notify.rs:173
 msgid "DPIMech update available"
 msgstr "DPIMech güncellemesi var"
 
-#: src/notify.rs:169
+#: src/notify.rs:174
 msgid "Version {} is out. Settings → About shows how to get it."
 msgstr "{} sürümü çıktı. Nasıl alacağını Ayarlar → Hakkında gösterir."
 
-#: src/notify.rs:184
+#: src/notify.rs:189
 msgid "DPIMech {} is ready"
 msgstr "DPIMech {} hazır"
 
-#: src/notify.rs:185
+#: src/notify.rs:190
 msgid "Restart DPIMech to update: use the button at the top of the window."
 msgstr "Güncellemek için DPIMech'i yeniden başlat: pencerenin üstündeki düğmeyi kullan."
 
-#: src/picker.rs:92
+#: src/picker.rs:101
 msgid "Choose an application"
 msgstr "Bir uygulama seç"
 
@@ -1076,15 +1128,15 @@ msgstr "Bu kopya bir AppImage değil."
 msgid "Installing the update…"
 msgstr "Güncelleme kuruluyor…"
 
-#: src/shortcut.rs:131
+#: src/shortcut.rs:137
 msgid "Choose where to put the shortcut."
 msgstr "Kısayolun nereye konacağını seç."
 
-#: src/shortcut.rs:135
+#: src/shortcut.rs:141
 msgid "Give the shortcut a name."
 msgstr "Kısayola bir ad ver."
 
-#: src/shortcut.rs:714
+#: src/shortcut.rs:720
 msgid "Starts the DPIMech profile \"{}\""
 msgstr "DPIMech profili \"{}\" başlatır"
 

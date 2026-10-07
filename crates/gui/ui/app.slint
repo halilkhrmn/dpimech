@@ -37,6 +37,8 @@ export component AppWindow inherits Window {
     in property <[string]> engine-names;
     in property <[string]> routing-names;
     in property <int> per-app-index: -1;
+    in property <int> app-proxy-index: -1;
+    in property <bool> app-proxy-doubtful;
     in property <int> system-wide-index: -1;
     in-out property <ProfileDraft> draft;
     in property <[AppItem]> draft-apps;
@@ -342,6 +344,8 @@ export component AppWindow inherits Window {
                 engine-names: engine-names;
                 routing-names: routing-names;
                 per-app-index: per-app-index;
+                app-proxy-index: app-proxy-index;
+                app-proxy-doubtful: app-proxy-doubtful;
                 system-wide-index: system-wide-index;
                 is-windows: os-name == "Windows";
                 easy-mode: easy-mode;

@@ -43,7 +43,7 @@ fn is_routed(profile: &Profile) -> bool {
     match profile.routing.mode() {
         RoutingMode::PerApp => true,
         RoutingMode::SystemWide => profile.engine.is_proxy(),
-        RoutingMode::LocalProxy => false,
+        RoutingMode::LocalProxy | RoutingMode::AppProxy => false,
     }
 }
 
@@ -980,6 +980,12 @@ fn validate(profile: &Profile, data: &DataDir) -> anyhow::Result<()> {
         if apps.is_empty() {
             bail!("select at least one application");
         }
+    }
+    // The service never runs this app (each user's GUI opens it), but it is stored and shown.
+    if let Routing::AppProxy { app, .. } = &profile.routing
+        && (app.trim().is_empty() || app.len() > 1024 || app.chars().any(char::is_control))
+    {
+        bail!("choose the application to open");
     }
     Ok(())
 }

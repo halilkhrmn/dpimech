@@ -42,6 +42,7 @@ pub const EXTRA_TEXTS: &[&str] = &[
     "Per-app",
     "System-wide",
     "Local proxy",
+    "Open with proxy",
 ];
 
 static CURRENT: RwLock<Option<HashMap<String, String>>> = RwLock::new(None);
