@@ -60,7 +60,9 @@ export component DashboardPage inherits VerticalLayout {
 
 export component LogsPage inherits VerticalLayout {
     in property <[LogItem]> logs;
+    in property <bool> detailed-log;
     callback clear;
+    callback set-detailed-log(bool);
 
     padding: Theme.page-padding;
     spacing: 16px;
@@ -69,6 +71,25 @@ export component LogsPage inherits VerticalLayout {
         title: @tr("Logs");
         subtitle: @tr("Newest first. Engine output and service events.");
         Button { text: @tr("Clear"); clicked => { root.clear(); } }
+    }
+
+    HorizontalLayout {
+        spacing: 16px;
+        VerticalLayout {
+            horizontal-stretch: 1;
+            Text { text: @tr("Detailed log"); }
+            Text {
+                text: @tr("Also logs every connection (site, address, how it ended) and each tested strategy. Turn it on to find out why something does not open; it makes the log much longer.");
+                font-size: 12px;
+                color: Theme.muted;
+                wrap: word-wrap;
+            }
+        }
+        Switch {
+            accessible-label: @tr("Detailed log");
+            checked: detailed-log;
+            toggled => { root.set-detailed-log(self.checked); }
+        }
     }
 
     Rectangle {
@@ -108,31 +129,19 @@ export component LogsPage inherits VerticalLayout {
     }
 }
 
-export component PlaceholderPage inherits VerticalLayout {
-    in property <string> title;
-    in property <image> icon;
-    in property <string> message;
-    padding: Theme.page-padding;
-    PageHeader { title: root.title; }
-    EmptyState { icon: root.icon; title: @tr("Coming soon"); subtitle: root.message; }
-}
-
 export component SettingsPage inherits VerticalLayout {
     in property <bool> service-connected;
     in property <string> service-info;
     in property <string> os-name;
     in property <bool> start-with-windows;
-    in property <bool> start-minimized;
     in property <bool> easy-mode;
-    callback set-autostart(bool, bool); // enabled, minimized
+    callback set-autostart(bool);
     in property <[string]> language-names;
     in property <int> language-index;
     callback set-language(int);
     in property <bool> log-to-file;
-    in property <bool> detailed-log;
     in property <string> log-dir;
     callback set-log-to-file(bool);
-    callback set-detailed-log(bool);
     in property <int> shortcut-count;
     in property <string> shortcuts-removed;
     callback remove-all-shortcuts;
@@ -216,7 +225,7 @@ export component SettingsPage inherits VerticalLayout {
                             horizontal-stretch: 1;
                             Text { text: @tr("Start DPIMech when I sign in"); }
                             Text {
-                                text: @tr("The background service always starts with the computer; this brings back the tray icon.");
+                                text: @tr("Starts in the tray. The background service always starts with the computer; this brings back the tray icon.");
                                 font-size: 12px;
                                 color: Theme.muted;
                                 wrap: word-wrap;
@@ -225,16 +234,7 @@ export component SettingsPage inherits VerticalLayout {
                         Switch {
                             accessible-label: @tr("Start DPIMech when I sign in");
                             checked: start-with-windows;
-                            toggled => { root.set-autostart(self.checked, start-minimized); }
-                        }
-                    }
-                    Row {
-                        Text { text: @tr("Start minimized to the tray"); vertical-alignment: center; }
-                        Switch {
-                            accessible-label: @tr("Start minimized to the tray");
-                            enabled: start-with-windows;
-                            checked: start-minimized;
-                            toggled => { root.set-autostart(start-with-windows, self.checked); }
+                            toggled => { root.set-autostart(self.checked); }
                         }
                     }
                 }
@@ -263,23 +263,6 @@ export component SettingsPage inherits VerticalLayout {
                         }
                     }
                     Row {
-                        VerticalLayout {
-                            horizontal-stretch: 1;
-                            Text { text: @tr("Detailed log"); }
-                            Text {
-                                text: @tr("Also logs every connection (site, address, how it ended) and each tested strategy. Turn it on to find out why something does not open; it makes the log much longer.");
-                                font-size: 12px;
-                                color: Theme.muted;
-                                wrap: word-wrap;
-                            }
-                        }
-                        Switch {
-                            accessible-label: @tr("Detailed log");
-                            checked: detailed-log;
-                            toggled => { root.set-detailed-log(self.checked); }
-                        }
-                    }
-                    Row {
                         Text {
                             text: log-dir;
                             color: Theme.muted;
@@ -297,7 +280,8 @@ export component SettingsPage inherits VerticalLayout {
                 }
             }
 
-            GroupBox {
+            // Only shown once there is something to manage.
+            if shortcut-count > 0 || shortcuts-removed != "": GroupBox {
                 title: @tr("Shortcuts");
                 HorizontalLayout {
                     spacing: 16px;

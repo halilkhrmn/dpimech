@@ -177,7 +177,9 @@ export component ProfileEditorPage inherits VerticalLayout {
     callback delete(string);
     callback shortcut(string);
 
+    in property <bool> easy-mode;
     property <bool> per-app: draft.routing-index == per-app-index;
+    property <bool> show-advanced: false;
 
     padding: Theme.page-padding;
     spacing: 20px;
@@ -208,7 +210,7 @@ export component ProfileEditorPage inherits VerticalLayout {
                         edited(t) => { draft.name = t; }
                     }
                 }
-                Row {
+                if !easy-mode: Row {
                     Text { text: @tr("Engine"); vertical-alignment: center; }
                     ComboBox {
                         model: engine-names;
@@ -220,21 +222,12 @@ export component ProfileEditorPage inherits VerticalLayout {
                         }
                     }
                 }
-                Row {
+                if !easy-mode: Row {
                     Text { text: @tr("Routing"); vertical-alignment: center; }
                     ComboBox {
                         model: routing-names;
                         current-index: draft.routing-index;
                         selected => { draft.routing-index = self.current-index; }
-                    }
-                }
-                if draft.routing-index != system-wide-index: Row {
-                    Text { text: @tr("Local proxy port"); vertical-alignment: center; }
-                    SpinBox {
-                        minimum: 1024;
-                        maximum: 65535;
-                        value: draft.port;
-                        edited(v) => { draft.port = v; }
                     }
                 }
                 Row {
@@ -244,6 +237,30 @@ export component ProfileEditorPage inherits VerticalLayout {
                         toggled => { draft.autostart = self.checked; }
                     }
                 }
+                Row {
+                    VerticalLayout {
+                        Text { text: @tr("Keep it working"); vertical-alignment: center; }
+                        Text {
+                            text: @tr("Checks the connection every few minutes and restarts the engine if it gets stuck, slow or crashes. Other profiles are not touched.");
+                            font-size: 12px;
+                            color: Theme.muted;
+                            wrap: word-wrap;
+                        }
+                    }
+                    Switch {
+                        checked: draft.auto-restart && draft.check-index != 0;
+                        toggled => {
+                            draft.auto-restart = self.checked;
+                            // Index 3 = 5 minutes, the service's default.
+                            draft.check-index = !self.checked ? 0 : draft.check-index != 0 ? draft.check-index : 3;
+                        }
+                    }
+                }
+            }
+            if draft.health != "": Text {
+                text: draft.health;
+                font-size: 12px;
+                wrap: word-wrap;
             }
 
             if draft.routing-index == system-wide-index: VerticalLayout {
@@ -317,106 +334,93 @@ export component ProfileEditorPage inherits VerticalLayout {
                 }
             }
 
-            Text { text: @tr("Connection check"); font-weight: 600; }
-            Text {
-                text: @tr("DPIMech opens these sites through the engine every few minutes. If they get much slower than usual or stop answering, it can restart the engine for you.");
-                font-size: 12px;
-                color: Theme.muted;
-                wrap: word-wrap;
-            }
-            if draft.health != "": Text {
-                text: draft.health;
-                font-size: 12px;
-                wrap: word-wrap;
-            }
-            GridLayout {
-                spacing-horizontal: 16px;
-                spacing-vertical: 12px;
-                Row {
-                    Text { text: @tr("Check every"); vertical-alignment: center; }
-                    ComboBox {
-                        model: [@tr("Off"), @tr("1 minute"), @tr("3 minutes"), @tr("5 minutes"), @tr("10 minutes")];
-                        current-index: draft.check-index;
-                        selected => { draft.check-index = self.current-index; }
-                    }
-                }
-                Row {
-                    Text { text: @tr("When it gets slow"); vertical-alignment: center; }
-                    ComboBox {
-                        model: [@tr("Restart the engine automatically"), @tr("Only warn me")];
-                        current-index: draft.slow-warn-only ? 1 : 0;
-                        selected => { draft.slow-warn-only = self.current-index == 1; }
-                    }
-                }
-                Row {
-                    Text { text: @tr("Sites to check"); vertical-alignment: center; }
-                    LineEdit {
-                        text: draft.check-sites;
-                        placeholder-text: draft.routing-index == system-wide-index ? @tr("Empty = the sites above") : @tr("e.g. discord.com, gateway.discord.gg");
-                        edited(t) => { draft.check-sites = t; }
-                    }
+            // Everything below has working defaults; most people never need it.
+            if !easy-mode: HorizontalLayout {
+                alignment: start;
+                Button {
+                    text: show-advanced ? @tr("Hide advanced settings") : @tr("Advanced settings");
+                    clicked => { show-advanced = !show-advanced; }
                 }
             }
-
-            Text { text: @tr("Reliability"); font-weight: 600; }
-            GridLayout {
-                spacing-horizontal: 16px;
-                spacing-vertical: 12px;
-                Row {
-                    VerticalLayout {
-                        Text { text: @tr("Auto-restart when stuck or crashed"); vertical-alignment: center; }
-                        Text {
-                            text: @tr("Fixes the “ping jumps to thousands after a few hours” problem without touching other profiles.");
-                            font-size: 12px;
-                            color: Theme.muted;
-                            wrap: word-wrap;
+            if show-advanced && !easy-mode: VerticalLayout {
+                spacing: 16px;
+                GridLayout {
+                    spacing-horizontal: 16px;
+                    spacing-vertical: 12px;
+                    if draft.routing-index != system-wide-index: Row {
+                        Text { text: @tr("Local proxy port"); vertical-alignment: center; }
+                        SpinBox {
+                            minimum: 1024;
+                            maximum: 65535;
+                            value: draft.port;
+                            edited(v) => { draft.port = v; }
                         }
                     }
-                    Switch {
-                        checked: draft.auto-restart;
-                        toggled => { draft.auto-restart = self.checked; }
-                    }
-                }
-                Row {
-                    VerticalLayout {
-                        Text { text: @tr("Preventive restart every (hours)"); vertical-alignment: center; }
-                        Text { text: @tr("0 = never. Takes well under a second."); font-size: 12px; color: Theme.muted; }
-                    }
-                    SpinBox {
-                        minimum: 0;
-                        maximum: 168;
-                        value: draft.restart-hours;
-                        edited(v) => { draft.restart-hours = v; }
-                    }
-                }
-                if per-app: Row {
-                    VerticalLayout {
-                        Text { text: @tr("TCP only"); vertical-alignment: center; }
-                        Text {
-                            text: @tr("Voice/UDP goes direct. Fewer connections through the engine.");
-                            font-size: 12px;
-                            color: Theme.muted;
-                            wrap: word-wrap;
+                    Row {
+                        Text { text: @tr("Check every"); vertical-alignment: center; }
+                        ComboBox {
+                            model: [@tr("Off"), @tr("1 minute"), @tr("3 minutes"), @tr("5 minutes"), @tr("10 minutes")];
+                            current-index: draft.check-index;
+                            selected => { draft.check-index = self.current-index; }
                         }
                     }
-                    Switch {
-                        checked: draft.tcp-only;
-                        toggled => { draft.tcp-only = self.checked; }
+                    Row {
+                        Text { text: @tr("When it gets slow"); vertical-alignment: center; }
+                        ComboBox {
+                            model: [@tr("Restart the engine automatically"), @tr("Only warn me")];
+                            current-index: draft.slow-warn-only ? 1 : 0;
+                            selected => { draft.slow-warn-only = self.current-index == 1; }
+                        }
+                    }
+                    Row {
+                        Text { text: @tr("Sites to check"); vertical-alignment: center; }
+                        LineEdit {
+                            text: draft.check-sites;
+                            placeholder-text: draft.routing-index == system-wide-index ? @tr("Empty = the sites above") : @tr("e.g. discord.com, gateway.discord.gg");
+                            edited(t) => { draft.check-sites = t; }
+                        }
+                    }
+                    Row {
+                        VerticalLayout {
+                            Text { text: @tr("Preventive restart every (hours)"); vertical-alignment: center; }
+                            Text { text: @tr("0 = never. Takes well under a second."); font-size: 12px; color: Theme.muted; }
+                        }
+                        SpinBox {
+                            minimum: 0;
+                            maximum: 168;
+                            value: draft.restart-hours;
+                            edited(v) => { draft.restart-hours = v; }
+                        }
+                    }
+                    if per-app: Row {
+                        VerticalLayout {
+                            Text { text: @tr("TCP only"); vertical-alignment: center; }
+                            Text {
+                                text: @tr("Voice/UDP goes direct. Fewer connections through the engine.");
+                                font-size: 12px;
+                                color: Theme.muted;
+                                wrap: word-wrap;
+                            }
+                        }
+                        Switch {
+                            checked: draft.tcp-only;
+                            toggled => { draft.tcp-only = self.checked; }
+                        }
                     }
                 }
-            }
 
-            Text { text: @tr("Strategy arguments"); font-weight: 600; }
-            TextEdit {
-                text: draft.args;
-                height: 80px;
-                font-size: 13px;
-                edited(t) => { draft.args = t; }
-            }
-            Text {
-                text: @tr("Tip: the Strategy Lab finds working arguments for your connection.");
-                color: Theme.muted;
-                font-size: 12px;
+                Text { text: @tr("Strategy arguments"); font-weight: 600; }
+                TextEdit {
+                    text: draft.args;
+                    height: 80px;
+                    font-size: 13px;
+                    edited(t) => { draft.args = t; }
+                }
+                Text {
+                    text: @tr("Tip: the Strategy Lab finds working arguments for your connection.");
+                    color: Theme.muted;
+                    font-size: 12px;
+                }
             }
 
             if error != "": HorizontalLayout {

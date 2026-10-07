@@ -4,39 +4,39 @@ msgstr ""
 "Language: ar\n"
 "Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5);\n"
 
-#: ui/app.slint:211
+#: ui/app.slint:210
 msgid "Profiles"
 msgstr "الملفات الشخصية"
 
-#: ui/app.slint:216
+#: ui/app.slint:215
 msgid "Strategy Lab"
 msgstr "مختبر الإستراتيجيات"
 
-#: ui/app.slint:221
+#: ui/app.slint:220
 msgid "Engines"
 msgstr "المحركات"
 
-#: ui/app.slint:227
+#: ui/app.slint:226
 msgid "Logs"
 msgstr "السجلات"
 
-#: ui/app.slint:233
+#: ui/app.slint:232
 msgid "Settings"
 msgstr "الإعدادات"
 
-#: ui/app.slint:276
+#: ui/app.slint:275
 msgid "Another DPI tool is running: {}. Two tools on the same traffic break connections — close it, or turn DPIMech's profiles off."
 msgstr "أداة أخرى لتجاوز DPI قيد التشغيل: {}. أداتان على نفس حركة المرور تُفسدان الاتصالات — أغلقها أو أوقف ملفات DPIMech الشخصية."
 
-#: ui/app.slint:294
+#: ui/app.slint:293
 msgid "DPIMech {} is ready to install."
 msgstr "DPIMech {} جاهز للتثبيت."
 
-#: ui/app.slint:298
+#: ui/app.slint:297
 msgid "Restart and update"
 msgstr "إعادة التشغيل والتحديث"
 
-#: ui/app.slint:310
+#: ui/app.slint:309
 msgid "Background service is not running. Engines can't be started until it is."
 msgstr "خدمة الخلفية لا تعمل. لا يمكن تشغيل المحركات حتى تعمل."
 
@@ -88,167 +88,163 @@ msgstr "إضافة"
 msgid "Browse…"
 msgstr "استعراض…"
 
-#: ui/editor.slint:186
+#: ui/editor.slint:188
 msgid "New profile"
 msgstr "ملف شخصي جديد"
 
-#: ui/editor.slint:186
+#: ui/editor.slint:188
 msgid "Edit profile"
 msgstr "تعديل الملف الشخصي"
 
-#: ui/editor.slint:188
+#: ui/editor.slint:190
 msgid "Back"
 msgstr "رجوع"
 
-#: ui/editor.slint:204
+#: ui/editor.slint:206
 msgid "Name"
 msgstr "الاسم"
 
-#: ui/editor.slint:207
+#: ui/editor.slint:209
 msgid "e.g. Discord"
 msgstr "مثلًا Discord"
 
-#: ui/editor.slint:212
+#: ui/editor.slint:214
 msgid "Engine"
 msgstr "المحرك"
 
-#: ui/editor.slint:224
+#: ui/editor.slint:226
 msgid "Routing"
 msgstr "التوجيه"
 
-#: ui/editor.slint:232
-msgid "Local proxy port"
-msgstr "منفذ الوكيل المحلي"
-
-#: ui/editor.slint:241
+#: ui/editor.slint:234
 msgid "Start with service"
 msgstr "التشغيل مع الخدمة"
 
-#: ui/editor.slint:251
+#: ui/editor.slint:242
+msgid "Keep it working"
+msgstr "إبقاؤه يعمل"
+
+#: ui/editor.slint:244
+msgid "Checks the connection every few minutes and restarts the engine if it gets stuck, slow or crashes. Other profiles are not touched."
+msgstr "يفحص الاتصال كل بضع دقائق ويعيد تشغيل المحرك إذا تعلّق أو أصبح بطيئًا أو توقف. لا تتأثر الملفات الشخصية الأخرى."
+
+#: ui/editor.slint:268
 msgid "Games with strict anti-cheat (for example Valorant or FACEIT) may refuse to start or disconnect you while a packet driver is active. Turn this off before playing, or unblock only the apps you need."
 msgstr "الألعاب ذات أنظمة مكافحة الغش الصارمة (مثل Valorant أو FACEIT) قد ترفض التشغيل أو تقطع اتصالك أثناء عمل برنامج تشغيل الحزم. أوقفه قبل اللعب، أو ألغِ الحجب عن التطبيقات التي تحتاجها فقط."
 
-#: ui/editor.slint:252
+#: ui/editor.slint:269
 msgid "Sites to unblock"
 msgstr "المواقع المراد فك حجبها"
 
-#: ui/editor.slint:254
+#: ui/editor.slint:271
 msgid "The engine only touches these domains. One per line; subdomains are included."
 msgstr "لا يتعامل المحرك إلا مع هذه النطاقات. نطاق في كل سطر؛ النطاقات الفرعية مشمولة."
 
-#: ui/editor.slint:293
+#: ui/editor.slint:310
 msgid "Applications"
 msgstr "التطبيقات"
 
-#: ui/editor.slint:294
+#: ui/editor.slint:311
 msgid "Add app"
 msgstr "إضافة تطبيق"
 
-#: ui/editor.slint:305
+#: ui/editor.slint:322
 msgid "Only the apps listed here will go through the engine."
 msgstr "فقط التطبيقات المدرجة هنا ستمر عبر المحرك."
 
-#: ui/editor.slint:320
-msgid "Connection check"
-msgstr "فحص الاتصال"
+#: ui/editor.slint:341
+msgid "Hide advanced settings"
+msgstr "إخفاء الإعدادات المتقدمة"
 
-#: ui/editor.slint:322
-msgid "DPIMech opens these sites through the engine every few minutes. If they get much slower than usual or stop answering, it can restart the engine for you."
-msgstr "يفتح DPIMech هذه المواقع عبر المحرك كل بضع دقائق. إذا أصبحت أبطأ بكثير من المعتاد أو توقفت عن الاستجابة، يمكنه إعادة تشغيل المحرك نيابةً عنك."
+#: ui/editor.slint:341
+msgid "Advanced settings"
+msgstr "الإعدادات المتقدمة"
 
-#: ui/editor.slint:336
+#: ui/editor.slint:351
+msgid "Local proxy port"
+msgstr "منفذ الوكيل المحلي"
+
+#: ui/editor.slint:360
 msgid "Check every"
 msgstr "الفحص كل"
 
-#: ui/editor.slint:338
+#: ui/editor.slint:362
 msgid "Off"
 msgstr "إيقاف"
 
-#: ui/editor.slint:338
+#: ui/editor.slint:362
 msgid "1 minute"
 msgstr "دقيقة واحدة"
 
-#: ui/editor.slint:338
+#: ui/editor.slint:362
 msgid "3 minutes"
 msgstr "3 دقائق"
 
-#: ui/editor.slint:338
+#: ui/editor.slint:362
 msgid "5 minutes"
 msgstr "5 دقائق"
 
-#: ui/editor.slint:338
+#: ui/editor.slint:362
 msgid "10 minutes"
 msgstr "10 دقائق"
 
-#: ui/editor.slint:344
+#: ui/editor.slint:368
 msgid "When it gets slow"
 msgstr "عندما يصبح بطيئًا"
 
-#: ui/editor.slint:346
+#: ui/editor.slint:370
 msgid "Restart the engine automatically"
 msgstr "أعد تشغيل المحرك تلقائيًا"
 
-#: ui/editor.slint:346
+#: ui/editor.slint:370
 msgid "Only warn me"
 msgstr "نبّهني فقط"
 
-#: ui/editor.slint:352
+#: ui/editor.slint:376
 msgid "Sites to check"
 msgstr "المواقع المراد فحصها"
 
-#: ui/editor.slint:355
+#: ui/editor.slint:379
 msgid "Empty = the sites above"
 msgstr "فارغ = المواقع أعلاه"
 
-#: ui/editor.slint:355
+#: ui/editor.slint:379
 msgid "e.g. discord.com, gateway.discord.gg"
 msgstr "مثلًا discord.com, gateway.discord.gg"
 
-#: ui/editor.slint:361
-msgid "Reliability"
-msgstr "الموثوقية"
-
-#: ui/editor.slint:367
-msgid "Auto-restart when stuck or crashed"
-msgstr "إعادة التشغيل التلقائي عند التعليق أو التعطل"
-
-#: ui/editor.slint:369
-msgid "Fixes the “ping jumps to thousands after a few hours” problem without touching other profiles."
-msgstr "يحل مشكلة «قفز البينغ إلى الآلاف بعد بضع ساعات» دون المساس بالملفات الشخصية الأخرى."
-
-#: ui/editor.slint:382
+#: ui/editor.slint:385
 msgid "Preventive restart every (hours)"
 msgstr "إعادة تشغيل وقائية كل (ساعات)"
 
-#: ui/editor.slint:383
+#: ui/editor.slint:386
 msgid "0 = never. Takes well under a second."
 msgstr "0 = أبدًا. تستغرق أقل من ثانية بكثير."
 
-#: ui/editor.slint:394
+#: ui/editor.slint:397
 msgid "TCP only"
 msgstr "TCP فقط"
 
-#: ui/editor.slint:396
+#: ui/editor.slint:399
 msgid "Voice/UDP goes direct. Fewer connections through the engine."
 msgstr "الصوت/UDP يمر مباشرة. اتصالات أقل عبر المحرك."
 
-#: ui/editor.slint:409
+#: ui/editor.slint:412
 msgid "Strategy arguments"
 msgstr "معاملات الإستراتيجية"
 
-#: ui/editor.slint:417
+#: ui/editor.slint:420
 msgid "Tip: the Strategy Lab finds working arguments for your connection."
 msgstr "نصيحة: يجد مختبر الإستراتيجيات المعاملات التي تعمل على اتصالك."
 
-#: ui/editor.slint:432
+#: ui/editor.slint:436
 msgid "Save"
 msgstr "حفظ"
 
-#: ui/editor.slint:437
+#: ui/editor.slint:441
 msgid "Cancel"
 msgstr "إلغاء"
 
-#: ui/editor.slint:441
+#: ui/editor.slint:445
 msgid "Delete"
 msgstr "حذف"
 
@@ -376,57 +372,57 @@ msgstr "لا توجد ملفات شخصية بعد"
 msgid "Create a profile to pick an engine, a strategy and what to route through it."
 msgstr "أنشئ ملفًا شخصيًا لاختيار محرك وإستراتيجية وما يمر عبره."
 
-#: ui/pages.slint:70
+#: ui/pages.slint:72
 msgid "Newest first. Engine output and service events."
 msgstr "الأحدث أولًا. مخرجات المحركات وأحداث الخدمة."
 
-#: ui/pages.slint:71
+#: ui/pages.slint:73
 msgid "Clear"
 msgstr "مسح"
 
-#: ui/pages.slint:117
-msgid "Coming soon"
-msgstr "قريبًا"
+#: ui/pages.slint:80
+msgid "Detailed log"
+msgstr "سجل مفصّل"
 
-#: ui/pages.slint:173
+#: ui/pages.slint:82
+msgid "Also logs every connection (site, address, how it ended) and each tested strategy. Turn it on to find out why something does not open; it makes the log much longer."
+msgstr "يسجّل أيضًا كل اتصال (الموقع والعنوان وكيف انتهى) وكل إستراتيجية مُختبرة. فعّله لمعرفة سبب عدم فتح شيء ما؛ يجعل السجل أطول بكثير."
+
+#: ui/pages.slint:182
 msgid "Interface"
 msgstr "الواجهة"
 
-#: ui/pages.slint:180
+#: ui/pages.slint:189
 msgid "Easy mode"
 msgstr "الوضع السهل"
 
-#: ui/pages.slint:182
+#: ui/pages.slint:191
 msgid "Fewer menus; the setup wizard does the work. Turn off for engines, the Strategy Lab and logs."
 msgstr "قوائم أقل؛ معالج الإعداد يتولى العمل. أوقفه للوصول إلى المحركات ومختبر الإستراتيجيات والسجلات."
 
-#: ui/pages.slint:195
+#: ui/pages.slint:204
 msgid "Language"
 msgstr "اللغة"
 
-#: ui/pages.slint:203
+#: ui/pages.slint:212
 msgid "Run the setup wizard again"
 msgstr "تشغيل معالج الإعداد مجددًا"
 
-#: ui/pages.slint:204
+#: ui/pages.slint:213
 msgid "Open wizard"
 msgstr "فتح المعالج"
 
-#: ui/pages.slint:210
+#: ui/pages.slint:219
 msgid "Startup"
 msgstr "بدء التشغيل"
 
-#: ui/pages.slint:217
+#: ui/pages.slint:226
 msgid "Start DPIMech when I sign in"
 msgstr "شغّل DPIMech عند تسجيل دخولي"
 
-#: ui/pages.slint:219
-msgid "The background service always starts with the computer; this brings back the tray icon."
-msgstr "تبدأ خدمة الخلفية دائمًا مع الحاسوب؛ هذا الخيار يعيد أيقونة شريط المهام."
-
-#: ui/pages.slint:232
-msgid "Start minimized to the tray"
-msgstr "البدء مصغّرًا في شريط المهام"
+#: ui/pages.slint:228
+msgid "Starts in the tray. The background service always starts with the computer; this brings back the tray icon."
+msgstr "يبدأ في شريط النظام. تبدأ خدمة الخلفية دائمًا مع الكمبيوتر؛ هذا الخيار يعيد أيقونة شريط النظام."
 
 #: ui/pages.slint:244
 msgid "Log"
@@ -440,87 +436,79 @@ msgstr "حفظ السجل في ملفات يومية"
 msgid "One file per day while DPIMech is open; files older than 14 days are deleted. Even when this is off, the recent log is saved to this folder if a profile stops with an error."
 msgstr "ملف لكل يوم أثناء فتح DPIMech؛ تُحذف الملفات الأقدم من 14 يومًا. حتى عند إيقاف هذا الخيار، يُحفظ السجل الأخير في هذا المجلد إذا توقف ملف شخصي بسبب خطأ."
 
-#: ui/pages.slint:268
-msgid "Detailed log"
-msgstr "سجل مفصّل"
-
-#: ui/pages.slint:270
-msgid "Also logs every connection (site, address, how it ended) and each tested strategy. Turn it on to find out why something does not open; it makes the log much longer."
-msgstr "يسجّل أيضًا كل اتصال (الموقع والعنوان وكيف انتهى) وكل إستراتيجية مُختبرة. فعّله لمعرفة سبب عدم فتح شيء ما؛ يجعل السجل أطول بكثير."
-
-#: ui/pages.slint:293
+#: ui/pages.slint:276
 msgid "Change folder…"
 msgstr "تغيير المجلد…"
 
-#: ui/pages.slint:294
+#: ui/pages.slint:277
 msgid "Open folder"
 msgstr "فتح المجلد"
 
-#: ui/pages.slint:301
+#: ui/pages.slint:285
 msgid "Shortcuts"
 msgstr "الاختصارات"
 
-#: ui/pages.slint:308
+#: ui/pages.slint:292
 msgid "Profile shortcuts on the desktop and in the menu: {}"
 msgstr "اختصارات الملفات الشخصية على سطح المكتب وفي القائمة: {}"
 
-#: ui/pages.slint:312
+#: ui/pages.slint:296
 msgid "Create one by right-clicking a profile or with its menu button. Deleting a profile removes its shortcuts."
 msgstr "أنشئ اختصارًا بالنقر بزر الفأرة الأيمن على ملف شخصي أو بزر قائمته. حذف الملف الشخصي يزيل اختصاراته."
 
-#: ui/pages.slint:319
+#: ui/pages.slint:303
 msgid "Remove all shortcuts"
 msgstr "إزالة كل الاختصارات"
 
-#: ui/pages.slint:327
+#: ui/pages.slint:311
 msgid "Background service"
 msgstr "خدمة الخلفية"
 
-#: ui/pages.slint:330
+#: ui/pages.slint:314
 msgid "Connected"
 msgstr "متصل"
 
-#: ui/pages.slint:330
+#: ui/pages.slint:314
 msgid "Not running"
 msgstr "لا تعمل"
 
-#: ui/pages.slint:334
+#: ui/pages.slint:318
 msgid "Install the service"
 msgstr "تثبيت الخدمة"
 
-#: ui/pages.slint:340
+#: ui/pages.slint:324
 msgid "About"
 msgstr "حول"
 
-#: ui/pages.slint:345
+#: ui/pages.slint:329
 msgid "Opens sites and apps that your internet provider blocks by running well-known open-source DPI bypass tools on your computer. It is not a VPN: your traffic still goes straight to the sites, nothing is sent through another server."
 msgstr "يفتح المواقع والتطبيقات التي يحجبها مزود الإنترنت لديك بتشغيل أدوات معروفة ومفتوحة المصدر لتجاوز DPI على حاسوبك. إنه ليس VPN: تذهب حركة مرورك مباشرةً إلى المواقع، ولا يُرسل شيء عبر خادم آخر."
 
-#: ui/pages.slint:349
+#: ui/pages.slint:333
 msgid "Platform: {}"
 msgstr "المنصة: {}"
 
-#: ui/pages.slint:350
+#: ui/pages.slint:334
 msgid "Free software under the GNU GPL v3 or later."
 msgstr "برنامج حر بموجب GNU GPL الإصدار 3 أو أحدث."
 
-#: ui/pages.slint:354
+#: ui/pages.slint:338
 msgid "Source code"
 msgstr "الشيفرة المصدرية"
 
-#: ui/pages.slint:355
+#: ui/pages.slint:339
 msgid "Report a problem"
 msgstr "الإبلاغ عن مشكلة"
 
-#: ui/pages.slint:363
+#: ui/pages.slint:347
 msgid "Download"
 msgstr "تنزيل"
 
-#: ui/pages.slint:369
+#: ui/pages.slint:353
 msgid "Thanks"
 msgstr "شكر"
 
-#: ui/pages.slint:373
+#: ui/pages.slint:357
 msgid "DPIMech only manages these projects; the real work is theirs."
 msgstr "DPIMech يدير هذه المشاريع فقط؛ العمل الحقيقي من صنعها."
 
@@ -984,27 +972,27 @@ msgstr "يستغرق بدء الملف الشخصي وقتًا طويلًا. ت�
 msgid "the menu entry has no command"
 msgstr "عنصر القائمة بلا أمر"
 
-#: src/main.rs:397
+#: src/main.rs:400
 msgid "Folder for DPIMech log files"
 msgstr "مجلد ملفات سجل DPIMech"
 
-#: src/main.rs:593
+#: src/main.rs:596
 msgid "The service is installed. Connecting…"
 msgstr "تم تثبيت الخدمة. جارٍ الاتصال…"
 
-#: src/main.rs:594
+#: src/main.rs:597
 msgid "Installing the service failed: {}"
 msgstr "فشل تثبيت الخدمة: {}"
 
-#: src/main.rs:602
+#: src/main.rs:605
 msgid "Installing… confirm the prompt. DPIMech connects by itself when the service is ready."
 msgstr "جارٍ التثبيت… وافق على الطلب. سيتصل DPIMech تلقائيًا عندما تجهز الخدمة."
 
-#: src/main.rs:603
+#: src/main.rs:606
 msgid "Could not start the installer: {}"
 msgstr "تعذّر تشغيل المثبّت: {}"
 
-#: src/main.rs:674
+#: src/main.rs:677
 msgid "Downloading online lists…"
 msgstr "جارٍ تنزيل القوائم عبر الإنترنت…"
 

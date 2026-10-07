@@ -1,7 +1,7 @@
 import { Palette, Button } from "std-widgets.slint";
 import { Theme, Icons } from "theme.slint";
 import { ProfileItem, LogItem, NavItem, Glyph } from "components.slint";
-import { DashboardPage, LogsPage, PlaceholderPage, SettingsPage } from "pages.slint";
+import { DashboardPage, LogsPage, SettingsPage } from "pages.slint";
 import { ProfileDraft, AppItem, ProfileEditorPage, AppPicker } from "editor.slint";
 import { ReportDialog } from "report.slint";
 import { WhatsNewDialog } from "whatsnew.slint";
@@ -155,8 +155,7 @@ export component AppWindow inherits Window {
 
     // Settings
     in property <bool> start-with-windows;
-    in property <bool> start-minimized;
-    callback set-autostart(bool, bool);
+    callback set-autostart(bool);
     /// Other DPI tools running outside DPIMech, comma separated; empty when none.
     in property <string> foreign-tools;
     in property <[string]> language-names;
@@ -330,6 +329,7 @@ export component AppWindow inherits Window {
                 per-app-index: per-app-index;
                 system-wide-index: system-wide-index;
                 is-windows: os-name == "Windows";
+                easy-mode: easy-mode;
                 draft-apps: draft-apps;
                 error: editor-error;
                 engine-changed(i) => { root.engine-changed(i); }
@@ -380,15 +380,16 @@ export component AppWindow inherits Window {
             }
             if page == Page.logs: LogsPage {
                 logs: logs;
+                detailed-log: detailed-log;
                 clear => { root.clear-logs(); }
+                set-detailed-log(on) => { root.set-detailed-log(on); }
             }
             if page == Page.settings: SettingsPage {
                 service-connected: service-connected;
                 service-info: service-info;
                 os-name: os-name;
                 start-with-windows: start-with-windows;
-                start-minimized: start-minimized;
-                set-autostart(on, min) => { root.set-autostart(on, min); }
+                set-autostart(on) => { root.set-autostart(on); }
                 easy-mode: easy-mode;
                 set-easy-mode(on) => { root.set-easy-mode(on); }
                 open-wizard => { root.open-wizard(); }
@@ -405,11 +406,9 @@ export component AppWindow inherits Window {
                 language-index: language-index;
                 set-language(i) => { root.set-language(i); }
                 log-to-file: log-to-file;
-                detailed-log: detailed-log;
                 shortcut-count: shortcut-count;
                 shortcuts-removed: shortcuts-removed;
                 remove-all-shortcuts => { root.remove-all-shortcuts(); }
-                set-detailed-log(on) => { root.set-detailed-log(on); }
                 log-dir: log-dir;
                 set-log-to-file(on) => { root.set-log-to-file(on); }
                 choose-log-dir => { root.choose-log-dir(); }

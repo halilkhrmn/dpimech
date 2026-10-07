@@ -320,3 +320,15 @@ own release), a launchd service and an unsigned universal `.dmg`. The wizard hid
 - **Trade-off:** no automatic updates through `yay`/`pacman -Syu`; the in-app update check still tells users
   about a new version. The AUR push stays in `tools/aur-publish.sh` (`--push`) for when registration reopens.
 
+
+## 49. Fewer visible settings (2026-10-05)
+- **Problem:** the profile editor showed eleven settings at once, Easy mode included (it only hid the sidebar),
+  and three of them were different ways of saying "restart the engine when it stops working".
+- **Decision:** one "Keep it working" switch (auto-restart + a connection check every 5 minutes) next to name,
+  engine, routing and "Start with service". Port, check interval and sites, slow action, preventive restart,
+  TCP only and strategy arguments sit behind "Advanced settings", which Easy mode does not show (Easy mode also
+  hides engine and routing; the wizard picks them). "Start minimized" is gone: starting at sign-in always starts
+  in the tray, and old entries are rewritten once. The detailed-log switch moved to the Logs page, and the
+  Shortcuts group only shows once there are shortcuts. The unused "Coming soon" page is removed.
+- **Kept:** "Detect my ISP" stays a button (Lab and wizard): it sends the public IP to ipwho.is, so it should
+  not happen without a click. The crash-only auto-restart without site checks is no longer a separate switch.
