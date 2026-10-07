@@ -36,6 +36,8 @@ Compression=lzma2/max
 SolidCompression=yes
 WizardStyle=modern
 CloseApplications=no
+; Has Explorer drop its cached icons, so an update with a new logo shows it right away.
+ChangesAssociations=yes
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"

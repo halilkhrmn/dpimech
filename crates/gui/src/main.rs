@@ -65,6 +65,8 @@ fn main() -> anyhow::Result<()> {
     prefs::migrate_legacy();
     autostart::migrate_legacy();
     notify::register_identity();
+    // An update may bring a new logo that shortcut icons and Explorer's cache still lack.
+    std::thread::spawn(shortcut::refresh_icons);
     #[cfg(debug_assertions)]
     if std::env::var_os("DPIMECH_DEBUG_TOAST").is_some() {
         notify::show_test();

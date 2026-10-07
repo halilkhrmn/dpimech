@@ -121,6 +121,16 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-10-07 (47) — Old logo left on the taskbar and shortcuts after the update
+- Done: on the first start with a new logo (`shortcut-logo` marker = hash of the bundled logo) the GUI
+  redraws the icons of earlier profile shortcuts (reads `--open` back from the .lnk / .desktop, points
+  the shortcut at the new icon file; macOS: icon.icns in the bundle) and, on Windows, has Explorer drop
+  its icon cache (SHChangeNotify + `ie4uinit -show`); the installer sets `ChangesAssociations`. Linux:
+  the user's copy in `~/.local/share/icons` (which wins over the packaged icon) was only written when
+  missing, so it kept the old logo; now replaced when it differs.
+- Verified: fmt, clippy (Linux + Windows target), tests (argument parsing for .lnk and .desktop).
+- Open: check on Windows after updating from 0.3.1 (taskbar pin, Start menu, profile shortcut).
+
 ### 2026-10-07 (46) — 0.4.0
 - **Done:** version 0.4.0 (Cargo.toml, installer, Fedora spec), changelog in all five languages: new logo, simpler
   profile editor and settings. "Open with proxy" is left out of the notes on purpose: they are shown in the app

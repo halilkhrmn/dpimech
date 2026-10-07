@@ -194,6 +194,137 @@ pub fn count() -> usize {
     existing().len()
 }
 
+/// After an update that brought a new logo: redraws the icons of the shortcuts made earlier
+/// (each icon file is a picture of the logo, so nothing else replaces it) and has Explorer drop
+/// its cached icons, which keep showing the old logo of dpimech.exe on the taskbar, in the Start
+/// menu and on the desktop. Runs once per logo. Slow (looks up app icons): call off the UI thread.
+pub fn refresh_icons() {
+    let stamp = logo_stamp();
+    let marker = crate::prefs::config_file("shortcut-logo");
+    let drawn = marker
+        .as_ref()
+        .and_then(|p| std::fs::read_to_string(p).ok());
+    if drawn.as_deref() == Some(stamp.as_str()) {
+        return;
+    }
+    let mut by_profile: Vec<(String, Vec<PathBuf>)> = Vec::new();
+    for entry in existing() {
+        if launch_profile(&entry.path).as_deref() != Some(entry.profile.as_str()) {
+            continue; // the list is user-writable: only touch shortcuts that are ours
+        }
+        match by_profile.iter_mut().find(|(p, _)| *p == entry.profile) {
+            Some((_, paths)) => paths.push(entry.path),
+            None => by_profile.push((entry.profile, vec![entry.path])),
+        }
+    }
+    // Windows shortcuts open a Start Menu entry; its app's icon comes from the executable.
+    let found = if cfg!(windows) && !by_profile.is_empty() {
+        apps::discover()
+    } else {
+        Vec::new()
+    };
+    for (profile, paths) in by_profile {
+        let app = paths
+            .iter()
+            .find_map(|p| platform::open_target(p))
+            .map(|open| Choice {
+                title: String::new(),
+                icon_source: found
+                    .iter()
+                    .find(|a| a.launch.eq_ignore_ascii_case(&open))
+                    .map_or_else(|| open.clone(), |a| a.path.clone()),
+                launch: open,
+            });
+        let icon = icon(app.as_ref().and_then(app_icon).as_ref(), 256);
+        if platform::set_icon(&profile, &paths, &icon).is_ok() {
+            remove_icons(&profile, true);
+        }
+    }
+    platform::refresh_shell_icons();
+    if let Some(marker) = marker {
+        if let Some(dir) = marker.parent() {
+            let _ = std::fs::create_dir_all(dir);
+        }
+        let _ = std::fs::write(marker, stamp);
+    }
+}
+
+/// Identifies the bundled logo (FNV-1a of the PNG), so a new logo is noticed after an update.
+fn logo_stamp() -> String {
+    let hash = include_bytes!("../assets/dpimech.png")
+        .iter()
+        .fold(0xcbf2_9ce4_8422_2325u64, |h, &b| {
+            (h ^ u64::from(b)).wrapping_mul(0x100_0000_01b3)
+        });
+    format!("{hash:016x}")
+}
+
+/// The `--open` argument of a shortcut's command.
+fn arg_after_open(args: &[String]) -> Option<String> {
+    let at = args.iter().position(|a| a == OPEN_FLAG)?;
+    args.get(at + 1).cloned()
+}
+
+/// Arguments as the Windows shortcut writer joins them: each one in double quotes.
+#[cfg_attr(not(windows), allow(dead_code))]
+fn windows_args(arguments: &str) -> Vec<String> {
+    arguments
+        .split('"')
+        .skip(1)
+        .step_by(2)
+        .map(str::to_owned)
+        .collect()
+}
+
+/// Splits a .desktop `Exec` value written with `desktop_quote`, undoing its escaping.
+#[cfg_attr(not(all(unix, not(target_os = "macos"))), allow(dead_code))]
+fn desktop_exec_args(exec: &str) -> Vec<String> {
+    let exec = exec.replace("%%", "%");
+    let mut value = String::new();
+    let mut chars = exec.chars();
+    while let Some(c) = chars.next() {
+        if c != '\\' {
+            value.push(c);
+            continue;
+        }
+        match chars.next() {
+            Some('s') => value.push(' '),
+            Some('n') => value.push('\n'),
+            Some('t') => value.push('\t'),
+            Some('r') => value.push('\r'),
+            Some(other) => value.push(other),
+            None => value.push('\\'),
+        }
+    }
+    let mut out = Vec::new();
+    let mut current = String::new();
+    let (mut quoted, mut in_arg) = (false, false);
+    let mut chars = value.chars();
+    while let Some(c) = chars.next() {
+        match c {
+            '"' => {
+                quoted = !quoted;
+                in_arg = true;
+            }
+            '\\' if quoted => current.extend(chars.next()),
+            c if c.is_whitespace() && !quoted => {
+                if in_arg {
+                    out.push(std::mem::take(&mut current));
+                    in_arg = false;
+                }
+            }
+            c => {
+                current.push(c);
+                in_arg = true;
+            }
+        }
+    }
+    if in_arg {
+        out.push(current);
+    }
+    out
+}
+
 /// Recorded shortcuts that still exist, plus ours found in the usual folders without a record:
 /// made before 0.2.2 (no list yet), or the list was lost.
 fn existing() -> Vec<Entry> {
@@ -638,7 +769,7 @@ fn encode_icns(icon: &Rgba) -> Vec<u8> {
 #[cfg(windows)]
 mod platform {
     use std::os::windows::process::CommandExt;
-    use std::path::PathBuf;
+    use std::path::{Path, PathBuf};
     use std::process::Command;
 
     use anyhow::{Context, bail};
@@ -748,12 +879,74 @@ $s.Save()
         }
         Ok(made)
     }
+
+    const SET_ICON_SCRIPT: &str = r#"$ErrorActionPreference = 'Stop'
+$s = (New-Object -ComObject WScript.Shell).CreateShortcut($env:DPIMECH_LNK)
+$s.IconLocation = $env:DPIMECH_ICON + ',0'
+$s.Save()"#;
+
+    /// Points existing shortcuts of a profile at a newly drawn icon.
+    pub fn set_icon(profile_id: &str, shortcuts: &[PathBuf], icon: &Rgba) -> anyhow::Result<()> {
+        let dir = icon_dir().context("LOCALAPPDATA is not set")?;
+        std::fs::create_dir_all(&dir)?;
+        let ico = icon_path(&dir, profile_id, "ico");
+        std::fs::write(&ico, encode_ico(icon)).context("writing the shortcut icon")?;
+        for lnk in shortcuts {
+            let out = Command::new("powershell.exe")
+                .args([
+                    "-NoProfile",
+                    "-NonInteractive",
+                    "-ExecutionPolicy",
+                    "Bypass",
+                    "-Command",
+                    SET_ICON_SCRIPT,
+                ])
+                .env("DPIMECH_LNK", lnk)
+                .env("DPIMECH_ICON", &ico)
+                .creation_flags(CREATE_NO_WINDOW)
+                .output()
+                .context("running PowerShell")?;
+            if !out.status.success() {
+                bail!("{}", String::from_utf8_lossy(&out.stderr).trim());
+            }
+        }
+        Ok(())
+    }
+
+    /// What a shortcut opens after starting its profile (`--open`).
+    pub fn open_target(lnk: &Path) -> Option<String> {
+        let link = lnk::ShellLink::open(lnk, lnk::encoding::WINDOWS_1254).ok()?;
+        let arguments = link.string_data().command_line_arguments().clone()?;
+        super::arg_after_open(&super::windows_args(&arguments))
+    }
+
+    /// Explorer keeps icons in a cache that an in-place update does not touch; this has it
+    /// read dpimech.exe's icon (and every other) again.
+    pub fn refresh_shell_icons() {
+        use windows_sys::Win32::UI::Shell::{SHCNE_ASSOCCHANGED, SHCNF_IDLIST, SHChangeNotify};
+        // SAFETY: SHCNE_ASSOCCHANGED takes no items; both pointers must be null.
+        unsafe {
+            SHChangeNotify(
+                SHCNE_ASSOCCHANGED as _,
+                SHCNF_IDLIST,
+                std::ptr::null(),
+                std::ptr::null(),
+            )
+        };
+        // Windows 10 and 11 also keep icons in iconcache.db, which this refreshes.
+        if let Some(root) = std::env::var_os("SystemRoot") {
+            let _ = Command::new(PathBuf::from(root).join(r"System32\ie4uinit.exe"))
+                .arg("-show")
+                .creation_flags(CREATE_NO_WINDOW)
+                .status();
+        }
+    }
 }
 
 #[cfg(all(unix, not(target_os = "macos")))]
 mod platform {
     use std::os::unix::fs::PermissionsExt;
-    use std::path::PathBuf;
+    use std::path::{Path, PathBuf};
 
     use anyhow::Context;
 
@@ -812,6 +1005,39 @@ mod platform {
         Ok(targets)
     }
 
+    /// Points existing shortcuts of a profile at a newly drawn icon.
+    pub fn set_icon(profile_id: &str, shortcuts: &[PathBuf], icon: &Rgba) -> anyhow::Result<()> {
+        let dir = icon_dir().context("HOME is not set")?;
+        std::fs::create_dir_all(&dir)?;
+        let png = icon_path(&dir, profile_id, "png");
+        std::fs::write(&png, encode_png(icon)).context("writing the shortcut icon")?;
+        for path in shortcuts {
+            let text = std::fs::read_to_string(path)?;
+            let text: String = text
+                .lines()
+                .map(|line| {
+                    if line.trim_start().starts_with("Icon=") {
+                        format!("Icon={}\n", png.display())
+                    } else {
+                        format!("{line}\n")
+                    }
+                })
+                .collect();
+            std::fs::write(path, text).with_context(|| format!("writing {}", path.display()))?;
+        }
+        Ok(())
+    }
+
+    /// What a shortcut opens after starting its profile (`--open`).
+    pub fn open_target(path: &Path) -> Option<String> {
+        let text = std::fs::read_to_string(path).ok()?;
+        let exec = super::linux::desktop_value(&text, "Exec")?;
+        super::arg_after_open(&super::desktop_exec_args(&exec))
+    }
+
+    /// Desktops read icon files again when they change; nothing is cached by path here.
+    pub fn refresh_shell_icons() {}
+
     pub fn icon_dir() -> Option<PathBuf> {
         Some(super::linux::data_home()?.join("dpimech").join("shortcuts"))
     }
@@ -855,7 +1081,7 @@ mod platform {
 #[cfg(target_os = "macos")]
 mod platform {
     use std::os::unix::fs::PermissionsExt;
-    use std::path::PathBuf;
+    use std::path::{Path, PathBuf};
 
     use anyhow::Context;
 
@@ -921,6 +1147,25 @@ mod platform {
         }
         Ok(made)
     }
+
+    /// Replaces the icon inside each bundle; a newer bundle date makes Finder and the Dock
+    /// read it again.
+    pub fn set_icon(_profile_id: &str, bundles: &[PathBuf], icon: &Rgba) -> anyhow::Result<()> {
+        let icns = encode_icns(icon);
+        for bundle in bundles {
+            std::fs::write(bundle.join("Contents/Resources/icon.icns"), &icns)?;
+            let _ = std::fs::File::open(bundle)
+                .and_then(|f| f.set_modified(std::time::SystemTime::now()));
+        }
+        Ok(())
+    }
+
+    /// App icons are not shown on macOS shortcuts yet, so the target is not needed.
+    pub fn open_target(_bundle: &Path) -> Option<String> {
+        None
+    }
+
+    pub fn refresh_shell_icons() {}
 
     /// The icon lives inside each .app bundle.
     pub fn icon_dir() -> Option<PathBuf> {
@@ -1100,6 +1345,35 @@ mod tests {
         let c = at(64 - 64 * 11 / 40, 64 * 11 / 40);
         assert!(c.r > 200 && c.g < 60, "{c:?}");
         assert_ne!(at(10, 54), c);
+    }
+
+    #[test]
+    fn open_target_is_read_back_from_windows_arguments() {
+        let args = windows_args(r#""--launch" "p1" "--open" "C:\Users\a b\App.lnk""#);
+        assert_eq!(
+            arg_after_open(&args).as_deref(),
+            Some(r"C:\Users\a b\App.lnk")
+        );
+    }
+
+    #[cfg(all(unix, not(target_os = "macos")))]
+    #[test]
+    fn open_target_survives_desktop_quoting() {
+        use platform::desktop_quote;
+        let open = r#"/opt/my "app"/run $HOME \x 100%.desktop"#;
+        let exec = ["/usr/bin/dpimech", LAUNCH_FLAG, "p1", OPEN_FLAG, open]
+            .iter()
+            .map(|a| desktop_quote(a))
+            .collect::<Vec<_>>()
+            .join(" ");
+        assert_eq!(
+            arg_after_open(&desktop_exec_args(&exec)).as_deref(),
+            Some(open)
+        );
+        assert_eq!(
+            arg_after_open(&desktop_exec_args("dpimech --launch p1")),
+            None
+        );
     }
 
     #[test]
