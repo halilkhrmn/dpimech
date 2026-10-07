@@ -6,6 +6,15 @@ use slint::{ComponentHandle, Image, Model, ModelRc, VecModel, Weak};
 use crate::apps::{self, exe_stem};
 use crate::convert::app_item;
 use crate::state::{DRAFT_APPS, ICONS, PICKER_ALL, PICKER_QUERY};
+
+thread_local! {
+    /// An app-proxy profile opens exactly one app: picking another replaces it.
+    static SINGLE: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
+}
+
+pub fn set_single(single: bool) {
+    SINGLE.set(single);
+}
 use crate::{AppItem, AppWindow};
 
 /// Rediscovers apps on a worker thread; icon extraction can take a moment.
@@ -121,11 +130,38 @@ pub fn load_draft(keys: &[String]) {
     DRAFT_APPS.with(|m| m.set_vec(items));
 }
 
+/// The app of an app-proxy profile, by its full path.
+pub fn load_draft_app(path: &str) {
+    let exe = exe_stem(path);
+    let icon = apps::icon_for_path(path).map(Image::from_rgba8);
+    let title = ICONS
+        .with_borrow(|m| m.get(&exe.to_lowercase()).map(|(t, _)| t.clone()))
+        .unwrap_or_else(|| crate::launcher::display_name(path));
+    DRAFT_APPS.with(|m| m.set_vec(vec![app_item(&title, &exe, path, false, icon)]));
+}
+
+/// What an app-proxy profile should open: the chosen app's path, else the typed name.
+pub fn draft_app() -> Option<String> {
+    DRAFT_APPS.with(|m| {
+        m.row_data(0).map(|a| {
+            if a.path.is_empty() {
+                a.exe.to_string()
+            } else {
+                a.path.to_string()
+            }
+        })
+    })
+}
+
 pub fn draft_keys() -> Vec<String> {
     DRAFT_APPS.with(|m| m.iter().map(|a| a.exe.to_string()).collect())
 }
 
 fn add_to_draft(app: AppItem) {
+    if SINGLE.get() {
+        DRAFT_APPS.with(|m| m.set_vec(vec![app]));
+        return;
+    }
     DRAFT_APPS.with(|m| {
         let exists = m.iter().any(|a| a.exe.eq_ignore_ascii_case(&app.exe));
         if !exists {

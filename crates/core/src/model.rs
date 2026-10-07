@@ -37,6 +37,9 @@ pub enum RoutingMode {
     SystemWide,
     /// Only expose a local proxy port; the user configures apps manually.
     LocalProxy,
+    /// A local proxy port that DPIMech hands to one app through its command line when it opens
+    /// it (Chromium and Electron apps such as Discord: `--proxy-server`). No packet driver.
+    AppProxy,
 }
 
 impl RoutingMode {
@@ -45,6 +48,7 @@ impl RoutingMode {
             RoutingMode::PerApp => "Per-app",
             RoutingMode::SystemWide => "System-wide",
             RoutingMode::LocalProxy => "Local proxy",
+            RoutingMode::AppProxy => "Open with proxy",
         }
     }
 }
@@ -126,13 +130,14 @@ impl EngineKind {
             // Proxy engines: per-app needs a redirector (ProxiFyre on Windows, cgroups on Linux).
             // Per-app: ProxiFyre on Windows, cgroups + nftables on Linux.
             EngineKind::ByeDpi | EngineKind::SpoofDpi => match os {
-                Os::Windows | Os::Linux => vec![PerApp, LocalProxy],
-                Os::MacOs => vec![LocalProxy],
+                Os::Windows | Os::Linux => vec![PerApp, LocalProxy, AppProxy],
+                Os::MacOs => vec![LocalProxy, AppProxy],
             },
+            // "Open with proxy" is last everywhere: an option for people who want it, never offered.
             // Linux: whole computer through the same nftables redirect.
             EngineKind::ZapretTpws => match os {
-                Os::Linux => vec![SystemWide, PerApp, LocalProxy],
-                _ => vec![LocalProxy],
+                Os::Linux => vec![SystemWide, PerApp, LocalProxy, AppProxy],
+                _ => vec![LocalProxy, AppProxy],
             },
             EngineKind::ZapretWinws | EngineKind::ZapretNfqws | EngineKind::GoodbyeDpi => {
                 vec![SystemWide]
@@ -191,6 +196,11 @@ pub enum Routing {
     LocalProxy {
         port: u16,
     },
+    AppProxy {
+        /// What the GUI opens: an executable, a command, a `.desktop` entry or a macOS `.app`.
+        app: String,
+        port: u16,
+    },
 }
 
 impl Routing {
@@ -199,12 +209,15 @@ impl Routing {
             Routing::PerApp { .. } => RoutingMode::PerApp,
             Routing::SystemWide { .. } => RoutingMode::SystemWide,
             Routing::LocalProxy { .. } => RoutingMode::LocalProxy,
+            Routing::AppProxy { .. } => RoutingMode::AppProxy,
         }
     }
 
     pub fn port(&self) -> Option<u16> {
         match self {
-            Routing::PerApp { port, .. } | Routing::LocalProxy { port } => Some(*port),
+            Routing::PerApp { port, .. }
+            | Routing::LocalProxy { port }
+            | Routing::AppProxy { port, .. } => Some(*port),
             Routing::SystemWide { .. } => None,
         }
     }

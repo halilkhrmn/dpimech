@@ -121,6 +121,21 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-10-05 (44) — "Open with proxy" routing (Discord without ProxiFyre)
+- **Owner's idea:** a one-app profile such as Discord does not need ProxiFyre: Discord takes a proxy switch.
+- **Done:** routing mode `app_proxy` for ByeDPI, SpoofDPI and tpws on every OS (the first per-app option on
+  macOS). The service treats it as a local proxy; the GUI opens the app with `--proxy-server` when the user
+  switches the profile on (`appproxy.rs`), the shortcut launcher does the same. Squirrel apps start through
+  Update.exe. Apps are only opened from trusted places (DECISIONS #50). Editor: an "Application" section with one
+  app and a warning when it does not look like Chromium/Electron. Strings translated (tr, ru, fa, ar).
+- **Verified:** check.sh (fmt, clippy Linux + Windows target, tests incl. pending-open logic and the trust check);
+  `cargo check` for macOS. On Linux under Xvfb: `dpimech --launch` started the profile and opened Chromium with
+  `--proxy-server=socks5://127.0.0.1:1188`; Chromium's connections went to that port (the dev "ByeDPI" here is a
+  stand-in relay). Editor screenshots with a Chromium and a non-Chromium app. The service rejects an empty app.
+- **Not verified:** Windows (Discord via Update.exe, the trust check, voice) — needs a real Windows machine; the
+  Squirrel path test runs in Windows CI. Switching the profile on from the window/tray (clicks do not reach the
+  app under this Xvfb); the logic behind it is unit-tested.
+
 ### 2026-10-05 (43) — Simpler profile editor and settings
 - **Done:** profile editor: name, (engine, routing), "Start with service", one "Keep it working" switch; the rest
   behind "Advanced settings", hidden in Easy mode. Settings: one sign-in switch (always starts in the tray; old
