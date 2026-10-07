@@ -1,5 +1,10 @@
 # Değişiklikler
 
+## 0.4.0
+- Yeni logo: Kim De Vries'in elle çizdiği bir bukalemun.
+- Daha sade profil düzenleyici: bağlantıyla tek bir "Çalışır durumda tut" anahtarı ilgileniyor; port, kontrol ayarları ve strateji argümanları "Gelişmiş ayarlar" altında.
+- Ayarlar kısaldı: DPIMech bilgisayarla birlikte başladığında her zaman tepside açılıyor; "Ayrıntılı kayıt" anahtarı artık Kayıtlar sayfasında.
+
 ## 0.3.1
 - Arch, CachyOS, EndeavourOS ve Manjaro: her sürüm sayfasında artık bir Arch paketi (`dpimech-bin`) var; `sudo pacman -U` ile kurulur.
 - libxkbcommon-x11 olmayan Linux sistemlerde DPIMech açılışta çökmüyor; hangi paketi kurman gerektiğini söylüyor.

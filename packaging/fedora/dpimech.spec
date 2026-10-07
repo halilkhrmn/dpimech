@@ -82,6 +82,9 @@ install -Dm644 crates/gui/assets/dpimech.png %{buildroot}%{_datadir}/icons/hicol
 %{_datadir}/icons/hicolor/256x256/apps/dpimech.png
 
 %changelog
+* Wed Oct 07 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.4.0-1
+- New hand-drawn logo by Kim De Vries
+- Simpler profile editor and settings
 * Fri Oct 02 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.3.1-1
 - A clear message instead of a crash when libxkbcommon-x11 is missing
 - Arch package on the release page; smoke tests before every release
