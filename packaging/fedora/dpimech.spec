@@ -82,6 +82,8 @@ install -Dm644 crates/gui/assets/dpimech.png %{buildroot}%{_datadir}/icons/hicol
 %{_datadir}/icons/hicolor/256x256/apps/dpimech.png
 
 %changelog
+* Wed Oct 07 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.4.1-1
+- The new logo replaces the old one in shortcuts and icon caches after an update
 * Wed Oct 07 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.4.0-1
 - New hand-drawn logo by Kim De Vries
 - Simpler profile editor and settings

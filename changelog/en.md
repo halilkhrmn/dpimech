@@ -3,6 +3,9 @@
 User-facing changes per version. The app shows the new entries once after an update ("What's new"),
 and the release page on GitHub uses the English text. Translations: tr.md, ru.md, fa.md, ar.md.
 
+## 0.4.1
+- The new logo now also shows on the taskbar, in the Start menu, in the Linux app menu and on profile shortcuts made before the update; after updating to 0.4.0 they kept the old one.
+
 ## 0.4.0
 - A new logo: a chameleon drawn by hand by Kim De Vries.
 - A simpler profile editor: one "Keep it working" switch looks after the connection; the port, check settings and strategy arguments are under "Advanced settings".

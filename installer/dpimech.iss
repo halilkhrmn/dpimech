@@ -3,7 +3,7 @@
 ; (which secures C:\ProgramData\dpimech), and adds a Start menu shortcut.
 
 #ifndef AppVersion
-  #define AppVersion "0.4.0"
+  #define AppVersion "0.4.1"
 #endif
 #define AppName "DPIMech"
 ; 0.1.x shipped under the working name "dpimngr"; upgrades clean it up (see below).
