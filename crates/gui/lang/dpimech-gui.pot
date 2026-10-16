@@ -1,39 +1,39 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8\n"
 
-#: ui/app.slint:219
+#: ui/app.slint:221
 msgid "Profiles"
 msgstr ""
 
-#: ui/app.slint:224
+#: ui/app.slint:226
 msgid "Strategy Lab"
 msgstr ""
 
-#: ui/app.slint:229
+#: ui/app.slint:231
 msgid "Engines"
 msgstr ""
 
-#: ui/app.slint:235
+#: ui/app.slint:237
 msgid "Logs"
 msgstr ""
 
-#: ui/app.slint:241
+#: ui/app.slint:243
 msgid "Settings"
 msgstr ""
 
-#: ui/app.slint:292
+#: ui/app.slint:294
 msgid "Another DPI tool is running: {}. Two tools on the same traffic break connections — close it, or turn DPIMech's profiles off."
 msgstr ""
 
-#: ui/app.slint:310
+#: ui/app.slint:312
 msgid "DPIMech {} is ready to install."
 msgstr ""
 
-#: ui/app.slint:314
+#: ui/app.slint:316
 msgid "Restart and update"
 msgstr ""
 
-#: ui/app.slint:326
+#: ui/app.slint:328
 msgid "Background service is not running. Engines can't be started until it is."
 msgstr ""
 
@@ -113,159 +113,163 @@ msgstr ""
 msgid "Routing"
 msgstr ""
 
-#: ui/editor.slint:238
+#: ui/editor.slint:239
 msgid "Start with service"
 msgstr ""
 
-#: ui/editor.slint:246
+#: ui/editor.slint:241
+msgid "Runs from when the computer starts, also while DPIMech is closed; DPIMech then starts in the tray. Other profiles stop when you quit DPIMech."
+msgstr ""
+
+#: ui/editor.slint:254
 msgid "Keep it working"
 msgstr ""
 
-#: ui/editor.slint:248
+#: ui/editor.slint:256
 msgid "Checks the connection every few minutes and restarts the engine if it gets stuck, slow or crashes. Other profiles are not touched."
 msgstr ""
 
-#: ui/editor.slint:272
+#: ui/editor.slint:280
 msgid "Games with strict anti-cheat (for example Valorant or FACEIT) may refuse to start or disconnect you while a packet driver is active. Turn this off before playing, or unblock only the apps you need."
 msgstr ""
 
-#: ui/editor.slint:273
+#: ui/editor.slint:281
 msgid "Sites to unblock"
 msgstr ""
 
-#: ui/editor.slint:275
+#: ui/editor.slint:283
 msgid "The engine only touches these domains. One per line; subdomains are included."
 msgstr ""
 
-#: ui/editor.slint:314
+#: ui/editor.slint:322
 msgid "Applications"
 msgstr ""
 
-#: ui/editor.slint:315
+#: ui/editor.slint:323
 msgid "Add app"
 msgstr ""
 
-#: ui/editor.slint:326
+#: ui/editor.slint:334
 msgid "Only the apps listed here will go through the engine."
 msgstr ""
 
-#: ui/editor.slint:344
+#: ui/editor.slint:352
 msgid "Application"
 msgstr ""
 
-#: ui/editor.slint:345
+#: ui/editor.slint:353
 msgid "Choose app"
 msgstr ""
 
-#: ui/editor.slint:345
+#: ui/editor.slint:353
 msgid "Change"
 msgstr ""
 
-#: ui/editor.slint:348
+#: ui/editor.slint:356
 msgid "When you turn this profile on (switch, tray or shortcut), DPIMech opens the app with the engine as its proxy. No packet driver is needed. Works with Chromium and Electron apps such as Discord, Chrome, Edge or Brave. If the app is already open, close it fully first (also from its tray icon). Voice calls go direct."
 msgstr ""
 
-#: ui/editor.slint:362
+#: ui/editor.slint:370
 msgid "No app chosen yet."
 msgstr ""
 
-#: ui/editor.slint:371
+#: ui/editor.slint:379
 msgid "This does not look like a Chromium or Electron app, so it may ignore the proxy setting. Per-app routing works with any app."
 msgstr ""
 
-#: ui/editor.slint:378
+#: ui/editor.slint:386
 msgid "Hide advanced settings"
 msgstr ""
 
-#: ui/editor.slint:378
+#: ui/editor.slint:386
 msgid "Advanced settings"
 msgstr ""
 
-#: ui/editor.slint:388
+#: ui/editor.slint:396
 msgid "Local proxy port"
 msgstr ""
 
-#: ui/editor.slint:397
+#: ui/editor.slint:405
 msgid "Check every"
 msgstr ""
 
-#: ui/editor.slint:399
+#: ui/editor.slint:407
 msgid "Off"
 msgstr ""
 
-#: ui/editor.slint:399
+#: ui/editor.slint:407
 msgid "1 minute"
 msgstr ""
 
-#: ui/editor.slint:399
+#: ui/editor.slint:407
 msgid "3 minutes"
 msgstr ""
 
-#: ui/editor.slint:399
+#: ui/editor.slint:407
 msgid "5 minutes"
 msgstr ""
 
-#: ui/editor.slint:399
+#: ui/editor.slint:407
 msgid "10 minutes"
 msgstr ""
 
-#: ui/editor.slint:405
+#: ui/editor.slint:413
 msgid "When it gets slow"
 msgstr ""
 
-#: ui/editor.slint:407
+#: ui/editor.slint:415
 msgid "Restart the engine automatically"
 msgstr ""
 
-#: ui/editor.slint:407
+#: ui/editor.slint:415
 msgid "Only warn me"
 msgstr ""
 
-#: ui/editor.slint:413
+#: ui/editor.slint:421
 msgid "Sites to check"
 msgstr ""
 
-#: ui/editor.slint:416
+#: ui/editor.slint:424
 msgid "Empty = the sites above"
 msgstr ""
 
-#: ui/editor.slint:416
+#: ui/editor.slint:424
 msgid "e.g. discord.com, gateway.discord.gg"
 msgstr ""
 
-#: ui/editor.slint:422
+#: ui/editor.slint:430
 msgid "Preventive restart every (hours)"
 msgstr ""
 
-#: ui/editor.slint:423
+#: ui/editor.slint:431
 msgid "0 = never. Takes well under a second."
 msgstr ""
 
-#: ui/editor.slint:434
+#: ui/editor.slint:442
 msgid "TCP only"
 msgstr ""
 
-#: ui/editor.slint:436
+#: ui/editor.slint:444
 msgid "Voice/UDP goes direct. Fewer connections through the engine."
 msgstr ""
 
-#: ui/editor.slint:449
+#: ui/editor.slint:457
 msgid "Strategy arguments"
 msgstr ""
 
-#: ui/editor.slint:457
+#: ui/editor.slint:465
 msgid "Tip: the Strategy Lab finds working arguments for your connection."
 msgstr ""
 
-#: ui/editor.slint:473
+#: ui/editor.slint:481
 msgid "Save"
 msgstr ""
 
-#: ui/editor.slint:478
+#: ui/editor.slint:486
 msgid "Cancel"
 msgstr ""
 
-#: ui/editor.slint:482
+#: ui/editor.slint:490
 msgid "Delete"
 msgstr ""
 
@@ -409,131 +413,135 @@ msgstr ""
 msgid "Also logs every connection (site, address, how it ended) and each tested strategy. Turn it on to find out why something does not open; it makes the log much longer."
 msgstr ""
 
-#: ui/pages.slint:182
+#: ui/pages.slint:183
 msgid "Interface"
 msgstr ""
 
-#: ui/pages.slint:189
+#: ui/pages.slint:190
 msgid "Easy mode"
 msgstr ""
 
-#: ui/pages.slint:191
+#: ui/pages.slint:192
 msgid "Fewer menus; the setup wizard does the work. Turn off for engines, the Strategy Lab and logs."
 msgstr ""
 
-#: ui/pages.slint:204
+#: ui/pages.slint:205
 msgid "Language"
 msgstr ""
 
-#: ui/pages.slint:212
+#: ui/pages.slint:213
 msgid "Run the setup wizard again"
 msgstr ""
 
-#: ui/pages.slint:213
+#: ui/pages.slint:214
 msgid "Open wizard"
 msgstr ""
 
-#: ui/pages.slint:219
+#: ui/pages.slint:220
 msgid "Startup"
 msgstr ""
 
-#: ui/pages.slint:226
+#: ui/pages.slint:227
 msgid "Start DPIMech when I sign in"
 msgstr ""
 
-#: ui/pages.slint:228
-msgid "Starts in the tray. The background service always starts with the computer; this brings back the tray icon."
+#: ui/pages.slint:230
+msgid "Always on while a profile starts with the service: DPIMech then starts in the tray and shows what runs."
 msgstr ""
 
-#: ui/pages.slint:244
+#: ui/pages.slint:231
+msgid "Starts in the tray. Profiles run only while DPIMech is open, except the ones that start with the service."
+msgstr ""
+
+#: ui/pages.slint:248
 msgid "Log"
 msgstr ""
 
-#: ui/pages.slint:251
+#: ui/pages.slint:255
 msgid "Save the log to daily files"
 msgstr ""
 
-#: ui/pages.slint:253
+#: ui/pages.slint:257
 msgid "One file per day while DPIMech is open; files older than 14 days are deleted. Even when this is off, the recent log is saved to this folder if a profile stops with an error."
 msgstr ""
 
-#: ui/pages.slint:276
+#: ui/pages.slint:280
 msgid "Change folder…"
 msgstr ""
 
-#: ui/pages.slint:277
+#: ui/pages.slint:281
 msgid "Open folder"
 msgstr ""
 
-#: ui/pages.slint:285
+#: ui/pages.slint:289
 msgid "Shortcuts"
 msgstr ""
 
-#: ui/pages.slint:292
+#: ui/pages.slint:296
 msgid "Profile shortcuts on the desktop and in the menu: {}"
 msgstr ""
 
-#: ui/pages.slint:296
+#: ui/pages.slint:300
 msgid "Create one by right-clicking a profile or with its menu button. Deleting a profile removes its shortcuts."
 msgstr ""
 
-#: ui/pages.slint:303
+#: ui/pages.slint:307
 msgid "Remove all shortcuts"
 msgstr ""
 
-#: ui/pages.slint:311
+#: ui/pages.slint:315
 msgid "Background service"
 msgstr ""
 
-#: ui/pages.slint:314
+#: ui/pages.slint:318
 msgid "Connected"
 msgstr ""
 
-#: ui/pages.slint:314
+#: ui/pages.slint:318
 msgid "Not running"
 msgstr ""
 
-#: ui/pages.slint:318
+#: ui/pages.slint:322
 msgid "Install the service"
 msgstr ""
 
-#: ui/pages.slint:324
+#: ui/pages.slint:328
 msgid "About"
 msgstr ""
 
-#: ui/pages.slint:329
+#: ui/pages.slint:333
 msgid "Opens sites and apps that your internet provider blocks by running well-known open-source DPI bypass tools on your computer. It is not a VPN: your traffic still goes straight to the sites, nothing is sent through another server."
 msgstr ""
 
-#: ui/pages.slint:333
+#: ui/pages.slint:337
 msgid "Platform: {}"
 msgstr ""
 
-#: ui/pages.slint:334
+#: ui/pages.slint:338
 msgid "Free software under the GNU GPL v3 or later."
 msgstr ""
 
-#: ui/pages.slint:338
+#: ui/pages.slint:342
 msgid "Source code"
 msgstr ""
 
-#: ui/pages.slint:339
+#: ui/pages.slint:343
 msgid "Report a problem"
 msgstr ""
 
-#: ui/pages.slint:347
+#: ui/pages.slint:351
 msgid "Download"
 msgstr ""
 
-#: ui/pages.slint:353
+#: ui/pages.slint:357
 msgid "Thanks"
 msgstr ""
 
-#: ui/pages.slint:357
+#: ui/pages.slint:361
 msgid "DPIMech only manages these projects; the real work is theirs."
 msgstr ""
 
-#: ui/pages.slint:370
+#: ui/pages.slint:374
 msgid "Logo, drawn by hand"
 msgstr ""
 
@@ -737,51 +745,51 @@ msgstr ""
 msgid "Start it with: dpimech-service run"
 msgstr ""
 
-#: src/bridge.rs:88
+#: src/bridge.rs:89
 msgid "Version {} · data in {}"
 msgstr ""
 
-#: src/bridge.rs:179
+#: src/bridge.rs:180
 msgid "Could not update: {}"
 msgstr ""
 
-#: src/bridge.rs:194
+#: src/bridge.rs:195
 msgid "You have the latest version ({})."
 msgstr ""
 
-#: src/bridge.rs:197
+#: src/bridge.rs:198
 msgid "Could not check for updates: {}"
 msgstr ""
 
-#: src/bridge.rs:259
+#: src/bridge.rs:260
 msgid "Could not load strategies: {}"
 msgstr ""
 
-#: src/bridge.rs:271
+#: src/bridge.rs:272
 msgid "ISP lookup failed: {}"
 msgstr ""
 
-#: src/bridge.rs:376
+#: src/bridge.rs:377
 msgid "DPIMech {} is downloaded. Restart DPIMech to update."
 msgstr ""
 
-#: src/bridge.rs:390
+#: src/bridge.rs:391
 msgid "Version {} is available."
 msgstr ""
 
-#: src/bridge.rs:405
+#: src/bridge.rs:406
 msgid "Downloading DPIMech {}…"
 msgstr ""
 
-#: src/bridge.rs:437
+#: src/bridge.rs:438
 msgid "Saved the log to {}"
 msgstr ""
 
-#: src/bridge.rs:477
+#: src/bridge.rs:478
 msgid "Looking up…"
 msgstr ""
 
-#: src/bridge.rs:479
+#: src/bridge.rs:480
 msgid "This needs the background service."
 msgstr ""
 
@@ -1021,27 +1029,27 @@ msgstr ""
 msgid "The profile is taking too long to start. The Logs page in DPIMech shows why."
 msgstr ""
 
-#: src/main.rs:433
+#: src/main.rs:435
 msgid "Folder for DPIMech log files"
 msgstr ""
 
-#: src/main.rs:629
+#: src/main.rs:631
 msgid "The service is installed. Connecting…"
 msgstr ""
 
-#: src/main.rs:630
+#: src/main.rs:632
 msgid "Installing the service failed: {}"
 msgstr ""
 
-#: src/main.rs:638
+#: src/main.rs:640
 msgid "Installing… confirm the prompt. DPIMech connects by itself when the service is ready."
 msgstr ""
 
-#: src/main.rs:639
+#: src/main.rs:641
 msgid "Could not start the installer: {}"
 msgstr ""
 
-#: src/main.rs:710
+#: src/main.rs:712
 msgid "Downloading online lists…"
 msgstr ""
 
@@ -1081,23 +1089,23 @@ msgstr ""
 msgid "DPIMech restarted the engine to fix the connection."
 msgstr ""
 
-#: src/notify.rs:163
+#: src/notify.rs:170
 msgid "Could not open {}"
 msgstr ""
 
-#: src/notify.rs:173
+#: src/notify.rs:180
 msgid "DPIMech update available"
 msgstr ""
 
-#: src/notify.rs:174
+#: src/notify.rs:181
 msgid "Version {} is out. Settings → About shows how to get it."
 msgstr ""
 
-#: src/notify.rs:189
+#: src/notify.rs:196
 msgid "DPIMech {} is ready"
 msgstr ""
 
-#: src/notify.rs:190
+#: src/notify.rs:197
 msgid "Restart DPIMech to update: use the button at the top of the window."
 msgstr ""
 
@@ -1133,7 +1141,7 @@ msgstr ""
 msgid "Give the shortcut a name."
 msgstr ""
 
-#: src/shortcut.rs:720
+#: src/shortcut.rs:852
 msgid "Starts the DPIMech profile \"{}\""
 msgstr ""
 

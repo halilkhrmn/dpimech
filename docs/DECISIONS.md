@@ -363,3 +363,17 @@ own release), a launchd service and an unsigned universal `.dmg`. The wizard hid
   contributions, credits (the logo credit says plainly it was drawn by hand), license, "Made with ❤️". Everything
   that was in them (engines per OS, install details, countries, troubleshooting, safety) moved unchanged into
   `docs/guide/<lang>.md`, one per README language, so nothing was lost or left untranslated.
+
+## 52. Profiles run only while the app is open, except "Start with service" (2026-10-16)
+- **Problem:** after quitting DPIMech its profiles kept running in the service, with nothing on screen saying so;
+  the first profile from the wizard also starts with the service, so after a reboot traffic was bypassed while the
+  app was closed.
+- **Rule:** a profile runs while a DPIMech app is connected; only profiles with "Start with service" run without
+  one. The app says it is the app in its `Hello` (`app: true`; tools and the shortcut launcher do not). When no
+  app has been connected for 20 s (`APP_GONE_GRACE`), the service stops the other profiles and a running Strategy
+  Lab test. The grace covers an app restart (AppImage update, crash) without dropping the connection. In the
+  service, not in the app's Quit: a crash, a kill or signing out stops them too.
+- **Sign-in:** while a profile starts with the service, the app keeps "Start DPIMech when I sign in" on (the
+  switch is locked on and says why), so whatever runs from boot is visible in the tray. If DPIMech turned it on
+  itself (`sign_in_for_profiles` in gui.toml) it turns it off with the last such profile; a choice the user made
+  stays.

@@ -3,6 +3,10 @@
 User-facing changes per version. The app shows the new entries once after an update ("What's new"),
 and the release page on GitHub uses the English text. Translations: tr.md, ru.md, fa.md, ar.md.
 
+## 0.4.2
+- Quitting DPIMech now stops its profiles. Only a profile with "Start with service" keeps running while DPIMech is closed, from when the computer starts.
+- When a profile starts with the service, DPIMech starts in the tray when you sign in, so you always see what runs.
+
 ## 0.4.1
 - The new logo now also shows on the taskbar, in the Start menu, in the Linux app menu and on profile shortcuts made before the update; after updating to 0.4.0 they kept the old one.
 

@@ -157,6 +157,8 @@ export component AppWindow inherits Window {
 
     // Settings
     in property <bool> start-with-windows;
+    /// A profile starts with the service, so starting at sign-in stays on.
+    in property <bool> start-forced;
     callback set-autostart(bool);
     /// Other DPI tools running outside DPIMech, comma separated; empty when none.
     in property <string> foreign-tools;
@@ -408,6 +410,7 @@ export component AppWindow inherits Window {
                 service-info: service-info;
                 os-name: os-name;
                 start-with-windows: start-with-windows;
+                start-forced: start-forced;
                 set-autostart(on) => { root.set-autostart(on); }
                 easy-mode: easy-mode;
                 set-easy-mode(on) => { root.set-easy-mode(on); }

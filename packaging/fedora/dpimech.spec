@@ -82,6 +82,8 @@ install -Dm644 crates/gui/assets/dpimech.png %{buildroot}%{_datadir}/icons/hicol
 %{_datadir}/icons/hicolor/256x256/apps/dpimech.png
 
 %changelog
+* Fri Oct 16 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.4.2-1
+- Profiles stop when DPIMech quits, except the ones that start with the service
 * Wed Oct 07 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.4.1-1
 - The new logo replaces the old one in shortcuts and icon caches after an update
 * Wed Oct 07 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.4.0-1

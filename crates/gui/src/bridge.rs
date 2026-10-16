@@ -79,6 +79,7 @@ async fn run(ui: Weak<AppWindow>, mut commands: mpsc::UnboundedReceiver<Command>
         let info = match client
             .request(Request::Hello {
                 client_version: dpimech_core::VERSION.into(),
+                app: true,
             })
             .await
         {

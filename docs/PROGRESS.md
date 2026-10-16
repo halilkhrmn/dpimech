@@ -121,6 +121,18 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-10-16 (49) — 0.4.2: profiles stop when the app quits
+- Done: the service stops profiles without "Start with service" (and a running Lab test) 20 s after the last
+  app connection closes (`Hello { app: true }`, supervisor `app_connected` / `app_disconnected`). The app keeps
+  sign-in start on while a profile starts with the service (Settings switch locked on), and turns it off again
+  if it had turned it on itself. Editor hint under "Start with service"; user guide paragraph in 5 languages;
+  DECISIONS #52.
+- Verified: fmt, clippy (Linux, Windows and macOS targets), tests (`without_app`). End to end on Linux with a dev
+  service and a fake engine: a tool connection stops nothing; the app quitting stops only the profile without
+  "Start with service" after 20 s (not at 10 s); an app back within 20 s stops nothing. The GUI under Xvfb wrote
+  the autostart entry with a boot profile (switch locked, see text) and removed it when that profile was changed.
+- Open: check on Windows (tray Quit, sign-in start after reboot).
+
 ### 2026-10-07 (48) — 0.4.1
 - Done: 0.4.0 was published from the merge before the logo fix (#24), so it still left the old logo on
   the taskbar and shortcuts; 0.4.1 ships the fix. Also fixed the macOS CI: `arg_after_open` is unused there.
