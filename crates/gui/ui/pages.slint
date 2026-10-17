@@ -134,6 +134,7 @@ export component SettingsPage inherits VerticalLayout {
     in property <string> service-info;
     in property <string> os-name;
     in property <bool> start-with-windows;
+    in property <bool> start-forced;
     in property <bool> easy-mode;
     callback set-autostart(bool);
     in property <[string]> language-names;
@@ -225,7 +226,9 @@ export component SettingsPage inherits VerticalLayout {
                             horizontal-stretch: 1;
                             Text { text: @tr("Start DPIMech when I sign in"); }
                             Text {
-                                text: @tr("Starts in the tray. The background service always starts with the computer; this brings back the tray icon.");
+                                text: root.start-forced
+                                    ? @tr("Always on while a profile starts with the service: DPIMech then starts in the tray and shows what runs.")
+                                    : @tr("Starts in the tray. Profiles run only while DPIMech is open, except the ones that start with the service.");
                                 font-size: 12px;
                                 color: Theme.muted;
                                 wrap: word-wrap;
@@ -233,7 +236,8 @@ export component SettingsPage inherits VerticalLayout {
                         }
                         Switch {
                             accessible-label: @tr("Start DPIMech when I sign in");
-                            checked: start-with-windows;
+                            enabled: !root.start-forced;
+                            checked: start-with-windows || root.start-forced;
                             toggled => { root.set-autostart(self.checked); }
                         }
                     }

@@ -235,7 +235,15 @@ export component ProfileEditorPage inherits VerticalLayout {
                     }
                 }
                 Row {
-                    Text { text: @tr("Start with service"); vertical-alignment: center; }
+                    VerticalLayout {
+                        Text { text: @tr("Start with service"); vertical-alignment: center; }
+                        Text {
+                            text: @tr("Runs from when the computer starts, also while DPIMech is closed; DPIMech then starts in the tray. Other profiles stop when you quit DPIMech.");
+                            font-size: 12px;
+                            color: Theme.muted;
+                            wrap: word-wrap;
+                        }
+                    }
                     Switch {
                         checked: draft.autostart;
                         toggled => { draft.autostart = self.checked; }

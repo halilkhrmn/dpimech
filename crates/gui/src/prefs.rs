@@ -28,6 +28,10 @@ pub struct Prefs {
     /// The version that last started, so "What's new" shows once after an update.
     #[serde(default)]
     pub last_version: String,
+    /// DPIMech turned "Start when I sign in" on by itself because a profile starts with the
+    /// service, so it turns it off again when no such profile is left.
+    #[serde(default)]
+    pub sign_in_for_profiles: bool,
 }
 
 impl Prefs {

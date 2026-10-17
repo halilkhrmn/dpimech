@@ -2,6 +2,7 @@
 
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicU64, AtomicUsize, Ordering};
 use std::time::{Duration, Instant};
 
 use anyhow::{Context, bail};
@@ -81,7 +82,15 @@ pub struct Supervisor {
     router: Arc<PerAppRouter>,
     router_failures: Arc<Mutex<Option<mpsc::UnboundedReceiver<String>>>>,
     events: broadcast::Sender<Event>,
+    /// Connected DPIMech apps (window / tray), see `app_connected`.
+    apps: Arc<AtomicUsize>,
+    /// Bumped on every app (dis)connect, so only the latest disconnect stops profiles.
+    app_epoch: Arc<AtomicU64>,
 }
+
+/// How long profiles outlive the app: covers a restart of the app (update, crash) without
+/// switching the user's connection off and on.
+const APP_GONE_GRACE: Duration = Duration::from_secs(20);
 
 /// Shown on the card when the first check after start fails; translated by the GUI.
 const NOT_WORKING_ADVICE: &str = "This setting does not open this profile's sites on your connection. Find a working one in the Strategy Lab, or try another engine.";
@@ -114,6 +123,8 @@ impl Supervisor {
             router,
             router_failures: Arc::new(Mutex::new(Some(failures_rx))),
             events,
+            apps: Arc::new(AtomicUsize::new(0)),
+            app_epoch: Arc::new(AtomicU64::new(0)),
         })
     }
 
@@ -168,6 +179,58 @@ impl Supervisor {
 
     pub fn data_dir(&self) -> &DataDir {
         &self.data
+    }
+
+    /// The DPIMech app connected (its `Hello` said so).
+    pub fn app_connected(&self) {
+        self.apps.fetch_add(1, Ordering::SeqCst);
+        self.app_epoch.fetch_add(1, Ordering::SeqCst);
+    }
+
+    /// The app's connection closed. Once no app has been connected for `APP_GONE_GRACE`, the
+    /// profiles that do not start with the service are stopped: only those may run while
+    /// DPIMech is closed, so nothing keeps bypassing without the app showing it.
+    pub fn app_disconnected(&self) {
+        let epoch = self.app_epoch.fetch_add(1, Ordering::SeqCst) + 1;
+        if self.apps.fetch_sub(1, Ordering::SeqCst) != 1 {
+            return;
+        }
+        let this = self.clone();
+        tokio::spawn(async move {
+            tokio::time::sleep(APP_GONE_GRACE).await;
+            if this.apps.load(Ordering::SeqCst) == 0
+                && this.app_epoch.load(Ordering::SeqCst) == epoch
+            {
+                this.stop_without_app().await;
+            }
+        });
+    }
+
+    async fn stop_without_app(&self) {
+        let (ids, names) = {
+            let state = self.state.lock().await;
+            let running: Vec<&Profile> = without_app(&state.config.profiles, &state.running);
+            (
+                running.iter().map(|p| p.id.clone()).collect::<Vec<_>>(),
+                running.iter().map(|p| p.name.clone()).collect::<Vec<_>>(),
+            )
+        };
+        for id in &ids {
+            let _ = self.stop(id).await;
+        }
+        if !names.is_empty() {
+            self.logs.info(
+                SERVICE_SOURCE,
+                format!(
+                    "DPIMech was closed: stopped {} (does not start with the service)",
+                    names.join(", ")
+                ),
+            );
+        }
+        // A test left running without the app would hold the connection for nobody.
+        if self.lab.is_running().await {
+            self.lab.cancel().await;
+        }
     }
 
     pub async fn start_autostart_profiles(&self) {
@@ -1024,9 +1087,44 @@ fn system_wide_ports(args: &str) -> String {
     "80, 443".to_owned()
 }
 
+/// Running profiles that may not run while the app is closed: the ones without "Start with
+/// service".
+fn without_app<'a, T>(profiles: &'a [Profile], running: &HashMap<String, T>) -> Vec<&'a Profile> {
+    profiles
+        .iter()
+        .filter(|p| !p.autostart && running.contains_key(&p.id))
+        .collect()
+}
+
 #[cfg(test)]
 mod tests {
-    use super::strip_ansi;
+    use super::{HashMap, strip_ansi, without_app};
+    use dpimech_core::model::{EngineKind, Profile, Reliability, Routing};
+
+    #[test]
+    fn closing_the_app_stops_only_profiles_that_do_not_start_with_the_service() {
+        let profile = |id: &str, autostart| Profile {
+            id: id.into(),
+            name: id.into(),
+            engine: EngineKind::ByeDpi,
+            args: String::new(),
+            routing: Routing::LocalProxy { port: 1080 },
+            autostart,
+            reliability: Reliability::default(),
+            check_sites: Vec::new(),
+        };
+        let profiles = [
+            profile("manual", false),
+            profile("boot", true),
+            profile("off", false),
+        ];
+        let running: HashMap<String, ()> = [("manual".into(), ()), ("boot".into(), ())].into();
+        let stopped: Vec<&str> = without_app(&profiles, &running)
+            .iter()
+            .map(|p| p.id.as_str())
+            .collect();
+        assert_eq!(stopped, ["manual"]);
+    }
 
     #[test]
     fn colour_codes_are_removed() {

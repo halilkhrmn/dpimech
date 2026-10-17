@@ -1,5 +1,9 @@
 # Değişiklikler
 
+## 0.4.2
+- DPIMech'ten çıkınca profilleri artık duruyor. DPIMech kapalıyken yalnızca "Servisle birlikte başlat" açık olan profiller, bilgisayar açıldığından itibaren çalışmaya devam ediyor.
+- Servisle birlikte başlayan bir profil varsa DPIMech oturum açınca tepside başlıyor; böylece neyin çalıştığını her zaman görüyorsun.
+
 ## 0.4.1
 - Yeni logo artık görev çubuğunda, Başlat menüsünde, Linux uygulama menüsünde ve güncellemeden önce oluşturulan profil kısayollarında da görünüyor; 0.4.0'a güncelleyince bunlarda eski logo kalıyordu.
 

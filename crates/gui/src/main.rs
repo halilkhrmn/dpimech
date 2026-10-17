@@ -901,7 +901,39 @@ pub fn apply_profiles(ui: &AppWindow, profiles: Vec<ProfileState>) {
     }
     tray::update_profiles(&profiles);
     appproxy::on_profiles(&profiles);
+    follow_service_profiles(ui, profiles.iter().any(|p| p.profile.autostart));
     PROFILES.set(profiles);
+}
+
+thread_local! {
+    static SERVICE_PROFILES: std::cell::Cell<Option<bool>> = const { std::cell::Cell::new(None) };
+}
+
+/// A profile with "Start with service" runs from boot, before anyone opens DPIMech, and the
+/// service stops the other profiles while DPIMech is closed. So with such a profile DPIMech
+/// starts at sign-in too (in the tray) and shows what runs; it turns that off again with the
+/// last such profile if it had turned it on itself.
+fn follow_service_profiles(ui: &AppWindow, any: bool) {
+    if SERVICE_PROFILES.replace(Some(any)) == Some(any) {
+        return;
+    }
+    let enabled = autostart::get().enabled;
+    let mut p = prefs::load();
+    let on = autostart::Autostart {
+        enabled: true,
+        minimized: true,
+    };
+    if any && !enabled && autostart::set(on).is_ok() {
+        p.sign_in_for_profiles = true;
+        prefs::save(&p);
+    } else if !any && p.sign_in_for_profiles {
+        let _ = autostart::set(autostart::Autostart::default());
+        p.sign_in_for_profiles = false;
+        prefs::save(&p);
+    }
+    let enabled = autostart::get().enabled;
+    ui.set_start_forced(any && enabled);
+    ui.set_start_with_windows(enabled);
 }
 
 /// Warns in the editor when the app-proxy app does not look like Chromium or Electron, which

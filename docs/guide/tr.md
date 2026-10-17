@@ -19,6 +19,10 @@
 
 İpucu: **Ayarlar**'dan DPIMech'in oturum açınca tepside gizli başlamasını sağlayabilirsin.
 
+Profiller DPIMech açıkken (tepside gizliyken de) çalışır. DPIMech'ten çıkınca dururlar. Yalnızca **Servisle birlikte
+başlat** açık olan bir profil bilgisayar açıldığından itibaren, DPIMech kapalıyken de çalışır; böyle bir profil
+olduğu sürece DPIMech oturum açınca tepside başlar, böylece neyin çalıştığını her zaman görürsün.
+
 ### Windows'taki motorlar
 
 | Motor | Neyde iyi? | Gerekenler |

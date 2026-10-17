@@ -23,6 +23,10 @@ pub const MAX_FRAME_BYTES: usize = 1024 * 1024;
 pub enum Request {
     Hello {
         client_version: String,
+        /// Sent by the DPIMech app (window / tray), not by one-shot tools. When no app has been
+        /// connected for a while, profiles without "Start with service" are stopped.
+        #[serde(default)]
+        app: bool,
     },
     ListProfiles,
     SaveProfile {

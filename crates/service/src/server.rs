@@ -69,9 +69,14 @@ where
     });
 
     let mut lines = frame_lines(reader);
+    let mut is_app = false;
     let result = loop {
         match read_frame::<_, ClientFrame>(&mut lines).await {
             Ok(Some(frame)) => {
+                if matches!(frame.request, Request::Hello { app: true, .. }) && !is_app {
+                    is_app = true;
+                    supervisor.app_connected();
+                }
                 let result = dispatch(&supervisor, frame.request)
                     .await
                     .map_err(|e| format!("{e:#}"));
@@ -89,6 +94,9 @@ where
             Err(e) => break Err(e),
         }
     };
+    if is_app {
+        supervisor.app_disconnected();
+    }
     event_task.abort();
     drop(out_tx);
     let _ = writer_task.await;
