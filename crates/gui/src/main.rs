@@ -56,9 +56,7 @@ fn main() -> anyhow::Result<()> {
     let ui = AppWindow::new()?;
     let weak = ui.as_weak();
     if !single::acquire(move || {
-        let _ = weak.upgrade_in_event_loop(|ui| {
-            let _ = ui.show();
-        });
+        let _ = weak.upgrade_in_event_loop(|ui| bring_up(&ui));
     }) {
         return Ok(()); // the running instance shows its window instead
     }
@@ -862,19 +860,63 @@ fn main() -> anyhow::Result<()> {
     if !std::env::args().any(|a| a == autostart::MINIMIZED_FLAG) {
         ui.show()?;
     } else {
-        // The Linux tray comes up on its own thread; if it never does, show the window instead
-        // of running invisibly.
-        let weak = ui.as_weak();
-        slint::Timer::single_shot(std::time::Duration::from_secs(3), move || {
-            if !tray::available()
-                && let Some(ui) = weak.upgrade()
-            {
-                let _ = ui.show();
-            }
-        });
+        show_without_tray(ui.as_weak(), 0);
     }
     slint::run_event_loop_until_quit()?;
     Ok(())
+}
+
+/// Started in the tray: the window opens only when there turns out to be no tray to open it from.
+/// The Linux tray comes up on its own thread, and right after sign-in, while the desktop is still
+/// starting, that can take longer than the 3 s this used to wait (#27: the window then opened at
+/// every sign-in). A tray that is neither up nor failed after 30 s is taken as never coming.
+fn show_without_tray(weak: slint::Weak<AppWindow>, waited: u32) {
+    const STEP: std::time::Duration = std::time::Duration::from_millis(500);
+    slint::Timer::single_shot(STEP, move || match tray::ready() {
+        Some(true) => {}
+        None if waited < 60 => show_without_tray(weak, waited + 1),
+        _ => {
+            if let Some(ui) = weak.upgrade() {
+                bring_up(&ui);
+            }
+        }
+    });
+}
+
+/// Brings the window up from the tray or a second launch, also when it is open but minimised or
+/// behind other windows: `show()` does nothing for a window Slint already counts as shown.
+///
+/// On Wayland the window is always opened anew (#27). Slint creates the system window when its
+/// event loop starts, also for a window started in the tray; on Wayland that window never draws
+/// its first frame once shown (the compositor only asks a mapped window for frames), so it never
+/// appears while Slint counts it as shown, and every later "Show DPIMech" did nothing. Hiding
+/// destroys the window on Wayland and the next `show()` creates a working one. Wayland also lets an
+/// app neither restore nor raise its window, which a new window does.
+pub fn bring_up(ui: &AppWindow) {
+    let window = ui.window();
+    if is_wayland(window) {
+        if !window.is_visible() {
+            let _ = ui.show(); // so hide() below has a shown window to destroy
+        }
+        let _ = window.hide();
+    } else if window.is_minimized() {
+        window.set_minimized(false);
+    }
+    let _ = ui.show();
+}
+
+#[cfg(target_os = "linux")]
+fn is_wayland(window: &slint::Window) -> bool {
+    use raw_window_handle::{HasWindowHandle, RawWindowHandle};
+    window
+        .window_handle()
+        .window_handle()
+        .is_ok_and(|handle| matches!(handle.as_raw(), RawWindowHandle::Wayland(_)))
+}
+
+#[cfg(not(target_os = "linux"))]
+fn is_wayland(_: &slint::Window) -> bool {
+    false
 }
 
 thread_local! {

@@ -3,6 +3,11 @@
 User-facing changes per version. The app shows the new entries once after an update ("What's new"),
 and the release page on GitHub uses the English text. Translations: tr.md, ru.md, fa.md, ar.md.
 
+## 0.4.4
+- On Linux with Wayland (for example KDE Plasma), "Show DPIMech" in the tray now opens the window when DPIMech started in the tray; before, the window did not appear and an empty entry stayed in the taskbar.
+- When DPIMech starts in the tray at sign-in, its window no longer opens because the tray icon came up a few seconds late.
+- "Show DPIMech" also brings back a minimised window.
+
 ## 0.4.3
 - Nothing runs while DPIMech is closed. "Start with service" is now "Start with DPIMech": the profile starts when DPIMech opens, and every profile stops when you quit.
 - When the computer loses its internet connection, DPIMech no longer restarts the engine or says the setting stopped working; the card says there is no connection.

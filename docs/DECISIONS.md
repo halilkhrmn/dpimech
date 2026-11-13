@@ -412,3 +412,20 @@ own release), a launchd service and an unsigned universal `.dmg`. The wizard hid
   stays; the installed service has no console.
 - **Not changed:** UDP still goes through the proxy by default for per-app profiles. Flipping it would send
   Discord voice direct for everyone, on the strength of an unproven link to UDP port exhaustion.
+
+## 55. On Wayland the window is opened anew from the tray (2026-11-14)
+- **Problem (#27):** started in the tray (`--minimized`) on KDE Plasma Wayland, the first "Show DPIMech" did
+  nothing, and neither did any later one, until the half-open window was closed from the taskbar. Slint
+  creates the system window when its event loop starts, also for a hidden window; on Wayland a window shown
+  after that never gets its first frame (the compositor only asks a mapped window for frames), so it never
+  appears while Slint counts it as shown, and `show()` on a window Slint counts as shown does nothing.
+  The same `show()` no-op left a minimised window minimised. Reproduced with 0.4.2 and 0.4.3.
+- **Choice:** `bring_up` (main.rs) for the tray items, a second launch and the no-tray fallback: on Wayland
+  it hides the window (which destroys it there) and shows it, so a working window is created; elsewhere it
+  un-minimises. Wayland lets an app neither restore nor raise its own window, and a new window comes up in
+  front, so this also covers "already open behind other windows". Cost: the window's state inside Slint
+  stays, but the system window (and its size the user chose on Wayland) is new each time.
+- **Also:** started in the tray, the window opens only when the tray failed or is still not up after 30 s
+  (was: not up after 3 s, which a desktop still starting after sign-in can exceed: the window then opened
+  in the broken way above at every sign-in). Wayland is told from X11 by the raw window handle
+  (Slint feature `raw-window-handle-06`).

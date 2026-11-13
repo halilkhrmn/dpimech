@@ -35,6 +35,8 @@ libc = "0.2.189"
 gtk = "0.18.2"
 # Loads the appindicator copy bundled in the AppImage when the system has none.
 libloading = "0.8.9"
+# Tells a Wayland window from an X11 one (main.rs: is_wayland).
+raw-window-handle = "0.6.2"
 
 [target."cfg(windows)".dependencies]
 lnk = "0.6.4"

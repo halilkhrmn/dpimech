@@ -121,6 +121,21 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-11-14 (51) — 0.4.4: Wayland: "Show DPIMech" works when started in the tray (#27)
+- Why: issue #27 (KDE Plasma Wayland, AppImage, started at sign-in): a blank DPIMech entry sat in the taskbar
+  after sign-in, "Show DPIMech" in the tray did nothing, and closing the entry took several tries.
+- Cause: on Wayland the first `show()` of a window started hidden never maps it (no first frame), while Slint
+  counts it as shown, so every later `show()` is a no-op; only closing it (which destroys it) helped.
+  At sign-in the 3 s no-tray fallback took this broken path when the tray came up late. DECISIONS #55.
+- Done: `bring_up` (main.rs) for tray "Show" / "Report a problem", a second launch and the fallback: on
+  Wayland hide (destroy) and show again; elsewhere un-minimise. `tray::ready()` tells pending from failed;
+  the fallback waits up to 30 s for the tray. Slint feature `raw-window-handle-06` + `raw-window-handle`.
+- Verified: fmt, clippy, tests (Linux container). Plasma 6 Wayland (Fedora 45) with the release build and a KWin
+  script to minimise / close: 0.4.2 and 0.4.3 reproduce it (first Show after `--minimized` leaves no window;
+  a minimised window stays minimised). New build: first Show opens a drawn window, Show while open or
+  minimised gives a visible un-minimised window, taskbar Close hides it at once and the app stays in the tray,
+  plain start unchanged. Not tested: Windows/macOS (only the un-minimise branch changes there), X11.
+
 ### 2026-11-13 (50) — 0.4.3: nothing runs while the app is closed; offline is not a broken strategy
 - Why: on a daily-driver PC a wizard profile ("Start with service") ran ProxiFyre from boot with the app closed,
   the monitor restarted the engine three times while the whole network was down and then advised the Strategy
