@@ -3,6 +3,14 @@
 User-facing changes per version. The app shows the new entries once after an update ("What's new"),
 and the release page on GitHub uses the English text. Translations: tr.md, ru.md, fa.md, ar.md.
 
+## 0.4.3
+- Nothing runs while DPIMech is closed. "Start with service" is now "Start with DPIMech": the profile starts when DPIMech opens, and every profile stops when you quit.
+- When the computer loses its internet connection, DPIMech no longer restarts the engine or says the setting stopped working; the card says there is no connection.
+- The service log stays small: what an engine writes per connection is only kept with the detailed log on.
+- The update check tries again soon when the network is not up yet after the computer starts.
+- Per-app routing now closes ProxiFyre cleanly instead of ending it abruptly.
+- The Logs page has a filter, the warning about another DPI tool can be hidden and is logged once, and the first time you close the window DPIMech says it keeps running in the tray.
+
 ## 0.4.2
 - Quitting DPIMech now stops its profiles. Only a profile with "Start with service" keeps running while DPIMech is closed, from when the computer starts.
 - When a profile starts with the service, DPIMech starts in the tray when you sign in, so you always see what runs.

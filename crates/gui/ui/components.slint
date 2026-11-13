@@ -137,6 +137,8 @@ export component ProfileCard inherits Rectangle {
     VerticalLayout {
         padding: 16px;
         spacing: 10px;
+        // From the top: a card with fewer rows must not spread them out.
+        alignment: start;
         HorizontalLayout {
             spacing: 8px;
             Text {
@@ -180,6 +182,8 @@ export component ProfileCard inherits Rectangle {
         }
         HorizontalLayout {
             spacing: 8px;
+            // As tall as the check button, whether it is there or not.
+            height: 24px;
             VerticalLayout { alignment: center; StatusDot { status: item.status; } }
             Text {
                 text: item.status-text;

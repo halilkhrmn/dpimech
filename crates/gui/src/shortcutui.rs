@@ -2,6 +2,7 @@
 
 use std::cell::RefCell;
 
+use dpimech_core::model::Routing;
 use slint::{ComponentHandle, Image, ModelRc, SharedString, VecModel};
 
 use crate::AppWindow;
@@ -58,13 +59,20 @@ pub fn open(ui: &AppWindow, id: &str) {
     let id = id.to_owned();
     std::thread::spawn(move || {
         let choices = shortcut::choices(&profile);
-        let icon = choices.first().and_then(shortcut::app_icon);
+        // A profile with apps of its own opens the first of them; for the others the list is
+        // every installed app, and guessing the first one in the alphabet helps nobody.
+        let own_apps = matches!(
+            profile.routing,
+            Routing::PerApp { .. } | Routing::AppProxy { .. }
+        );
+        let index = if own_apps { 0 } else { choices.len() };
+        let icon = choices.get(index).and_then(shortcut::app_icon);
         let _ = weak.upgrade_in_event_loop(move |ui| {
             if PROFILE.with_borrow(|p| p.as_deref() != Some(&id)) {
                 return;
             }
             ui.set_shortcut_apps(apps_model(&choices));
-            ui.set_shortcut_app_index(0);
+            ui.set_shortcut_app_index(index as i32);
             ui.set_shortcut_preview(Image::from_rgba8(shortcut::icon(icon.as_ref(), PREVIEW)));
             ui.set_shortcut_loading(false);
             CHOICES.set(choices);

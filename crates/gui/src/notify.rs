@@ -170,6 +170,16 @@ pub fn app_open_failed(app: &str, error: &str) {
     show(&trf!("Could not open {}", app), error);
 }
 
+/// Closing the window only hides it; said once, the first time it happens.
+pub fn still_in_tray() {
+    show(
+        &tr("DPIMech is still running"),
+        &tr(
+            "Profiles keep working. To stop them and quit, right-click the DPIMech icon next to the clock.",
+        ),
+    );
+}
+
 /// Tells the user once per version that a new DPIMech release is out.
 pub fn app_update(version: &str) {
     static SHOWN: Mutex<Option<String>> = Mutex::new(None);

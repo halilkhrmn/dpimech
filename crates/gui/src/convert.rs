@@ -28,7 +28,7 @@ pub fn empty_draft() -> ProfileDraft {
         routing_index: 0,
         port: DEFAULT_PROXY_PORT as i32,
         args: "".into(),
-        autostart: false,
+        autostart: true,
         auto_restart: true,
         restart_hours: 0,
         tcp_only: false,

@@ -81,7 +81,7 @@ impl Report {
         });
 
         // The log model is newest first; reports read top to bottom.
-        let logs = ui.get_logs();
+        let logs = crate::logview::all();
         let mut log: Vec<String> = logs
             .iter()
             .take(FILE_LOG_LINES)

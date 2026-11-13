@@ -19,9 +19,9 @@
 
 Tip: in **Settings** you can make DPIMech start when you sign in, hidden in the tray.
 
-Profiles run while DPIMech is open (also hidden in the tray). When you quit DPIMech, they stop. Only a profile with
-**Start with service** runs from when the computer starts, also while DPIMech is closed; as long as there is one,
-DPIMech starts in the tray when you sign in, so you always see what runs.
+Profiles run while DPIMech is open (also hidden in the tray). When you quit DPIMech, they all stop. A profile with
+**Start with DPIMech** starts by itself when DPIMech opens; turn on *Start DPIMech when I sign in* in Settings to
+have it running from when you sign in.
 
 ### Engines on Windows
 

@@ -149,6 +149,7 @@ mod proxifyre {
 
             let (stop_tx, stop_rx) = oneshot::channel();
             let failures = self.failures.clone();
+            let logs = self.logs.clone();
             let done = tokio::spawn(async move {
                 tokio::select! {
                     exit = child.wait() => {
@@ -158,9 +159,7 @@ mod proxifyre {
                         };
                         let _ = failures.send(reason);
                     }
-                    _ = stop_rx => {
-                        let _ = child.kill().await;
-                    }
+                    _ = stop_rx => stop(&mut child, &logs).await,
                 }
             });
             *active = Some(Active {
@@ -169,6 +168,68 @@ mod proxifyre {
                 done,
             });
             Ok(())
+        }
+    }
+
+    /// How long ProxiFyre gets to leave by itself. Short: Windows gives a service about five
+    /// seconds at shutdown.
+    #[cfg(windows)]
+    const EXIT_GRACE: Duration = Duration::from_secs(3);
+
+    /// Asks ProxiFyre to exit (Ctrl+C, what it expects) so it hands the adapters back to the
+    /// packet filter driver itself, and only ends it when it does not leave in time.
+    async fn stop(child: &mut tokio::process::Child, logs: &LogBus) {
+        #[cfg(windows)]
+        if let Some(pid) = child.id() {
+            let asked = tokio::task::spawn_blocking(move || ctrl_c::send(pid))
+                .await
+                .unwrap_or(false);
+            if asked {
+                if tokio::time::timeout(EXIT_GRACE, child.wait()).await.is_ok() {
+                    logs.info(SOURCE, "stopped");
+                    return;
+                }
+                logs.warn(SOURCE, "did not exit when asked; ended it");
+            }
+        }
+        let _ = logs;
+        let _ = child.kill().await;
+    }
+
+    /// Ctrl+C for a child that has its own hidden console (`CREATE_NO_WINDOW`): the event only
+    /// reaches processes on the caller's console, so the service joins the child's for a moment.
+    #[cfg(windows)]
+    mod ctrl_c {
+        use std::sync::Mutex;
+        use std::time::Duration;
+
+        use windows_sys::Win32::System::Console::{
+            AttachConsole, CTRL_C_EVENT, FreeConsole, GenerateConsoleCtrlEvent, GetConsoleWindow,
+            SetConsoleCtrlHandler,
+        };
+
+        /// A process has one console at a time.
+        static CONSOLE: Mutex<()> = Mutex::new(());
+
+        /// False when the event could not be sent; the caller then ends the process.
+        pub fn send(pid: u32) -> bool {
+            let _one_at_a_time = CONSOLE.lock().unwrap();
+            // SAFETY: plain Win32 calls; every one is checked or harmless when it fails.
+            unsafe {
+                // A development run has a console of its own and would have to give it up.
+                // The installed service has none.
+                if !GetConsoleWindow().is_null() || AttachConsole(pid) == 0 {
+                    return false;
+                }
+                // The event goes to everyone on that console, which now includes us.
+                SetConsoleCtrlHandler(None, 1);
+                let sent = GenerateConsoleCtrlEvent(CTRL_C_EVENT, 0) != 0;
+                FreeConsole();
+                // Delivery is asynchronous: stay deaf until it has passed.
+                std::thread::sleep(Duration::from_millis(200));
+                SetConsoleCtrlHandler(None, 0);
+                sent
+            }
         }
     }
 

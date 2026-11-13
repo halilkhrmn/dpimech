@@ -155,7 +155,6 @@ pub fn run_until(
         let (events, _) = broadcast::channel(256);
         let supervisor = Supervisor::new(data, events.clone())?;
         supervisor.spawn_background().await;
-        supervisor.start_autostart_profiles().await;
 
         let result = tokio::select! {
             r = server::serve(supervisor.clone(), events) => r,
@@ -197,11 +196,17 @@ async fn shutdown_signal() {
     }
 }
 
+const MAX_LOG_BYTES: u64 = 2 * 1024 * 1024;
+
 fn init_tracing(log_file: Option<PathBuf>) {
     let filter = tracing_subscriber::EnvFilter::try_from_default_env()
         .unwrap_or_else(|_| tracing_subscriber::EnvFilter::new("info"));
     let builder = tracing_subscriber::fmt().with_env_filter(filter);
     match log_file.and_then(|p| {
+        // One old file is kept; the service starts at every boot, which is often enough.
+        if std::fs::metadata(&p).is_ok_and(|m| m.len() > MAX_LOG_BYTES) {
+            let _ = std::fs::rename(&p, p.with_extension("log.1"));
+        }
         std::fs::OpenOptions::new()
             .create(true)
             .append(true)

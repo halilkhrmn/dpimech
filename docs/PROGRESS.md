@@ -121,6 +121,35 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-11-13 (50) — 0.4.3: nothing runs while the app is closed; offline is not a broken strategy
+- Why: on a daily-driver PC a wizard profile ("Start with service") ran ProxiFyre from boot with the app closed,
+  the monitor restarted the engine three times while the whole network was down and then advised the Strategy
+  Lab, and 81 % of service.log was ByeDPI's per-connection lines.
+- Done: "Start with service" became "Start with DPIMech" (same `autostart` key): the service starts nothing by
+  itself, the first app connection starts those profiles, every profile stops 20 s after the last app leaves;
+  the sign-in switch is no longer locked on (`sign_in_for_profiles` removed). Monitor: when fewer than half of
+  the sites answer it first probes three public resolvers by address and reports "offline" instead of
+  restarting. Engine output after the first 20 lines per start goes to the detailed log only; service.log
+  rotates to service.log.1 at 2 MB; the update check retries after 5 min (doubling) when it fails. DECISIONS #53,
+  user guide and changelog in 5 languages.
+- Verified: fmt, clippy (Windows), tests. End to end on Windows with a dev service (`DPIMECH_PIPE`) and real
+  ByeDPI, local-proxy profiles: nothing started with the service; an app `Hello` started the profile with the
+  switch on; both running profiles stopped 25 s after the app left (still running at 10 s); a profile switched
+  off stayed off when the app came back inside the grace. The GUI opened on every page against that service.
+- Also done: ProxiFyre is asked to exit with Ctrl+C before it is ended (DECISIONS #54); the "another DPI tool"
+  warning is logged once per tool and its banner can be hidden; GUI: switches line up at the right edge
+  (Settings, editor), wider editor fields, "New profile" starts with the app like the wizard, cards line up, a
+  filter on the Logs page (`logview.rs`), the driver row says where to remove it, a shortcut for a profile
+  without apps opens nothing by default, and a one-time notification that closing the window keeps DPIMech in
+  the tray.
+- Verified (2): a stand-in console program in place of ProxiFyre under a console-less dev service
+  (`DETACHED_PROCESS`) left on the Ctrl+C within the grace ("stopped", not "ended it"), the service and the
+  other profile's engine kept running; the second profile start did not repeat the warning; the changed pages
+  were looked at in the running GUI.
+- Open: the offline branch was not exercised live (needs the network down); per-app (ProxiFyre) not re-tested,
+  it needs the installed service; Linux and macOS builds not run. The real ProxiFyre under the installed service and the tray notification were not
+  run. Not done: ProxiFyre restarts on every route change and routes UDP by default.
+
 ### 2026-10-16 (49) — 0.4.2: profiles stop when the app quits
 - Done: the service stops profiles without "Start with service" (and a running Lab test) 20 s after the last
   app connection closes (`Hello { app: true }`, supervisor `app_connected` / `app_disconnected`). The app keeps
