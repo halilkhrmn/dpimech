@@ -106,9 +106,32 @@ impl MonitorHistory {
     }
 }
 
+/// Shown on the card while the computer itself is offline; translated by the GUI.
+pub const OFFLINE_ADVICE: &str =
+    "No internet connection. The profile is left as it is until the connection is back.";
+
+/// Public resolvers by address: reached without DNS and without the engine, and in different
+/// networks, so one of them being blocked does not look like "offline".
+const INTERNET_PROBES: [&str; 3] = ["1.1.1.1:443", "8.8.8.8:443", "9.9.9.9:443"];
+
+/// Whether the computer reaches the internet at all, the engine aside. Without this a dead
+/// connection looks exactly like a strategy that stopped working, and restarting the engine
+/// for it only adds churn.
+async fn internet_reachable() -> bool {
+    let probes = INTERNET_PROBES.iter().map(|addr| async move {
+        matches!(
+            tokio::time::timeout(TIMEOUT, TcpStream::connect(*addr)).await,
+            Ok(Ok(_))
+        )
+    });
+    futures_util::future::join_all(probes).await.contains(&true)
+}
+
 pub enum MonitorEvent {
     /// The check right after the engine started.
     First(ConnectionHealth, Vec<String>),
+    /// The sites did not answer because the computer is offline; not the engine's fault.
+    Offline(ConnectionHealth),
     /// A normal (or first bad, still unconfirmed) check.
     Report(ConnectionHealth),
     /// Two bad checks in a row.
@@ -143,6 +166,25 @@ pub async fn monitor_sites(
         let usual_ms = history.lock().unwrap().usual_ms();
         let too_few = ok * 2 < total;
         let too_slow = usual_ms > 0 && latency_ms > (usual_ms * 3).max(usual_ms + 500);
+        if too_few && !internet_reachable().await {
+            // Says nothing about the engine: no streak, no restart, and the first real check
+            // still comes once the connection is back.
+            bad_streak = 0;
+            let health = ConnectionHealth {
+                latency_ms,
+                usual_ms,
+                ok,
+                total,
+                checked_unix: crate::logs::now_ms() / 1000,
+                slow: true,
+                advice: Some(OFFLINE_ADVICE.into()),
+            };
+            if events.send(MonitorEvent::Offline(health)).await.is_err() {
+                return;
+            }
+            wait = CONFIRM_AFTER;
+            continue;
+        }
         let bad = too_few || too_slow;
         if bad {
             bad_streak += 1;

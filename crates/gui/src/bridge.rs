@@ -7,12 +7,11 @@ use dpimech_core::ipc::{Client, Event, Reply, Request};
 use dpimech_core::lab::LabRequest;
 use dpimech_core::model::{EngineKind, LogLevel, LogLine, Profile};
 use dpimech_core::packages::{PackageId, PackageInfo};
-use slint::{ComponentHandle, Model, ModelRc, SharedString, VecModel, Weak};
+use slint::{ComponentHandle, ModelRc, SharedString, VecModel, Weak};
 use tokio::sync::mpsc;
 
 use crate::{AppWindow, LogItem, PackageItem, Page, convert, labui, wizard};
 
-const MAX_LOG_ROWS: usize = 1000;
 /// How often to look for other DPI tools running next to DPIMech.
 const FOREIGN_CHECK: Duration = Duration::from_secs(30);
 
@@ -510,10 +509,10 @@ fn replace_logs(ui: &Weak<AppWindow>, lines: Vec<LogLine>) {
         let items: Vec<LogItem> = lines
             .iter()
             .rev()
-            .take(MAX_LOG_ROWS)
+            .take(crate::logview::MAX_ROWS)
             .map(convert::log_item)
             .collect();
-        ui.set_logs(ModelRc::new(VecModel::from(items)));
+        crate::logview::replace(&ui, items);
     });
 }
 
@@ -532,12 +531,6 @@ async fn refresh_foreign_tools(ui: &Weak<AppWindow>, client: &Client) {
 fn append_log(ui: &Weak<AppWindow>, line: LogLine) {
     crate::logfile::write(&line);
     let _ = ui.upgrade_in_event_loop(move |ui| {
-        let logs = ui.get_logs();
-        if let Some(model) = logs.as_any().downcast_ref::<VecModel<LogItem>>() {
-            model.insert(0, convert::log_item(&line));
-            if model.row_count() > MAX_LOG_ROWS {
-                model.remove(MAX_LOG_ROWS);
-            }
-        }
+        crate::logview::append(&ui, convert::log_item(&line));
     });
 }

@@ -377,3 +377,38 @@ own release), a launchd service and an unsigned universal `.dmg`. The wizard hid
   switch is locked on and says why), so whatever runs from boot is visible in the tray. If DPIMech turned it on
   itself (`sign_in_for_profiles` in gui.toml) it turns it off with the last such profile; a choice the user made
   stays.
+
+## 53. Nothing runs while the app is closed; "Start with DPIMech" replaces "Start with service" (2026-11-13)
+- **Problem:** with #52 a profile with "Start with service" still ran from boot with the app closed, and the wizard
+  turns that switch on. On a daily-driver PC ProxiFyre (and with it the packet filter driver in the path of all
+  traffic) ran every day without the app, the monitor kept restarting the engine while the whole network was
+  down, and nothing on screen said so. Supersedes the exception in #52.
+- **Rule:** the same switch (`autostart` in config.toml, unchanged) now means "Start with DPIMech". The service
+  starts nothing by itself. The first app to connect after none was open starts those profiles
+  (`app_session`); an app back within `APP_GONE_GRACE` finds the profiles as it left them, so a profile the user
+  switched off stays off across an app restart. When no app has been connected for the grace, every profile and
+  ProxiFyre stop. The sign-in switch is the user's own again (no longer locked on).
+- **The service stays running, idle.** Stopping it with the app would need start/stop rights for users on the
+  service and changes in install and update; an idle service holds no engine and no router, which is what
+  mattered. The packet filter driver stays bound to the adapters while installed, as before.
+- **Offline is not "the strategy broke".** When fewer than half of a profile's sites answer, the monitor first
+  connects to three public resolvers by address, without the engine and without DNS. If none answers, the
+  computer is offline: no bad streak, no restart, the card says there is no connection, and the check comes
+  back after 30 s.
+- **Engine output:** the first 20 lines of each engine start are logged; the rest is per-connection chatter and
+  goes to the detailed log only (81 % of a real service.log was ByeDPI's per-connection lines). service.log is
+  renamed to service.log.1 at start once it passes 2 MB.
+
+## 54. ProxiFyre is asked to exit before it is ended (2026-11-13)
+- **Problem:** the service ended ProxiFyre with `TerminateProcess` on every stop and every route change.
+  ProxiFyre holds the Windows Packet Filter driver, which sits in the path of all traffic on every adapter, and
+  expects Ctrl+C to shut down ("press Control+C to exit").
+- **Choice:** Ctrl+C first, `TerminateProcess` only when it has not left after 3 s (Windows gives a service
+  about 5 s at shutdown). The child runs with `CREATE_NO_WINDOW`, so it has a hidden console of its own and the
+  event cannot be sent from outside it: the service attaches to that console for a moment
+  (`AttachConsole` → ignore Ctrl+C in itself → `GenerateConsoleCtrlEvent` → `FreeConsole`), one at a time.
+  No `CREATE_NEW_PROCESS_GROUP`: that flag makes the child ignore Ctrl+C.
+- **Development runs** have a console of their own and would have to give it up, so there the old hard stop
+  stays; the installed service has no console.
+- **Not changed:** UDP still goes through the proxy by default for per-app profiles. Flipping it would send
+  Discord voice direct for everyone, on the strength of an unproven link to UDP port exhaustion.

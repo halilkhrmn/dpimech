@@ -233,6 +233,8 @@ pub struct Profile {
     /// Raw engine arguments as the user sees them (strategy).
     pub args: String,
     pub routing: Routing,
+    /// "Start with DPIMech": the service starts the profile when the app opens. Nothing runs
+    /// while the app is closed.
     #[serde(default)]
     pub autostart: bool,
     #[serde(default)]

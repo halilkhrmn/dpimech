@@ -209,6 +209,7 @@ export component ProfileEditorPage inherits VerticalLayout {
                 Row {
                     Text { text: @tr("Name"); vertical-alignment: center; }
                     LineEdit {
+                        min-width: 320px;
                         text: draft.name;
                         placeholder-text: @tr("e.g. Discord");
                         edited(t) => { draft.name = t; }
@@ -236,17 +237,20 @@ export component ProfileEditorPage inherits VerticalLayout {
                 }
                 Row {
                     VerticalLayout {
-                        Text { text: @tr("Start with service"); vertical-alignment: center; }
+                        Text { text: @tr("Start with DPIMech"); vertical-alignment: center; }
                         Text {
-                            text: @tr("Runs from when the computer starts, also while DPIMech is closed; DPIMech then starts in the tray. Other profiles stop when you quit DPIMech.");
+                            text: @tr("Starts when DPIMech opens. Every profile stops when you quit DPIMech.");
                             font-size: 12px;
                             color: Theme.muted;
                             wrap: word-wrap;
                         }
                     }
-                    Switch {
-                        checked: draft.autostart;
-                        toggled => { draft.autostart = self.checked; }
+                    HorizontalLayout {
+                        alignment: end;
+                        Switch {
+                            checked: draft.autostart;
+                            toggled => { draft.autostart = self.checked; }
+                        }
                     }
                 }
                 Row {
@@ -259,12 +263,15 @@ export component ProfileEditorPage inherits VerticalLayout {
                             wrap: word-wrap;
                         }
                     }
-                    Switch {
-                        checked: draft.auto-restart && draft.check-index != 0;
-                        toggled => {
-                            draft.auto-restart = self.checked;
-                            // Index 3 = 5 minutes, the service's default.
-                            draft.check-index = !self.checked ? 0 : draft.check-index != 0 ? draft.check-index : 3;
+                    HorizontalLayout {
+                        alignment: end;
+                        Switch {
+                            checked: draft.auto-restart && draft.check-index != 0;
+                            toggled => {
+                                draft.auto-restart = self.checked;
+                                // Index 3 = 5 minutes, the service's default.
+                                draft.check-index = !self.checked ? 0 : draft.check-index != 0 ? draft.check-index : 3;
+                            }
                         }
                     }
                 }

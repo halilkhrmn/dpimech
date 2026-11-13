@@ -1,4 +1,4 @@
-import { Palette, Button, ListView, GroupBox, Switch, AboutSlint, ScrollView, ComboBox } from "std-widgets.slint";
+import { Palette, Button, ListView, GroupBox, Switch, AboutSlint, ScrollView, ComboBox, LineEdit } from "std-widgets.slint";
 import { Theme, Icons } from "theme.slint";
 import { ProfileItem, LogItem, ProfileCard, EmptyState, PageHeader } from "components.slint";
 
@@ -63,6 +63,7 @@ export component LogsPage inherits VerticalLayout {
     in property <bool> detailed-log;
     callback clear;
     callback set-detailed-log(bool);
+    callback filter(string);
 
     padding: Theme.page-padding;
     spacing: 16px;
@@ -70,6 +71,11 @@ export component LogsPage inherits VerticalLayout {
     PageHeader {
         title: @tr("Logs");
         subtitle: @tr("Newest first. Engine output and service events.");
+        LineEdit {
+            width: 240px;
+            placeholder-text: @tr("Filter: profile, word or \"error\"");
+            edited(text) => { root.filter(text); }
+        }
         Button { text: @tr("Clear"); clicked => { root.clear(); } }
     }
 
@@ -134,7 +140,6 @@ export component SettingsPage inherits VerticalLayout {
     in property <string> service-info;
     in property <string> os-name;
     in property <bool> start-with-windows;
-    in property <bool> start-forced;
     in property <bool> easy-mode;
     callback set-autostart(bool);
     in property <[string]> language-names;
@@ -195,10 +200,14 @@ export component SettingsPage inherits VerticalLayout {
                                 wrap: word-wrap;
                             }
                         }
-                        Switch {
-                            accessible-label: @tr("Easy mode");
-                            checked: easy-mode;
-                            toggled => { root.set-easy-mode(self.checked); }
+                        // At the right edge, whatever else makes the column wide.
+                        HorizontalLayout {
+                            alignment: end;
+                            Switch {
+                                accessible-label: @tr("Easy mode");
+                                checked: easy-mode;
+                                toggled => { root.set-easy-mode(self.checked); }
+                            }
                         }
                     }
                     Row {
@@ -226,19 +235,20 @@ export component SettingsPage inherits VerticalLayout {
                             horizontal-stretch: 1;
                             Text { text: @tr("Start DPIMech when I sign in"); }
                             Text {
-                                text: root.start-forced
-                                    ? @tr("Always on while a profile starts with the service: DPIMech then starts in the tray and shows what runs.")
-                                    : @tr("Starts in the tray. Profiles run only while DPIMech is open, except the ones that start with the service.");
+                                text: @tr("Starts in the tray. Profiles run only while DPIMech is open.");
                                 font-size: 12px;
                                 color: Theme.muted;
                                 wrap: word-wrap;
                             }
                         }
-                        Switch {
-                            accessible-label: @tr("Start DPIMech when I sign in");
-                            enabled: !root.start-forced;
-                            checked: start-with-windows || root.start-forced;
-                            toggled => { root.set-autostart(self.checked); }
+                        // At the right edge, whatever else makes the column wide.
+                        HorizontalLayout {
+                            alignment: end;
+                            Switch {
+                                accessible-label: @tr("Start DPIMech when I sign in");
+                                checked: start-with-windows;
+                                toggled => { root.set-autostart(self.checked); }
+                            }
                         }
                     }
                 }
@@ -260,10 +270,14 @@ export component SettingsPage inherits VerticalLayout {
                                 wrap: word-wrap;
                             }
                         }
-                        Switch {
-                            accessible-label: @tr("Save the log to daily files");
-                            checked: log-to-file;
-                            toggled => { root.set-log-to-file(self.checked); }
+                        // At the right edge, whatever else makes the column wide.
+                        HorizontalLayout {
+                            alignment: end;
+                            Switch {
+                                accessible-label: @tr("Save the log to daily files");
+                                checked: log-to-file;
+                                toggled => { root.set-log-to-file(self.checked); }
+                            }
                         }
                     }
                     Row {

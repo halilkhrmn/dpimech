@@ -1,5 +1,13 @@
 # Değişiklikler
 
+## 0.4.3
+- DPIMech kapalıyken hiçbir şey çalışmıyor. "Servisle birlikte başlat" artık "DPIMech ile birlikte başlat": profil DPIMech açılınca başlıyor, çıkınca bütün profiller duruyor.
+- Bilgisayarın internet bağlantısı gittiğinde DPIMech artık motoru yeniden başlatmıyor ve ayarın çalışmadığını söylemiyor; kartta bağlantı olmadığı yazıyor.
+- Servis günlüğü küçük kalıyor: motorun her bağlantı için yazdıkları yalnızca ayrıntılı günlük açıkken tutuluyor.
+- Bilgisayar açıldığında ağ henüz hazır değilse güncelleme denetimi kısa süre sonra yeniden deniyor.
+- Uygulama bazlı yönlendirme ProxiFyre'ı artık aniden sonlandırmak yerine düzgünce kapatıyor.
+- Günlükler sayfasına süzgeç geldi; başka bir DPI aracı uyarısı gizlenebiliyor ve günlüğe bir kez yazılıyor; pencereyi ilk kapattığında DPIMech tepside çalışmaya devam ettiğini söylüyor.
+
 ## 0.4.2
 - DPIMech'ten çıkınca profilleri artık duruyor. DPIMech kapalıyken yalnızca "Servisle birlikte başlat" açık olan profiller, bilgisayar açıldığından itibaren çalışmaya devam ediyor.
 - Servisle birlikte başlayan bir profil varsa DPIMech oturum açınca tepside başlıyor; böylece neyin çalıştığını her zaman görüyorsun.

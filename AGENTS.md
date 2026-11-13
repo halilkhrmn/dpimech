@@ -90,6 +90,7 @@ crates/gui/       dpimech binary (Slint)
                     service, AppImage swapped by the GUI; banner "Restart and update"
   src/notify.rs     Windows notifications (own AppUserModelID), status-change detection
   src/single.rs     single GUI instance (Windows mutex + event, Unix socket)
+  src/logview.rs    Logs page: all recent lines kept here, the page shows the ones matching the filter
   src/logfile.rs    daily log files (opt-in) and error snapshots written by the GUI (never by the service)
   src/report.rs     "Report a problem": report text, GitHub issue / mailto links; ui/report.slint
   src/i18n.rs       translations for Rust-built text + language choice (tr, ru, fa, ar) and the user's

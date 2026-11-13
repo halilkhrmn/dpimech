@@ -2,7 +2,7 @@
 
 use std::collections::{HashMap, HashSet, VecDeque};
 use std::sync::Arc;
-use std::sync::atomic::{AtomicU64, AtomicUsize, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU64, AtomicUsize, Ordering};
 use std::time::{Duration, Instant};
 
 use anyhow::{Context, bail};
@@ -86,11 +86,19 @@ pub struct Supervisor {
     apps: Arc<AtomicUsize>,
     /// Bumped on every app (dis)connect, so only the latest disconnect stops profiles.
     app_epoch: Arc<AtomicU64>,
+    /// An app is open, or closed less than `APP_GONE_GRACE` ago. Profiles with "Start with
+    /// DPIMech" start once per such stretch, not on every reconnect.
+    app_session: Arc<AtomicBool>,
+    /// Other DPI tools already named in the log, so every profile start does not repeat them.
+    foreign_warned: Arc<std::sync::Mutex<HashSet<String>>>,
 }
 
 /// How long profiles outlive the app: covers a restart of the app (update, crash) without
 /// switching the user's connection off and on.
 const APP_GONE_GRACE: Duration = Duration::from_secs(20);
+
+const UPDATE_EVERY: Duration = Duration::from_secs(24 * 60 * 60);
+const UPDATE_RETRY_FIRST: Duration = Duration::from_secs(5 * 60);
 
 /// Shown on the card when the first check after start fails; translated by the GUI.
 const NOT_WORKING_ADVICE: &str = "This setting does not open this profile's sites on your connection. Find a working one in the Strategy Lab, or try another engine.";
@@ -125,6 +133,8 @@ impl Supervisor {
             events,
             apps: Arc::new(AtomicUsize::new(0)),
             app_epoch: Arc::new(AtomicU64::new(0)),
+            app_session: Arc::new(AtomicBool::new(false)),
+            foreign_warned: Arc::default(),
         })
     }
 
@@ -153,8 +163,12 @@ impl Supervisor {
         let events = self.events.clone();
         tokio::spawn(async move {
             tokio::time::sleep(Duration::from_secs(10)).await;
+            // Right after boot the network is often not up yet: try again soon instead of
+            // waiting a day.
+            let mut retry = UPDATE_RETRY_FIRST;
             loop {
-                if let Err(e) = packages.check_updates().await {
+                let checked = packages.check_updates().await;
+                if let Err(e) = &checked {
                     tracing::warn!("update check failed: {e:#}");
                 }
                 if let Err(e) = lab.update_standard_strategies().await {
@@ -172,7 +186,15 @@ impl Supervisor {
                         version,
                     });
                 }
-                tokio::time::sleep(Duration::from_secs(24 * 60 * 60)).await;
+                let wait = if checked.is_ok() {
+                    retry = UPDATE_RETRY_FIRST;
+                    UPDATE_EVERY
+                } else {
+                    let wait = retry;
+                    retry = (retry * 2).min(UPDATE_EVERY);
+                    wait
+                };
+                tokio::time::sleep(wait).await;
             }
         });
     }
@@ -181,15 +203,20 @@ impl Supervisor {
         &self.data
     }
 
-    /// The DPIMech app connected (its `Hello` said so).
+    /// The DPIMech app connected (its `Hello` said so). The first app after none was open
+    /// starts the profiles with "Start with DPIMech"; an app that comes back within the grace
+    /// finds them as it left them, including the ones the user switched off.
     pub fn app_connected(&self) {
         self.apps.fetch_add(1, Ordering::SeqCst);
         self.app_epoch.fetch_add(1, Ordering::SeqCst);
+        if !self.app_session.swap(true, Ordering::SeqCst) {
+            let this = self.clone();
+            tokio::spawn(async move { this.start_autostart_profiles().await });
+        }
     }
 
-    /// The app's connection closed. Once no app has been connected for `APP_GONE_GRACE`, the
-    /// profiles that do not start with the service are stopped: only those may run while
-    /// DPIMech is closed, so nothing keeps bypassing without the app showing it.
+    /// The app's connection closed. Once no app has been connected for `APP_GONE_GRACE`, every
+    /// profile is stopped: nothing touches the network without the app showing it.
     pub fn app_disconnected(&self) {
         let epoch = self.app_epoch.fetch_add(1, Ordering::SeqCst) + 1;
         if self.apps.fetch_sub(1, Ordering::SeqCst) != 1 {
@@ -207,9 +234,10 @@ impl Supervisor {
     }
 
     async fn stop_without_app(&self) {
+        self.app_session.store(false, Ordering::SeqCst);
         let (ids, names) = {
             let state = self.state.lock().await;
-            let running: Vec<&Profile> = without_app(&state.config.profiles, &state.running);
+            let running: Vec<&Profile> = running_profiles(&state.config.profiles, &state.running);
             (
                 running.iter().map(|p| p.id.clone()).collect::<Vec<_>>(),
                 running.iter().map(|p| p.name.clone()).collect::<Vec<_>>(),
@@ -221,10 +249,7 @@ impl Supervisor {
         if !names.is_empty() {
             self.logs.info(
                 SERVICE_SOURCE,
-                format!(
-                    "DPIMech was closed: stopped {} (does not start with the service)",
-                    names.join(", ")
-                ),
+                format!("DPIMech was closed: stopped {}", names.join(", ")),
             );
         }
         // A test left running without the app would hold the connection for nobody.
@@ -233,7 +258,7 @@ impl Supervisor {
         }
     }
 
-    pub async fn start_autostart_profiles(&self) {
+    async fn start_autostart_profiles(&self) {
         let ids: Vec<String> = {
             let state = self.state.lock().await;
             state
@@ -350,7 +375,13 @@ impl Supervisor {
             let this = self.clone();
             let name = profile.name.clone();
             tokio::spawn(async move {
-                for tool in this.foreign_tools().await {
+                let tools = this.foreign_tools().await;
+                // A tool that left and came back is worth saying again; one still running is not.
+                let known = std::mem::replace(
+                    &mut *this.foreign_warned.lock().unwrap(),
+                    tools.iter().map(|t| t.path.clone()).collect(),
+                );
+                for tool in tools.iter().filter(|t| !known.contains(&t.path)) {
                     this.logs.push(
                         LogLevel::Warn,
                         &name,
@@ -637,6 +668,7 @@ impl Supervisor {
         let monitor_every = profile.reliability.check_every_minutes;
         let monitor_history = Arc::new(std::sync::Mutex::new(MonitorHistory::default()));
         let mut health: Option<ConnectionHealth> = None;
+        let mut offline = false;
 
         let final_status = 'run: loop {
             let mut cmd = match command
@@ -753,7 +785,17 @@ impl Supervisor {
                     }
                     _ = &mut scheduled => break Restart::Scheduled,
                     Some(event) = monitor_rx.recv() => {
+                        let now_offline = matches!(event, MonitorEvent::Offline(_));
+                        if now_offline != offline {
+                            offline = now_offline;
+                            if offline {
+                                self.logs.warn(name, "no internet connection; the engine is left running");
+                            } else {
+                                self.logs.info(name, "the internet connection is back");
+                            }
+                        }
                         let (mut report, slow_reason) = match event {
+                            MonitorEvent::Offline(h) => (h, None),
                             MonitorEvent::First(mut h, failed) => {
                                 if restarts == 0 {
                                     self.log_first_check(name, profile.engine, &mut h, &failed);
@@ -926,6 +968,17 @@ impl Supervisor {
             let mut lines = BufReader::new(stream).lines();
             let mut last = String::new();
             let mut repeats = 0u32;
+            // What an engine says while starting explains a failed start; after that it is
+            // per-connection chatter, kept only for the detailed log.
+            let mut shown = 0usize;
+            let mut emit = |text: String| {
+                if shown < STARTUP_LINES {
+                    shown += 1;
+                    logs.info(&source, text);
+                } else {
+                    logs.debug(&source, || text);
+                }
+            };
             while let Ok(Some(line)) = lines.next_line().await {
                 let line = strip_ansi(&line).trim().to_owned();
                 if line.is_empty() {
@@ -939,14 +992,14 @@ impl Supervisor {
                     continue;
                 }
                 if repeats > 0 {
-                    logs.info(&source, format!("(previous line repeated {repeats}×)"));
+                    emit(format!("(previous line repeated {repeats}×)"));
                     repeats = 0;
                 }
-                logs.info(&source, &line);
+                emit(line.clone());
                 last = line;
             }
             if repeats > 0 {
-                logs.info(&source, format!("(previous line repeated {repeats}×)"));
+                emit(format!("(previous line repeated {repeats}×)"));
             }
         });
     }
@@ -992,6 +1045,8 @@ enum Restart {
 /// Ignore stall markers right after a (re)start; the old flood may still be in the pipe.
 const STALL_GRACE: Duration = Duration::from_secs(30);
 const CRASH_WINDOW: Duration = Duration::from_secs(5 * 60);
+/// Engine output lines per start that always reach the log (see `pipe_output`).
+const STARTUP_LINES: usize = 20;
 const MAX_CRASHES: usize = 5;
 
 fn stopped_status(stop: Result<Option<String>, oneshot::error::RecvError>) -> ProfileStatus {
@@ -1087,22 +1142,24 @@ fn system_wide_ports(args: &str) -> String {
     "80, 443".to_owned()
 }
 
-/// Running profiles that may not run while the app is closed: the ones without "Start with
-/// service".
-fn without_app<'a, T>(profiles: &'a [Profile], running: &HashMap<String, T>) -> Vec<&'a Profile> {
+/// The profiles that are running: all of them stop when the app is closed.
+fn running_profiles<'a, T>(
+    profiles: &'a [Profile],
+    running: &HashMap<String, T>,
+) -> Vec<&'a Profile> {
     profiles
         .iter()
-        .filter(|p| !p.autostart && running.contains_key(&p.id))
+        .filter(|p| running.contains_key(&p.id))
         .collect()
 }
 
 #[cfg(test)]
 mod tests {
-    use super::{HashMap, strip_ansi, without_app};
+    use super::{HashMap, running_profiles, strip_ansi};
     use dpimech_core::model::{EngineKind, Profile, Reliability, Routing};
 
     #[test]
-    fn closing_the_app_stops_only_profiles_that_do_not_start_with_the_service() {
+    fn closing_the_app_stops_every_running_profile() {
         let profile = |id: &str, autostart| Profile {
             id: id.into(),
             name: id.into(),
@@ -1119,11 +1176,11 @@ mod tests {
             profile("off", false),
         ];
         let running: HashMap<String, ()> = [("manual".into(), ()), ("boot".into(), ())].into();
-        let stopped: Vec<&str> = without_app(&profiles, &running)
+        let stopped: Vec<&str> = running_profiles(&profiles, &running)
             .iter()
             .map(|p| p.id.as_str())
             .collect();
-        assert_eq!(stopped, ["manual"]);
+        assert_eq!(stopped, ["manual", "boot"]);
     }
 
     #[test]
