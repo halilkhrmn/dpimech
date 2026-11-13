@@ -82,6 +82,8 @@ install -Dm644 crates/gui/assets/dpimech.png %{buildroot}%{_datadir}/icons/hicol
 %{_datadir}/icons/hicolor/256x256/apps/dpimech.png
 
 %changelog
+* Sat Nov 14 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.4.4-1
+- Wayland: "Show DPIMech" opens the window when DPIMech started in the tray
 * Fri Nov 13 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.4.3-1
 - Every profile stops when DPIMech quits; a lost internet connection no longer restarts the engine
 * Fri Oct 16 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.4.2-1

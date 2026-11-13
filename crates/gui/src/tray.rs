@@ -7,11 +7,11 @@
 use crate::i18n::tr;
 use std::cell::RefCell;
 use std::collections::HashMap;
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::atomic::{AtomicU8, Ordering};
 use std::sync::{LazyLock, Mutex};
 
 use dpimech_core::model::ProfileState;
-use slint::{ComponentHandle, Weak};
+use slint::Weak;
 use tokio::sync::mpsc;
 use tray_icon::menu::{CheckMenuItem, Menu, MenuEvent, MenuId, MenuItem, PredefinedMenuItem};
 use tray_icon::{Icon, MouseButton, MouseButtonState, TrayIcon, TrayIconBuilder, TrayIconEvent};
@@ -31,12 +31,24 @@ thread_local! {
 static PROFILE_ITEMS: LazyLock<Mutex<HashMap<MenuId, (String, bool)>>> =
     LazyLock::new(Mutex::default);
 
-/// Set once the tray icon exists. Without it, closing the window must quit: a hidden window could
+const TRAY_PENDING: u8 = 0;
+const TRAY_READY: u8 = 1;
+const TRAY_FAILED: u8 = 2;
+
+/// Whether the tray icon exists. Without it, closing the window must quit: a hidden window could
 /// not be brought back.
-static READY: AtomicBool = AtomicBool::new(false);
+static STATE: AtomicU8 = AtomicU8::new(TRAY_PENDING);
 
 pub fn available() -> bool {
-    READY.load(Ordering::Relaxed)
+    ready() == Some(true)
+}
+
+/// `None` while the tray is still coming up (Linux builds it on its own thread).
+pub fn ready() -> Option<bool> {
+    match STATE.load(Ordering::Relaxed) {
+        TRAY_PENDING => None,
+        state => Some(state == TRAY_READY),
+    }
 }
 
 fn build_tray() -> anyhow::Result<TrayIcon> {
@@ -59,6 +71,7 @@ fn spawn_tray_thread() {
     std::thread::spawn(move || {
         if let Err(e) = gtk::init() {
             eprintln!("tray unavailable (GTK: {e})");
+            STATE.store(TRAY_FAILED, Ordering::Relaxed);
             return;
         }
         crate::bundled::load(crate::bundled::INDICATOR);
@@ -67,14 +80,16 @@ fn spawn_tray_thread() {
             Ok(Ok(tray)) => TRAY.set(Some(tray)),
             Ok(Err(e)) => {
                 eprintln!("tray unavailable: {e:#}");
+                STATE.store(TRAY_FAILED, Ordering::Relaxed);
                 return;
             }
             Err(_) => {
                 eprintln!("tray unavailable: libayatana-appindicator3 could not be loaded");
+                STATE.store(TRAY_FAILED, Ordering::Relaxed);
                 return;
             }
         }
-        READY.store(true, Ordering::Relaxed);
+        STATE.store(TRAY_READY, Ordering::Relaxed);
         // Only the newest profile list matters; older ones are skipped.
         gtk::glib::timeout_add_local(std::time::Duration::from_millis(200), move || {
             if let Some(profiles) = rx.try_iter().last() {
@@ -91,16 +106,25 @@ pub fn create(ui: Weak<AppWindow>, commands: mpsc::UnboundedSender<Command>) -> 
     #[cfg(target_os = "linux")]
     spawn_tray_thread();
     #[cfg(not(target_os = "linux"))]
-    {
-        TRAY.set(Some(build_tray()?));
-        READY.store(true, Ordering::Relaxed);
+    match build_tray() {
+        Ok(tray) => {
+            TRAY.set(Some(tray));
+            STATE.store(TRAY_READY, Ordering::Relaxed);
+        }
+        Err(e) => {
+            STATE.store(TRAY_FAILED, Ordering::Relaxed);
+            return Err(e);
+        }
     }
 
     let menu_ui = ui.clone();
     MenuEvent::set_event_handler(Some(move |event: MenuEvent| match event.id.as_ref() {
         SHOW_ID => show_window(&menu_ui),
         REPORT_ID => {
-            let _ = menu_ui.upgrade_in_event_loop(|ui| ui.invoke_open_report());
+            let _ = menu_ui.upgrade_in_event_loop(|ui| {
+                ui.invoke_open_report();
+                crate::bring_up(&ui);
+            });
         }
         QUIT_ID => {
             let _ = slint::invoke_from_event_loop(|| {
@@ -187,9 +211,7 @@ fn build_menu(profiles: &[ProfileState]) -> anyhow::Result<Menu> {
 }
 
 fn show_window(ui: &Weak<AppWindow>) {
-    let _ = ui.upgrade_in_event_loop(|ui| {
-        let _ = ui.show();
-    });
+    let _ = ui.upgrade_in_event_loop(|ui| crate::bring_up(&ui));
 }
 
 const IDLE: [u8; 3] = [0x8b, 0x94, 0x9e];

@@ -1,5 +1,10 @@
 # Değişiklikler
 
+## 0.4.4
+- Wayland kullanan Linux'ta (örneğin KDE Plasma), DPIMech tepside başladığında tepsideki "DPIMech'i göster" artık pencereyi açıyor; önceden pencere görünmüyor ve görev çubuğunda boş bir girdi kalıyordu.
+- DPIMech oturum açılışında tepside başladığında, tepsi simgesi birkaç saniye geç geldi diye penceresi artık açılmıyor.
+- "DPIMech'i göster" simge durumuna küçültülmüş pencereyi de geri getiriyor.
+
 ## 0.4.3
 - DPIMech kapalıyken hiçbir şey çalışmıyor. "Servisle birlikte başlat" artık "DPIMech ile birlikte başlat": profil DPIMech açılınca başlıyor, çıkınca bütün profiller duruyor.
 - Bilgisayarın internet bağlantısı gittiğinde DPIMech artık motoru yeniden başlatmıyor ve ayarın çalışmadığını söylemiyor; kartta bağlantı olmadığı yazıyor.

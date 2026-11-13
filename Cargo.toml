@@ -3,7 +3,7 @@ resolver = "3"
 members = ["crates/core", "crates/service", "crates/gui"]
 
 [workspace.package]
-version = "0.4.3"
+version = "0.4.4"
 edition = "2024"
 rust-version = "1.85"
 license = "GPL-3.0-or-later"
@@ -17,7 +17,7 @@ directories = "6.0"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 # Software renderer only: GPU (femtovg) costs ~90 MB extra RAM through the graphics driver.
-slint = { version = "1.18", default-features = false, features = ["std", "compat-1-2", "backend-winit", "renderer-software", "accessibility"] }
+slint = { version = "1.18", default-features = false, features = ["std", "compat-1-2", "backend-winit", "renderer-software", "accessibility", "raw-window-handle-06"] }
 slint-build = "1.18"
 thiserror = "2.0"
 tokio = { version = "1.53", features = ["rt-multi-thread", "macros", "sync", "time", "io-util", "net", "process", "signal"] }
