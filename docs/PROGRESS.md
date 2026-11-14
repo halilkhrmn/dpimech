@@ -121,6 +121,24 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-11-14 (52) — 0.4.5: Windows: the update installs again after a per-app profile was stopped
+- Why: owner's report on 0.4.3: "Restart and update" (to 0.4.4) failed with "Could not update: starting the
+  installer: The handle is invalid. (os error 6)".
+- Cause: the clean ProxiFyre stop added in 0.4.3 (`perapp.rs`, `ctrl_c::send`) attaches the service to the
+  child's console. That fills the service's empty standard handles with console handles, and `FreeConsole`
+  closes them without clearing them. Every later process started with inherited handles then fails; the
+  installer is the one that does.
+- Done: `ctrl_c::send` puts the standard handles back after `FreeConsole`; the installer starts with null
+  standard handles.
+- Verified: fmt, clippy, service tests. A stand-alone program (no standard handles, child with a hidden
+  console, attach, free, spawn) gives os error 6 without the restore and starts the process with it.
+  Not tested: the installed service itself (needs a release build installed elevated).
+- Open: the network loss on Windows right after Discord starts through a per-app profile (02:49 on
+  2026-11-14) is not explained. The logs hold nothing between the good check 4 s after the start and the stop;
+  ProxiFyre runs with `logLevel: Error` and wrote nothing. Next: let the detailed log raise ProxiFyre's log
+  level, and try the profile with "TCP only" to see whether UDP through the proxy is the trigger.
+- Not a bug: engines stop 20 s after the app closes (`APP_GONE_GRACE`); the service itself stays, idle.
+
 ### 2026-11-14 (51) — 0.4.4: Wayland: "Show DPIMech" works when started in the tray (#27)
 - Why: issue #27 (KDE Plasma Wayland, AppImage, started at sign-in): a blank DPIMech entry sat in the taskbar
   after sign-in, "Show DPIMech" in the tray did nothing, and closing the entry took several tries.

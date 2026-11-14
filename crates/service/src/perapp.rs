@@ -205,8 +205,11 @@ mod proxifyre {
 
         use windows_sys::Win32::System::Console::{
             AttachConsole, CTRL_C_EVENT, FreeConsole, GenerateConsoleCtrlEvent, GetConsoleWindow,
-            SetConsoleCtrlHandler,
+            GetStdHandle, STD_ERROR_HANDLE, STD_INPUT_HANDLE, STD_OUTPUT_HANDLE,
+            SetConsoleCtrlHandler, SetStdHandle,
         };
+
+        const STD_HANDLES: [u32; 3] = [STD_INPUT_HANDLE, STD_OUTPUT_HANDLE, STD_ERROR_HANDLE];
 
         /// A process has one console at a time.
         static CONSOLE: Mutex<()> = Mutex::new(());
@@ -218,13 +221,23 @@ mod proxifyre {
             unsafe {
                 // A development run has a console of its own and would have to give it up.
                 // The installed service has none.
-                if !GetConsoleWindow().is_null() || AttachConsole(pid) == 0 {
+                if !GetConsoleWindow().is_null() {
+                    return false;
+                }
+                // Attaching points the service's empty standard handles at the child's console
+                // and leaving does not clear them: every later process started with inherited
+                // handles (the update installer) then fails with "The handle is invalid".
+                let std_handles = STD_HANDLES.map(|id| GetStdHandle(id));
+                if AttachConsole(pid) == 0 {
                     return false;
                 }
                 // The event goes to everyone on that console, which now includes us.
                 SetConsoleCtrlHandler(None, 1);
                 let sent = GenerateConsoleCtrlEvent(CTRL_C_EVENT, 0) != 0;
                 FreeConsole();
+                for (id, handle) in STD_HANDLES.into_iter().zip(std_handles) {
+                    SetStdHandle(id, handle);
+                }
                 // Delivery is asynchronous: stay deaf until it has passed.
                 std::thread::sleep(Duration::from_millis(200));
                 SetConsoleCtrlHandler(None, 0);
