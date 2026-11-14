@@ -3,6 +3,9 @@
 User-facing changes per version. The app shows the new entries once after an update ("What's new"),
 and the release page on GitHub uses the English text. Translations: tr.md, ru.md, fa.md, ar.md.
 
+## 0.4.5
+- Windows: "Restart and update" works again. In 0.4.3 and 0.4.4 it failed with "The handle is invalid" once a profile that routes apps had been stopped. If you see that error, restart the computer and update before stopping a profile, or run the installer from the release page.
+
 ## 0.4.4
 - On Linux with Wayland (for example KDE Plasma), "Show DPIMech" in the tray now opens the window when DPIMech started in the tray; before, the window did not appear and an empty entry stayed in the taskbar.
 - When DPIMech starts in the tray at sign-in, its window no longer opens because the tray icon came up a few seconds late.

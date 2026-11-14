@@ -1,5 +1,8 @@
 # Değişiklikler
 
+## 0.4.5
+- Windows: "Yeniden başlat ve güncelle" yeniden çalışıyor. 0.4.3 ve 0.4.4'te, uygulamaları yönlendiren bir profil bir kez durdurulduktan sonra "The handle is invalid" hatası veriyordu. Bu hatayı görürseniz bilgisayarı yeniden başlatıp hiçbir profili durdurmadan güncelleyin ya da sürüm sayfasındaki kurulum dosyasını çalıştırın.
+
 ## 0.4.4
 - Wayland kullanan Linux'ta (örneğin KDE Plasma), DPIMech tepside başladığında tepsideki "DPIMech'i göster" artık pencereyi açıyor; önceden pencere görünmüyor ve görev çubuğunda boş bir girdi kalıyordu.
 - DPIMech oturum açılışında tepside başladığında, tepsi simgesi birkaç saniye geç geldi diye penceresi artık açılmıyor.

@@ -412,6 +412,10 @@ impl Packages {
         std::process::Command::new(&prepared.path)
             .args(["/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/SP-"])
             .arg(format!("/LOG={}", log.display()))
+            // Nothing of the service's to inherit: a stale handle would stop the start.
+            .stdin(std::process::Stdio::null())
+            .stdout(std::process::Stdio::null())
+            .stderr(std::process::Stdio::null())
             // The installer outlives this service, which it stops.
             .creation_flags(DETACHED_PROCESS | CREATE_NEW_PROCESS_GROUP)
             .spawn()

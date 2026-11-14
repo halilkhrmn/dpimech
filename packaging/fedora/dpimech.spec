@@ -82,6 +82,8 @@ install -Dm644 crates/gui/assets/dpimech.png %{buildroot}%{_datadir}/icons/hicol
 %{_datadir}/icons/hicolor/256x256/apps/dpimech.png
 
 %changelog
+* Sat Nov 14 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.4.5-1
+- Windows: the in-app update installs again after a per-app profile was stopped
 * Sat Nov 14 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.4.4-1
 - Wayland: "Show DPIMech" opens the window when DPIMech started in the tray
 * Fri Nov 13 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.4.3-1
