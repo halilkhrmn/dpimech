@@ -121,6 +121,15 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-11-15 (53) — 18 more site packs (from dpimech-android#28)
+- Done: `strategies/domains.json` gets Wikipedia, Twitch (blocked in BY), Kick, Rumble, Odysee, BitChute,
+  Dailymotion, Niconico, Rutube, VK Video, TwitCasting, GoodGame, Joystick.tv, 3Speak, COS.TV, PeerTube
+  search, Matrix and Pornhub (blocked in TR), each with its Android apps where there is one. A user asked
+  for them on the Android repository; the file is shared, so both apps get them from `main`.
+- Verified how: every probe host answered HTTPS (2026-11-15); `cargo test -p dpimech-core` (the embedded
+  file parses).
+- Open/next: names in other languages, if needed.
+
 ### 2026-11-14 (52) — 0.4.5: Windows: the update installs again after a per-app profile was stopped
 - Why: owner's report on 0.4.3: "Restart and update" (to 0.4.4) failed with "Could not update: starting the
   installer: The handle is invalid. (os error 6)".
