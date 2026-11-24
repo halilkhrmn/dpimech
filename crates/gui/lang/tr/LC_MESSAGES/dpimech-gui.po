@@ -4,43 +4,43 @@ msgstr ""
 "Language: tr\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ui/app.slint:225
+#: ui/app.slint:224
 msgid "Profiles"
 msgstr "Profiller"
 
-#: ui/app.slint:230
+#: ui/app.slint:229
 msgid "Strategy Lab"
 msgstr "Strateji Laboratuvarı"
 
-#: ui/app.slint:235
+#: ui/app.slint:234
 msgid "Engines"
 msgstr "Motorlar"
 
-#: ui/app.slint:241
+#: ui/app.slint:240
 msgid "Logs"
 msgstr "Kayıtlar"
 
-#: ui/app.slint:247
+#: ui/app.slint:246
 msgid "Settings"
 msgstr "Ayarlar"
 
-#: ui/app.slint:298
+#: ui/app.slint:297
 msgid "Another DPI tool is running: {}. Two tools on the same traffic break connections — close it, or turn DPIMech's profiles off."
 msgstr "Başka bir DPI aracı çalışıyor: {}. Aynı trafikte iki araç bağlantıları bozar — onu kapat ya da DPIMech profillerini kapat."
 
-#: ui/app.slint:306
+#: ui/app.slint:305
 msgid "Hide"
 msgstr "Gizle"
 
-#: ui/app.slint:323
+#: ui/app.slint:322
 msgid "DPIMech {} is ready to install."
 msgstr "DPIMech {} kurulmaya hazır."
 
-#: ui/app.slint:327
+#: ui/app.slint:326
 msgid "Restart and update"
 msgstr "Yeniden başlat ve güncelle"
 
-#: ui/app.slint:339
+#: ui/app.slint:338
 msgid "Background service is not running. Engines can't be started until it is."
 msgstr "Arka plan servisi çalışmıyor. Servis çalışmadan motorlar başlatılamaz."
 
@@ -383,10 +383,6 @@ msgstr "Testi başlat"
 #: ui/lab.slint:288
 msgid "Results appear here, best first."
 msgstr "Sonuçlar burada görünür, en iyisi en üstte."
-
-#: ui/launch.slint:62
-msgid "Open DPIMech"
-msgstr "DPIMech'i aç"
 
 #: ui/pages.slint:20
 msgid "Each profile runs one engine with one strategy."
@@ -1008,47 +1004,39 @@ msgstr "Bitti — hiçbiri her turda tüm siteleri açmadı. Başka bir motor, s
 msgid "No bypass"
 msgstr "Aşma yok"
 
-#: src/launcher.rs:45
-msgid "Connecting to the DPIMech service…"
-msgstr "DPIMech hizmetine bağlanılıyor…"
-
-#: src/launcher.rs:69
+#: src/launcher.rs:80
 msgid "Opening {}…"
 msgstr "{} açılıyor…"
 
-#: src/launcher.rs:72
+#: src/launcher.rs:86
 msgid "Could not open {}: {}"
 msgstr "{} açılamadı: {}"
 
-#: src/launcher.rs:84
+#: src/launcher.rs:90
 msgid "{} is on"
 msgstr "{} açık"
 
-#: src/launcher.rs:92
+#: src/launcher.rs:93
 msgid "Could not start"
 msgstr "Başlatılamadı"
 
-#: src/launcher.rs:110
+#: src/launcher.rs:127
 msgid "The DPIMech service is not running. Open DPIMech to set it up."
 msgstr "DPIMech hizmeti çalışmıyor. Kurmak için DPIMech'i aç."
 
-#: src/launcher.rs:116
+#: src/launcher.rs:133
 msgid "The profile of this shortcut no longer exists."
 msgstr "Bu kısayolun profili artık yok."
 
-#: src/launcher.rs:119
-msgid "Starting {}"
-msgstr "{} başlatılıyor"
-
-#: src/launcher.rs:124
+#: src/launcher.rs:141
 msgid "Turning the profile on…"
 msgstr "Profil açılıyor…"
 
-#: src/launcher.rs:140
+#: src/launcher.rs:157
 msgid "The profile stopped right after starting. The Logs page in DPIMech shows why."
 msgstr "Profil başlar başlamaz durdu. Nedenini DPIMech'teki Kayıtlar sayfası gösterir."
 
-#: src/launcher.rs:145
+#: src/launcher.rs:162
 msgid "The profile is taking too long to start. The Logs page in DPIMech shows why."
 msgstr "Profilin başlaması çok uzun sürüyor. Nedenini DPIMech'teki Kayıtlar sayfası gösterir."
 

@@ -1,5 +1,8 @@
 # Değişiklikler
 
+## 0.4.7
+- Profil kısayolu artık kendi küçük penceresini açmıyor: ilerlemeyi (profili açma, uygulamayı başlatma) ve sonucu tek bir sistem bildirimi gösteriyor.
+
 ## 0.4.6
 - İnternet yokken motor artık tekrar tekrar yeniden başlatılmıyor. DPIMech bekliyor, ağını kontrol etmeni söylüyor (kartta ve tek bir bildirimde) ve bağlantı gelince kendiliğinden devam ediyor.
 - Bir profil bağlanırken ya da bir test çalışırken tepsi simgesi turuncu yanıp sönüyor.

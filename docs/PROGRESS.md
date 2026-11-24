@@ -121,6 +121,19 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-11-24 (55) — 0.4.7: shortcut start as a system notification
+- Why: owner's report: the start window of a profile shortcut (bottom right) looked off; wish: native
+  notifications. Step 2 of the plan.
+- Done: `launcher.rs` runs without a window; `notify::TaskNote` keeps one notification and updates it
+  (Windows toast progress by tag, Linux `notify-send -p` / `-r` with the `value` hint, macOS start + result);
+  `ui/launch.slint` removed; message box when no notification can be shown. DECISIONS #57; notes in 5 languages.
+- Verified: fmt, clippy (Linux, Windows and macOS targets), tests. Linux under Xvfb with dunst and
+  `dbus-monitor` on the notification interface, dev service, fake engine: a shortcut launch sent one
+  notification "Discord" (Starting… / Turning the profile on…, 30 %) and replaced it (same id) with
+  "Discord is on" (100 %); a shortcut to a deleted profile sent "DPIMech: Could not start / The profile of this
+  shortcut no longer exists." without a bar.
+- Not verified: the Windows toast (layout of the progress element, updating by tag), macOS.
+
 ### 2026-11-24 (54) — 0.4.6: wait for the internet, crash reports, busy tray icon
 - Why: owner's report: without internet the engine was restarted again and again; wishes: say to check the
   network and wait, blink the tray while connecting / testing, offer a report after a crash.

@@ -4,43 +4,43 @@ msgstr ""
 "Language: fa\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ui/app.slint:225
+#: ui/app.slint:224
 msgid "Profiles"
 msgstr "پروفایل‌ها"
 
-#: ui/app.slint:230
+#: ui/app.slint:229
 msgid "Strategy Lab"
 msgstr "آزمایشگاه راهبرد"
 
-#: ui/app.slint:235
+#: ui/app.slint:234
 msgid "Engines"
 msgstr "موتورها"
 
-#: ui/app.slint:241
+#: ui/app.slint:240
 msgid "Logs"
 msgstr "گزارش‌ها"
 
-#: ui/app.slint:247
+#: ui/app.slint:246
 msgid "Settings"
 msgstr "تنظیمات"
 
-#: ui/app.slint:298
+#: ui/app.slint:297
 msgid "Another DPI tool is running: {}. Two tools on the same traffic break connections — close it, or turn DPIMech's profiles off."
 msgstr "ابزار دیگری برای دور زدن DPI در حال اجراست: {}. دو ابزار روی یک ترافیک اتصال‌ها را خراب می‌کنند — آن را ببندید یا پروفایل‌های DPIMech را خاموش کنید."
 
-#: ui/app.slint:306
+#: ui/app.slint:305
 msgid "Hide"
 msgstr "پنهان کردن"
 
-#: ui/app.slint:323
+#: ui/app.slint:322
 msgid "DPIMech {} is ready to install."
 msgstr "DPIMech {} آمادهٔ نصب است."
 
-#: ui/app.slint:327
+#: ui/app.slint:326
 msgid "Restart and update"
 msgstr "راه‌اندازی دوباره و به‌روزرسانی"
 
-#: ui/app.slint:339
+#: ui/app.slint:338
 msgid "Background service is not running. Engines can't be started until it is."
 msgstr "سرویس پس‌زمینه اجرا نمی‌شود. تا زمانی که اجرا نشود، موتورها راه‌اندازی نمی‌شوند."
 
@@ -383,10 +383,6 @@ msgstr "شروع آزمایش"
 #: ui/lab.slint:288
 msgid "Results appear here, best first."
 msgstr "نتایج اینجا نمایش داده می‌شوند، بهترین در ابتدا."
-
-#: ui/launch.slint:62
-msgid "Open DPIMech"
-msgstr "باز کردن DPIMech"
 
 #: ui/pages.slint:20
 msgid "Each profile runs one engine with one strategy."
@@ -1008,47 +1004,39 @@ msgstr "تمام — هیچ‌کدام همهٔ سایت‌ها را در همه
 msgid "No bypass"
 msgstr "بدون دور زدن"
 
-#: src/launcher.rs:45
-msgid "Connecting to the DPIMech service…"
-msgstr "در حال اتصال به سرویس DPIMech…"
-
-#: src/launcher.rs:69
+#: src/launcher.rs:80
 msgid "Opening {}…"
 msgstr "در حال باز کردن {}…"
 
-#: src/launcher.rs:72
+#: src/launcher.rs:86
 msgid "Could not open {}: {}"
 msgstr "باز کردن {} ممکن نشد: {}"
 
-#: src/launcher.rs:84
+#: src/launcher.rs:90
 msgid "{} is on"
 msgstr "{} روشن است"
 
-#: src/launcher.rs:92
+#: src/launcher.rs:93
 msgid "Could not start"
 msgstr "شروع ممکن نشد"
 
-#: src/launcher.rs:110
+#: src/launcher.rs:127
 msgid "The DPIMech service is not running. Open DPIMech to set it up."
 msgstr "سرویس DPIMech اجرا نمی‌شود. برای راه‌اندازی، DPIMech را باز کنید."
 
-#: src/launcher.rs:116
+#: src/launcher.rs:133
 msgid "The profile of this shortcut no longer exists."
 msgstr "پروفایل این میان‌بر دیگر وجود ندارد."
 
-#: src/launcher.rs:119
-msgid "Starting {}"
-msgstr "در حال شروع {}"
-
-#: src/launcher.rs:124
+#: src/launcher.rs:141
 msgid "Turning the profile on…"
 msgstr "در حال روشن کردن پروفایل…"
 
-#: src/launcher.rs:140
+#: src/launcher.rs:157
 msgid "The profile stopped right after starting. The Logs page in DPIMech shows why."
 msgstr "پروفایل بلافاصله پس از شروع متوقف شد. صفحهٔ گزارش‌ها در DPIMech علت را نشان می‌دهد."
 
-#: src/launcher.rs:145
+#: src/launcher.rs:162
 msgid "The profile is taking too long to start. The Logs page in DPIMech shows why."
 msgstr "شروع پروفایل بیش از حد طول می‌کشد. صفحهٔ گزارش‌ها در DPIMech علت را نشان می‌دهد."
 

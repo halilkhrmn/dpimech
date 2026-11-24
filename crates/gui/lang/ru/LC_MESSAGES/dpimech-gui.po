@@ -4,43 +4,43 @@ msgstr ""
 "Language: ru\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ui/app.slint:225
+#: ui/app.slint:224
 msgid "Profiles"
 msgstr "Профили"
 
-#: ui/app.slint:230
+#: ui/app.slint:229
 msgid "Strategy Lab"
 msgstr "Лаборатория"
 
-#: ui/app.slint:235
+#: ui/app.slint:234
 msgid "Engines"
 msgstr "Движки"
 
-#: ui/app.slint:241
+#: ui/app.slint:240
 msgid "Logs"
 msgstr "Журнал"
 
-#: ui/app.slint:247
+#: ui/app.slint:246
 msgid "Settings"
 msgstr "Настройки"
 
-#: ui/app.slint:298
+#: ui/app.slint:297
 msgid "Another DPI tool is running: {}. Two tools on the same traffic break connections — close it, or turn DPIMech's profiles off."
 msgstr "Работает другой инструмент обхода DPI: {}. Два инструмента на одном трафике ломают соединения — закройте его или выключите профили DPIMech."
 
-#: ui/app.slint:306
+#: ui/app.slint:305
 msgid "Hide"
 msgstr "Скрыть"
 
-#: ui/app.slint:323
+#: ui/app.slint:322
 msgid "DPIMech {} is ready to install."
 msgstr "DPIMech {} готов к установке."
 
-#: ui/app.slint:327
+#: ui/app.slint:326
 msgid "Restart and update"
 msgstr "Перезапустить и обновить"
 
-#: ui/app.slint:339
+#: ui/app.slint:338
 msgid "Background service is not running. Engines can't be started until it is."
 msgstr "Фоновая служба не запущена. Пока она не работает, движки нельзя запустить."
 
@@ -383,10 +383,6 @@ msgstr "Начать проверку"
 #: ui/lab.slint:288
 msgid "Results appear here, best first."
 msgstr "Результаты появятся здесь, лучшие сверху."
-
-#: ui/launch.slint:62
-msgid "Open DPIMech"
-msgstr "Открыть DPIMech"
 
 #: ui/pages.slint:20
 msgid "Each profile runs one engine with one strategy."
@@ -1008,47 +1004,39 @@ msgstr "Готово — ни одна не открыла все сайты в 
 msgid "No bypass"
 msgstr "Без обхода"
 
-#: src/launcher.rs:45
-msgid "Connecting to the DPIMech service…"
-msgstr "Подключение к службе DPIMech…"
-
-#: src/launcher.rs:69
+#: src/launcher.rs:80
 msgid "Opening {}…"
 msgstr "Открываем {}…"
 
-#: src/launcher.rs:72
+#: src/launcher.rs:86
 msgid "Could not open {}: {}"
 msgstr "Не удалось открыть {}: {}"
 
-#: src/launcher.rs:84
+#: src/launcher.rs:90
 msgid "{} is on"
 msgstr "{} включён"
 
-#: src/launcher.rs:92
+#: src/launcher.rs:93
 msgid "Could not start"
 msgstr "Не удалось запустить"
 
-#: src/launcher.rs:110
+#: src/launcher.rs:127
 msgid "The DPIMech service is not running. Open DPIMech to set it up."
 msgstr "Служба DPIMech не запущена. Откройте DPIMech, чтобы настроить её."
 
-#: src/launcher.rs:116
+#: src/launcher.rs:133
 msgid "The profile of this shortcut no longer exists."
 msgstr "Профиль этого ярлыка больше не существует."
 
-#: src/launcher.rs:119
-msgid "Starting {}"
-msgstr "Запуск: {}"
-
-#: src/launcher.rs:124
+#: src/launcher.rs:141
 msgid "Turning the profile on…"
 msgstr "Включаем профиль…"
 
-#: src/launcher.rs:140
+#: src/launcher.rs:157
 msgid "The profile stopped right after starting. The Logs page in DPIMech shows why."
 msgstr "Профиль остановился сразу после запуска. Причину покажет страница «Журнал» в DPIMech."
 
-#: src/launcher.rs:145
+#: src/launcher.rs:162
 msgid "The profile is taking too long to start. The Logs page in DPIMech shows why."
 msgstr "Профиль запускается слишком долго. Причину покажет страница «Журнал» в DPIMech."
 

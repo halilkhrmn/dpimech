@@ -3,6 +3,9 @@
 User-facing changes per version. The app shows the new entries once after an update ("What's new"),
 and the release page on GitHub uses the English text. Translations: tr.md, ru.md, fa.md, ar.md.
 
+## 0.4.7
+- A profile shortcut no longer opens a small window of its own: one system notification shows the progress (turning on, opening the app) and the result.
+
 ## 0.4.6
 - Without internet the engine is no longer restarted again and again. DPIMech waits, says to check your network (on the card and in one notification) and carries on by itself once the connection is back.
 - The tray icon blinks amber while a profile is connecting or a test is running.

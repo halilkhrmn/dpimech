@@ -4,43 +4,43 @@ msgstr ""
 "Language: ar\n"
 "Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5);\n"
 
-#: ui/app.slint:225
+#: ui/app.slint:224
 msgid "Profiles"
 msgstr "الملفات الشخصية"
 
-#: ui/app.slint:230
+#: ui/app.slint:229
 msgid "Strategy Lab"
 msgstr "مختبر الإستراتيجيات"
 
-#: ui/app.slint:235
+#: ui/app.slint:234
 msgid "Engines"
 msgstr "المحركات"
 
-#: ui/app.slint:241
+#: ui/app.slint:240
 msgid "Logs"
 msgstr "السجلات"
 
-#: ui/app.slint:247
+#: ui/app.slint:246
 msgid "Settings"
 msgstr "الإعدادات"
 
-#: ui/app.slint:298
+#: ui/app.slint:297
 msgid "Another DPI tool is running: {}. Two tools on the same traffic break connections — close it, or turn DPIMech's profiles off."
 msgstr "أداة أخرى لتجاوز DPI قيد التشغيل: {}. أداتان على نفس حركة المرور تُفسدان الاتصالات — أغلقها أو أوقف ملفات DPIMech الشخصية."
 
-#: ui/app.slint:306
+#: ui/app.slint:305
 msgid "Hide"
 msgstr "إخفاء"
 
-#: ui/app.slint:323
+#: ui/app.slint:322
 msgid "DPIMech {} is ready to install."
 msgstr "DPIMech {} جاهز للتثبيت."
 
-#: ui/app.slint:327
+#: ui/app.slint:326
 msgid "Restart and update"
 msgstr "إعادة التشغيل والتحديث"
 
-#: ui/app.slint:339
+#: ui/app.slint:338
 msgid "Background service is not running. Engines can't be started until it is."
 msgstr "خدمة الخلفية لا تعمل. لا يمكن تشغيل المحركات حتى تعمل."
 
@@ -383,10 +383,6 @@ msgstr "بدء الاختبار"
 #: ui/lab.slint:288
 msgid "Results appear here, best first."
 msgstr "تظهر النتائج هنا، الأفضل أولًا."
-
-#: ui/launch.slint:62
-msgid "Open DPIMech"
-msgstr "فتح DPIMech"
 
 #: ui/pages.slint:20
 msgid "Each profile runs one engine with one strategy."
@@ -1008,47 +1004,39 @@ msgstr "تم — لم تفتح أي منها كل المواقع في كل ال�
 msgid "No bypass"
 msgstr "دون تجاوز"
 
-#: src/launcher.rs:45
-msgid "Connecting to the DPIMech service…"
-msgstr "جارٍ الاتصال بخدمة DPIMech…"
-
-#: src/launcher.rs:69
+#: src/launcher.rs:80
 msgid "Opening {}…"
 msgstr "جارٍ فتح {}…"
 
-#: src/launcher.rs:72
+#: src/launcher.rs:86
 msgid "Could not open {}: {}"
 msgstr "تعذّر فتح {}: {}"
 
-#: src/launcher.rs:84
+#: src/launcher.rs:90
 msgid "{} is on"
 msgstr "{} مُفعّل"
 
-#: src/launcher.rs:92
+#: src/launcher.rs:93
 msgid "Could not start"
 msgstr "تعذّر البدء"
 
-#: src/launcher.rs:110
+#: src/launcher.rs:127
 msgid "The DPIMech service is not running. Open DPIMech to set it up."
 msgstr "خدمة DPIMech لا تعمل. افتح DPIMech لإعدادها."
 
-#: src/launcher.rs:116
+#: src/launcher.rs:133
 msgid "The profile of this shortcut no longer exists."
 msgstr "الملف الشخصي لهذا الاختصار لم يعد موجودًا."
 
-#: src/launcher.rs:119
-msgid "Starting {}"
-msgstr "جارٍ بدء {}"
-
-#: src/launcher.rs:124
+#: src/launcher.rs:141
 msgid "Turning the profile on…"
 msgstr "جارٍ تفعيل الملف الشخصي…"
 
-#: src/launcher.rs:140
+#: src/launcher.rs:157
 msgid "The profile stopped right after starting. The Logs page in DPIMech shows why."
 msgstr "توقف الملف الشخصي فور بدئه. تُظهر صفحة السجلات في DPIMech السبب."
 
-#: src/launcher.rs:145
+#: src/launcher.rs:162
 msgid "The profile is taking too long to start. The Logs page in DPIMech shows why."
 msgstr "يستغرق بدء الملف الشخصي وقتًا طويلًا. تُظهر صفحة السجلات في DPIMech السبب."
 

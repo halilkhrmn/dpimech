@@ -447,3 +447,14 @@ own release), a launchd service and an unsigned universal `.dmg`. The wizard hid
 - **Tray:** the dot blinks amber while a profile starts or waits for its first connection check (at most 30 s
   after its start, so a profile without checks does not blink for ever) and while the Strategy Lab or the
   wizard tests; after 2 minutes it stays amber instead of blinking.
+
+## 57. Profile shortcuts report through one system notification (2026-11-24)
+- **Problem:** the shortcut launcher drew its own borderless window in the bottom-right corner. Its position was
+  computed right after `show()`, before the layout settled, so it could sit off; it never looked like the
+  system's own notifications.
+- **Decision:** no window. One notification titled with the profile, updated in place: "Turning the profile
+  on…", "Opening <app>…", then "<profile> is on" or "Could not start" with the reason (no progress bar on an
+  error). Windows: a toast with a progress element, updated through its tag (`tauri-winrt-notification`), with
+  the shortcut's picture as its icon. Linux: `notify-send --print-id`, then `--replace-id` with the `value`
+  hint; an older notify-send without them shows the result only. macOS: the first step and the result.
+  When no notification can be shown at all, an error still appears as a native message box (`rfd`).
