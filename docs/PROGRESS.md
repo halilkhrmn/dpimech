@@ -121,6 +121,19 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-11-24 (56) — 0.4.8: DNS shown, optionally set
+- Why: step 3 of the plan; owner: show the DNS in use always, setting it is an optional extra.
+- Done: `netdns.rs` (read per OS; set / keep / restore), `Request::DnsInUse` / `SetDns`, Settings → Network
+  (servers, source, dropdown + Apply), DNS line in problem reports, restore in `uninstall`. DECISIONS #58;
+  strings and notes in 5 languages.
+- Verified: fmt, clippy (Linux, Windows and macOS targets), tests (labels, resolv.conf / route / scutil parsing,
+  only listed services). Dev service on Linux: `dns_in_use` returned the container's 8.8.8.8 / 8.8.4.4; the
+  Settings page (Xvfb, Turkish) shows them as Google. With stand-in `resolvectl` / `ip` recording their calls:
+  Cloudflare set dns/domain/dnsovertls on the default-route link and saved dns.json; "6.6.6.6" was refused; a
+  link that came up later got the same within the minute check while the first was not touched again; "the
+  network's own" reverted both and removed dns.json.
+- Not verified: Windows (`netsh` on a real adapter, restore, uninstall), a real systemd-resolved.
+
 ### 2026-11-24 (55) — 0.4.7: shortcut start as a system notification
 - Why: owner's report: the start window of a profile shortcut (bottom right) looked off; wish: native
   notifications. Step 2 of the plan.

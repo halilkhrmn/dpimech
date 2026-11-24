@@ -75,6 +75,16 @@ impl Report {
                 info => format!(" ({info})"),
             }
         );
+        let dns = ui.get_dns_in_use();
+        let _ = writeln!(
+            summary,
+            "DNS: {}",
+            if dns.is_empty() {
+                "unknown".to_owned()
+            } else {
+                dns.replace('\n', "; ")
+            }
+        );
         let packages = ui.get_packages();
         let installed: Vec<String> = packages
             .iter()

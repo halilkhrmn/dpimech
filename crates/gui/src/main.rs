@@ -136,6 +136,32 @@ fn main() -> anyhow::Result<()> {
         }
     });
     ui.set_engine_names(string_model(engines.iter().map(|e| e.display_name())));
+    let own_dns = tr("Your network's own (no change)");
+    ui.set_dns_choices(string_model(
+        std::iter::once(own_dns.as_str()).chain(
+            dpimech_core::catalog::PUBLIC_DNS
+                .iter()
+                .map(|(name, _)| *name),
+        ),
+    ));
+    ui.on_set_dns({
+        let tx = cmd_tx.clone();
+        let weak = ui.as_weak();
+        move |index| {
+            // Offline commands are dropped: the button must not wait for an answer that never comes.
+            let ui = weak.unwrap();
+            if !ui.get_service_connected() {
+                ui.set_dns_busy(false);
+                ui.set_dns_error(tr("The background service is not running.").into());
+                return;
+            }
+            let provider = usize::try_from(index - 1)
+                .ok()
+                .and_then(|i| dpimech_core::catalog::PUBLIC_DNS.get(i))
+                .map(|(name, _)| (*name).to_owned());
+            let _ = tx.send(Command::SetDns(provider));
+        }
+    });
     ui.set_logs(ModelRc::new(VecModel::<LogItem>::default()));
     ui.set_draft_apps(DRAFT_APPS.with(|m| ModelRc::from(m.clone())));
     set_domain_packs(&ui);

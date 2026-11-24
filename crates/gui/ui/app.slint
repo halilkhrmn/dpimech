@@ -26,6 +26,14 @@ export component AppWindow inherits Window {
     in-out property <Page> page: Page.dashboard;
     in property <bool> service-connected;
     in property <string> service-info;
+    /// DNS servers in use, one line per connection (convert::dns_text).
+    in property <string> dns-in-use;
+    /// Optional DNS service: 0 = the network's own, then catalog::PUBLIC_DNS in order.
+    in property <[string]> dns-choices;
+    in-out property <int> dns-chosen;
+    in-out property <bool> dns-busy;
+    in property <string> dns-error;
+    callback set-dns(int);
     in property <string> os-name;
 
     // Dashboard & logs
@@ -419,6 +427,12 @@ export component AppWindow inherits Window {
             if page == Page.settings: SettingsPage {
                 service-connected: service-connected;
                 service-info: service-info;
+                dns-in-use: dns-in-use;
+                dns-choices: dns-choices;
+                dns-chosen <=> dns-chosen;
+                dns-busy <=> dns-busy;
+                dns-error: dns-error;
+                set-dns(i) => { root.set-dns(i); }
                 os-name: os-name;
                 start-with-windows: start-with-windows;
                 set-autostart(on) => { root.set-autostart(on); }

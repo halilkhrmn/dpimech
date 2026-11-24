@@ -16,6 +16,8 @@ use crate::{AppWindow, LogItem, PackageItem, Page, convert, labui, wizard};
 const FOREIGN_CHECK: Duration = Duration::from_secs(30);
 
 pub enum Command {
+    /// A public DNS service by name (`catalog::PUBLIC_DNS`), or `None` for the network's own.
+    SetDns(Option<String>),
     Save(Profile),
     Delete(String),
     Start(String),
@@ -129,7 +131,10 @@ async fn run(ui: Weak<AppWindow>, mut commands: mpsc::UnboundedReceiver<Command>
         let mut foreign_check = tokio::time::interval(FOREIGN_CHECK);
         loop {
             tokio::select! {
-                _ = foreign_check.tick() => refresh_foreign_tools(&ui, &client).await,
+                _ = foreign_check.tick() => {
+                    refresh_foreign_tools(&ui, &client).await;
+                    refresh_dns(&ui, &client).await;
+                }
                 Some(cmd) = commands.recv() => handle_command(&ui, &client, cmd, &mut last_active).await,
                 event = events.recv() => match event {
                     Some(Event::Log { line }) => append_log(&ui, line),
@@ -211,6 +216,19 @@ async fn handle_command(
                 Ok((text, url)) => crate::set_app_update(&ui, text, url),
                 Err(e) => crate::set_app_update(&ui, e, None),
             });
+            return;
+        }
+        Command::SetDns(provider) => {
+            let result = client.request(Request::SetDns { provider }).await;
+            let message = match result {
+                Ok(_) => String::new(),
+                Err(e) => e.to_string(),
+            };
+            let _ = ui.upgrade_in_event_loop(move |ui| {
+                ui.set_dns_busy(false);
+                ui.set_dns_error(message.into());
+            });
+            refresh_dns(ui, client).await;
             return;
         }
         Command::AddDefenderExclusion => {
@@ -525,6 +543,35 @@ fn replace_logs(ui: &Weak<AppWindow>, lines: Vec<LogLine>) {
             .map(convert::log_item)
             .collect();
         crate::logview::replace(&ui, items);
+    });
+}
+
+/// The DNS servers in use, for Settings and problem reports. Asked with the other periodic
+/// checks: a network change (Wi-Fi to cable, a VPN) changes them.
+async fn refresh_dns(ui: &Weak<AppWindow>, client: &Client) {
+    let (text, chosen) = match client.request(Request::DnsInUse).await {
+        Ok(Reply::DnsInUse {
+            connections,
+            chosen,
+        }) => (convert::dns_text(&connections), chosen),
+        _ => (String::new(), None),
+    };
+    // 0 is "the network's own"; the services follow in catalog order.
+    let index = chosen
+        .and_then(|name| {
+            dpimech_core::catalog::PUBLIC_DNS
+                .iter()
+                .position(|(n, _)| *n == name)
+        })
+        .map_or(0, |i| i as i32 + 1);
+    let _ = ui.upgrade_in_event_loop(move |ui| {
+        if ui.get_dns_in_use() != text.as_str() {
+            ui.set_dns_in_use(text.into());
+        }
+        // The dropdown follows the service, except while the user is about to apply a choice.
+        if !ui.get_dns_busy() {
+            ui.set_dns_chosen(index);
+        }
     });
 }
 

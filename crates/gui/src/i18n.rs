@@ -36,6 +36,9 @@ const CATALOGS: &[(&str, &str)] = &[
 // Read by tools/i18n.py and the tests, not by the program itself.
 #[cfg_attr(not(test), allow(dead_code))]
 pub const EXTRA_TEXTS: &[&str] = &[
+    // DNS server labels (dpimech_core::catalog::dns_label).
+    "router",
+    "this computer",
     "Automatic",
     "Restarting did not help. This setting may have stopped working on your connection — run the Strategy Lab.",
     "This setting does not open this profile's sites on your connection. Find a working one in the Strategy Lab, or try another engine.",

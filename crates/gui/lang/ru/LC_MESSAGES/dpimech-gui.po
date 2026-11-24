@@ -4,43 +4,43 @@ msgstr ""
 "Language: ru\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ui/app.slint:224
+#: ui/app.slint:232
 msgid "Profiles"
 msgstr "Профили"
 
-#: ui/app.slint:229
+#: ui/app.slint:237
 msgid "Strategy Lab"
 msgstr "Лаборатория"
 
-#: ui/app.slint:234
+#: ui/app.slint:242
 msgid "Engines"
 msgstr "Движки"
 
-#: ui/app.slint:240
+#: ui/app.slint:248
 msgid "Logs"
 msgstr "Журнал"
 
-#: ui/app.slint:246
+#: ui/app.slint:254
 msgid "Settings"
 msgstr "Настройки"
 
-#: ui/app.slint:297
+#: ui/app.slint:305
 msgid "Another DPI tool is running: {}. Two tools on the same traffic break connections — close it, or turn DPIMech's profiles off."
 msgstr "Работает другой инструмент обхода DPI: {}. Два инструмента на одном трафике ломают соединения — закройте его или выключите профили DPIMech."
 
-#: ui/app.slint:305
+#: ui/app.slint:313
 msgid "Hide"
 msgstr "Скрыть"
 
-#: ui/app.slint:322
+#: ui/app.slint:330
 msgid "DPIMech {} is ready to install."
 msgstr "DPIMech {} готов к установке."
 
-#: ui/app.slint:326
+#: ui/app.slint:334
 msgid "Restart and update"
 msgstr "Перезапустить и обновить"
 
-#: ui/app.slint:338
+#: ui/app.slint:346
 msgid "Background service is not running. Engines can't be started until it is."
 msgstr "Фоновая служба не запущена. Пока она не работает, движки нельзя запустить."
 
@@ -424,131 +424,155 @@ msgstr "Подробный журнал"
 msgid "Also logs every connection (site, address, how it ended) and each tested strategy. Turn it on to find out why something does not open; it makes the log much longer."
 msgstr "Также записывает каждое соединение (сайт, адрес, чем закончилось) и каждую проверенную стратегию. Включите, чтобы понять, почему что-то не открывается; журнал станет намного длиннее."
 
-#: ui/pages.slint:188
+#: ui/pages.slint:194
 msgid "Interface"
 msgstr "Интерфейс"
 
-#: ui/pages.slint:195
+#: ui/pages.slint:201
 msgid "Easy mode"
 msgstr "Простой режим"
 
-#: ui/pages.slint:197
+#: ui/pages.slint:203
 msgid "Fewer menus; the setup wizard does the work. Turn off for engines, the Strategy Lab and logs."
 msgstr "Меньше меню, всё делает мастер настройки. Выключите, чтобы видеть движки, лабораторию стратегий и журнал."
 
-#: ui/pages.slint:214
+#: ui/pages.slint:220
 msgid "Language"
 msgstr "Язык"
 
-#: ui/pages.slint:222
+#: ui/pages.slint:228
 msgid "Run the setup wizard again"
 msgstr "Снова запустить мастер настройки"
 
-#: ui/pages.slint:223
+#: ui/pages.slint:229
 msgid "Open wizard"
 msgstr "Открыть мастер"
 
-#: ui/pages.slint:229
+#: ui/pages.slint:235
 msgid "Startup"
 msgstr "Автозапуск"
 
-#: ui/pages.slint:236
+#: ui/pages.slint:242
 msgid "Start DPIMech when I sign in"
 msgstr "Запускать DPIMech при входе в систему"
 
-#: ui/pages.slint:238
+#: ui/pages.slint:244
 msgid "Starts in the tray. Profiles run only while DPIMech is open."
 msgstr "Запускается в трее. Профили работают, только пока DPIMech открыт."
 
-#: ui/pages.slint:258
+#: ui/pages.slint:264
 msgid "Log"
 msgstr "Журнал"
 
-#: ui/pages.slint:265
+#: ui/pages.slint:271
 msgid "Save the log to daily files"
 msgstr "Сохранять журнал в файлы по дням"
 
-#: ui/pages.slint:267
+#: ui/pages.slint:273
 msgid "One file per day while DPIMech is open; files older than 14 days are deleted. Even when this is off, the recent log is saved to this folder if a profile stops with an error."
 msgstr "Один файл в день, пока DPIMech открыт; файлы старше 14 дней удаляются. Даже когда это выключено, недавний журнал сохраняется в эту папку, если профиль остановился с ошибкой."
 
-#: ui/pages.slint:294
+#: ui/pages.slint:300
 msgid "Change folder…"
 msgstr "Сменить папку…"
 
-#: ui/pages.slint:295
+#: ui/pages.slint:301
 msgid "Open folder"
 msgstr "Открыть папку"
 
-#: ui/pages.slint:303
+#: ui/pages.slint:309
 msgid "Shortcuts"
 msgstr "Ярлыки"
 
-#: ui/pages.slint:310
+#: ui/pages.slint:316
 msgid "Profile shortcuts on the desktop and in the menu: {}"
 msgstr "Ярлыки профилей на рабочем столе и в меню: {}"
 
-#: ui/pages.slint:314
+#: ui/pages.slint:320
 msgid "Create one by right-clicking a profile or with its menu button. Deleting a profile removes its shortcuts."
 msgstr "Создайте его правым щелчком по профилю или кнопкой меню. При удалении профиля его ярлыки удаляются."
 
-#: ui/pages.slint:321
+#: ui/pages.slint:327
 msgid "Remove all shortcuts"
 msgstr "Удалить все ярлыки"
 
-#: ui/pages.slint:329
+#: ui/pages.slint:335
+msgid "Network"
+msgstr "Сеть"
+
+#: ui/pages.slint:338
+msgid "DNS servers in use"
+msgstr "Используемые DNS-серверы"
+
+#: ui/pages.slint:340
+msgid "Not known yet (the background service tells)."
+msgstr "Пока неизвестно (сообщит фоновая служба)."
+
+#: ui/pages.slint:345
+msgid "Your computer asks these servers where sites are. If a site stays blocked although its profile works, these servers may be the reason: some providers answer blocked names with a wrong address. The Strategy Lab checks this."
+msgstr "Компьютер спрашивает у этих серверов, где находятся сайты. Если сайт остаётся заблокированным, хотя профиль работает, причина может быть в них: некоторые провайдеры отвечают на заблокированные имена неверным адресом. Лаборатория стратегий это проверяет."
+
+#: ui/pages.slint:361
+msgid "Apply"
+msgstr "Применить"
+
+#: ui/pages.slint:377
+msgid "Optional. Sets this service for every connected network instead of the one from your network (router or provider). DPIMech saves the previous settings and puts them back when you choose \"Your network's own\" or uninstall DPIMech. On Linux it needs systemd-resolved and uses encrypted DNS (DNS over TLS) when the server offers it."
+msgstr "Необязательно. Задаёт этот сервис для всех подключённых сетей вместо выданного вашей сетью (роутером или провайдером). DPIMech сохраняет прежние настройки и возвращает их, если выбрать \"DNS вашей сети\" или удалить DPIMech. В Linux нужен systemd-resolved; если сервер поддерживает, используется шифрованный DNS (DNS over TLS)."
+
+#: ui/pages.slint:386
 msgid "Background service"
 msgstr "Фоновая служба"
 
-#: ui/pages.slint:332
+#: ui/pages.slint:389
 msgid "Connected"
 msgstr "Подключено"
 
-#: ui/pages.slint:332
+#: ui/pages.slint:389
 msgid "Not running"
 msgstr "Не запущена"
 
-#: ui/pages.slint:336
+#: ui/pages.slint:393
 msgid "Install the service"
 msgstr "Установить службу"
 
-#: ui/pages.slint:342
+#: ui/pages.slint:399
 msgid "About"
 msgstr "О программе"
 
-#: ui/pages.slint:347
+#: ui/pages.slint:404
 msgid "Opens sites and apps that your internet provider blocks by running well-known open-source DPI bypass tools on your computer. It is not a VPN: your traffic still goes straight to the sites, nothing is sent through another server."
 msgstr "Открывает сайты и приложения, которые блокирует провайдер, запуская на вашем компьютере известные инструменты обхода DPI с открытым кодом. Это не VPN: трафик по-прежнему идёт напрямую на сайты, ничего не проходит через чужой сервер."
 
-#: ui/pages.slint:351
+#: ui/pages.slint:408
 msgid "Platform: {}"
 msgstr "Платформа: {}"
 
-#: ui/pages.slint:352
+#: ui/pages.slint:409
 msgid "Free software under the GNU GPL v3 or later."
 msgstr "Свободная программа под лицензией GNU GPL v3 или новее."
 
-#: ui/pages.slint:356
+#: ui/pages.slint:413
 msgid "Source code"
 msgstr "Исходный код"
 
-#: ui/pages.slint:357
+#: ui/pages.slint:414
 msgid "Report a problem"
 msgstr "Сообщить о проблеме"
 
-#: ui/pages.slint:365
+#: ui/pages.slint:422
 msgid "Download"
 msgstr "Скачать"
 
-#: ui/pages.slint:371
+#: ui/pages.slint:428
 msgid "Thanks"
 msgstr "Благодарности"
 
-#: ui/pages.slint:375
+#: ui/pages.slint:432
 msgid "DPIMech only manages these projects; the real work is theirs."
 msgstr "DPIMech только управляет этими проектами, основная работа — их."
 
-#: ui/pages.slint:388
+#: ui/pages.slint:445
 msgid "Logo, drawn by hand"
 msgstr "Логотип, нарисован вручную"
 
@@ -756,55 +780,55 @@ msgstr "DPIMech открывает только приложения, котор
 msgid "the menu entry has no command"
 msgstr "в пункте меню нет команды"
 
-#: src/bridge.rs:73
+#: src/bridge.rs:75
 msgid "Start it with: dpimech-service run"
 msgstr "Запустите её командой: dpimech-service run"
 
-#: src/bridge.rs:96
+#: src/bridge.rs:98
 msgid "Version {} · data in {}"
 msgstr "Версия {} · данные в {}"
 
-#: src/bridge.rs:190
+#: src/bridge.rs:195
 msgid "Could not update: {}"
 msgstr "Не удалось обновить: {}"
 
-#: src/bridge.rs:205
+#: src/bridge.rs:210
 msgid "You have the latest version ({})."
 msgstr "У вас последняя версия ({})."
 
-#: src/bridge.rs:208
+#: src/bridge.rs:213
 msgid "Could not check for updates: {}"
 msgstr "Не удалось проверить обновления: {}"
 
-#: src/bridge.rs:270
+#: src/bridge.rs:288
 msgid "Could not load strategies: {}"
 msgstr "Не удалось загрузить стратегии: {}"
 
-#: src/bridge.rs:282
+#: src/bridge.rs:300
 msgid "ISP lookup failed: {}"
 msgstr "Не удалось определить провайдера: {}"
 
-#: src/bridge.rs:388
+#: src/bridge.rs:406
 msgid "DPIMech {} is downloaded. Restart DPIMech to update."
 msgstr "DPIMech {} загружен. Перезапустите DPIMech, чтобы обновить."
 
-#: src/bridge.rs:402
+#: src/bridge.rs:420
 msgid "Version {} is available."
 msgstr "Доступна версия {}."
 
-#: src/bridge.rs:417
+#: src/bridge.rs:435
 msgid "Downloading DPIMech {}…"
 msgstr "Загрузка DPIMech {}…"
 
-#: src/bridge.rs:449
+#: src/bridge.rs:467
 msgid "Saved the log to {}"
 msgstr "Журнал сохранён: {}"
 
-#: src/bridge.rs:489
+#: src/bridge.rs:507
 msgid "Looking up…"
 msgstr "Поиск…"
 
-#: src/bridge.rs:491
+#: src/bridge.rs:509
 msgid "This needs the background service."
 msgstr "Для этого нужна фоновая служба."
 
@@ -812,101 +836,117 @@ msgstr "Для этого нужна фоновая служба."
 msgid "DPIMech needs the libxkbcommon-x11 library to open its window. Install it with your package manager (Arch: sudo pacman -S libxkbcommon-x11) and start DPIMech again."
 msgstr "Чтобы открыть окно, DPIMech нужна библиотека libxkbcommon-x11. Установите её менеджером пакетов (Arch: sudo pacman -S libxkbcommon-x11) и запустите DPIMech снова."
 
-#: src/convert.rs:143
+#: src/convert.rs:30
+msgid "set by hand"
+msgstr "задано вручную"
+
+#: src/convert.rs:31
+msgid "from your network"
+msgstr "от вашей сети"
+
+#: src/convert.rs:172
 msgid "Give the profile a name."
 msgstr "Дайте профилю имя."
 
-#: src/convert.rs:148
+#: src/convert.rs:177
 msgid "Choose an engine."
 msgstr "Выберите движок."
 
-#: src/convert.rs:152
+#: src/convert.rs:181
 msgid "Choose a routing mode."
 msgstr "Выберите режим маршрутизации."
 
-#: src/convert.rs:156
+#: src/convert.rs:185
 msgid "Port must be between 1024 and 65535."
 msgstr "Порт должен быть от 1024 до 65535."
 
-#: src/convert.rs:163
+#: src/convert.rs:192
 msgid "Choose the app DPIMech should open."
 msgstr "Выберите приложение, которое откроет DPIMech."
 
-#: src/convert.rs:166
+#: src/convert.rs:195
 msgid "Choose the app from the list or with Browse…"
 msgstr "Выберите приложение из списка или через «Обзор…»"
 
-#: src/convert.rs:172
+#: src/convert.rs:201
 msgid "Add at least one application for per-app routing."
 msgstr "Добавьте хотя бы одно приложение для маршрутизации по приложениям."
 
-#: src/convert.rs:213
+#: src/convert.rs:242
 msgid "{} · port {}"
 msgstr "{} · порт {}"
 
-#: src/convert.rs:225
+#: src/convert.rs:254
 msgid "All matching traffic"
 msgstr "Весь подходящий трафик"
 
-#: src/convert.rs:226
+#: src/convert.rs:255
 msgid "{} site(s): {}"
 msgstr "Сайтов: {} — {}"
 
-#: src/convert.rs:239
+#: src/convert.rs:268
 msgid "Stopped"
 msgstr "Остановлен"
 
-#: src/convert.rs:240
+#: src/convert.rs:269
 msgid "Starting…"
 msgstr "Запуск…"
 
-#: src/convert.rs:248
+#: src/convert.rs:277
 msgid "1 auto-restart"
 msgstr "1 автоперезапуск"
 
-#: src/convert.rs:249
+#: src/convert.rs:278
 msgid "{} auto-restarts"
 msgstr "автоперезапусков: {}"
 
-#: src/convert.rs:258
+#: src/convert.rs:287
 msgid "Sites not answering ({}/{})"
 msgstr "Сайты не отвечают ({}/{})"
 
-#: src/convert.rs:260
+#: src/convert.rs:289
 msgid "Slow: avg. {} ms (usually {} ms)"
 msgstr "Медленно: в среднем {} мс (обычно {} мс)"
 
-#: src/convert.rs:262
+#: src/convert.rs:291
 msgid "Only {}/{} sites answer"
 msgstr "Отвечают только {}/{} сайтов"
 
-#: src/convert.rs:269
+#: src/convert.rs:298
 msgid "Running · {}"
 msgstr "Работает · {}"
 
-#: src/convert.rs:270
+#: src/convert.rs:299
 msgid "avg. {} ms"
 msgstr "в среднем {} мс"
 
-#: src/convert.rs:378
+#: src/convert.rs:407
 msgid "just now"
 msgstr "только что"
 
-#: src/convert.rs:379
+#: src/convert.rs:408
 msgid "{} min"
 msgstr "{} мин"
 
-#: src/convert.rs:380
+#: src/convert.rs:409
 msgid "{} h {} min"
 msgstr "{} ч {} мин"
 
-#: src/convert.rs:392
+#: src/convert.rs:421
 msgid "Last check: {}/{} sites answered"
 msgstr "Последняя проверка: ответили {}/{} сайтов"
 
-#: src/convert.rs:398
+#: src/convert.rs:427
 msgid "(usually {} ms)"
 msgstr "(обычно {} мс)"
+
+#: src/i18n.rs (EXTRA_TEXTS)
+msgid "router"
+msgstr "роутер"
+
+#: src/i18n.rs (EXTRA_TEXTS)
+msgid "this computer"
+msgstr "этот компьютер"
 
 #: src/i18n.rs (EXTRA_TEXTS)
 msgid "Automatic"
@@ -1004,63 +1044,71 @@ msgstr "Готово — ни одна не открыла все сайты в 
 msgid "No bypass"
 msgstr "Без обхода"
 
-#: src/launcher.rs:80
+#: src/launcher.rs:81
 msgid "Opening {}…"
 msgstr "Открываем {}…"
 
-#: src/launcher.rs:86
+#: src/launcher.rs:87
 msgid "Could not open {}: {}"
 msgstr "Не удалось открыть {}: {}"
 
-#: src/launcher.rs:90
+#: src/launcher.rs:91
 msgid "{} is on"
 msgstr "{} включён"
 
-#: src/launcher.rs:93
+#: src/launcher.rs:94
 msgid "Could not start"
 msgstr "Не удалось запустить"
 
-#: src/launcher.rs:127
+#: src/launcher.rs:128
 msgid "The DPIMech service is not running. Open DPIMech to set it up."
 msgstr "Служба DPIMech не запущена. Откройте DPIMech, чтобы настроить её."
 
-#: src/launcher.rs:133
+#: src/launcher.rs:134
 msgid "The profile of this shortcut no longer exists."
 msgstr "Профиль этого ярлыка больше не существует."
 
-#: src/launcher.rs:141
+#: src/launcher.rs:142
 msgid "Turning the profile on…"
 msgstr "Включаем профиль…"
 
-#: src/launcher.rs:157
+#: src/launcher.rs:158
 msgid "The profile stopped right after starting. The Logs page in DPIMech shows why."
 msgstr "Профиль остановился сразу после запуска. Причину покажет страница «Журнал» в DPIMech."
 
-#: src/launcher.rs:162
+#: src/launcher.rs:163
 msgid "The profile is taking too long to start. The Logs page in DPIMech shows why."
 msgstr "Профиль запускается слишком долго. Причину покажет страница «Журнал» в DPIMech."
 
-#: src/main.rs:441
+#: src/main.rs:139
+msgid "Your network's own (no change)"
+msgstr "DNS вашей сети (без изменений)"
+
+#: src/main.rs:152
+msgid "The background service is not running."
+msgstr "Фоновая служба не запущена."
+
+#: src/main.rs:464
 msgid "Folder for DPIMech log files"
 msgstr "Папка для файлов журнала DPIMech"
 
-#: src/main.rs:639
+#: src/main.rs:662
 msgid "The service is installed. Connecting…"
 msgstr "Служба установлена. Подключение…"
 
-#: src/main.rs:640
+#: src/main.rs:663
 msgid "Installing the service failed: {}"
 msgstr "Не удалось установить службу: {}"
 
-#: src/main.rs:648
+#: src/main.rs:671
 msgid "Installing… confirm the prompt. DPIMech connects by itself when the service is ready."
 msgstr "Установка… подтвердите запрос. DPIMech подключится сам, когда служба будет готова."
 
-#: src/main.rs:649
+#: src/main.rs:672
 msgid "Could not start the installer: {}"
 msgstr "Не удалось запустить установку: {}"
 
-#: src/main.rs:720
+#: src/main.rs:743
 msgid "Downloading online lists…"
 msgstr "Загрузка онлайн-списков…"
 

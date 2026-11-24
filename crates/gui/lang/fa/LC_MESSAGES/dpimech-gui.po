@@ -4,43 +4,43 @@ msgstr ""
 "Language: fa\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: ui/app.slint:224
+#: ui/app.slint:232
 msgid "Profiles"
 msgstr "پروفایل‌ها"
 
-#: ui/app.slint:229
+#: ui/app.slint:237
 msgid "Strategy Lab"
 msgstr "آزمایشگاه راهبرد"
 
-#: ui/app.slint:234
+#: ui/app.slint:242
 msgid "Engines"
 msgstr "موتورها"
 
-#: ui/app.slint:240
+#: ui/app.slint:248
 msgid "Logs"
 msgstr "گزارش‌ها"
 
-#: ui/app.slint:246
+#: ui/app.slint:254
 msgid "Settings"
 msgstr "تنظیمات"
 
-#: ui/app.slint:297
+#: ui/app.slint:305
 msgid "Another DPI tool is running: {}. Two tools on the same traffic break connections — close it, or turn DPIMech's profiles off."
 msgstr "ابزار دیگری برای دور زدن DPI در حال اجراست: {}. دو ابزار روی یک ترافیک اتصال‌ها را خراب می‌کنند — آن را ببندید یا پروفایل‌های DPIMech را خاموش کنید."
 
-#: ui/app.slint:305
+#: ui/app.slint:313
 msgid "Hide"
 msgstr "پنهان کردن"
 
-#: ui/app.slint:322
+#: ui/app.slint:330
 msgid "DPIMech {} is ready to install."
 msgstr "DPIMech {} آمادهٔ نصب است."
 
-#: ui/app.slint:326
+#: ui/app.slint:334
 msgid "Restart and update"
 msgstr "راه‌اندازی دوباره و به‌روزرسانی"
 
-#: ui/app.slint:338
+#: ui/app.slint:346
 msgid "Background service is not running. Engines can't be started until it is."
 msgstr "سرویس پس‌زمینه اجرا نمی‌شود. تا زمانی که اجرا نشود، موتورها راه‌اندازی نمی‌شوند."
 
@@ -424,131 +424,155 @@ msgstr "گزارش مفصل"
 msgid "Also logs every connection (site, address, how it ended) and each tested strategy. Turn it on to find out why something does not open; it makes the log much longer."
 msgstr "هر اتصال (سایت، نشانی، نحوهٔ پایان) و هر راهبرد آزمایش‌شده را هم ثبت می‌کند. برای فهمیدن اینکه چرا چیزی باز نمی‌شود روشنش کنید؛ گزارش را بسیار طولانی‌تر می‌کند."
 
-#: ui/pages.slint:188
+#: ui/pages.slint:194
 msgid "Interface"
 msgstr "رابط کاربری"
 
-#: ui/pages.slint:195
+#: ui/pages.slint:201
 msgid "Easy mode"
 msgstr "حالت ساده"
 
-#: ui/pages.slint:197
+#: ui/pages.slint:203
 msgid "Fewer menus; the setup wizard does the work. Turn off for engines, the Strategy Lab and logs."
 msgstr "منوهای کمتر؛ راه‌انداز کار را انجام می‌دهد. برای موتورها، آزمایشگاه راهبرد و گزارش‌ها خاموشش کنید."
 
-#: ui/pages.slint:214
+#: ui/pages.slint:220
 msgid "Language"
 msgstr "زبان"
 
-#: ui/pages.slint:222
+#: ui/pages.slint:228
 msgid "Run the setup wizard again"
 msgstr "اجرای دوبارهٔ راه‌انداز"
 
-#: ui/pages.slint:223
+#: ui/pages.slint:229
 msgid "Open wizard"
 msgstr "باز کردن راه‌انداز"
 
-#: ui/pages.slint:229
+#: ui/pages.slint:235
 msgid "Startup"
 msgstr "شروع"
 
-#: ui/pages.slint:236
+#: ui/pages.slint:242
 msgid "Start DPIMech when I sign in"
 msgstr "هنگام ورود من DPIMech اجرا شود"
 
-#: ui/pages.slint:238
+#: ui/pages.slint:244
 msgid "Starts in the tray. Profiles run only while DPIMech is open."
 msgstr "در سینی سیستم اجرا می‌شود. پروفایل‌ها فقط تا وقتی DPIMech باز است اجرا می‌شوند."
 
-#: ui/pages.slint:258
+#: ui/pages.slint:264
 msgid "Log"
 msgstr "گزارش"
 
-#: ui/pages.slint:265
+#: ui/pages.slint:271
 msgid "Save the log to daily files"
 msgstr "ذخیرهٔ گزارش در فایل‌های روزانه"
 
-#: ui/pages.slint:267
+#: ui/pages.slint:273
 msgid "One file per day while DPIMech is open; files older than 14 days are deleted. Even when this is off, the recent log is saved to this folder if a profile stops with an error."
 msgstr "تا وقتی DPIMech باز است، هر روز یک فایل؛ فایل‌های قدیمی‌تر از ۱۴ روز حذف می‌شوند. حتی وقتی این خاموش است، اگر پروفایلی با خطا متوقف شود، گزارش اخیر در این پوشه ذخیره می‌شود."
 
-#: ui/pages.slint:294
+#: ui/pages.slint:300
 msgid "Change folder…"
 msgstr "تغییر پوشه…"
 
-#: ui/pages.slint:295
+#: ui/pages.slint:301
 msgid "Open folder"
 msgstr "باز کردن پوشه"
 
-#: ui/pages.slint:303
+#: ui/pages.slint:309
 msgid "Shortcuts"
 msgstr "میان‌برها"
 
-#: ui/pages.slint:310
+#: ui/pages.slint:316
 msgid "Profile shortcuts on the desktop and in the menu: {}"
 msgstr "میان‌برهای پروفایل روی دسکتاپ و در منو: {}"
 
-#: ui/pages.slint:314
+#: ui/pages.slint:320
 msgid "Create one by right-clicking a profile or with its menu button. Deleting a profile removes its shortcuts."
 msgstr "با کلیک راست روی یک پروفایل یا با دکمهٔ منوی آن یکی بسازید. حذف پروفایل میان‌برهایش را هم حذف می‌کند."
 
-#: ui/pages.slint:321
+#: ui/pages.slint:327
 msgid "Remove all shortcuts"
 msgstr "حذف همهٔ میان‌برها"
 
-#: ui/pages.slint:329
+#: ui/pages.slint:335
+msgid "Network"
+msgstr "شبکه"
+
+#: ui/pages.slint:338
+msgid "DNS servers in use"
+msgstr "سرورهای DNS در حال استفاده"
+
+#: ui/pages.slint:340
+msgid "Not known yet (the background service tells)."
+msgstr "هنوز معلوم نیست (سرویس پس‌زمینه اطلاع می‌دهد)."
+
+#: ui/pages.slint:345
+msgid "Your computer asks these servers where sites are. If a site stays blocked although its profile works, these servers may be the reason: some providers answer blocked names with a wrong address. The Strategy Lab checks this."
+msgstr "رایانهٔ شما نشانی سایت‌ها را از این سرورها می‌پرسد. اگر سایتی با وجود کار کردن پروفایلش مسدود بماند، ممکن است علت همین سرورها باشد: برخی ارائه‌دهندگان به نام‌های مسدود نشانی نادرست می‌دهند. آزمایشگاه استراتژی این را بررسی می‌کند."
+
+#: ui/pages.slint:361
+msgid "Apply"
+msgstr "اعمال"
+
+#: ui/pages.slint:377
+msgid "Optional. Sets this service for every connected network instead of the one from your network (router or provider). DPIMech saves the previous settings and puts them back when you choose \"Your network's own\" or uninstall DPIMech. On Linux it needs systemd-resolved and uses encrypted DNS (DNS over TLS) when the server offers it."
+msgstr "اختیاری. این سرویس را برای همهٔ شبکه‌های متصل به جای DNS شبکهٔ شما (مودم یا ارائه‌دهنده) تنظیم می‌کند. DPIMech تنظیمات قبلی را ذخیره می‌کند و وقتی \"DNS خود شبکه\" را انتخاب کنید یا DPIMech را حذف کنید آن‌ها را برمی‌گرداند. در لینوکس به systemd-resolved نیاز دارد و اگر سرور پشتیبانی کند از DNS رمزگذاری‌شده (DNS over TLS) استفاده می‌کند."
+
+#: ui/pages.slint:386
 msgid "Background service"
 msgstr "سرویس پس‌زمینه"
 
-#: ui/pages.slint:332
+#: ui/pages.slint:389
 msgid "Connected"
 msgstr "متصل"
 
-#: ui/pages.slint:332
+#: ui/pages.slint:389
 msgid "Not running"
 msgstr "اجرا نمی‌شود"
 
-#: ui/pages.slint:336
+#: ui/pages.slint:393
 msgid "Install the service"
 msgstr "نصب سرویس"
 
-#: ui/pages.slint:342
+#: ui/pages.slint:399
 msgid "About"
 msgstr "درباره"
 
-#: ui/pages.slint:347
+#: ui/pages.slint:404
 msgid "Opens sites and apps that your internet provider blocks by running well-known open-source DPI bypass tools on your computer. It is not a VPN: your traffic still goes straight to the sites, nothing is sent through another server."
 msgstr "سایت‌ها و برنامه‌هایی را که ارائه‌دهندهٔ اینترنت شما مسدود کرده، با اجرای ابزارهای شناخته‌شده و متن‌باز دور زدن DPI روی رایانهٔ خودتان باز می‌کند. این VPN نیست: ترافیک شما همچنان مستقیم به سایت‌ها می‌رود و از سرور دیگری عبور نمی‌کند."
 
-#: ui/pages.slint:351
+#: ui/pages.slint:408
 msgid "Platform: {}"
 msgstr "سکو: {}"
 
-#: ui/pages.slint:352
+#: ui/pages.slint:409
 msgid "Free software under the GNU GPL v3 or later."
 msgstr "نرم‌افزار آزاد تحت GNU GPL نسخهٔ ۳ یا بالاتر."
 
-#: ui/pages.slint:356
+#: ui/pages.slint:413
 msgid "Source code"
 msgstr "کد منبع"
 
-#: ui/pages.slint:357
+#: ui/pages.slint:414
 msgid "Report a problem"
 msgstr "گزارش مشکل"
 
-#: ui/pages.slint:365
+#: ui/pages.slint:422
 msgid "Download"
 msgstr "دانلود"
 
-#: ui/pages.slint:371
+#: ui/pages.slint:428
 msgid "Thanks"
 msgstr "سپاس"
 
-#: ui/pages.slint:375
+#: ui/pages.slint:432
 msgid "DPIMech only manages these projects; the real work is theirs."
 msgstr "DPIMech فقط این پروژه‌ها را مدیریت می‌کند؛ کار اصلی را آن‌ها انجام می‌دهند."
 
-#: ui/pages.slint:388
+#: ui/pages.slint:445
 msgid "Logo, drawn by hand"
 msgstr "نشان، با دست کشیده شده"
 
@@ -756,55 +780,55 @@ msgstr "DPIMech فقط برنامه‌هایی را باز می‌کند که م
 msgid "the menu entry has no command"
 msgstr "مورد منو فرمانی ندارد"
 
-#: src/bridge.rs:73
+#: src/bridge.rs:75
 msgid "Start it with: dpimech-service run"
 msgstr "با این فرمان اجرایش کنید: dpimech-service run"
 
-#: src/bridge.rs:96
+#: src/bridge.rs:98
 msgid "Version {} · data in {}"
 msgstr "نسخهٔ {} · داده‌ها در {}"
 
-#: src/bridge.rs:190
+#: src/bridge.rs:195
 msgid "Could not update: {}"
 msgstr "به‌روزرسانی ممکن نشد: {}"
 
-#: src/bridge.rs:205
+#: src/bridge.rs:210
 msgid "You have the latest version ({})."
 msgstr "آخرین نسخه را دارید ({})."
 
-#: src/bridge.rs:208
+#: src/bridge.rs:213
 msgid "Could not check for updates: {}"
 msgstr "بررسی به‌روزرسانی ممکن نشد: {}"
 
-#: src/bridge.rs:270
+#: src/bridge.rs:288
 msgid "Could not load strategies: {}"
 msgstr "بارگیری راهبردها ممکن نشد: {}"
 
-#: src/bridge.rs:282
+#: src/bridge.rs:300
 msgid "ISP lookup failed: {}"
 msgstr "تشخیص ارائه‌دهندهٔ اینترنت ناموفق بود: {}"
 
-#: src/bridge.rs:388
+#: src/bridge.rs:406
 msgid "DPIMech {} is downloaded. Restart DPIMech to update."
 msgstr "DPIMech {} دانلود شد. برای به‌روزرسانی، DPIMech را دوباره راه‌اندازی کنید."
 
-#: src/bridge.rs:402
+#: src/bridge.rs:420
 msgid "Version {} is available."
 msgstr "نسخهٔ {} موجود است."
 
-#: src/bridge.rs:417
+#: src/bridge.rs:435
 msgid "Downloading DPIMech {}…"
 msgstr "در حال دانلود DPIMech {}…"
 
-#: src/bridge.rs:449
+#: src/bridge.rs:467
 msgid "Saved the log to {}"
 msgstr "گزارش در {} ذخیره شد"
 
-#: src/bridge.rs:489
+#: src/bridge.rs:507
 msgid "Looking up…"
 msgstr "در حال جست‌وجو…"
 
-#: src/bridge.rs:491
+#: src/bridge.rs:509
 msgid "This needs the background service."
 msgstr "این کار به سرویس پس‌زمینه نیاز دارد."
 
@@ -812,101 +836,117 @@ msgstr "این کار به سرویس پس‌زمینه نیاز دارد."
 msgid "DPIMech needs the libxkbcommon-x11 library to open its window. Install it with your package manager (Arch: sudo pacman -S libxkbcommon-x11) and start DPIMech again."
 msgstr "DPIMech برای باز کردن پنجره‌اش به کتابخانهٔ libxkbcommon-x11 نیاز دارد. آن را با مدیر بستهٔ خود نصب کنید (Arch: sudo pacman -S libxkbcommon-x11) و DPIMech را دوباره اجرا کنید."
 
-#: src/convert.rs:143
+#: src/convert.rs:30
+msgid "set by hand"
+msgstr "دستی تنظیم شده"
+
+#: src/convert.rs:31
+msgid "from your network"
+msgstr "از شبکهٔ شما"
+
+#: src/convert.rs:172
 msgid "Give the profile a name."
 msgstr "برای پروفایل یک نام بگذارید."
 
-#: src/convert.rs:148
+#: src/convert.rs:177
 msgid "Choose an engine."
 msgstr "یک موتور انتخاب کنید."
 
-#: src/convert.rs:152
+#: src/convert.rs:181
 msgid "Choose a routing mode."
 msgstr "یک حالت مسیریابی انتخاب کنید."
 
-#: src/convert.rs:156
+#: src/convert.rs:185
 msgid "Port must be between 1024 and 65535."
 msgstr "درگاه باید بین 1024 و 65535 باشد."
 
-#: src/convert.rs:163
+#: src/convert.rs:192
 msgid "Choose the app DPIMech should open."
 msgstr "برنامه‌ای را که DPIMech باید باز کند انتخاب کنید."
 
-#: src/convert.rs:166
+#: src/convert.rs:195
 msgid "Choose the app from the list or with Browse…"
 msgstr "برنامه را از فهرست یا با «مرور…» انتخاب کنید"
 
-#: src/convert.rs:172
+#: src/convert.rs:201
 msgid "Add at least one application for per-app routing."
 msgstr "برای مسیریابی برنامه‌محور دست‌کم یک برنامه اضافه کنید."
 
-#: src/convert.rs:213
+#: src/convert.rs:242
 msgid "{} · port {}"
 msgstr "{} · درگاه {}"
 
-#: src/convert.rs:225
+#: src/convert.rs:254
 msgid "All matching traffic"
 msgstr "همهٔ ترافیک منطبق"
 
-#: src/convert.rs:226
+#: src/convert.rs:255
 msgid "{} site(s): {}"
 msgstr "{} سایت: {}"
 
-#: src/convert.rs:239
+#: src/convert.rs:268
 msgid "Stopped"
 msgstr "متوقف"
 
-#: src/convert.rs:240
+#: src/convert.rs:269
 msgid "Starting…"
 msgstr "در حال شروع…"
 
-#: src/convert.rs:248
+#: src/convert.rs:277
 msgid "1 auto-restart"
 msgstr "۱ راه‌اندازی دوبارهٔ خودکار"
 
-#: src/convert.rs:249
+#: src/convert.rs:278
 msgid "{} auto-restarts"
 msgstr "{} راه‌اندازی دوبارهٔ خودکار"
 
-#: src/convert.rs:258
+#: src/convert.rs:287
 msgid "Sites not answering ({}/{})"
 msgstr "سایت‌ها پاسخ نمی‌دهند ({}/{})"
 
-#: src/convert.rs:260
+#: src/convert.rs:289
 msgid "Slow: avg. {} ms (usually {} ms)"
 msgstr "کند: میانگین {} ms (معمولاً {} ms)"
 
-#: src/convert.rs:262
+#: src/convert.rs:291
 msgid "Only {}/{} sites answer"
 msgstr "فقط {}/{} سایت پاسخ می‌دهند"
 
-#: src/convert.rs:269
+#: src/convert.rs:298
 msgid "Running · {}"
 msgstr "در حال اجرا · {}"
 
-#: src/convert.rs:270
+#: src/convert.rs:299
 msgid "avg. {} ms"
 msgstr "میانگین {} ms"
 
-#: src/convert.rs:378
+#: src/convert.rs:407
 msgid "just now"
 msgstr "همین الان"
 
-#: src/convert.rs:379
+#: src/convert.rs:408
 msgid "{} min"
 msgstr "{} دقیقه"
 
-#: src/convert.rs:380
+#: src/convert.rs:409
 msgid "{} h {} min"
 msgstr "{} ساعت {} دقیقه"
 
-#: src/convert.rs:392
+#: src/convert.rs:421
 msgid "Last check: {}/{} sites answered"
 msgstr "آخرین بررسی: {}/{} سایت پاسخ دادند"
 
-#: src/convert.rs:398
+#: src/convert.rs:427
 msgid "(usually {} ms)"
 msgstr "(معمولاً {} ms)"
+
+#: src/i18n.rs (EXTRA_TEXTS)
+msgid "router"
+msgstr "مودم"
+
+#: src/i18n.rs (EXTRA_TEXTS)
+msgid "this computer"
+msgstr "همین رایانه"
 
 #: src/i18n.rs (EXTRA_TEXTS)
 msgid "Automatic"
@@ -1004,63 +1044,71 @@ msgstr "تمام — هیچ‌کدام همهٔ سایت‌ها را در همه
 msgid "No bypass"
 msgstr "بدون دور زدن"
 
-#: src/launcher.rs:80
+#: src/launcher.rs:81
 msgid "Opening {}…"
 msgstr "در حال باز کردن {}…"
 
-#: src/launcher.rs:86
+#: src/launcher.rs:87
 msgid "Could not open {}: {}"
 msgstr "باز کردن {} ممکن نشد: {}"
 
-#: src/launcher.rs:90
+#: src/launcher.rs:91
 msgid "{} is on"
 msgstr "{} روشن است"
 
-#: src/launcher.rs:93
+#: src/launcher.rs:94
 msgid "Could not start"
 msgstr "شروع ممکن نشد"
 
-#: src/launcher.rs:127
+#: src/launcher.rs:128
 msgid "The DPIMech service is not running. Open DPIMech to set it up."
 msgstr "سرویس DPIMech اجرا نمی‌شود. برای راه‌اندازی، DPIMech را باز کنید."
 
-#: src/launcher.rs:133
+#: src/launcher.rs:134
 msgid "The profile of this shortcut no longer exists."
 msgstr "پروفایل این میان‌بر دیگر وجود ندارد."
 
-#: src/launcher.rs:141
+#: src/launcher.rs:142
 msgid "Turning the profile on…"
 msgstr "در حال روشن کردن پروفایل…"
 
-#: src/launcher.rs:157
+#: src/launcher.rs:158
 msgid "The profile stopped right after starting. The Logs page in DPIMech shows why."
 msgstr "پروفایل بلافاصله پس از شروع متوقف شد. صفحهٔ گزارش‌ها در DPIMech علت را نشان می‌دهد."
 
-#: src/launcher.rs:162
+#: src/launcher.rs:163
 msgid "The profile is taking too long to start. The Logs page in DPIMech shows why."
 msgstr "شروع پروفایل بیش از حد طول می‌کشد. صفحهٔ گزارش‌ها در DPIMech علت را نشان می‌دهد."
 
-#: src/main.rs:441
+#: src/main.rs:139
+msgid "Your network's own (no change)"
+msgstr "DNS خود شبکه (بدون تغییر)"
+
+#: src/main.rs:152
+msgid "The background service is not running."
+msgstr "سرویس پس‌زمینه اجرا نمی‌شود."
+
+#: src/main.rs:464
 msgid "Folder for DPIMech log files"
 msgstr "پوشهٔ فایل‌های گزارش DPIMech"
 
-#: src/main.rs:639
+#: src/main.rs:662
 msgid "The service is installed. Connecting…"
 msgstr "سرویس نصب شد. در حال اتصال…"
 
-#: src/main.rs:640
+#: src/main.rs:663
 msgid "Installing the service failed: {}"
 msgstr "نصب سرویس ناموفق بود: {}"
 
-#: src/main.rs:648
+#: src/main.rs:671
 msgid "Installing… confirm the prompt. DPIMech connects by itself when the service is ready."
 msgstr "در حال نصب… پنجرهٔ تأیید را بپذیرید. DPIMech وقتی سرویس آماده شد خودش وصل می‌شود."
 
-#: src/main.rs:649
+#: src/main.rs:672
 msgid "Could not start the installer: {}"
 msgstr "اجرای نصب‌کننده ممکن نشد: {}"
 
-#: src/main.rs:720
+#: src/main.rs:743
 msgid "Downloading online lists…"
 msgstr "در حال دانلود فهرست‌های آنلاین…"
 

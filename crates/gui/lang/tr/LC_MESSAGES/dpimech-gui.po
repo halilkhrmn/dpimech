@@ -4,43 +4,43 @@ msgstr ""
 "Language: tr\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ui/app.slint:224
+#: ui/app.slint:232
 msgid "Profiles"
 msgstr "Profiller"
 
-#: ui/app.slint:229
+#: ui/app.slint:237
 msgid "Strategy Lab"
 msgstr "Strateji Laboratuvarı"
 
-#: ui/app.slint:234
+#: ui/app.slint:242
 msgid "Engines"
 msgstr "Motorlar"
 
-#: ui/app.slint:240
+#: ui/app.slint:248
 msgid "Logs"
 msgstr "Kayıtlar"
 
-#: ui/app.slint:246
+#: ui/app.slint:254
 msgid "Settings"
 msgstr "Ayarlar"
 
-#: ui/app.slint:297
+#: ui/app.slint:305
 msgid "Another DPI tool is running: {}. Two tools on the same traffic break connections — close it, or turn DPIMech's profiles off."
 msgstr "Başka bir DPI aracı çalışıyor: {}. Aynı trafikte iki araç bağlantıları bozar — onu kapat ya da DPIMech profillerini kapat."
 
-#: ui/app.slint:305
+#: ui/app.slint:313
 msgid "Hide"
 msgstr "Gizle"
 
-#: ui/app.slint:322
+#: ui/app.slint:330
 msgid "DPIMech {} is ready to install."
 msgstr "DPIMech {} kurulmaya hazır."
 
-#: ui/app.slint:326
+#: ui/app.slint:334
 msgid "Restart and update"
 msgstr "Yeniden başlat ve güncelle"
 
-#: ui/app.slint:338
+#: ui/app.slint:346
 msgid "Background service is not running. Engines can't be started until it is."
 msgstr "Arka plan servisi çalışmıyor. Servis çalışmadan motorlar başlatılamaz."
 
@@ -424,131 +424,155 @@ msgstr "Ayrıntılı kayıt"
 msgid "Also logs every connection (site, address, how it ended) and each tested strategy. Turn it on to find out why something does not open; it makes the log much longer."
 msgstr "Her bağlantıyı (site, adres, nasıl bittiği) ve denenen her stratejiyi de kaydeder. Bir şeyin neden açılmadığını bulmak için aç; kayıtları çok uzatır."
 
-#: ui/pages.slint:188
+#: ui/pages.slint:194
 msgid "Interface"
 msgstr "Arayüz"
 
-#: ui/pages.slint:195
+#: ui/pages.slint:201
 msgid "Easy mode"
 msgstr "Kolay mod"
 
-#: ui/pages.slint:197
+#: ui/pages.slint:203
 msgid "Fewer menus; the setup wizard does the work. Turn off for engines, the Strategy Lab and logs."
 msgstr "Daha az menü; işi kurulum sihirbazı yapar. Motorlar, Strateji Laboratuvarı ve kayıtlar için kapat."
 
-#: ui/pages.slint:214
+#: ui/pages.slint:220
 msgid "Language"
 msgstr "Dil"
 
-#: ui/pages.slint:222
+#: ui/pages.slint:228
 msgid "Run the setup wizard again"
 msgstr "Kurulum sihirbazını yeniden çalıştır"
 
-#: ui/pages.slint:223
+#: ui/pages.slint:229
 msgid "Open wizard"
 msgstr "Sihirbazı aç"
 
-#: ui/pages.slint:229
+#: ui/pages.slint:235
 msgid "Startup"
 msgstr "Başlangıç"
 
-#: ui/pages.slint:236
+#: ui/pages.slint:242
 msgid "Start DPIMech when I sign in"
 msgstr "Oturum açınca DPIMech'i başlat"
 
-#: ui/pages.slint:238
+#: ui/pages.slint:244
 msgid "Starts in the tray. Profiles run only while DPIMech is open."
 msgstr "Tepside başlar. Profiller yalnızca DPIMech açıkken çalışır."
 
-#: ui/pages.slint:258
+#: ui/pages.slint:264
 msgid "Log"
 msgstr "Kayıt"
 
-#: ui/pages.slint:265
+#: ui/pages.slint:271
 msgid "Save the log to daily files"
 msgstr "Kaydı günlük dosyalara yaz"
 
-#: ui/pages.slint:267
+#: ui/pages.slint:273
 msgid "One file per day while DPIMech is open; files older than 14 days are deleted. Even when this is off, the recent log is saved to this folder if a profile stops with an error."
 msgstr "DPIMech açıkken her gün için bir dosya; 14 günden eski dosyalar silinir. Bu kapalıyken bile bir profil hatayla durursa son kayıtlar bu klasöre kaydedilir."
 
-#: ui/pages.slint:294
+#: ui/pages.slint:300
 msgid "Change folder…"
 msgstr "Klasörü değiştir…"
 
-#: ui/pages.slint:295
+#: ui/pages.slint:301
 msgid "Open folder"
 msgstr "Klasörü aç"
 
-#: ui/pages.slint:303
+#: ui/pages.slint:309
 msgid "Shortcuts"
 msgstr "Kısayollar"
 
-#: ui/pages.slint:310
+#: ui/pages.slint:316
 msgid "Profile shortcuts on the desktop and in the menu: {}"
 msgstr "Masaüstündeki ve menüdeki profil kısayolları: {}"
 
-#: ui/pages.slint:314
+#: ui/pages.slint:320
 msgid "Create one by right-clicking a profile or with its menu button. Deleting a profile removes its shortcuts."
 msgstr "Bir profile sağ tıklayarak ya da menü düğmesiyle oluşturun. Profil silinince kısayolları da silinir."
 
-#: ui/pages.slint:321
+#: ui/pages.slint:327
 msgid "Remove all shortcuts"
 msgstr "Tüm kısayolları kaldır"
 
-#: ui/pages.slint:329
+#: ui/pages.slint:335
+msgid "Network"
+msgstr "Ağ"
+
+#: ui/pages.slint:338
+msgid "DNS servers in use"
+msgstr "Kullanılan DNS sunucuları"
+
+#: ui/pages.slint:340
+msgid "Not known yet (the background service tells)."
+msgstr "Henüz bilinmiyor (arka plan servisi bildirir)."
+
+#: ui/pages.slint:345
+msgid "Your computer asks these servers where sites are. If a site stays blocked although its profile works, these servers may be the reason: some providers answer blocked names with a wrong address. The Strategy Lab checks this."
+msgstr "Bilgisayarın sitelerin nerede olduğunu bu sunuculara sorar. Profili çalıştığı hâlde bir site engelli kalıyorsa sebep bu sunucular olabilir: bazı sağlayıcılar engelli adlara yanlış adres verir. Strateji Laboratuvarı bunu kontrol eder."
+
+#: ui/pages.slint:361
+msgid "Apply"
+msgstr "Uygula"
+
+#: ui/pages.slint:377
+msgid "Optional. Sets this service for every connected network instead of the one from your network (router or provider). DPIMech saves the previous settings and puts them back when you choose \"Your network's own\" or uninstall DPIMech. On Linux it needs systemd-resolved and uses encrypted DNS (DNS over TLS) when the server offers it."
+msgstr "İsteğe bağlı. Bağlı her ağ için, ağının (modem ya da sağlayıcı) verdiği yerine bu servisi ayarlar. DPIMech önceki ayarları kaydeder; \"Ağının kendi DNS'i\" seçildiğinde ya da DPIMech kaldırıldığında onları geri koyar. Linux'ta systemd-resolved gerekir ve sunucu destekliyorsa şifreli DNS (DNS over TLS) kullanılır."
+
+#: ui/pages.slint:386
 msgid "Background service"
 msgstr "Arka plan servisi"
 
-#: ui/pages.slint:332
+#: ui/pages.slint:389
 msgid "Connected"
 msgstr "Bağlı"
 
-#: ui/pages.slint:332
+#: ui/pages.slint:389
 msgid "Not running"
 msgstr "Çalışmıyor"
 
-#: ui/pages.slint:336
+#: ui/pages.slint:393
 msgid "Install the service"
 msgstr "Servisi kur"
 
-#: ui/pages.slint:342
+#: ui/pages.slint:399
 msgid "About"
 msgstr "Hakkında"
 
-#: ui/pages.slint:347
+#: ui/pages.slint:404
 msgid "Opens sites and apps that your internet provider blocks by running well-known open-source DPI bypass tools on your computer. It is not a VPN: your traffic still goes straight to the sites, nothing is sent through another server."
 msgstr "İnternet sağlayıcının engellediği siteleri ve uygulamaları, bilgisayarında bilinen açık kaynaklı DPI aşma araçlarını çalıştırarak açar. Bir VPN değildir: trafiğin yine doğrudan sitelere gider, hiçbir şey başka bir sunucudan geçmez."
 
-#: ui/pages.slint:351
+#: ui/pages.slint:408
 msgid "Platform: {}"
 msgstr "Platform: {}"
 
-#: ui/pages.slint:352
+#: ui/pages.slint:409
 msgid "Free software under the GNU GPL v3 or later."
 msgstr "GNU GPL v3 veya sonrası lisanslı özgür yazılım."
 
-#: ui/pages.slint:356
+#: ui/pages.slint:413
 msgid "Source code"
 msgstr "Kaynak kod"
 
-#: ui/pages.slint:357
+#: ui/pages.slint:414
 msgid "Report a problem"
 msgstr "Sorun bildir"
 
-#: ui/pages.slint:365
+#: ui/pages.slint:422
 msgid "Download"
 msgstr "İndir"
 
-#: ui/pages.slint:371
+#: ui/pages.slint:428
 msgid "Thanks"
 msgstr "Teşekkürler"
 
-#: ui/pages.slint:375
+#: ui/pages.slint:432
 msgid "DPIMech only manages these projects; the real work is theirs."
 msgstr "DPIMech bu projeleri sadece yönetir; asıl işi onlar yapar."
 
-#: ui/pages.slint:388
+#: ui/pages.slint:445
 msgid "Logo, drawn by hand"
 msgstr "Logo, elle çizildi"
 
@@ -756,55 +780,55 @@ msgstr "DPIMech yalnızca sisteme ya da sana ait olan ve diğer kullanıcıları
 msgid "the menu entry has no command"
 msgstr "menü girdisinde komut yok"
 
-#: src/bridge.rs:73
+#: src/bridge.rs:75
 msgid "Start it with: dpimech-service run"
 msgstr "Şununla başlat: dpimech-service run"
 
-#: src/bridge.rs:96
+#: src/bridge.rs:98
 msgid "Version {} · data in {}"
 msgstr "Sürüm {} · veriler: {}"
 
-#: src/bridge.rs:190
+#: src/bridge.rs:195
 msgid "Could not update: {}"
 msgstr "Güncellenemedi: {}"
 
-#: src/bridge.rs:205
+#: src/bridge.rs:210
 msgid "You have the latest version ({})."
 msgstr "En son sürümü kullanıyorsun ({})."
 
-#: src/bridge.rs:208
+#: src/bridge.rs:213
 msgid "Could not check for updates: {}"
 msgstr "Güncellemeler kontrol edilemedi: {}"
 
-#: src/bridge.rs:270
+#: src/bridge.rs:288
 msgid "Could not load strategies: {}"
 msgstr "Stratejiler yüklenemedi: {}"
 
-#: src/bridge.rs:282
+#: src/bridge.rs:300
 msgid "ISP lookup failed: {}"
 msgstr "İnternet sağlayıcısı bulunamadı: {}"
 
-#: src/bridge.rs:388
+#: src/bridge.rs:406
 msgid "DPIMech {} is downloaded. Restart DPIMech to update."
 msgstr "DPIMech {} indirildi. Güncellemek için DPIMech'i yeniden başlat."
 
-#: src/bridge.rs:402
+#: src/bridge.rs:420
 msgid "Version {} is available."
 msgstr "{} sürümü çıktı."
 
-#: src/bridge.rs:417
+#: src/bridge.rs:435
 msgid "Downloading DPIMech {}…"
 msgstr "DPIMech {} indiriliyor…"
 
-#: src/bridge.rs:449
+#: src/bridge.rs:467
 msgid "Saved the log to {}"
 msgstr "Kayıtlar şuraya kaydedildi: {}"
 
-#: src/bridge.rs:489
+#: src/bridge.rs:507
 msgid "Looking up…"
 msgstr "Aranıyor…"
 
-#: src/bridge.rs:491
+#: src/bridge.rs:509
 msgid "This needs the background service."
 msgstr "Bunun için arka plan servisi gerekli."
 
@@ -812,101 +836,117 @@ msgstr "Bunun için arka plan servisi gerekli."
 msgid "DPIMech needs the libxkbcommon-x11 library to open its window. Install it with your package manager (Arch: sudo pacman -S libxkbcommon-x11) and start DPIMech again."
 msgstr "DPIMech'in penceresini açabilmesi için libxkbcommon-x11 kütüphanesi gerekiyor. Paket yöneticinle kur (Arch: sudo pacman -S libxkbcommon-x11) ve DPIMech'i yeniden başlat."
 
-#: src/convert.rs:143
+#: src/convert.rs:30
+msgid "set by hand"
+msgstr "elle ayarlanmış"
+
+#: src/convert.rs:31
+msgid "from your network"
+msgstr "ağından geliyor"
+
+#: src/convert.rs:172
 msgid "Give the profile a name."
 msgstr "Profile bir ad ver."
 
-#: src/convert.rs:148
+#: src/convert.rs:177
 msgid "Choose an engine."
 msgstr "Bir motor seç."
 
-#: src/convert.rs:152
+#: src/convert.rs:181
 msgid "Choose a routing mode."
 msgstr "Bir yönlendirme modu seç."
 
-#: src/convert.rs:156
+#: src/convert.rs:185
 msgid "Port must be between 1024 and 65535."
 msgstr "Port 1024 ile 65535 arasında olmalı."
 
-#: src/convert.rs:163
+#: src/convert.rs:192
 msgid "Choose the app DPIMech should open."
 msgstr "DPIMech'in açacağı uygulamayı seç."
 
-#: src/convert.rs:166
+#: src/convert.rs:195
 msgid "Choose the app from the list or with Browse…"
 msgstr "Uygulamayı listeden veya Gözat… ile seç"
 
-#: src/convert.rs:172
+#: src/convert.rs:201
 msgid "Add at least one application for per-app routing."
 msgstr "Uygulama bazlı yönlendirme için en az bir uygulama ekle."
 
-#: src/convert.rs:213
+#: src/convert.rs:242
 msgid "{} · port {}"
 msgstr "{} · port {}"
 
-#: src/convert.rs:225
+#: src/convert.rs:254
 msgid "All matching traffic"
 msgstr "Eşleşen tüm trafik"
 
-#: src/convert.rs:226
+#: src/convert.rs:255
 msgid "{} site(s): {}"
 msgstr "{} site: {}"
 
-#: src/convert.rs:239
+#: src/convert.rs:268
 msgid "Stopped"
 msgstr "Durdu"
 
-#: src/convert.rs:240
+#: src/convert.rs:269
 msgid "Starting…"
 msgstr "Başlıyor…"
 
-#: src/convert.rs:248
+#: src/convert.rs:277
 msgid "1 auto-restart"
 msgstr "1 otomatik yeniden başlatma"
 
-#: src/convert.rs:249
+#: src/convert.rs:278
 msgid "{} auto-restarts"
 msgstr "{} otomatik yeniden başlatma"
 
-#: src/convert.rs:258
+#: src/convert.rs:287
 msgid "Sites not answering ({}/{})"
 msgstr "Siteler cevap vermiyor ({}/{})"
 
-#: src/convert.rs:260
+#: src/convert.rs:289
 msgid "Slow: avg. {} ms (usually {} ms)"
 msgstr "Yavaş: ort. {} ms (normalde {} ms)"
 
-#: src/convert.rs:262
+#: src/convert.rs:291
 msgid "Only {}/{} sites answer"
 msgstr "Sadece {}/{} site cevap veriyor"
 
-#: src/convert.rs:269
+#: src/convert.rs:298
 msgid "Running · {}"
 msgstr "Çalışıyor · {}"
 
-#: src/convert.rs:270
+#: src/convert.rs:299
 msgid "avg. {} ms"
 msgstr "ort. {} ms"
 
-#: src/convert.rs:378
+#: src/convert.rs:407
 msgid "just now"
 msgstr "az önce"
 
-#: src/convert.rs:379
+#: src/convert.rs:408
 msgid "{} min"
 msgstr "{} dk"
 
-#: src/convert.rs:380
+#: src/convert.rs:409
 msgid "{} h {} min"
 msgstr "{} sa {} dk"
 
-#: src/convert.rs:392
+#: src/convert.rs:421
 msgid "Last check: {}/{} sites answered"
 msgstr "Son kontrol: {}/{} site cevap verdi"
 
-#: src/convert.rs:398
+#: src/convert.rs:427
 msgid "(usually {} ms)"
 msgstr "(normalde {} ms)"
+
+#: src/i18n.rs (EXTRA_TEXTS)
+msgid "router"
+msgstr "modem"
+
+#: src/i18n.rs (EXTRA_TEXTS)
+msgid "this computer"
+msgstr "bu bilgisayar"
 
 #: src/i18n.rs (EXTRA_TEXTS)
 msgid "Automatic"
@@ -1004,63 +1044,71 @@ msgstr "Bitti — hiçbiri her turda tüm siteleri açmadı. Başka bir motor, s
 msgid "No bypass"
 msgstr "Aşma yok"
 
-#: src/launcher.rs:80
+#: src/launcher.rs:81
 msgid "Opening {}…"
 msgstr "{} açılıyor…"
 
-#: src/launcher.rs:86
+#: src/launcher.rs:87
 msgid "Could not open {}: {}"
 msgstr "{} açılamadı: {}"
 
-#: src/launcher.rs:90
+#: src/launcher.rs:91
 msgid "{} is on"
 msgstr "{} açık"
 
-#: src/launcher.rs:93
+#: src/launcher.rs:94
 msgid "Could not start"
 msgstr "Başlatılamadı"
 
-#: src/launcher.rs:127
+#: src/launcher.rs:128
 msgid "The DPIMech service is not running. Open DPIMech to set it up."
 msgstr "DPIMech hizmeti çalışmıyor. Kurmak için DPIMech'i aç."
 
-#: src/launcher.rs:133
+#: src/launcher.rs:134
 msgid "The profile of this shortcut no longer exists."
 msgstr "Bu kısayolun profili artık yok."
 
-#: src/launcher.rs:141
+#: src/launcher.rs:142
 msgid "Turning the profile on…"
 msgstr "Profil açılıyor…"
 
-#: src/launcher.rs:157
+#: src/launcher.rs:158
 msgid "The profile stopped right after starting. The Logs page in DPIMech shows why."
 msgstr "Profil başlar başlamaz durdu. Nedenini DPIMech'teki Kayıtlar sayfası gösterir."
 
-#: src/launcher.rs:162
+#: src/launcher.rs:163
 msgid "The profile is taking too long to start. The Logs page in DPIMech shows why."
 msgstr "Profilin başlaması çok uzun sürüyor. Nedenini DPIMech'teki Kayıtlar sayfası gösterir."
 
-#: src/main.rs:441
+#: src/main.rs:139
+msgid "Your network's own (no change)"
+msgstr "Ağının kendi DNS'i (değiştirme)"
+
+#: src/main.rs:152
+msgid "The background service is not running."
+msgstr "Arka plan servisi çalışmıyor."
+
+#: src/main.rs:464
 msgid "Folder for DPIMech log files"
 msgstr "DPIMech kayıt dosyaları için klasör"
 
-#: src/main.rs:639
+#: src/main.rs:662
 msgid "The service is installed. Connecting…"
 msgstr "Servis kuruldu. Bağlanılıyor…"
 
-#: src/main.rs:640
+#: src/main.rs:663
 msgid "Installing the service failed: {}"
 msgstr "Servis kurulamadı: {}"
 
-#: src/main.rs:648
+#: src/main.rs:671
 msgid "Installing… confirm the prompt. DPIMech connects by itself when the service is ready."
 msgstr "Kuruluyor… izin penceresini onayla. Servis hazır olunca DPIMech kendiliğinden bağlanır."
 
-#: src/main.rs:649
+#: src/main.rs:672
 msgid "Could not start the installer: {}"
 msgstr "Kurulum başlatılamadı: {}"
 
-#: src/main.rs:720
+#: src/main.rs:743
 msgid "Downloading online lists…"
 msgstr "Çevrimiçi listeler indiriliyor…"
 

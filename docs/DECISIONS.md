@@ -458,3 +458,21 @@ own release), a launchd service and an unsigned universal `.dmg`. The wizard hid
   the shortcut's picture as its icon. Linux: `notify-send --print-id`, then `--replace-id` with the `value`
   hint; an older notify-send without them shows the result only. macOS: the first step and the result.
   When no notification can be shown at all, an error still appears as a native message box (`rfd`).
+
+## 58. DNS: always shown, optionally set to a listed public service (2026-11-24)
+- **Shown:** the service reads the DNS servers per connected network (Windows: `GetAdaptersAddresses`, hand-set or
+  not from the interface's `NameServer` registry value; Linux: systemd-resolved's upstream list or
+  `/etc/resolv.conf`; macOS: `scutil --dns`). Settings → Network and problem reports name them (a listed public
+  service, "router" for private addresses, "this computer" for a local resolver).
+- **Set (optional, owner's wish: "zorunlu olmasın"):** a dropdown with the network's own first, then
+  `catalog::PUBLIC_DNS` (Cloudflare, Google, Quad9, AdGuard, OpenDNS, Yandex, Comodo, CleanBrowsing).
+  - Only a service from that list can be requested, by name: any local user can talk to the service, which
+    changes DNS with its rights, so an address in the request could point every user at a malicious resolver.
+  - Before the first change the previous hand-set servers of each connection are saved (`<data>/dns.json`);
+    "the network's own" puts them back (DHCP where none were set) and `dpimech-service uninstall` does too.
+  - Windows: `netsh interface ipv4|ipv6 set/add dnsservers` by interface index (not localised), adapters matched
+    by GUID when restoring. Linux: `resolvectl dns/domain ~./dnsovertls opportunistic` per default-route link, so
+    encrypted where the server offers it; runtime only, so a reboot also restores. macOS: not offered yet.
+  - Once a minute connections that came up since get the chosen service; ones already set are left alone (no
+    fighting with a router that keeps announcing its own IPv6 server).
+- **Not done:** DNS over HTTPS on Windows (needs per-interface DoH settings), macOS.

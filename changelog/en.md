@@ -3,6 +3,10 @@
 User-facing changes per version. The app shows the new entries once after an update ("What's new"),
 and the release page on GitHub uses the English text. Translations: tr.md, ru.md, fa.md, ar.md.
 
+## 0.4.8
+- Settings → Network shows the DNS servers your computer uses right now, and whether they come from your network or were set by hand; problem reports include them.
+- Optional: DPIMech can switch your DNS to a well-known public service (Cloudflare, Google, Quad9, AdGuard, OpenDNS, Yandex, …). It saves your previous settings and puts them back when you choose "Your network's own" or uninstall DPIMech. Windows and Linux (with systemd-resolved, encrypted where possible).
+
 ## 0.4.7
 - A profile shortcut no longer opens a small window of its own: one system notification shows the progress (turning on, opening the app) and the result.
 

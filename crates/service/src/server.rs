@@ -187,6 +187,27 @@ async fn dispatch(supervisor: &Supervisor, request: Request) -> anyhow::Result<R
             crate::defender::exclude(&supervisor.data_dir().root.join("engines")).await?;
             Reply::Ok
         }
+        // Reading the adapters is quick but blocking; keep it off the async workers.
+        Request::DnsInUse => Reply::DnsInUse {
+            connections: tokio::task::spawn_blocking(crate::netdns::in_use)
+                .await
+                .unwrap_or_default(),
+            chosen: crate::netdns::chosen(supervisor.data_dir()),
+        },
+        Request::SetDns { provider } => {
+            let data = supervisor.data_dir().clone();
+            let name = provider.clone();
+            tokio::task::spawn_blocking(move || crate::netdns::set(&data, name.as_deref()))
+                .await??;
+            supervisor.logs.info(
+                "service",
+                match &provider {
+                    Some(name) => format!("DNS set to {name} on the connected networks"),
+                    None => "DNS put back to the networks' own".to_owned(),
+                },
+            );
+            Reply::Ok
+        }
         Request::DefenderStatus => Reply::DefenderStatus {
             excluded: crate::defender::is_excluded(&supervisor.data_dir().root.join("engines"))
                 .await,

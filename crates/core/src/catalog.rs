@@ -185,6 +185,100 @@ pub fn country_preset(packs: &[DomainPack], country: &str) -> Vec<String> {
 /// Where DPIMech itself is released (update notifications).
 pub const APP_REPO: &str = "halilkhrmn/dpimech";
 
+/// Widely used public DNS services: name and their addresses (IPv4 first). Used to name the
+/// servers a connection uses, and as the choices for setting DNS from DPIMech.
+pub const PUBLIC_DNS: &[(&str, &[&str])] = &[
+    (
+        "Cloudflare",
+        &[
+            "1.1.1.1",
+            "1.0.0.1",
+            "2606:4700:4700::1111",
+            "2606:4700:4700::1001",
+        ],
+    ),
+    (
+        "Google",
+        &[
+            "8.8.8.8",
+            "8.8.4.4",
+            "2001:4860:4860::8888",
+            "2001:4860:4860::8844",
+        ],
+    ),
+    (
+        "Quad9",
+        &["9.9.9.9", "149.112.112.112", "2620:fe::fe", "2620:fe::9"],
+    ),
+    (
+        "AdGuard",
+        &[
+            "94.140.14.14",
+            "94.140.15.15",
+            "2a10:50c0::ad1:ff",
+            "2a10:50c0::ad2:ff",
+        ],
+    ),
+    (
+        "OpenDNS",
+        &[
+            "208.67.222.222",
+            "208.67.220.220",
+            "2620:119:35::35",
+            "2620:119:53::53",
+        ],
+    ),
+    (
+        "Yandex",
+        &[
+            "77.88.8.8",
+            "77.88.8.1",
+            "2a02:6b8::feed:0ff",
+            "2a02:6b8:0:1::feed:0ff",
+        ],
+    ),
+    ("Comodo", &["8.26.56.26", "8.20.247.20"]),
+    (
+        "CleanBrowsing",
+        &[
+            "185.228.168.9",
+            "185.228.169.9",
+            "2a0d:2a00:1::2",
+            "2a0d:2a00:2::2",
+        ],
+    ),
+];
+
+/// What a DNS server is, for people: a known public service, the router (a private address),
+/// or this computer's own resolver. `None` for any other public address (often the provider).
+pub fn dns_label(server: &str) -> Option<&'static str> {
+    use std::net::IpAddr;
+    if let Some((name, _)) = PUBLIC_DNS
+        .iter()
+        .find(|(_, addrs)| addrs.iter().any(|a| a.eq_ignore_ascii_case(server)))
+    {
+        return Some(name);
+    }
+    // An IPv6 server may carry a zone ("fe80::1%12").
+    let ip: IpAddr = server.split('%').next()?.parse().ok()?;
+    let local = match ip {
+        IpAddr::V4(v4) => {
+            if v4.is_loopback() {
+                return Some("this computer");
+            }
+            v4.is_private() || v4.is_link_local()
+        }
+        IpAddr::V6(v6) => {
+            if v6.is_loopback() {
+                return Some("this computer");
+            }
+            let first = v6.segments()[0];
+            (first & 0xfe00) == 0xfc00 || (first & 0xffc0) == 0xfe80
+        }
+    };
+    local.then_some("router")
+}
+
 /// Where problem reports go when the user has no GitHub account.
 pub const SUPPORT_EMAIL: &str = "halilkahraman@yandex.com";
 
@@ -566,5 +660,22 @@ mod tests {
             parse_domain_packs(&pack("x", "x.com").replace(r#""format":1"#, r#""format":2"#))
                 .is_err()
         );
+    }
+}
+
+#[cfg(test)]
+mod dns_tests {
+    use super::dns_label;
+
+    #[test]
+    fn dns_servers_are_named() {
+        assert_eq!(dns_label("1.1.1.1"), Some("Cloudflare"));
+        assert_eq!(dns_label("2001:4860:4860::8888"), Some("Google"));
+        assert_eq!(dns_label("192.168.1.1"), Some("router"));
+        assert_eq!(dns_label("fe80::1%12"), Some("router"));
+        assert_eq!(dns_label("127.0.0.53"), Some("this computer"));
+        // A provider's own resolver: nothing to say about it.
+        assert_eq!(dns_label("195.175.39.39"), None);
+        assert_eq!(dns_label("not an address"), None);
     }
 }

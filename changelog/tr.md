@@ -1,5 +1,9 @@
 # Değişiklikler
 
+## 0.4.8
+- Ayarlar → Ağ, bilgisayarının şu anda kullandığı DNS sunucularını ve bunların ağından mı geldiğini yoksa elle mi ayarlandığını gösteriyor; sorun raporlarında da yer alıyor.
+- İsteğe bağlı: DPIMech DNS'ini bilinen bir genel servise (Cloudflare, Google, Quad9, AdGuard, OpenDNS, Yandex, …) geçirebiliyor. Önceki ayarlarını kaydediyor; "Ağının kendi DNS'i" seçildiğinde ya da DPIMech kaldırıldığında onları geri koyuyor. Windows ve Linux'ta (systemd-resolved ile, mümkünse şifreli).
+
 ## 0.4.7
 - Profil kısayolu artık kendi küçük penceresini açmıyor: ilerlemeyi (profili açma, uygulamayı başlatma) ve sonucu tek bir sistem bildirimi gösteriyor.
 
