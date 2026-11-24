@@ -101,6 +101,9 @@ pub enum Reply {
     Hello {
         service_version: String,
         data_dir: String,
+        /// What the service recorded when it last crashed; sent once, to the first app.
+        #[serde(default)]
+        crash: Option<String>,
     },
     Profiles {
         profiles: Vec<ProfileState>,

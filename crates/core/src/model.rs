@@ -299,6 +299,10 @@ fn default_check_minutes() -> u32 {
     5
 }
 
+/// Shown on the card (and in one notification) while the computer itself is offline; the
+/// service waits for the connection instead of restarting the engine. Translated by the GUI.
+pub const OFFLINE_ADVICE: &str = "No internet connection. Check your network; DPIMech waits and carries on by itself once it is back.";
+
 /// Latest result of the connection monitor.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ConnectionHealth {

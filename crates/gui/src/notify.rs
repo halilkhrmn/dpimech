@@ -5,9 +5,17 @@ use crate::i18n::tr;
 use std::collections::HashMap;
 use std::sync::Mutex;
 
-use dpimech_core::model::{ProfileState, ProfileStatus};
+use dpimech_core::model::{OFFLINE_ADVICE, ProfileState, ProfileStatus};
 
 static PREVIOUS: Mutex<Option<HashMap<String, ProfileStatus>>> = Mutex::new(None);
+/// Set while a lost connection was already announced: one notification for the whole
+/// outage, not one per profile or per check.
+static OFFLINE_SHOWN: Mutex<bool> = Mutex::new(false);
+
+fn is_offline(status: &ProfileStatus) -> bool {
+    matches!(status, ProfileStatus::Running { health: Some(h), .. }
+        if h.advice.as_deref() == Some(OFFLINE_ADVICE))
+}
 
 /// Compares with the last known statuses and shows a toast for meaningful changes.
 /// The very first list (app start) only records the state. Returns the names of profiles
@@ -17,6 +25,14 @@ pub fn on_profiles(profiles: &[ProfileState]) -> Vec<String> {
     let first = guard.is_none();
     let previous = guard.get_or_insert_with(HashMap::new);
     let mut failed = Vec::new();
+    let offline_now = profiles.iter().any(|p| is_offline(&p.status));
+    {
+        let mut shown = OFFLINE_SHOWN.lock().unwrap();
+        if offline_now && !*shown && !first {
+            show(&tr("No internet connection"), &tr(OFFLINE_ADVICE));
+        }
+        *shown = offline_now;
+    }
     for p in profiles {
         let before = previous.insert(p.profile.id.clone(), p.status.clone());
         if first {
@@ -26,6 +42,10 @@ pub fn on_profiles(profiles: &[ProfileState]) -> Vec<String> {
             && !matches!(before, Some(ProfileStatus::Error { .. }))
         {
             failed.push(p.profile.name.clone());
+        }
+        // Announced once above; per-profile "slow" and "restarted" toasts would only repeat it.
+        if offline_now || before.as_ref().is_some_and(is_offline) {
+            continue;
         }
         if let Some((title, body)) = describe(&p.profile.name, before.as_ref(), &p.status) {
             show(&title, &body);

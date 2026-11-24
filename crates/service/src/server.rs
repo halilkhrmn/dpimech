@@ -105,9 +105,11 @@ where
 
 async fn dispatch(supervisor: &Supervisor, request: Request) -> anyhow::Result<Reply> {
     Ok(match request {
-        Request::Hello { .. } => Reply::Hello {
+        Request::Hello { app, .. } => Reply::Hello {
             service_version: dpimech_core::VERSION.to_owned(),
             data_dir: supervisor.data_dir().root.display().to_string(),
+            // Only the app can show it; tools and the shortcut launcher would lose it.
+            crash: app.then(crate::crash::take).flatten(),
         },
         Request::ListProfiles => Reply::Profiles {
             profiles: supervisor.list().await,

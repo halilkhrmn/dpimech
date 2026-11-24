@@ -82,6 +82,8 @@ install -Dm644 crates/gui/assets/dpimech.png %{buildroot}%{_datadir}/icons/hicol
 %{_datadir}/icons/hicolor/256x256/apps/dpimech.png
 
 %changelog
+* Tue Nov 24 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.4.6-1
+- Waits for the internet instead of restarting engines; crash reports; busy tray icon
 * Sat Nov 14 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.4.5-1
 - Windows: the in-app update installs again after a per-app profile was stopped
 * Sat Nov 14 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.4.4-1

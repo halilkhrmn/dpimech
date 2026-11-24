@@ -7,8 +7,9 @@
 use crate::i18n::tr;
 use std::cell::RefCell;
 use std::collections::HashMap;
-use std::sync::atomic::{AtomicU8, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU8, AtomicU64, Ordering};
 use std::sync::{LazyLock, Mutex};
+use std::time::{Duration, Instant};
 
 use dpimech_core::model::ProfileState;
 use slint::Weak;
@@ -25,6 +26,8 @@ const REPORT_ID: &str = "report";
 
 thread_local! {
     static TRAY: RefCell<Option<TrayIcon>> = const { RefCell::new(None) };
+    #[cfg(not(target_os = "linux"))]
+    static BLINK_TIMER: slint::Timer = slint::Timer::default();
 }
 
 /// Menu item id → (profile id, currently active). Read from the menu event thread.
@@ -38,6 +41,61 @@ const TRAY_FAILED: u8 = 2;
 /// Whether the tray icon exists. Without it, closing the window must quit: a hidden window could
 /// not be brought back.
 static STATE: AtomicU8 = AtomicU8::new(TRAY_PENDING);
+
+/// Until when (unix seconds) a profile counts as connecting: starting, or running without the
+/// result of its first connection check. A time, not a flag, so a profile without checks does
+/// not keep the dot blinking.
+static CONNECTING_UNTIL: AtomicU64 = AtomicU64::new(0);
+/// The Strategy Lab (or the setup wizard through it) is testing.
+static TESTING: AtomicBool = AtomicBool::new(false);
+/// Dot colour for the current profiles, kept for when the blinking stops.
+static STEADY: Mutex<[u8; 3]> = Mutex::new(IDLE);
+/// When the current busy spell began; `None` while nothing is busy.
+static BUSY_SINCE: Mutex<Option<Instant>> = Mutex::new(None);
+/// After this the dot stays amber instead of blinking: a long test should not flash forever.
+const BLINK_FOR: Duration = Duration::from_secs(120);
+const BLINK_EVERY: Duration = Duration::from_millis(600);
+/// How long after a start the first connection check counts as "still connecting".
+const CONNECTING_FOR: u64 = 30;
+
+/// Tests started or finished (Strategy Lab, setup wizard).
+pub fn set_testing(on: bool) {
+    TESTING.store(on, Ordering::Relaxed);
+}
+
+fn busy() -> bool {
+    unix_now() < CONNECTING_UNTIL.load(Ordering::Relaxed) || TESTING.load(Ordering::Relaxed)
+}
+
+fn unix_now() -> u64 {
+    std::time::SystemTime::now()
+        .duration_since(std::time::UNIX_EPOCH)
+        .map_or(0, |d| d.as_secs())
+}
+
+/// Called every `BLINK_EVERY` on the tray's thread: alternates the amber dot with no dot
+/// while something is connecting or testing, and puts the steady icon back afterwards.
+fn blink_tick(phase: &mut bool) {
+    let mut since = BUSY_SINCE.lock().unwrap();
+    let icon = if busy() {
+        let started = *since.get_or_insert_with(Instant::now);
+        *phase = !*phase;
+        if started.elapsed() > BLINK_FOR || *phase {
+            icon(SLOW)
+        } else {
+            plain_icon()
+        }
+    } else if since.take().is_some() {
+        icon(*STEADY.lock().unwrap())
+    } else {
+        return;
+    };
+    TRAY.with_borrow(|tray| {
+        if let Some(tray) = tray {
+            let _ = tray.set_icon(Some(icon));
+        }
+    });
+}
 
 pub fn available() -> bool {
     ready() == Some(true)
@@ -90,6 +148,11 @@ fn spawn_tray_thread() {
             }
         }
         STATE.store(TRAY_READY, Ordering::Relaxed);
+        let mut phase = false;
+        gtk::glib::timeout_add_local(BLINK_EVERY, move || {
+            blink_tick(&mut phase);
+            gtk::glib::ControlFlow::Continue
+        });
         // Only the newest profile list matters; older ones are skipped.
         gtk::glib::timeout_add_local(std::time::Duration::from_millis(200), move || {
             if let Some(profiles) = rx.try_iter().last() {
@@ -110,6 +173,13 @@ pub fn create(ui: Weak<AppWindow>, commands: mpsc::UnboundedSender<Command>) -> 
         Ok(tray) => {
             TRAY.set(Some(tray));
             STATE.store(TRAY_READY, Ordering::Relaxed);
+            // The tray belongs to this (the UI) thread, so the blink timer runs here too.
+            BLINK_TIMER.with(|timer| {
+                let mut phase = false;
+                timer.start(slint::TimerMode::Repeated, BLINK_EVERY, move || {
+                    blink_tick(&mut phase);
+                });
+            });
         }
         Err(e) => {
             STATE.store(TRAY_FAILED, Ordering::Relaxed);
@@ -172,10 +242,15 @@ fn apply_profiles(profiles: &[ProfileState]) {
     };
     let active = profiles.iter().filter(|p| p.status.is_active()).count();
     let color = overall_color(profiles);
+    *STEADY.lock().unwrap() = color;
+    CONNECTING_UNTIL.store(connecting_until(profiles), Ordering::Relaxed);
     TRAY.with_borrow(|tray| {
         if let Some(tray) = tray {
             tray.set_menu(Some(Box::new(menu)));
-            let _ = tray.set_icon(Some(icon(color)));
+            // While busy the blink timer owns the icon.
+            if !busy() {
+                let _ = tray.set_icon(Some(icon(color)));
+            }
             let tooltip = match active {
                 0 => format!("DPIMech — {}", tr("idle")),
                 n => format!("DPIMech — {}", trf!("{} profile(s) running", n)),
@@ -237,12 +312,39 @@ fn overall_color(profiles: &[ProfileState]) -> [u8; 3] {
     color
 }
 
+/// Until when the profiles count as connecting: a starting one for the next
+/// `CONNECTING_FOR` seconds, a running one without a check result until `CONNECTING_FOR`
+/// after its start. 0 when none is.
+fn connecting_until(profiles: &[ProfileState]) -> u64 {
+    use dpimech_core::model::ProfileStatus;
+    let now = unix_now();
+    profiles
+        .iter()
+        .filter_map(|p| match &p.status {
+            ProfileStatus::Starting => Some(now + CONNECTING_FOR),
+            ProfileStatus::Running {
+                health: None,
+                since_unix,
+                ..
+            } => Some(since_unix + CONNECTING_FOR),
+            _ => None,
+        })
+        .max()
+        .unwrap_or(0)
+}
+
+const SIZE: u32 = 32;
+const LOGO: &[u8; (SIZE * SIZE * 4) as usize] = include_bytes!("../assets/tray-32.rgba");
+
+/// The logo without a dot: the "off" half of the blink.
+fn plain_icon() -> Icon {
+    Icon::from_rgba(LOGO.to_vec(), SIZE, SIZE).expect("valid icon")
+}
+
 /// The 32 px logo (raw RGBA from tools/make_icon.py, so no image decoder is needed) with a
-/// status dot in the bottom-right corner: the octopus stays recognisable, the dot tells the
+/// status dot in the bottom-right corner: the chameleon stays recognisable, the dot tells the
 /// state at a glance.
 fn icon(color: [u8; 3]) -> Icon {
-    const SIZE: u32 = 32;
-    const LOGO: &[u8; (SIZE * SIZE * 4) as usize] = include_bytes!("../assets/tray-32.rgba");
     let mut rgba = LOGO.to_vec();
     // Dot of radius 6 centred at (25, 25) with a 1.5 px white ring so it reads on any panel.
     let (cx, cy, r) = (25.0f32, 25.0f32, 6.0f32);
@@ -261,4 +363,69 @@ fn icon(color: [u8; 3]) -> Icon {
         }
     }
     Icon::from_rgba(rgba, SIZE, SIZE).expect("valid icon")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use dpimech_core::model::{
+        ConnectionHealth, EngineKind, Profile, ProfileStatus, Reliability, Routing,
+    };
+
+    fn state(status: ProfileStatus) -> ProfileState {
+        ProfileState {
+            profile: Profile {
+                id: "p".into(),
+                name: "p".into(),
+                engine: EngineKind::ByeDpi,
+                args: String::new(),
+                routing: Routing::LocalProxy { port: 1080 },
+                autostart: false,
+                reliability: Reliability::default(),
+                check_sites: Vec::new(),
+            },
+            status,
+        }
+    }
+
+    #[test]
+    fn connecting_ends_with_the_first_check_or_after_a_while() {
+        let now = unix_now();
+        let running = |since_unix, health| ProfileStatus::Running {
+            since_unix,
+            restarts: 0,
+            health,
+        };
+        // Starting: connecting for a while from now.
+        let until = connecting_until(&[state(ProfileStatus::Starting)]);
+        assert!(until >= now + CONNECTING_FOR);
+        // Just started, no check yet: connecting until CONNECTING_FOR after the start.
+        assert_eq!(
+            connecting_until(&[state(running(now - 5, None))]),
+            now - 5 + CONNECTING_FOR
+        );
+        // A profile without checks stops counting once that time has passed.
+        let old = connecting_until(&[state(running(now - 3600, None))]);
+        assert!(old < now);
+        // The first check came: no longer connecting.
+        let checked = ConnectionHealth {
+            latency_ms: 80,
+            usual_ms: 0,
+            ok: 2,
+            total: 2,
+            checked_unix: now,
+            slow: false,
+            advice: None,
+        };
+        assert_eq!(connecting_until(&[state(running(now, Some(checked)))]), 0);
+        assert_eq!(connecting_until(&[state(ProfileStatus::Stopped)]), 0);
+    }
+
+    #[test]
+    fn a_test_makes_the_tray_busy() {
+        set_testing(true);
+        assert!(busy());
+        set_testing(false);
+        assert!(!busy());
+    }
 }

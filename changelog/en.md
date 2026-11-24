@@ -3,6 +3,11 @@
 User-facing changes per version. The app shows the new entries once after an update ("What's new"),
 and the release page on GitHub uses the English text. Translations: tr.md, ru.md, fa.md, ar.md.
 
+## 0.4.6
+- Without internet the engine is no longer restarted again and again. DPIMech waits, says to check your network (on the card and in one notification) and carries on by itself once the connection is back.
+- The tray icon blinks amber while a profile is connecting or a test is running.
+- If DPIMech or its background service crashes, the next start says so and offers to send what was recorded.
+
 ## 0.4.5
 - Windows: "Restart and update" works again. In 0.4.3 and 0.4.4 it failed with "The handle is invalid" once a profile that routes apps had been stopped. If you see that error, restart the computer and update before stopping a profile, or run the installer from the release page.
 

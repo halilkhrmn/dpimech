@@ -7,6 +7,7 @@ export component ReportDialog inherits Rectangle {
     in property <string> report;
     in property <string> saved-path; // where the full report was written, if it was
     in property <string> email;
+    in property <bool> crashed;
     in-out property <string> note;
     callback github;
     callback email-report;
@@ -28,7 +29,15 @@ export component ReportDialog inherits Rectangle {
         VerticalLayout {
             padding: 20px;
             spacing: 10px;
-            Text { text: @tr("Report a problem"); font-size: 20px; font-weight: 700; }
+            Text {
+                text: root.crashed ? @tr("DPIMech closed unexpectedly") : @tr("Report a problem");
+                font-size: 20px;
+                font-weight: 700;
+            }
+            if root.crashed: Text {
+                text: @tr("Sorry about that. What went wrong was recorded and is part of the report below. Sending it helps fix it; nothing is sent unless you press a button.");
+                wrap: word-wrap;
+            }
             Text {
                 text: @tr("What happened? A sentence or two helps a lot (optional).");
                 font-size: 12px;

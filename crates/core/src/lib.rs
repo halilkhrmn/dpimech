@@ -5,6 +5,7 @@ pub mod argpolicy;
 pub mod args;
 pub mod catalog;
 pub mod config;
+pub mod crashtext;
 pub mod ipc;
 pub mod lab;
 pub mod model;

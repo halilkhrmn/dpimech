@@ -106,9 +106,7 @@ impl MonitorHistory {
     }
 }
 
-/// Shown on the card while the computer itself is offline; translated by the GUI.
-pub const OFFLINE_ADVICE: &str =
-    "No internet connection. The profile is left as it is until the connection is back.";
+pub use dpimech_core::model::OFFLINE_ADVICE;
 
 /// Public resolvers by address: reached without DNS and without the engine, and in different
 /// networks, so one of them being blocked does not look like "offline".
@@ -117,14 +115,24 @@ const INTERNET_PROBES: [&str; 3] = ["1.1.1.1:443", "8.8.8.8:443", "9.9.9.9:443"]
 /// Whether the computer reaches the internet at all, the engine aside. Without this a dead
 /// connection looks exactly like a strategy that stopped working, and restarting the engine
 /// for it only adds churn.
-async fn internet_reachable() -> bool {
-    let probes = INTERNET_PROBES.iter().map(|addr| async move {
+pub async fn internet_reachable() -> bool {
+    let probes = internet_probes().into_iter().map(|addr| async move {
         matches!(
-            tokio::time::timeout(TIMEOUT, TcpStream::connect(*addr)).await,
+            tokio::time::timeout(TIMEOUT, TcpStream::connect(addr.as_str())).await,
             Ok(Ok(_))
         )
     });
     futures_util::future::join_all(probes).await.contains(&true)
+}
+
+/// Debug builds take the addresses from `DPIMECH_DEBUG_INTERNET` (comma separated), so a test
+/// can switch "the internet" on and off with a local listener.
+fn internet_probes() -> Vec<String> {
+    #[cfg(debug_assertions)]
+    if let Ok(list) = std::env::var("DPIMECH_DEBUG_INTERNET") {
+        return list.split(',').map(|a| a.trim().to_owned()).collect();
+    }
+    INTERNET_PROBES.iter().map(|a| (*a).to_owned()).collect()
 }
 
 pub enum MonitorEvent {

@@ -9,6 +9,7 @@
 //!   dpimech-service unit --exe <path>         print the systemd unit (used to build packages)
 
 mod acl;
+mod crash;
 mod defender;
 mod dnscheck;
 #[cfg(windows)]
@@ -143,6 +144,11 @@ pub fn run_until(
     shutdown: impl std::future::Future<Output = ()>,
 ) -> anyhow::Result<()> {
     std::fs::create_dir_all(&data.root)?;
+    crash::install(data.logs_dir());
+    #[cfg(debug_assertions)]
+    if std::env::var_os("DPIMECH_DEBUG_PANIC").is_some() {
+        panic!("test crash (DPIMECH_DEBUG_PANIC)");
+    }
     // A crashed service may have left nfqws' queue rules behind (harmless thanks to
     // `bypass`, but stale).
     #[cfg(target_os = "linux")]

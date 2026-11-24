@@ -67,6 +67,8 @@ pub fn spawn(ui: Weak<AppWindow>, commands: mpsc::UnboundedReceiver<Command>) {
 async fn run(ui: Weak<AppWindow>, mut commands: mpsc::UnboundedReceiver<Command>) {
     let mut last_active: Vec<String> = Vec::new();
     loop {
+        // A test cannot outlive the connection to the service that ran it.
+        crate::tray::set_testing(false);
         let Ok((client, mut events)) = Client::connect().await else {
             set_connected(&ui, false, tr("Start it with: dpimech-service run"));
             // Drop commands issued while offline instead of replaying them later.
@@ -85,7 +87,14 @@ async fn run(ui: Weak<AppWindow>, mut commands: mpsc::UnboundedReceiver<Command>
             Ok(Reply::Hello {
                 service_version,
                 data_dir,
-            }) => trf!("Version {} · data in {}", service_version, data_dir),
+                crash,
+            }) => {
+                if let Some(text) = crash {
+                    let _ =
+                        ui.upgrade_in_event_loop(move |ui| crate::offer_crash_report(&ui, text));
+                }
+                trf!("Version {} · data in {}", service_version, data_dir)
+            }
             _ => String::new(),
         };
         set_connected(&ui, true, info);
@@ -128,6 +137,7 @@ async fn run(ui: Weak<AppWindow>, mut commands: mpsc::UnboundedReceiver<Command>
                     Some(Event::PackagesChanged) => refresh_packages(&ui, &client).await,
                     Some(Event::AppUpdateAvailable { version, url }) => update_found(&ui, &client, version, url),
                     Some(Event::LabProgress { done, total, result }) => {
+                        crate::tray::set_testing(true);
                         if let Some(result) = result {
                             let _ = ui.upgrade_in_event_loop(move |ui| {
                                 wizard::on_lab_progress(&ui, done, total, &result);
@@ -136,6 +146,7 @@ async fn run(ui: Weak<AppWindow>, mut commands: mpsc::UnboundedReceiver<Command>
                         }
                     }
                     Some(Event::LabFinished { cancelled, error }) => {
+                        crate::tray::set_testing(false);
                         let _ = ui.upgrade_in_event_loop(move |ui| {
                             wizard::on_lab_finished(&ui, cancelled, error.clone());
                             labui::finished(&ui, cancelled, error);
@@ -277,6 +288,7 @@ async fn handle_command(
             let shown = request.clone();
             match client.request(Request::StartLab { request }).await {
                 Ok(_) => {
+                    crate::tray::set_testing(true);
                     let _ = ui.upgrade_in_event_loop(move |ui| labui::started(&ui, &shown));
                 }
                 Err(e) => {

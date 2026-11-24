@@ -22,7 +22,31 @@ const MAX_MAILTO_URL: usize = 1_800;
 /// The report shown in the dialog and where its full text was saved.
 pub type Open = Option<(Report, Option<PathBuf>)>;
 
+thread_local! {
+    /// A crash recorded by the app or the service, waiting for the next report.
+    static CRASH: std::cell::RefCell<Option<String>> = const { std::cell::RefCell::new(None) };
+}
+
+/// Adds a crash record to the report (and makes the dialog say what happened). The app's own
+/// record and the service's arrive separately, so they are combined until the dialog closes.
+pub fn add_crash(text: String) {
+    CRASH.with_borrow_mut(|crash| match crash {
+        Some(all) => {
+            all.push_str("\n\n");
+            all.push_str(&text);
+        }
+        None => *crash = Some(text),
+    });
+}
+
+/// The dialog was closed: the crash records were seen.
+pub fn clear_crash() {
+    CRASH.set(None);
+}
+
 pub struct Report {
+    /// Opened because DPIMech crashed; the record leads the summary.
+    pub crash: bool,
     /// Version, system, service and profiles.
     pub summary: String,
     /// Log lines, oldest first.
@@ -32,6 +56,10 @@ pub struct Report {
 impl Report {
     pub fn collect(ui: &AppWindow) -> Report {
         let mut summary = String::new();
+        let crash = CRASH.with_borrow(Clone::clone);
+        if let Some(text) = &crash {
+            let _ = writeln!(summary, "DPIMech closed unexpectedly. Recorded:\n{text}\n");
+        }
         let _ = writeln!(summary, "DPIMech {}", ui.get_app_version());
         let _ = writeln!(summary, "System: {}", os_description());
         let _ = writeln!(
@@ -96,7 +124,11 @@ impl Report {
             })
             .collect();
         log.reverse();
-        Report { summary, log }
+        Report {
+            crash: crash.is_some(),
+            summary,
+            log,
+        }
     }
 
     pub fn text(&self, note: &str) -> String {
@@ -128,6 +160,7 @@ impl Report {
 
     pub fn github_url(&self, note: &str, saved: Option<&PathBuf>) -> String {
         let title = match note.trim() {
+            "" if self.crash => "Crash report".to_owned(),
             "" => "Problem report".to_owned(),
             n => n.chars().take(80).collect(),
         };
@@ -254,6 +287,7 @@ mod tests {
 
     fn report(lines: usize) -> Report {
         Report {
+            crash: false,
             summary: "DPIMech 0.2.0\nSystem: Test OS\n".into(),
             log: (0..lines)
                 .map(|i| {

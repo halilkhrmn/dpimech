@@ -34,6 +34,7 @@ Slint UI + tray                                          profiles · engine proc
 crates/core/      shared library (no UI, no OS service code)
   src/model.rs      EngineKind, RoutingMode, Routing, Profile, ProfileStatus, LogLine
   src/config.rs     ServiceConfig (TOML, atomic save)
+  src/crashtext.rs  crash record text shared by app and service (backtrace without the panic machinery)
   src/paths.rs      data-dir layout
   src/packages.rs   downloadable packages catalog (repo, asset matching, extract rules, pinned hashes)
   src/catalog.rs    domain packs (+ probe hosts), standard strategies (strategies/default.json), online sources, ISP table
@@ -49,7 +50,8 @@ crates/service/   dpimech-service binary
   src/nfqueue.rs    Linux: nftables table that queues traffic to nfqws while it runs
   src/perapp_linux.rs  Linux per-app / whole-computer proxy routing (cgroups, nft redirect, SOCKS relay)
   src/job.rs        engines die with the service (Windows job object, Linux PR_SET_PDEATHSIG)
-  src/health.rs     SOCKS5 health probe used by the restart watchdog
+  src/health.rs     SOCKS5 health probe used by the restart watchdog; internet check (offline: wait, no restart)
+  src/crash.rs      panic hook → <data>/logs/crash.txt, handed to the first app in `Hello`
   src/dnscheck.rs   Lab: compares system DNS with 1.1.1.1 (DoH) to spot DNS blocking
   src/sni.rs        TLS SNI parser: the detailed log names the site of a redirected connection (Linux)
   src/foreign.rs    finds other DPI tools running outside <data>/engines (ForeignTools request)
@@ -92,6 +94,7 @@ crates/gui/       dpimech binary (Slint)
   src/single.rs     single GUI instance (Windows mutex + event, Unix socket)
   src/logview.rs    Logs page: all recent lines kept here, the page shows the ones matching the filter
   src/logfile.rs    daily log files (opt-in) and error snapshots written by the GUI (never by the service)
+  src/crash.rs      panic hook → crash.txt in the config folder; offered in the report dialog at the next start
   src/report.rs     "Report a problem": report text, GitHub issue / mailto links; ui/report.slint
   src/i18n.rs       translations for Rust-built text + language choice (tr, ru, fa, ar) and the user's
                     country from the locale; lang/ holds the .po catalogs
@@ -146,6 +149,9 @@ cargo run -p dpimech-gui
 
 # Screenshots of a specific page (debug builds only)
 DPIMECH_DEBUG_PAGE=engines|logs|settings|editor|picker|shortcut  DPIMECH_DEBUG_PROFILE=<profile id>
+
+# Debug builds only: DPIMECH_DEBUG_PANIC=1 crashes the app / service on start (crash report test);
+# DPIMECH_DEBUG_INTERNET=127.0.0.1:PORT makes the service's internet check use that address (offline test)
 
 # Talk to a running service directly
 pwsh tools/ipc.ps1 -Requests '{"type":"list_packages"}' -ListenSeconds 2

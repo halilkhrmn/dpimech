@@ -47,6 +47,8 @@ export component AppWindow inherits Window {
     // App picker
     in-out property <bool> picker-open;
     in-out property <bool> report-open;
+    /// The report was opened because DPIMech crashed.
+    in property <bool> report-crash;
     in-out property <bool> whats-new-open;
     in property <string> whats-new-version;
     in property <string> whats-new-notes;
@@ -56,6 +58,7 @@ export component AppWindow inherits Window {
     in-out property <string> report-note;
     callback open-report;
     callback report-github;
+    callback report-closed;
     callback report-email-send;
     callback report-folder;
 
@@ -502,11 +505,12 @@ export component AppWindow inherits Window {
         report: report-text;
         saved-path: report-saved;
         email: report-email;
+        crashed: report-crash;
         note <=> root.report-note;
         github => { root.report-github(); }
         email-report => { root.report-email-send(); }
         open-folder => { root.report-folder(); }
-        close => { report-open = false; }
+        close => { report-open = false; root.report-closed(); }
     }
 
     if whats-new-open: WhatsNewDialog {

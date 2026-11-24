@@ -429,3 +429,21 @@ own release), a launchd service and an unsigned universal `.dmg`. The wizard hid
   (was: not up after 3 s, which a desktop still starting after sign-in can exceed: the window then opened
   in the broken way above at every sign-in). Wayland is told from X11 by the raw window handle
   (Slint feature `raw-window-handle-06`).
+
+## 56. Offline waits instead of restarts; crash records; a busy tray icon (2026-11-24)
+- **Offline:** 0.4.3 only kept the connection monitor from restarting an engine while the computer is offline.
+  The other restart reasons still fired: without a connection the apps' retries fill ByeDPI's pool ("pool is
+  full", the stall marker) and an engine can exit. Now every automatic restart except the scheduled one first
+  checks the internet (the same three resolvers by address); while it is down the profile stays "running",
+  its card and one notification for the whole outage say to check the network, the check repeats every 10 s,
+  and the engine is restarted once the connection is back. Failures while offline do not count towards
+  "gave up after 5 restarts". Debug builds can point the check elsewhere (`DPIMECH_DEBUG_INTERNET`).
+- **Crashes:** a panic hook in the app and the service writes the panic, the thread and the backtrace (the
+  panic machinery's frames dropped, `core::crashtext`) to `crash.txt` (app: config folder; service:
+  `<data>/logs`). The app's own record is offered at the next start, the service's in the first app `Hello`;
+  "Report a problem" opens with the records on top and its title says DPIMech closed unexpectedly. Only panics
+  count: a "still running" marker would turn every shutdown or sign-out into a false crash. Not caught: native
+  crashes (access violations) that never reach Rust's panic handling.
+- **Tray:** the dot blinks amber while a profile starts or waits for its first connection check (at most 30 s
+  after its start, so a profile without checks does not blink for ever) and while the Strategy Lab or the
+  wizard tests; after 2 minutes it stays amber instead of blinking.
