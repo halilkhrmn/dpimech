@@ -1,5 +1,9 @@
 # Değişiklikler
 
+## 0.4.8
+- VPN istemcileri (Cloudflare WARP, WireGuard, OpenVPN, …) yalnızca bağlıyken uyarıda gösteriliyor; yalnızca arka plan servislerinin çalışması artık uyarı vermiyor.
+- "Ayrıca çalışıyor" günlük satırı artık profilin adıyla değil servis tarafından yazılıyor; profilin uygulaması diğer aracı bulmuş gibi görünmüyor.
+
 ## 0.4.7
 - DPIMech her ağda hangi stratejinin çalıştığını hatırlıyor (ağ modeminden tanınıyor, hiçbir yere bir şey gönderilmiyor) ve o ağa dönünce ona geçiyor. Yeni bir ağda profillerin sitelerini kontrol ediyor; açılmıyorlarsa stratejileri kendisi deneyip en iyisini kullanıyor (ByeDPI, SpoofDPI, tpws).
 - Arka plan servisi çalışmıyorsa pencere bunu "Servisi başlat" düğmesiyle söylüyor; profiller, motorlar ve Strateji Laboratuvarı servis yeniden çalışana kadar bekliyor.

@@ -46,6 +46,19 @@ const INTERFERING: &[(&str, &str)] = &[
     ("expressvpn.service", "ExpressVPN"),
 ];
 
+/// VPN clients keep a background service running while disconnected (Cloudflare WARP does),
+/// so for them the process alone says nothing: they are only named while traffic really goes
+/// through a tunnel.
+const VPNS: &[&str] = &[
+    "OpenVPN",
+    "WireGuard",
+    "Cloudflare WARP",
+    "Proton VPN",
+    "Windscribe",
+    "NordVPN",
+    "ExpressVPN",
+];
+
 /// Every known tool that is running from outside `<data>/engines`.
 pub fn scan(engines_dir: &Path) -> Vec<ForeignTool> {
     let ours = normalise(&engines_dir.to_string_lossy());
@@ -68,7 +81,85 @@ pub fn scan(engines_dir: &Path) -> Vec<ForeignTool> {
             });
         }
     }
+    if found.iter().any(|t| VPNS.contains(&t.name.as_str())) && !tunnel_carries_traffic() {
+        found.retain(|t| !VPNS.contains(&t.name.as_str()));
+    }
     found
+}
+
+/// Whether the route to the internet goes through a virtual (tunnel) interface right now,
+/// i.e. a VPN is connected. A VPN on a TAP adapter looks like Ethernet and is missed: then
+/// nothing is said, which is the harmless side to err on.
+#[cfg(windows)]
+fn tunnel_carries_traffic() -> bool {
+    use windows_sys::Win32::NetworkManagement::IpHelper::{
+        GetBestInterface, GetIfEntry2, IF_TYPE_ETHERNET_CSMACD, IF_TYPE_IEEE80211, IF_TYPE_PPP,
+        MIB_IF_ROW2,
+    };
+    // Mobile broadband (WWAN) adapters.
+    const IF_TYPE_WWANPP: u32 = 243;
+    const IF_TYPE_WWANPP2: u32 = 244;
+    let mut index = 0u32;
+    // SAFETY: plain out-parameters; the address is 1.1.1.1 in network byte order.
+    unsafe {
+        if GetBestInterface(u32::from_ne_bytes([1, 1, 1, 1]), &mut index) != 0 {
+            return false;
+        }
+        let mut row: MIB_IF_ROW2 = std::mem::zeroed();
+        row.InterfaceIndex = index;
+        if GetIfEntry2(&mut row) != 0 {
+            return false;
+        }
+        !matches!(
+            row.Type,
+            IF_TYPE_ETHERNET_CSMACD
+                | IF_TYPE_IEEE80211
+                | IF_TYPE_PPP
+                | IF_TYPE_WWANPP
+                | IF_TYPE_WWANPP2
+        )
+    }
+}
+
+/// Linux: the route's interface has no hardware device behind it (tun, wg, CloudflareWARP…).
+#[cfg(all(unix, not(target_os = "macos")))]
+fn tunnel_carries_traffic() -> bool {
+    let Ok(out) = std::process::Command::new("ip")
+        .args(["-o", "route", "get", "1.1.1.1"])
+        .output()
+    else {
+        return false;
+    };
+    match route_device(&String::from_utf8_lossy(&out.stdout)) {
+        Some(dev) => !Path::new("/sys/class/net")
+            .join(&dev)
+            .join("device")
+            .exists(),
+        None => false,
+    }
+}
+
+/// macOS VPNs use `utun` interfaces.
+#[cfg(target_os = "macos")]
+fn tunnel_carries_traffic() -> bool {
+    std::process::Command::new("route")
+        .args(["-n", "get", "1.1.1.1"])
+        .output()
+        .is_ok_and(|out| {
+            String::from_utf8_lossy(&out.stdout).lines().any(|l| {
+                l.trim()
+                    .strip_prefix("interface:")
+                    .is_some_and(|i| i.trim().starts_with("utun"))
+            })
+        })
+}
+
+/// The `dev` in `ip route get` output.
+#[cfg_attr(not(all(unix, not(target_os = "macos"))), allow(dead_code))]
+fn route_device(text: &str) -> Option<String> {
+    let mut words = text.split_whitespace();
+    words.find(|w| *w == "dev")?;
+    words.next().map(str::to_owned)
 }
 
 /// Name of the tool an executable belongs to, and whether it only interferes (not a DPI tool).
@@ -203,7 +294,7 @@ fn cmdline_path(proc_dir: &Path) -> Option<String> {
 
 #[cfg(test)]
 mod tests {
-    use super::classify;
+    use super::{INTERFERING, VPNS, classify, route_device};
 
     #[test]
     fn recognises_known_tools_but_not_lookalikes() {
@@ -220,6 +311,24 @@ mod tests {
         assert_eq!(classify("gtk-update-icon-cache"), None);
         assert_eq!(classify("winwsx.exe"), None);
         assert_eq!(classify("chrome.exe"), None);
+    }
+
+    #[test]
+    fn route_device_is_read() {
+        let text = "1.1.1.1 dev CloudflareWARP table 65743 src 172.16.0.2 uid 0 \\    cache";
+        assert_eq!(route_device(text).as_deref(), Some("CloudflareWARP"));
+        assert_eq!(
+            route_device("1.1.1.1 via 192.168.1.1 dev wlan0 src 192.168.1.20"),
+            Some("wlan0".into())
+        );
+        assert_eq!(
+            route_device("RTNETLINK answers: Network is unreachable"),
+            None
+        );
+        // Every VPN name has a process entry, so none can be named without being found.
+        for vpn in VPNS {
+            assert!(INTERFERING.iter().any(|(_, name)| name == vpn), "{vpn}");
+        }
     }
 
     #[test]

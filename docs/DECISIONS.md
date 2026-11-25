@@ -503,3 +503,7 @@ own release), a launchd service and an unsigned universal `.dmg`. The wizard hid
   gets its own amber warning, apart from the DPI-tool conflict.
 - **Not done:** a "game filter" (all UDP ports): without an IP list of the game's servers it would tamper with
   every UDP flow; it needs a concrete target and testing on a real provider.
+- **0.4.8, VPN clients:** their services run while disconnected (owner's report: Cloudflare WARP installed but off
+  was named). A VPN is only named while the route to 1.1.1.1 goes through a virtual interface (Windows
+  `GetBestInterface` + `GetIfEntry2`: not Ethernet, Wi-Fi, PPP or mobile broadband; Linux: the route's interface has
+  no hardware device; macOS: `utun`). A VPN on a TAP adapter looks like Ethernet and is not named: the quiet side.

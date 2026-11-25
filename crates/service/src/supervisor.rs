@@ -564,10 +564,15 @@ impl Supervisor {
                     } else {
                         "two DPI tools on the same traffic break connections"
                     };
+                    // Logged as the service's finding: under the profile's name it read as if
+                    // the profile's app had found the tool.
                     this.logs.push(
                         LogLevel::Warn,
-                        &name,
-                        format!("{} is also running ({}); {why}", tool.name, tool.path),
+                        SERVICE_SOURCE,
+                        format!(
+                            "{} is also running ({}) while \"{name}\" starts; {why}",
+                            tool.name, tool.path
+                        ),
                     );
                 }
             });
