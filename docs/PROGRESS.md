@@ -121,7 +121,7 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
-### 2026-11-24 (56) — 0.4.8: DNS shown, optionally set
+### 2026-11-24 (56) — DNS shown, optionally set (released in 0.4.6)
 - Why: step 3 of the plan; owner: show the DNS in use always, setting it is an optional extra.
 - Done: `netdns.rs` (read per OS; set / keep / restore), `Request::DnsInUse` / `SetDns`, Settings → Network
   (servers, source, dropdown + Apply), DNS line in problem reports, restore in `uninstall`. DECISIONS #58;
@@ -134,7 +134,7 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
   network's own" reverted both and removed dns.json.
 - Not verified: Windows (`netsh` on a real adapter, restore, uninstall), a real systemd-resolved.
 
-### 2026-11-24 (55) — 0.4.7: shortcut start as a system notification
+### 2026-11-24 (55) — shortcut start as a system notification (released in 0.4.6)
 - Why: owner's report: the start window of a profile shortcut (bottom right) looked off; wish: native
   notifications. Step 2 of the plan.
 - Done: `launcher.rs` runs without a window; `notify::TaskNote` keeps one notification and updates it
@@ -147,7 +147,11 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
   shortcut no longer exists." without a bar.
 - Not verified: the Windows toast (layout of the progress element, updating by tag), macOS.
 
-### 2026-11-24 (54) — 0.4.6: wait for the internet, crash reports, busy tray icon
+### 2026-11-25 (57) — 0.4.6 released as one version
+- Owner's choice: the three steps below (PRs #32, #33, #34) ship together as 0.4.6 instead of 0.4.6 / 0.4.7 / 0.4.8;
+  release notes merged into one 0.4.6 section in all five languages.
+
+### 2026-11-24 (54) — wait for the internet, crash reports, busy tray icon
 - Why: owner's report: without internet the engine was restarted again and again; wishes: say to check the
   network and wait, blink the tray while connecting / testing, offer a report after a crash.
 - Done: every automatic restart (stall, exit, slow) first checks the internet and waits while it is down
