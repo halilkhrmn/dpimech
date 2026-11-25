@@ -28,6 +28,8 @@ export component AppWindow inherits Window {
     in property <string> service-info;
     /// DNS servers in use, one line per connection (convert::dns_text).
     in property <string> dns-in-use;
+    /// The network the computer is on ("Wi-Fi via 192.168.1.1"); empty when not known.
+    in property <string> network-label;
     /// Optional DNS service: 0 = the network's own, then catalog::PUBLIC_DNS in order.
     in property <[string]> dns-choices;
     in-out property <int> dns-chosen;
@@ -176,6 +178,9 @@ export component AppWindow inherits Window {
     in property <string> foreign-tools;
     /// The tools named when the user closed the warning; it comes back when the list changes.
     property <string> foreign-dismissed;
+    /// Software that may get in the way (traffic filters, VPN clients), comma separated.
+    in property <string> interfering-tools;
+    property <string> interfering-dismissed;
     in property <[string]> language-names;
     in property <int> language-index;
     callback set-language(int);
@@ -316,6 +321,32 @@ export component AppWindow inherits Window {
                         Button {
                             text: @tr("Hide");
                             clicked => { root.foreign-dismissed = root.foreign-tools; }
+                        }
+                    }
+                }
+            }
+
+            if service-connected && interfering-tools != "" && interfering-tools != interfering-dismissed: Rectangle {
+                vertical-stretch: 0;
+                background: Theme.starting.transparentize(0.8);
+                HorizontalLayout {
+                    padding-left: 24px;
+                    padding-right: 24px;
+                    padding-top: 8px;
+                    padding-bottom: 8px;
+                    spacing: 10px;
+                    VerticalLayout { alignment: center; Glyph { source: Icons.warning; color: Theme.starting; } }
+                    Text {
+                        text: @tr("Also running: {}. It can get in the way of DPIMech; if sites do not open, pause or close it and try again.", interfering-tools);
+                        wrap: word-wrap;
+                        vertical-alignment: center;
+                        horizontal-stretch: 1;
+                    }
+                    VerticalLayout {
+                        alignment: center;
+                        Button {
+                            text: @tr("Hide");
+                            clicked => { root.interfering-dismissed = root.interfering-tools; }
                         }
                     }
                 }
@@ -487,6 +518,7 @@ export component AppWindow inherits Window {
                 service-connected: service-connected;
                 service-info: service-info;
                 dns-in-use: dns-in-use;
+                network-label: network-label;
                 dns-choices: dns-choices;
                 dns-chosen <=> dns-chosen;
                 dns-busy <=> dns-busy;

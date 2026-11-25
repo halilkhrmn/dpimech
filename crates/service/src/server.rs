@@ -197,6 +197,7 @@ async fn dispatch(supervisor: &Supervisor, request: Request) -> anyhow::Result<R
                 .await
                 .ok()
                 .flatten(),
+            network: supervisor.network_label(),
         },
         Request::SetDns { provider } => {
             let data = supervisor.data_dir().clone();

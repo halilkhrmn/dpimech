@@ -244,6 +244,8 @@ pub fn profile_from_draft(
             },
         },
         check_sites: parse_domains(&d.check_sites),
+        // The service keeps what it learned per network when the editor saves.
+        per_network: Default::default(),
     })
 }
 

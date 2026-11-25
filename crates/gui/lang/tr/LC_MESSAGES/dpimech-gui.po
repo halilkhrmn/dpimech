@@ -4,59 +4,63 @@ msgstr ""
 "Language: tr\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ui/app.slint:236
+#: ui/app.slint:241
 msgid "Profiles"
 msgstr "Profiller"
 
-#: ui/app.slint:241
+#: ui/app.slint:246
 msgid "Strategy Lab"
 msgstr "Strateji Laboratuvarı"
 
-#: ui/app.slint:246
+#: ui/app.slint:251
 msgid "Engines"
 msgstr "Motorlar"
 
-#: ui/app.slint:252
+#: ui/app.slint:257
 msgid "Logs"
 msgstr "Kayıtlar"
 
-#: ui/app.slint:258
+#: ui/app.slint:263
 msgid "Settings"
 msgstr "Ayarlar"
 
-#: ui/app.slint:309
+#: ui/app.slint:314
 msgid "Another DPI tool is running: {}. Two tools on the same traffic break connections — close it, or turn DPIMech's profiles off."
 msgstr "Başka bir DPI aracı çalışıyor: {}. Aynı trafikte iki araç bağlantıları bozar — onu kapat ya da DPIMech profillerini kapat."
 
-#: ui/app.slint:317
+#: ui/app.slint:322
 msgid "Hide"
 msgstr "Gizle"
 
-#: ui/app.slint:334
+#: ui/app.slint:340
+msgid "Also running: {}. It can get in the way of DPIMech; if sites do not open, pause or close it and try again."
+msgstr "Ayrıca çalışıyor: {}. DPIMech'in işine karışabilir; siteler açılmazsa onu duraklat ya da kapat ve tekrar dene."
+
+#: ui/app.slint:365
 msgid "DPIMech {} is ready to install."
 msgstr "DPIMech {} kurulmaya hazır."
 
-#: ui/app.slint:338
+#: ui/app.slint:369
 msgid "Restart and update"
 msgstr "Yeniden başlat ve güncelle"
 
-#: ui/app.slint:359
+#: ui/app.slint:391
 msgid "Background service is not running. Engines can't be started until it is."
 msgstr "Arka plan servisi çalışmıyor. Servis çalışmadan motorlar başlatılamaz."
 
-#: ui/app.slint:372
+#: ui/app.slint:404
 msgid "Starting…"
 msgstr "Başlıyor…"
 
-#: ui/app.slint:372
+#: ui/app.slint:404
 msgid "Start the service"
 msgstr "Servisi başlat"
 
-#: ui/app.slint:396
+#: ui/app.slint:429
 msgid "The background service is not running"
 msgstr "Arka plan servisi çalışmıyor"
 
-#: ui/app.slint:402
+#: ui/app.slint:435
 msgid "Profiles, engines and the Strategy Lab work through it. Start it with the button above; Logs and Settings stay available."
 msgstr "Profiller, motorlar ve Strateji Laboratuvarı onun üzerinden çalışır. Yukarıdaki düğmeyle başlat; Kayıtlar ve Ayarlar açık kalır."
 
@@ -440,155 +444,163 @@ msgstr "Ayrıntılı kayıt"
 msgid "Also logs every connection (site, address, how it ended) and each tested strategy. Turn it on to find out why something does not open; it makes the log much longer."
 msgstr "Her bağlantıyı (site, adres, nasıl bittiği) ve denenen her stratejiyi de kaydeder. Bir şeyin neden açılmadığını bulmak için aç; kayıtları çok uzatır."
 
-#: ui/pages.slint:194
+#: ui/pages.slint:195
 msgid "Interface"
 msgstr "Arayüz"
 
-#: ui/pages.slint:201
+#: ui/pages.slint:202
 msgid "Easy mode"
 msgstr "Kolay mod"
 
-#: ui/pages.slint:203
+#: ui/pages.slint:204
 msgid "Fewer menus; the setup wizard does the work. Turn off for engines, the Strategy Lab and logs."
 msgstr "Daha az menü; işi kurulum sihirbazı yapar. Motorlar, Strateji Laboratuvarı ve kayıtlar için kapat."
 
-#: ui/pages.slint:220
+#: ui/pages.slint:221
 msgid "Language"
 msgstr "Dil"
 
-#: ui/pages.slint:228
+#: ui/pages.slint:229
 msgid "Run the setup wizard again"
 msgstr "Kurulum sihirbazını yeniden çalıştır"
 
-#: ui/pages.slint:229
+#: ui/pages.slint:230
 msgid "Open wizard"
 msgstr "Sihirbazı aç"
 
-#: ui/pages.slint:235
+#: ui/pages.slint:236
 msgid "Startup"
 msgstr "Başlangıç"
 
-#: ui/pages.slint:242
+#: ui/pages.slint:243
 msgid "Start DPIMech when I sign in"
 msgstr "Oturum açınca DPIMech'i başlat"
 
-#: ui/pages.slint:244
+#: ui/pages.slint:245
 msgid "Starts in the tray. Profiles run only while DPIMech is open."
 msgstr "Tepside başlar. Profiller yalnızca DPIMech açıkken çalışır."
 
-#: ui/pages.slint:264
+#: ui/pages.slint:265
 msgid "Log"
 msgstr "Kayıt"
 
-#: ui/pages.slint:271
+#: ui/pages.slint:272
 msgid "Save the log to daily files"
 msgstr "Kaydı günlük dosyalara yaz"
 
-#: ui/pages.slint:273
+#: ui/pages.slint:274
 msgid "One file per day while DPIMech is open; files older than 14 days are deleted. Even when this is off, the recent log is saved to this folder if a profile stops with an error."
 msgstr "DPIMech açıkken her gün için bir dosya; 14 günden eski dosyalar silinir. Bu kapalıyken bile bir profil hatayla durursa son kayıtlar bu klasöre kaydedilir."
 
-#: ui/pages.slint:300
+#: ui/pages.slint:301
 msgid "Change folder…"
 msgstr "Klasörü değiştir…"
 
-#: ui/pages.slint:301
+#: ui/pages.slint:302
 msgid "Open folder"
 msgstr "Klasörü aç"
 
-#: ui/pages.slint:309
+#: ui/pages.slint:310
 msgid "Shortcuts"
 msgstr "Kısayollar"
 
-#: ui/pages.slint:316
+#: ui/pages.slint:317
 msgid "Profile shortcuts on the desktop and in the menu: {}"
 msgstr "Masaüstündeki ve menüdeki profil kısayolları: {}"
 
-#: ui/pages.slint:320
+#: ui/pages.slint:321
 msgid "Create one by right-clicking a profile or with its menu button. Deleting a profile removes its shortcuts."
 msgstr "Bir profile sağ tıklayarak ya da menü düğmesiyle oluşturun. Profil silinince kısayolları da silinir."
 
-#: ui/pages.slint:327
+#: ui/pages.slint:328
 msgid "Remove all shortcuts"
 msgstr "Tüm kısayolları kaldır"
 
-#: ui/pages.slint:335
+#: ui/pages.slint:336
 msgid "Network"
 msgstr "Ağ"
 
-#: ui/pages.slint:338
+#: ui/pages.slint:342
+msgid "This network: {}"
+msgstr "Bu ağ: {}"
+
+#: ui/pages.slint:344
+msgid "DPIMech remembers which strategy works on each network and switches to it when you come back. On a new network it checks the profiles' sites and, when they do not open, tests strategies by itself (ByeDPI, SpoofDPI, tpws)."
+msgstr "DPIMech her ağda hangi stratejinin çalıştığını hatırlar ve o ağa dönünce ona geçer. Yeni bir ağda profillerin sitelerini kontrol eder; açılmıyorlarsa stratejileri kendisi dener (ByeDPI, SpoofDPI, tpws)."
+
+#: ui/pages.slint:350
 msgid "DNS servers in use"
 msgstr "Kullanılan DNS sunucuları"
 
-#: ui/pages.slint:340
+#: ui/pages.slint:352
 msgid "Not known yet (the background service tells)."
 msgstr "Henüz bilinmiyor (arka plan servisi bildirir)."
 
-#: ui/pages.slint:345
+#: ui/pages.slint:357
 msgid "Your computer asks these servers where sites are. If a site stays blocked although its profile works, these servers may be the reason: some providers answer blocked names with a wrong address. The Strategy Lab checks this."
 msgstr "Bilgisayarın sitelerin nerede olduğunu bu sunuculara sorar. Profili çalıştığı hâlde bir site engelli kalıyorsa sebep bu sunucular olabilir: bazı sağlayıcılar engelli adlara yanlış adres verir. Strateji Laboratuvarı bunu kontrol eder."
 
-#: ui/pages.slint:361
+#: ui/pages.slint:373
 msgid "Apply"
 msgstr "Uygula"
 
-#: ui/pages.slint:377
+#: ui/pages.slint:389
 msgid "Optional. Sets this service for every connected network instead of the one from your network (router or provider). DPIMech saves the previous settings and puts them back when you choose \"Your network's own\" or uninstall DPIMech. On Linux it needs systemd-resolved and uses encrypted DNS (DNS over TLS) when the server offers it."
 msgstr "İsteğe bağlı. Bağlı her ağ için, ağının (modem ya da sağlayıcı) verdiği yerine bu servisi ayarlar. DPIMech önceki ayarları kaydeder; \"Ağının kendi DNS'i\" seçildiğinde ya da DPIMech kaldırıldığında onları geri koyar. Linux'ta systemd-resolved gerekir ve sunucu destekliyorsa şifreli DNS (DNS over TLS) kullanılır."
 
-#: ui/pages.slint:386
+#: ui/pages.slint:398
 msgid "Background service"
 msgstr "Arka plan servisi"
 
-#: ui/pages.slint:389
+#: ui/pages.slint:401
 msgid "Connected"
 msgstr "Bağlı"
 
-#: ui/pages.slint:389
+#: ui/pages.slint:401
 msgid "Not running"
 msgstr "Çalışmıyor"
 
-#: ui/pages.slint:393
+#: ui/pages.slint:405
 msgid "Install the service"
 msgstr "Servisi kur"
 
-#: ui/pages.slint:399
+#: ui/pages.slint:411
 msgid "About"
 msgstr "Hakkında"
 
-#: ui/pages.slint:404
+#: ui/pages.slint:416
 msgid "Opens sites and apps that your internet provider blocks by running well-known open-source DPI bypass tools on your computer. It is not a VPN: your traffic still goes straight to the sites, nothing is sent through another server."
 msgstr "İnternet sağlayıcının engellediği siteleri ve uygulamaları, bilgisayarında bilinen açık kaynaklı DPI aşma araçlarını çalıştırarak açar. Bir VPN değildir: trafiğin yine doğrudan sitelere gider, hiçbir şey başka bir sunucudan geçmez."
 
-#: ui/pages.slint:408
+#: ui/pages.slint:420
 msgid "Platform: {}"
 msgstr "Platform: {}"
 
-#: ui/pages.slint:409
+#: ui/pages.slint:421
 msgid "Free software under the GNU GPL v3 or later."
 msgstr "GNU GPL v3 veya sonrası lisanslı özgür yazılım."
 
-#: ui/pages.slint:413
+#: ui/pages.slint:425
 msgid "Source code"
 msgstr "Kaynak kod"
 
-#: ui/pages.slint:414
+#: ui/pages.slint:426
 msgid "Report a problem"
 msgstr "Sorun bildir"
 
-#: ui/pages.slint:422
+#: ui/pages.slint:434
 msgid "Download"
 msgstr "İndir"
 
-#: ui/pages.slint:428
+#: ui/pages.slint:440
 msgid "Thanks"
 msgstr "Teşekkürler"
 
-#: ui/pages.slint:432
+#: ui/pages.slint:444
 msgid "DPIMech only manages these projects; the real work is theirs."
 msgstr "DPIMech bu projeleri sadece yönetir; asıl işi onlar yapar."
 
-#: ui/pages.slint:445
+#: ui/pages.slint:457
 msgid "Logo, drawn by hand"
 msgstr "Logo, elle çizildi"
 
@@ -892,67 +904,67 @@ msgstr "Uygulamayı listeden veya Gözat… ile seç"
 msgid "Add at least one application for per-app routing."
 msgstr "Uygulama bazlı yönlendirme için en az bir uygulama ekle."
 
-#: src/convert.rs:258
+#: src/convert.rs:260
 msgid "{} · port {}"
 msgstr "{} · port {}"
 
-#: src/convert.rs:270
+#: src/convert.rs:272
 msgid "All matching traffic"
 msgstr "Eşleşen tüm trafik"
 
-#: src/convert.rs:271
+#: src/convert.rs:273
 msgid "{} site(s): {}"
 msgstr "{} site: {}"
 
-#: src/convert.rs:284
+#: src/convert.rs:286
 msgid "Stopped"
 msgstr "Durdu"
 
-#: src/convert.rs:293
+#: src/convert.rs:295
 msgid "1 auto-restart"
 msgstr "1 otomatik yeniden başlatma"
 
-#: src/convert.rs:294
+#: src/convert.rs:296
 msgid "{} auto-restarts"
 msgstr "{} otomatik yeniden başlatma"
 
-#: src/convert.rs:303
+#: src/convert.rs:305
 msgid "Sites not answering ({}/{})"
 msgstr "Siteler cevap vermiyor ({}/{})"
 
-#: src/convert.rs:305
+#: src/convert.rs:307
 msgid "Slow: avg. {} ms (usually {} ms)"
 msgstr "Yavaş: ort. {} ms (normalde {} ms)"
 
-#: src/convert.rs:307
+#: src/convert.rs:309
 msgid "Only {}/{} sites answer"
 msgstr "Sadece {}/{} site cevap veriyor"
 
-#: src/convert.rs:314
+#: src/convert.rs:316
 msgid "Running · {}"
 msgstr "Çalışıyor · {}"
 
-#: src/convert.rs:315
+#: src/convert.rs:317
 msgid "avg. {} ms"
 msgstr "ort. {} ms"
 
-#: src/convert.rs:423
+#: src/convert.rs:425
 msgid "just now"
 msgstr "az önce"
 
-#: src/convert.rs:424
+#: src/convert.rs:426
 msgid "{} min"
 msgstr "{} dk"
 
-#: src/convert.rs:425
+#: src/convert.rs:427
 msgid "{} h {} min"
 msgstr "{} sa {} dk"
 
-#: src/convert.rs:437
+#: src/convert.rs:439
 msgid "Last check: {}/{} sites answered"
 msgstr "Son kontrol: {}/{} site cevap verdi"
 
-#: src/convert.rs:443
+#: src/convert.rs:445
 msgid "(usually {} ms)"
 msgstr "(normalde {} ms)"
 
@@ -1308,54 +1320,54 @@ msgstr "İyi haber: bu siteler bağlantında zaten normal açılıyor, değişti
 msgid "My sites"
 msgstr "Sitelerim"
 
-#: src/wizard.rs:464
+#: src/wizard.rs:465
 msgid "Could not create the profile: {}"
 msgstr "Profil oluşturulamadı: {}"
 
-#: src/wizard.rs:470
+#: src/wizard.rs:471
 msgid "“{}” is on and starts automatically with the computer."
 msgstr "“{}” açık ve bilgisayarla birlikte otomatik başlar."
 
-#: src/wizard.rs:476
+#: src/wizard.rs:477
 msgid "{}/{} test requests worked ({} ms on average)."
 msgstr "{}/{} test isteği başarılı (ortalama {} ms)."
 
-#: src/wizard.rs:484
+#: src/wizard.rs:485
 msgid "No setting worked every time, so this one may be unreliable. If the connection fails, try “The whole computer” (zapret) or the Strategy Lab."
 msgstr "Hiçbir ayar her seferinde çalışmadı, bu yüzden bu ayar güvenilir olmayabilir. Bağlantı kurulamazsa “Tüm bilgisayar” (zapret) seçeneğini ya da Strateji Laboratuvarı'nı deneyin."
 
-#: src/wizard.rs:492
+#: src/wizard.rs:493
 msgid "Set your browser or app to use the SOCKS5 proxy 127.0.0.1:{}."
 msgstr "Tarayıcını ya da uygulamanı SOCKS5 proxy 127.0.0.1:{} kullanacak şekilde ayarla."
 
-#: src/wizard.rs:499
+#: src/wizard.rs:500
 msgid "Restart the chosen apps if they were already open."
 msgstr "Seçtiğin uygulamalar zaten açıksa onları yeniden başlat."
 
-#: src/wizard.rs:525
+#: src/wizard.rs:526
 msgid "The engine could not run on this computer: {}."
 msgstr "Motor bu bilgisayarda çalışamadı: {}."
 
-#: src/wizard.rs:531
+#: src/wizard.rs:532
 msgid "Try again later, add other sites, or run the Strategy Lab from the full interface to test more settings."
 msgstr "Daha sonra tekrar dene, başka siteler ekle ya da daha fazla ayar denemek için tam arayüzden Strateji Laboratuvarı'nı çalıştır."
 
-#: src/wizard.rs:535
+#: src/wizard.rs:536
 msgid "Try “The whole computer” (zapret) or run the Strategy Lab from the full interface."
 msgstr "“Tüm bilgisayar” (zapret) seçeneğini dene ya da tam arayüzden Strateji Laboratuvarı'nı çalıştır."
 
-#: src/wizard.rs:540
+#: src/wizard.rs:541
 msgid "No setting worked on your connection for these sites."
 msgstr "Bu siteler için bağlantında hiçbir ayar çalışmadı."
 
-#: src/wizard.rs:606
+#: src/wizard.rs:607
 msgid "Install {}"
 msgstr "{} kur"
 
-#: src/wizard.rs:622
+#: src/wizard.rs:623
 msgid "Find a setting that works on your connection"
 msgstr "Bağlantında çalışan bir ayar bul"
 
-#: src/wizard.rs:631
+#: src/wizard.rs:632
 msgid "Create the profile and turn it on"
 msgstr "Profili oluştur ve aç"

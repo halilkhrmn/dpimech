@@ -356,6 +356,7 @@ mod tests {
                 autostart: false,
                 reliability: Reliability::default(),
                 check_sites: Vec::new(),
+                per_network: Default::default(),
             },
             status,
         }

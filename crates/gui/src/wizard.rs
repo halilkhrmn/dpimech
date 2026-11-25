@@ -450,6 +450,7 @@ fn save_profile(ui: &AppWindow, best: &LabResult) {
         autostart: true,
         reliability: Reliability::default(),
         check_sites: crate::convert::check_sites_for(&domains),
+        per_network: Default::default(),
     };
     STATE.with_borrow_mut(|s| s.phase = Phase::Saving);
     show_tasks(ui);

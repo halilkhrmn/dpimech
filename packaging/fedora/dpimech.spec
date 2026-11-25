@@ -82,6 +82,8 @@ install -Dm644 crates/gui/assets/dpimech.png %{buildroot}%{_datadir}/icons/hicol
 %{_datadir}/icons/hicolor/256x256/apps/dpimech.png
 
 %changelog
+* Wed Nov 25 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.4.7-1
+- Per-network strategy memory and testing on a new network; start the service from the window
 * Wed Nov 25 2026 Halil Kahraman <halilkahraman@yandex.com> - 0.4.6-1
 - Waits for the internet instead of restarting engines; crash reports; busy tray icon
 - Profile shortcuts report through one system notification instead of a window

@@ -91,6 +91,8 @@ pub struct Supervisor {
     app_session: Arc<AtomicBool>,
     /// Other DPI tools already named in the log, so every profile start does not repeat them.
     foreign_warned: Arc<std::sync::Mutex<HashSet<String>>>,
+    /// The network the computer is on (`netdns::network`), for the per-network strategies.
+    network: Arc<std::sync::Mutex<Option<crate::netdns::NetworkId>>>,
 }
 
 /// How long profiles outlive the app: covers a restart of the app (update, crash) without
@@ -135,11 +137,174 @@ impl Supervisor {
             app_epoch: Arc::new(AtomicU64::new(0)),
             app_session: Arc::new(AtomicBool::new(false)),
             foreign_warned: Arc::default(),
+            network: Arc::default(),
         })
     }
 
     /// Starts long-running housekeeping: router failure handling and daily update checks.
+    fn network_key(&self) -> Option<String> {
+        self.network.lock().unwrap().as_ref().map(|n| n.key.clone())
+    }
+
+    /// The network as people read it, for Settings.
+    pub fn network_label(&self) -> Option<String> {
+        self.network
+            .lock()
+            .unwrap()
+            .as_ref()
+            .map(|n| n.label.clone())
+    }
+
+    /// Follows the network: on a change, running profiles switch to the strategy that worked
+    /// there before, or check it and learn (DECISIONS #59).
+    fn watch_network(&self) {
+        let this = self.clone();
+        tokio::spawn(async move {
+            let mut known: Option<String> = None;
+            loop {
+                let now = tokio::task::spawn_blocking(crate::netdns::network)
+                    .await
+                    .ok()
+                    .flatten();
+                *this.network.lock().unwrap() = now.clone();
+                // Offline in between (no router) is not a change: the same network coming back
+                // needs nothing.
+                if let Some(net) = now
+                    && known.as_deref() != Some(net.key.as_str())
+                {
+                    let previous = known.replace(net.key.clone());
+                    if previous.is_some() {
+                        this.logs
+                            .info(SERVICE_SOURCE, format!("network changed: {}", net.label));
+                        this.network_changed(previous.as_deref(), &net).await;
+                    }
+                }
+                tokio::time::sleep(NETWORK_POLL).await;
+            }
+        });
+    }
+
+    async fn network_changed(&self, previous: Option<&str>, net: &crate::netdns::NetworkId) {
+        let running: Vec<Profile> = {
+            let state = self.state.lock().await;
+            state
+                .config
+                .profiles
+                .iter()
+                .filter(|p| state.running.contains_key(&p.id))
+                .cloned()
+                .collect()
+        };
+        for profile in running {
+            let before = profile.args_for(previous).to_owned();
+            let here = profile.args_for(Some(&net.key)).to_owned();
+            if here != before {
+                self.logs.info(
+                    &profile.name,
+                    "using the strategy that worked on this network before",
+                );
+                self.restart(&profile.id).await;
+            } else if !profile.per_network.contains_key(&net.key) {
+                let this = self.clone();
+                let key = net.key.clone();
+                tokio::spawn(async move { this.learn_network(profile, key, before).await });
+            }
+        }
+    }
+
+    /// A new network: if the profile's sites open with what runs, remember it for this network;
+    /// otherwise find a strategy that works here (proxy engines, whose test runs beside the
+    /// profile) or say to run the Strategy Lab (packet engines would cut the connection to test).
+    async fn learn_network(&self, profile: Profile, key: String, args: String) {
+        tokio::time::sleep(NETWORK_SETTLE).await;
+        let sites = profile.monitored_sites();
+        if sites.is_empty() || !crate::health::internet_reachable().await {
+            return;
+        }
+        let (ok, total) = crate::health::sites_open(&sites, engine_port(&profile)).await;
+        if ok * 2 >= total {
+            self.remember(&profile.id, &key, args).await;
+            self.logs.info(
+                &profile.name,
+                format!("works on this network ({ok}/{total} sites); remembered"),
+            );
+            return;
+        }
+        if !profile.engine.is_proxy() {
+            self.logs.warn(
+                &profile.name,
+                format!(
+                    "only {ok}/{total} sites open on this network; run the Strategy Lab to find a setting that works here"
+                ),
+            );
+            return;
+        }
+        self.logs.info(
+            &profile.name,
+            format!("only {ok}/{total} sites open on this network; testing strategies"),
+        );
+        let request = dpimech_core::lab::LabRequest {
+            engine: profile.engine,
+            strategies: self.lab.strategies(profile.engine),
+            domains: sites.clone(),
+            probes: sites,
+            repeats: 1,
+        };
+        match self.lab.find_best(request).await {
+            Ok(Some(best)) if best.confirmed || best.ok * 2 > best.total => {
+                let Some(strategy) = best.strategy else {
+                    return;
+                };
+                self.logs.info(
+                    &profile.name,
+                    format!(
+                        "\"{}\" works on this network; using and remembering it",
+                        strategy.name
+                    ),
+                );
+                self.remember(&profile.id, &key, strategy.args).await;
+                // The engine still runs the old strategy until it restarts.
+                if self.network_key().as_deref() == Some(key.as_str()) {
+                    self.restart(&profile.id).await;
+                }
+            }
+            Ok(_) => self.logs.warn(
+                &profile.name,
+                "no strategy of this engine works on this network; try another engine in the Strategy Lab",
+            ),
+            Err(e) => self
+                .logs
+                .warn(&profile.name, format!("could not test this network: {e:#}")),
+        }
+    }
+
+    /// Stores the strategy that works on a network for a profile.
+    async fn remember(&self, id: &str, key: &str, args: String) {
+        let mut state = self.state.lock().await;
+        let Some(profile) = state.config.profiles.iter_mut().find(|p| p.id == id) else {
+            return;
+        };
+        if profile.per_network.get(key) == Some(&args) {
+            return;
+        }
+        profile.per_network.insert(key.to_owned(), args);
+        if let Err(e) = state.config.save(&self.data.config_file()) {
+            self.logs.error(SERVICE_SOURCE, format!("{e:#}"));
+        }
+        drop(state);
+        let _ = self.events.send(Event::ProfilesChanged);
+    }
+
+    /// Stops and starts a running profile, so its engine picks up the network's strategy.
+    async fn restart(&self, id: &str) {
+        let _ = self.stop(id).await;
+        if let Err(e) = self.start(id).await {
+            self.logs.error(SERVICE_SOURCE, format!("{e:#}"));
+        }
+    }
+
     pub async fn spawn_background(&self) {
+        self.watch_network();
         if let Some(mut failures) = self.router_failures.lock().await.take() {
             let this = self.clone();
             tokio::spawn(async move {
@@ -303,6 +468,18 @@ impl Supervisor {
         if state.running.contains_key(&profile.id) {
             bail!("stop the profile before editing it");
         }
+        // The editor does not carry what was learned per network: keep it. A strategy the
+        // user picked becomes the default and what this network uses.
+        if let Some(existing) = state.config.profiles.iter().find(|p| p.id == profile.id)
+            && profile.per_network.is_empty()
+        {
+            profile.per_network = existing.per_network.clone();
+            if profile.args != existing.args
+                && let Some(key) = self.network_key()
+            {
+                profile.per_network.insert(key, profile.args.clone());
+            }
+        }
         match state
             .config
             .profiles
@@ -382,13 +559,15 @@ impl Supervisor {
                     tools.iter().map(|t| t.path.clone()).collect(),
                 );
                 for tool in tools.iter().filter(|t| !known.contains(&t.path)) {
+                    let why = if tool.interferes {
+                        "it may get in the way: if sites do not open, pause or close it"
+                    } else {
+                        "two DPI tools on the same traffic break connections"
+                    };
                     this.logs.push(
                         LogLevel::Warn,
                         &name,
-                        format!(
-                            "{} is also running ({}); two DPI tools on the same traffic break connections",
-                            tool.name, tool.path
-                        ),
+                        format!("{} is also running ({}); {why}", tool.name, tool.path),
                     );
                 }
             });
@@ -634,7 +813,7 @@ impl Supervisor {
             &self.packages,
             &crate::launch::Launch {
                 engine: profile.engine,
-                args: &profile.args,
+                args: profile.args_for(self.network_key().as_deref()),
                 port: engine_port(profile),
                 domains,
                 hostlist_name: &format!("profile-{}", profile.id),
@@ -1130,6 +1309,10 @@ enum Restart {
 
 /// Ignore stall markers right after a (re)start; the old flood may still be in the pipe.
 const STALL_GRACE: Duration = Duration::from_secs(30);
+/// How often the network is looked at (router address and MAC: cheap, local).
+const NETWORK_POLL: Duration = Duration::from_secs(15);
+/// After a network change: time for the connection (DHCP, DNS) to settle before checking.
+const NETWORK_SETTLE: Duration = Duration::from_secs(8);
 /// How often a profile waiting for the internet looks again.
 const OFFLINE_POLL: Duration = Duration::from_secs(10);
 
@@ -1168,6 +1351,11 @@ async fn sleep_or_forever(duration: Option<Duration>) {
 fn validate(profile: &Profile, data: &DataDir) -> anyhow::Result<()> {
     crate::launch::validate(data, profile.engine, &profile.args)
         .map_err(|e| anyhow::anyhow!("strategy arguments: {e}"))?;
+    // Strategies remembered per network come with the profile too: same rules.
+    for args in profile.per_network.values() {
+        crate::launch::validate(data, profile.engine, args)
+            .map_err(|e| anyhow::anyhow!("strategy arguments: {e}"))?;
+    }
     if let Routing::SystemWide { domains } = &profile.routing
         && domains.is_empty()
         && dpimech_core::catalog::uses_hostlist(&profile.args)
@@ -1271,6 +1459,7 @@ mod tests {
             autostart,
             reliability: Reliability::default(),
             check_sites: Vec::new(),
+            per_network: Default::default(),
         };
         let profiles = [
             profile("manual", false),

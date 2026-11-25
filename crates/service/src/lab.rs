@@ -325,6 +325,34 @@ impl Lab {
         Ok(())
     }
 
+    /// Runs a test like `start` (progress events, the same one-test-at-a-time slot) and waits for
+    /// its best result: used to find a strategy by itself on a new network. `None` when the test
+    /// was cancelled or nothing opened.
+    pub async fn find_best(&self, request: LabRequest) -> anyhow::Result<Option<LabResult>> {
+        if request.domains.is_empty() || request.strategies.is_empty() {
+            return Ok(None);
+        }
+        let (done_tx, done_rx) = tokio::sync::oneshot::channel();
+        {
+            let mut task = self.task.lock().await;
+            if task.as_ref().is_some_and(|t| !t.is_finished()) {
+                bail!("a test is already running");
+            }
+            let this = self.clone();
+            *task = Some(tokio::spawn(async move {
+                let result = this.run(request).await;
+                let error = result.as_ref().err().map(|e| format!("{e:#}"));
+                let _ = this.events.send(Event::LabFinished {
+                    cancelled: false,
+                    error,
+                });
+                let _ = done_tx.send(result);
+            }));
+        }
+        // A cancelled test drops the sender.
+        done_rx.await.unwrap_or(Ok(None))
+    }
+
     pub async fn cancel(&self) {
         // Dropping the task drops the engine children, which kills them (kill_on_drop).
         if let Some(task) = self.task.lock().await.take()
@@ -345,7 +373,8 @@ impl Lab {
             .join(format!("{}.json", engine.slug()))
     }
 
-    async fn run(&self, request: LabRequest) -> anyhow::Result<()> {
+    /// Runs the test and returns the best result (confirmed or not), `None` when nothing opened.
+    async fn run(&self, request: LabRequest) -> anyhow::Result<Option<LabResult>> {
         let hosts = if request.probes.is_empty() {
             request.domains.clone()
         } else {
@@ -494,7 +523,7 @@ impl Lab {
             self.emit(done, total, result);
         }
 
-        match best {
+        match &best {
             Some(b) if b.confirmed => {
                 let strategy = b
                     .strategy
@@ -531,7 +560,7 @@ impl Lab {
                 .warn(SOURCE, "no strategy opened any of the sites"),
         }
         self.logs.info(SOURCE, "test finished");
-        Ok(())
+        Ok(best)
     }
 
     /// Detailed log line for one strategy; keeps the result for the extra rounds.
