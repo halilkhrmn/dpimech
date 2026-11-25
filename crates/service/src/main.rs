@@ -9,6 +9,7 @@
 //!   dpimech-service unit --exe <path>         print the systemd unit (used to build packages)
 
 mod acl;
+mod crash;
 mod defender;
 mod dnscheck;
 #[cfg(windows)]
@@ -23,6 +24,7 @@ mod launchd;
 mod logs;
 #[cfg(any(windows, target_os = "linux"))]
 mod migrate;
+mod netdns;
 #[cfg(target_os = "linux")]
 mod nfqueue;
 mod packages;
@@ -79,7 +81,10 @@ fn main() -> anyhow::Result<()> {
         #[cfg(windows)]
         "install" => log_install(&data, winsvc::install(&data)),
         #[cfg(windows)]
-        "uninstall" => winsvc::uninstall(),
+        "uninstall" => {
+            netdns::restore_on_uninstall(&data);
+            winsvc::uninstall()
+        }
         #[cfg(windows)]
         "service" => {
             std::fs::create_dir_all(data.logs_dir())?;
@@ -89,11 +94,17 @@ fn main() -> anyhow::Result<()> {
         #[cfg(target_os = "linux")]
         "install" => log_install(&data, systemd::install(&data)),
         #[cfg(target_os = "linux")]
-        "uninstall" => systemd::uninstall(),
+        "uninstall" => {
+            netdns::restore_on_uninstall(&data);
+            systemd::uninstall()
+        }
         #[cfg(target_os = "macos")]
         "install" => log_install(&data, launchd::install(&data)),
         #[cfg(target_os = "macos")]
-        "uninstall" => launchd::uninstall(),
+        "uninstall" => {
+            netdns::restore_on_uninstall(&data);
+            launchd::uninstall()
+        }
         #[cfg(target_os = "macos")]
         "service" => {
             // stdout/stderr go to the log file named in the launchd plist.
@@ -143,6 +154,11 @@ pub fn run_until(
     shutdown: impl std::future::Future<Output = ()>,
 ) -> anyhow::Result<()> {
     std::fs::create_dir_all(&data.root)?;
+    crash::install(data.logs_dir());
+    #[cfg(debug_assertions)]
+    if std::env::var_os("DPIMECH_DEBUG_PANIC").is_some() {
+        panic!("test crash (DPIMECH_DEBUG_PANIC)");
+    }
     // A crashed service may have left nfqws' queue rules behind (harmless thanks to
     // `bypass`, but stale).
     #[cfg(target_os = "linux")]
@@ -153,8 +169,17 @@ pub fn run_until(
     let runtime = tokio::runtime::Runtime::new()?;
     runtime.block_on(async {
         let (events, _) = broadcast::channel(256);
+        let dns_data = data.clone();
         let supervisor = Supervisor::new(data, events.clone())?;
         supervisor.spawn_background().await;
+        // A DNS service chosen in DPIMech also goes to connections that come up later.
+        tokio::spawn(async move {
+            loop {
+                let data = dns_data.clone();
+                let _ = tokio::task::spawn_blocking(move || netdns::keep(&data)).await;
+                tokio::time::sleep(std::time::Duration::from_secs(60)).await;
+            }
+        });
 
         let result = tokio::select! {
             r = server::serve(supervisor.clone(), events) => r,

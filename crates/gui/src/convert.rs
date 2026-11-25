@@ -12,6 +12,35 @@ use slint::Image;
 
 use crate::{AppItem, LogItem, PackageItem, ProfileDraft, ProfileItem};
 
+/// One line per connection: "Wi-Fi: 192.168.1.1 (router) — from your network".
+pub fn dns_text(connections: &[dpimech_core::model::DnsInUse]) -> String {
+    connections
+        .iter()
+        .map(|c| {
+            let servers = c
+                .servers
+                .iter()
+                .map(|s| match dpimech_core::catalog::dns_label(s) {
+                    Some(label) => format!("{s} ({})", tr(label)),
+                    None => s.clone(),
+                })
+                .collect::<Vec<_>>()
+                .join(", ");
+            let source = match c.manual {
+                Some(true) => format!(" — {}", tr("set by hand")),
+                Some(false) => format!(" — {}", tr("from your network")),
+                None => String::new(),
+            };
+            if c.connection == "system" {
+                format!("{servers}{source}")
+            } else {
+                format!("{}: {servers}{source}", c.connection)
+            }
+        })
+        .collect::<Vec<_>>()
+        .join("\n")
+}
+
 pub fn modes_for(engines: &[EngineKind], engine_index: i32) -> Vec<RoutingMode> {
     usize::try_from(engine_index)
         .ok()

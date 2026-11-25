@@ -121,6 +121,54 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 
 ## Work log
 
+### 2026-11-24 (56) — DNS shown, optionally set (released in 0.4.6)
+- Why: step 3 of the plan; owner: show the DNS in use always, setting it is an optional extra.
+- Done: `netdns.rs` (read per OS; set / keep / restore), `Request::DnsInUse` / `SetDns`, Settings → Network
+  (servers, source, dropdown + Apply), DNS line in problem reports, restore in `uninstall`. DECISIONS #58;
+  strings and notes in 5 languages.
+- Verified: fmt, clippy (Linux, Windows and macOS targets), tests (labels, resolv.conf / route / scutil parsing,
+  only listed services). Dev service on Linux: `dns_in_use` returned the container's 8.8.8.8 / 8.8.4.4; the
+  Settings page (Xvfb, Turkish) shows them as Google. With stand-in `resolvectl` / `ip` recording their calls:
+  Cloudflare set dns/domain/dnsovertls on the default-route link and saved dns.json; "6.6.6.6" was refused; a
+  link that came up later got the same within the minute check while the first was not touched again; "the
+  network's own" reverted both and removed dns.json.
+- Not verified: Windows (`netsh` on a real adapter, restore, uninstall), a real systemd-resolved.
+
+### 2026-11-24 (55) — shortcut start as a system notification (released in 0.4.6)
+- Why: owner's report: the start window of a profile shortcut (bottom right) looked off; wish: native
+  notifications. Step 2 of the plan.
+- Done: `launcher.rs` runs without a window; `notify::TaskNote` keeps one notification and updates it
+  (Windows toast progress by tag, Linux `notify-send -p` / `-r` with the `value` hint, macOS start + result);
+  `ui/launch.slint` removed; message box when no notification can be shown. DECISIONS #57; notes in 5 languages.
+- Verified: fmt, clippy (Linux, Windows and macOS targets), tests. Linux under Xvfb with dunst and
+  `dbus-monitor` on the notification interface, dev service, fake engine: a shortcut launch sent one
+  notification "Discord" (Starting… / Turning the profile on…, 30 %) and replaced it (same id) with
+  "Discord is on" (100 %); a shortcut to a deleted profile sent "DPIMech: Could not start / The profile of this
+  shortcut no longer exists." without a bar.
+- Not verified: the Windows toast (layout of the progress element, updating by tag), macOS.
+
+### 2026-11-25 (57) — 0.4.6 released as one version
+- Owner's choice: the three steps below (PRs #32, #33, #34) ship together as 0.4.6 instead of 0.4.6 / 0.4.7 / 0.4.8;
+  release notes merged into one 0.4.6 section in all five languages.
+
+### 2026-11-24 (54) — wait for the internet, crash reports, busy tray icon
+- Why: owner's report: without internet the engine was restarted again and again; wishes: say to check the
+  network and wait, blink the tray while connecting / testing, offer a report after a crash.
+- Done: every automatic restart (stall, exit, slow) first checks the internet and waits while it is down
+  (`wait_for_internet`, supervisor.rs), one "No internet connection" notification per outage (notify.rs), tray
+  blink (tray.rs), crash records for app and service with the report dialog opening on the next start
+  (crash.rs ×2, `core::crashtext`, `Hello.crash`). DECISIONS #56; notes and strings in 5 languages.
+- Verified: fmt, clippy (Linux, Windows and macOS targets), tests (crash text, tray busy state). End to end
+  on Linux with a dev service, a fake engine and `DPIMECH_DEBUG_INTERNET` pointing at a local listener:
+  - an engine exiting every 2 s while "offline": one "waiting" line and no restart for 30 s (before: gave up
+    after 5 restarts), card advice set; with the listener up again it carried on by itself;
+  - an engine printing "pool is full" while offline: no restart in 80 s; with the internet up, it was
+    restarted as before; stopping a profile while it waits stops it.
+  - `DPIMECH_DEBUG_PANIC` on the service and the app: next app start opened "DPIMech closed unexpectedly"
+    with both records (screenshot), the files were removed afterwards.
+- Not verified: the tray blink on a real panel (unit-tested only), Windows and macOS runs.
+- Next: step 2 of the plan (shortcut start as a system notification instead of the custom window).
+
 ### 2026-11-15 (53) — 18 more site packs (from dpimech-android#28)
 - Done: `strategies/domains.json` gets Wikipedia, Twitch (blocked in BY), Kick, Rumble, Odysee, BitChute,
   Dailymotion, Niconico, Rutube, VK Video, TwitCasting, GoodGame, Joystick.tv, 3Speak, COS.TV, PeerTube

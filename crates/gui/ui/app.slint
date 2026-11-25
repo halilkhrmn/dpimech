@@ -6,12 +6,11 @@ import { ProfileDraft, AppItem, ProfileEditorPage, AppPicker } from "editor.slin
 import { ReportDialog } from "report.slint";
 import { WhatsNewDialog } from "whatsnew.slint";
 import { ShortcutDialog } from "shortcut.slint";
-import { LaunchWindow } from "launch.slint";
 import { PackageItem, EnginesPage } from "engines.slint";
 import { LabPack, PackRow, LabRow, LabPage } from "lab.slint";
 import { WizardTask, Wizard } from "wizard.slint";
 
-export { ProfileItem, LogItem, ProfileDraft, AppItem, PackageItem, LabPack, PackRow, LabRow, WizardTask, LaunchWindow }
+export { ProfileItem, LogItem, ProfileDraft, AppItem, PackageItem, LabPack, PackRow, LabRow, WizardTask }
 
 export enum Page { dashboard, editor, lab, engines, logs, settings }
 
@@ -27,6 +26,14 @@ export component AppWindow inherits Window {
     in-out property <Page> page: Page.dashboard;
     in property <bool> service-connected;
     in property <string> service-info;
+    /// DNS servers in use, one line per connection (convert::dns_text).
+    in property <string> dns-in-use;
+    /// Optional DNS service: 0 = the network's own, then catalog::PUBLIC_DNS in order.
+    in property <[string]> dns-choices;
+    in-out property <int> dns-chosen;
+    in-out property <bool> dns-busy;
+    in property <string> dns-error;
+    callback set-dns(int);
     in property <string> os-name;
 
     // Dashboard & logs
@@ -47,6 +54,8 @@ export component AppWindow inherits Window {
     // App picker
     in-out property <bool> picker-open;
     in-out property <bool> report-open;
+    /// The report was opened because DPIMech crashed.
+    in property <bool> report-crash;
     in-out property <bool> whats-new-open;
     in property <string> whats-new-version;
     in property <string> whats-new-notes;
@@ -56,6 +65,7 @@ export component AppWindow inherits Window {
     in-out property <string> report-note;
     callback open-report;
     callback report-github;
+    callback report-closed;
     callback report-email-send;
     callback report-folder;
 
@@ -417,6 +427,12 @@ export component AppWindow inherits Window {
             if page == Page.settings: SettingsPage {
                 service-connected: service-connected;
                 service-info: service-info;
+                dns-in-use: dns-in-use;
+                dns-choices: dns-choices;
+                dns-chosen <=> dns-chosen;
+                dns-busy <=> dns-busy;
+                dns-error: dns-error;
+                set-dns(i) => { root.set-dns(i); }
                 os-name: os-name;
                 start-with-windows: start-with-windows;
                 set-autostart(on) => { root.set-autostart(on); }
@@ -502,11 +518,12 @@ export component AppWindow inherits Window {
         report: report-text;
         saved-path: report-saved;
         email: report-email;
+        crashed: report-crash;
         note <=> root.report-note;
         github => { root.report-github(); }
         email-report => { root.report-email-send(); }
         open-folder => { root.report-folder(); }
-        close => { report-open = false; }
+        close => { report-open = false; root.report-closed(); }
     }
 
     if whats-new-open: WhatsNewDialog {

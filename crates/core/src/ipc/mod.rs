@@ -83,6 +83,13 @@ pub enum Request {
     AddDefenderExclusion,
     /// Whether the engine folder is already excluded (then the GUI hides its hint).
     DefenderStatus,
+    /// The DNS servers each connected network uses right now.
+    DnsInUse,
+    /// Switches every connected network to a public DNS service from `catalog::PUBLIC_DNS` (by
+    /// name; anything else is refused), or back to the network's own with `None`.
+    SetDns {
+        provider: Option<String>,
+    },
     /// Runs the connection check of a running profile right now.
     CheckProfile {
         id: String,
@@ -101,6 +108,9 @@ pub enum Reply {
     Hello {
         service_version: String,
         data_dir: String,
+        /// What the service recorded when it last crashed; sent once, to the first app.
+        #[serde(default)]
+        crash: Option<String>,
     },
     Profiles {
         profiles: Vec<ProfileState>,
@@ -132,6 +142,12 @@ pub enum Reply {
     },
     ForeignTools {
         tools: Vec<ForeignTool>,
+    },
+    DnsInUse {
+        connections: Vec<crate::model::DnsInUse>,
+        /// The public DNS service DPIMech set, if any.
+        #[serde(default)]
+        chosen: Option<String>,
     },
     DefenderStatus {
         excluded: bool,

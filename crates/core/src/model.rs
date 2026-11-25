@@ -299,6 +299,23 @@ fn default_check_minutes() -> u32 {
     5
 }
 
+/// The DNS servers one network connection uses right now.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct DnsInUse {
+    /// The connection's name as the system shows it ("Wi-Fi", "Ethernet"); "system" where DNS
+    /// is set for the whole computer.
+    pub connection: String,
+    pub servers: Vec<String>,
+    /// `Some(true)` set by hand, `Some(false)` from the network (router / provider), `None`
+    /// where the system does not tell.
+    #[serde(default)]
+    pub manual: Option<bool>,
+}
+
+/// Shown on the card (and in one notification) while the computer itself is offline; the
+/// service waits for the connection instead of restarting the engine. Translated by the GUI.
+pub const OFFLINE_ADVICE: &str = "No internet connection. Check your network; DPIMech waits and carries on by itself once it is back.";
+
 /// Latest result of the connection monitor.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ConnectionHealth {

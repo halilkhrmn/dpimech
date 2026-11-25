@@ -1,5 +1,13 @@
 # Değişiklikler
 
+## 0.4.6
+- İnternet yokken motor artık tekrar tekrar yeniden başlatılmıyor. DPIMech bekliyor, ağını kontrol etmeni söylüyor (kartta ve tek bir bildirimde) ve bağlantı gelince kendiliğinden devam ediyor.
+- Bir profil bağlanırken ya da bir test çalışırken tepsi simgesi turuncu yanıp sönüyor.
+- DPIMech ya da arka plan servisi çökerse bir sonraki açılışta bunu söylüyor ve kaydedilenleri göndermeyi öneriyor.
+- Profil kısayolu artık kendi küçük penceresini açmıyor: ilerlemeyi (profili açma, uygulamayı başlatma) ve sonucu tek bir sistem bildirimi gösteriyor.
+- Ayarlar → Ağ, bilgisayarının şu anda kullandığı DNS sunucularını ve bunların ağından mı geldiğini yoksa elle mi ayarlandığını gösteriyor; sorun raporlarında da yer alıyor.
+- İsteğe bağlı: DPIMech DNS'ini bilinen bir genel servise (Cloudflare, Google, Quad9, AdGuard, OpenDNS, Yandex, …) geçirebiliyor. Önceki ayarlarını kaydediyor; "Ağının kendi DNS'i" seçildiğinde ya da DPIMech kaldırıldığında onları geri koyuyor. Windows ve Linux'ta (systemd-resolved ile, mümkünse şifreli).
+
 ## 0.4.5
 - Windows: "Yeniden başlat ve güncelle" yeniden çalışıyor. 0.4.3 ve 0.4.4'te, uygulamaları yönlendiren bir profil bir kez durdurulduktan sonra "The handle is invalid" hatası veriyordu. Bu hatayı görürseniz bilgisayarı yeniden başlatıp hiçbir profili durdurmadan güncelleyin ya da sürüm sayfasındaki kurulum dosyasını çalıştırın.
 

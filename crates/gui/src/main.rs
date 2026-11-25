@@ -9,6 +9,7 @@ mod bridge;
 #[cfg(target_os = "linux")]
 mod bundled;
 mod convert;
+mod crash;
 mod hotkey;
 mod labui;
 mod launcher;
@@ -39,6 +40,7 @@ use crate::state::{DRAFT_APPS, PROFILES};
 slint::include_modules!();
 
 fn main() -> anyhow::Result<()> {
+    crash::install();
     // A profile shortcut: a small progress window, no tray, no single-instance lock.
     let args: Vec<String> = std::env::args().collect();
     #[cfg(target_os = "linux")]
@@ -66,6 +68,10 @@ fn main() -> anyhow::Result<()> {
     notify::register_identity();
     // An update may bring a new logo that shortcut icons and Explorer's cache still lack.
     std::thread::spawn(shortcut::refresh_icons);
+    #[cfg(debug_assertions)]
+    if std::env::var_os("DPIMECH_DEBUG_PANIC").is_some() {
+        panic!("test crash (DPIMECH_DEBUG_PANIC)");
+    }
     #[cfg(debug_assertions)]
     if std::env::var_os("DPIMECH_DEBUG_TOAST").is_some() {
         notify::show_test();
@@ -130,6 +136,32 @@ fn main() -> anyhow::Result<()> {
         }
     });
     ui.set_engine_names(string_model(engines.iter().map(|e| e.display_name())));
+    let own_dns = tr("Your network's own (no change)");
+    ui.set_dns_choices(string_model(
+        std::iter::once(own_dns.as_str()).chain(
+            dpimech_core::catalog::PUBLIC_DNS
+                .iter()
+                .map(|(name, _)| *name),
+        ),
+    ));
+    ui.on_set_dns({
+        let tx = cmd_tx.clone();
+        let weak = ui.as_weak();
+        move |index| {
+            // Offline commands are dropped: the button must not wait for an answer that never comes.
+            let ui = weak.unwrap();
+            if !ui.get_service_connected() {
+                ui.set_dns_busy(false);
+                ui.set_dns_error(tr("The background service is not running.").into());
+                return;
+            }
+            let provider = usize::try_from(index - 1)
+                .ok()
+                .and_then(|i| dpimech_core::catalog::PUBLIC_DNS.get(i))
+                .map(|(name, _)| (*name).to_owned());
+            let _ = tx.send(Command::SetDns(provider));
+        }
+    });
     ui.set_logs(ModelRc::new(VecModel::<LogItem>::default()));
     ui.set_draft_apps(DRAFT_APPS.with(|m| ModelRc::from(m.clone())));
     set_domain_packs(&ui);
@@ -456,6 +488,7 @@ fn main() -> anyhow::Result<()> {
         move || {
             let ui = weak.unwrap();
             let r = report::Report::collect(&ui);
+            ui.set_report_crash(r.crash);
             let saved = r.save("");
             ui.set_report_text(r.text("").into());
             ui.set_report_saved(
@@ -498,6 +531,7 @@ fn main() -> anyhow::Result<()> {
         move || send(false)
     });
     ui.on_report_email_send(move || send_report(true));
+    ui.on_report_closed(report::clear_crash);
     ui.on_report_folder({
         let state = report_state.clone();
         move || {
@@ -862,6 +896,10 @@ fn main() -> anyhow::Result<()> {
     } else {
         show_without_tray(ui.as_weak(), 0);
     }
+    // The previous run ended in a crash: offer to report it, with what was recorded.
+    if let Some(text) = crash::take_last() {
+        offer_crash_report(&ui, text);
+    }
     slint::run_event_loop_until_quit()?;
     Ok(())
 }
@@ -984,6 +1022,13 @@ fn string_model<'a>(items: impl Iterator<Item = &'a str>) -> ModelRc<SharedStrin
     ModelRc::new(VecModel::from(
         items.map(SharedString::from).collect::<Vec<_>>(),
     ))
+}
+
+/// Opens "Report a problem" for a crash of the app or the service, with its record in the report.
+pub fn offer_crash_report(ui: &AppWindow, text: String) {
+    report::add_crash(text);
+    ui.invoke_open_report();
+    bring_up(ui);
 }
 
 /// Opens a link in the user's browser.

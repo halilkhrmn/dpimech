@@ -843,6 +843,36 @@ impl Supervisor {
                 }
             };
 
+            // A dead connection makes a healthy engine look stuck (its connections pile up until
+            // "pool is full") and can end it; restarting then only repeats the same failure.
+            // Wait for the internet instead and restart once it is back.
+            if !matches!(reason, Restart::Scheduled) {
+                let mut waited = false;
+                let waiting = self
+                    .wait_for_internet(
+                        id,
+                        name,
+                        since_unix,
+                        restarts,
+                        &mut health,
+                        &mut stop_rx,
+                        &mut waited,
+                    )
+                    .await;
+                if let Err(status) = waiting {
+                    let _ = child.kill().await;
+                    break 'run status;
+                }
+                if waited {
+                    // Failures while offline say nothing about the engine.
+                    crashes.clear();
+                    offline = false;
+                    let _ = child.kill().await;
+                    restarts += 1;
+                    continue 'run;
+                }
+            }
+
             match reason {
                 Restart::Exited(exit) => {
                     let what = match exit {
@@ -917,6 +947,62 @@ impl Supervisor {
         if per_app && let Err(e) = self.sync_routes().await {
             self.logs.error("ProxiFyre", format!("{e:#}"));
         }
+    }
+
+    /// Returns at once while the computer reaches the internet. Otherwise marks the profile as
+    /// waiting for the connection (the card and one notification say to check the network),
+    /// polls until it is back and sets `waited`. `Err` carries the final status when the user
+    /// stopped the profile meanwhile.
+    #[allow(clippy::too_many_arguments)]
+    async fn wait_for_internet(
+        &self,
+        id: &str,
+        name: &str,
+        since_unix: u64,
+        restarts: u32,
+        health: &mut Option<ConnectionHealth>,
+        stop_rx: &mut oneshot::Receiver<Option<String>>,
+        waited: &mut bool,
+    ) -> Result<(), ProfileStatus> {
+        if crate::health::internet_reachable().await {
+            return Ok(());
+        }
+        *waited = true;
+        self.logs.warn(
+            name,
+            "no internet connection; waiting for it before restarting the engine",
+        );
+        let offline = offline_health(health.as_ref());
+        *health = Some(offline);
+        {
+            let mut state = self.state.lock().await;
+            self.set_status(
+                &mut state,
+                id,
+                ProfileStatus::Running {
+                    since_unix,
+                    restarts,
+                    health: health.clone(),
+                },
+            );
+        }
+        loop {
+            tokio::select! {
+                _ = tokio::time::sleep(OFFLINE_POLL) => {
+                    if crate::health::internet_reachable().await {
+                        break;
+                    }
+                }
+                stop = &mut *stop_rx => return Err(stopped_status(stop)),
+            }
+        }
+        self.logs.info(
+            name,
+            "the internet connection is back; restarting the engine",
+        );
+        // The next check of the restarted engine fills in a real result.
+        *health = None;
+        Ok(())
     }
 
     /// Forwards engine output to the log, collapsing floods of identical lines, and reports
@@ -1044,6 +1130,22 @@ enum Restart {
 
 /// Ignore stall markers right after a (re)start; the old flood may still be in the pipe.
 const STALL_GRACE: Duration = Duration::from_secs(30);
+/// How often a profile waiting for the internet looks again.
+const OFFLINE_POLL: Duration = Duration::from_secs(10);
+
+/// What the card shows while the profile waits for the internet: the last result, marked as
+/// offline.
+fn offline_health(last: Option<&ConnectionHealth>) -> ConnectionHealth {
+    ConnectionHealth {
+        latency_ms: 0,
+        usual_ms: last.map_or(0, |h| h.usual_ms),
+        ok: 0,
+        total: last.map_or(0, |h| h.total),
+        checked_unix: now_ms() / 1000,
+        slow: true,
+        advice: Some(crate::health::OFFLINE_ADVICE.into()),
+    }
+}
 const CRASH_WINDOW: Duration = Duration::from_secs(5 * 60);
 /// Engine output lines per start that always reach the log (see `pipe_output`).
 const STARTUP_LINES: usize = 20;

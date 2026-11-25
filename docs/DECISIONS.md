@@ -429,3 +429,50 @@ own release), a launchd service and an unsigned universal `.dmg`. The wizard hid
   (was: not up after 3 s, which a desktop still starting after sign-in can exceed: the window then opened
   in the broken way above at every sign-in). Wayland is told from X11 by the raw window handle
   (Slint feature `raw-window-handle-06`).
+
+## 56. Offline waits instead of restarts; crash records; a busy tray icon (2026-11-24)
+- **Offline:** 0.4.3 only kept the connection monitor from restarting an engine while the computer is offline.
+  The other restart reasons still fired: without a connection the apps' retries fill ByeDPI's pool ("pool is
+  full", the stall marker) and an engine can exit. Now every automatic restart except the scheduled one first
+  checks the internet (the same three resolvers by address); while it is down the profile stays "running",
+  its card and one notification for the whole outage say to check the network, the check repeats every 10 s,
+  and the engine is restarted once the connection is back. Failures while offline do not count towards
+  "gave up after 5 restarts". Debug builds can point the check elsewhere (`DPIMECH_DEBUG_INTERNET`).
+- **Crashes:** a panic hook in the app and the service writes the panic, the thread and the backtrace (the
+  panic machinery's frames dropped, `core::crashtext`) to `crash.txt` (app: config folder; service:
+  `<data>/logs`). The app's own record is offered at the next start, the service's in the first app `Hello`;
+  "Report a problem" opens with the records on top and its title says DPIMech closed unexpectedly. Only panics
+  count: a "still running" marker would turn every shutdown or sign-out into a false crash. Not caught: native
+  crashes (access violations) that never reach Rust's panic handling.
+- **Tray:** the dot blinks amber while a profile starts or waits for its first connection check (at most 30 s
+  after its start, so a profile without checks does not blink for ever) and while the Strategy Lab or the
+  wizard tests; after 2 minutes it stays amber instead of blinking.
+
+## 57. Profile shortcuts report through one system notification (2026-11-24)
+- **Problem:** the shortcut launcher drew its own borderless window in the bottom-right corner. Its position was
+  computed right after `show()`, before the layout settled, so it could sit off; it never looked like the
+  system's own notifications.
+- **Decision:** no window. One notification titled with the profile, updated in place: "Turning the profile
+  on…", "Opening <app>…", then "<profile> is on" or "Could not start" with the reason (no progress bar on an
+  error). Windows: a toast with a progress element, updated through its tag (`tauri-winrt-notification`), with
+  the shortcut's picture as its icon. Linux: `notify-send --print-id`, then `--replace-id` with the `value`
+  hint; an older notify-send without them shows the result only. macOS: the first step and the result.
+  When no notification can be shown at all, an error still appears as a native message box (`rfd`).
+
+## 58. DNS: always shown, optionally set to a listed public service (2026-11-24)
+- **Shown:** the service reads the DNS servers per connected network (Windows: `GetAdaptersAddresses`, hand-set or
+  not from the interface's `NameServer` registry value; Linux: systemd-resolved's upstream list or
+  `/etc/resolv.conf`; macOS: `scutil --dns`). Settings → Network and problem reports name them (a listed public
+  service, "router" for private addresses, "this computer" for a local resolver).
+- **Set (optional, owner's wish: "zorunlu olmasın"):** a dropdown with the network's own first, then
+  `catalog::PUBLIC_DNS` (Cloudflare, Google, Quad9, AdGuard, OpenDNS, Yandex, Comodo, CleanBrowsing).
+  - Only a service from that list can be requested, by name: any local user can talk to the service, which
+    changes DNS with its rights, so an address in the request could point every user at a malicious resolver.
+  - Before the first change the previous hand-set servers of each connection are saved (`<data>/dns.json`);
+    "the network's own" puts them back (DHCP where none were set) and `dpimech-service uninstall` does too.
+  - Windows: `netsh interface ipv4|ipv6 set/add dnsservers` by interface index (not localised), adapters matched
+    by GUID when restoring. Linux: `resolvectl dns/domain ~./dnsovertls opportunistic` per default-route link, so
+    encrypted where the server offers it; runtime only, so a reboot also restores. macOS: not offered yet.
+  - Once a minute connections that came up since get the chosen service; ones already set are left alone (no
+    fighting with a router that keeps announcing its own IPv6 server).
+- **Not done:** DNS over HTTPS on Windows (needs per-interface DoH settings), macOS.
