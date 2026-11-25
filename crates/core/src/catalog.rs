@@ -249,6 +249,80 @@ pub const PUBLIC_DNS: &[(&str, &[&str])] = &[
     ),
 ];
 
+/// Networks the big public DNS services answer from (their published ranges). The address a
+/// resolver uses towards other servers is in these, not its well-known 1.1.1.1 / 8.8.8.8.
+const DNS_OPERATORS: &[(&str, &[&str])] = &[
+    (
+        "Cloudflare",
+        &[
+            "173.245.48.0/20",
+            "103.21.244.0/22",
+            "103.22.200.0/22",
+            "103.31.4.0/22",
+            "141.101.64.0/18",
+            "108.162.192.0/18",
+            "190.93.240.0/20",
+            "188.114.96.0/20",
+            "197.234.240.0/22",
+            "198.41.128.0/17",
+            "162.158.0.0/15",
+            "104.16.0.0/13",
+            "104.24.0.0/14",
+            "172.64.0.0/13",
+            "131.0.72.0/22",
+            "1.1.1.0/24",
+            "1.0.0.0/24",
+        ],
+    ),
+    (
+        "Google",
+        &[
+            "172.217.0.0/16",
+            "172.253.0.0/16",
+            "173.194.0.0/16",
+            "74.125.0.0/16",
+            "108.177.0.0/17",
+            "8.8.8.0/24",
+            "8.8.4.0/24",
+            "142.250.0.0/15",
+        ],
+    ),
+    ("OpenDNS", &["146.112.0.0/16", "208.67.216.0/21"]),
+    (
+        "Yandex",
+        &[
+            "77.88.0.0/18",
+            "87.250.224.0/19",
+            "93.158.128.0/18",
+            "213.180.192.0/19",
+            "5.255.192.0/18",
+        ],
+    ),
+];
+
+/// The DNS service behind an address a resolver uses towards other servers (IPv4), if it is one
+/// of the big public ones.
+pub fn dns_operator(address: &str) -> Option<&'static str> {
+    let ip: std::net::Ipv4Addr = address.parse().ok()?;
+    let ip = u32::from(ip);
+    DNS_OPERATORS.iter().find_map(|(name, nets)| {
+        nets.iter()
+            .any(|net| {
+                let Some((base, bits)) = net.split_once('/') else {
+                    return false;
+                };
+                let (Ok(base), Ok(bits)) =
+                    (base.parse::<std::net::Ipv4Addr>(), bits.parse::<u32>())
+                else {
+                    return false;
+                };
+                let mask = u32::MAX.checked_shl(32 - bits).unwrap_or(0);
+                ip & mask == u32::from(base) & mask
+            })
+            .then_some(*name)
+    })
+}
+
 /// What a DNS server is, for people: a known public service, the router (a private address),
 /// or this computer's own resolver. `None` for any other public address (often the provider).
 pub fn dns_label(server: &str) -> Option<&'static str> {
@@ -677,5 +751,17 @@ mod dns_tests {
         // A provider's own resolver: nothing to say about it.
         assert_eq!(dns_label("195.175.39.39"), None);
         assert_eq!(dns_label("not an address"), None);
+    }
+
+    #[test]
+    fn resolver_addresses_name_their_service() {
+        use super::dns_operator;
+        assert_eq!(dns_operator("162.158.88.7"), Some("Cloudflare"));
+        assert_eq!(dns_operator("172.253.221.17"), Some("Google"));
+        assert_eq!(dns_operator("146.112.1.10"), Some("OpenDNS"));
+        assert_eq!(dns_operator("77.88.21.3"), Some("Yandex"));
+        // A provider's own resolver.
+        assert_eq!(dns_operator("195.175.39.39"), None);
+        assert_eq!(dns_operator("2606:4700::1"), None);
     }
 }

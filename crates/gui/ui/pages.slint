@@ -139,6 +139,7 @@ export component SettingsPage inherits VerticalLayout {
     in property <bool> service-connected;
     in property <string> service-info;
     in property <string> dns-in-use;
+    in property <string> network-label;
     in property <[string]> dns-choices;
     in-out property <int> dns-chosen;
     in-out property <bool> dns-busy;
@@ -335,6 +336,17 @@ export component SettingsPage inherits VerticalLayout {
                 title: @tr("Network");
                 VerticalLayout {
                     spacing: 6px;
+                    if root.network-label != "": VerticalLayout {
+                        spacing: 2px;
+                        padding-bottom: 8px;
+                        Text { text: @tr("This network: {}", root.network-label); font-weight: 600; }
+                        Text {
+                            text: @tr("DPIMech remembers which strategy works on each network and switches to it when you come back. On a new network it checks the profiles' sites and, when they do not open, tests strategies by itself (ByeDPI, SpoofDPI, tpws).");
+                            font-size: 12px;
+                            color: Theme.muted;
+                            wrap: word-wrap;
+                        }
+                    }
                     Text { text: @tr("DNS servers in use"); font-weight: 600; }
                     Text {
                         text: root.dns-in-use != "" ? root.dns-in-use : @tr("Not known yet (the background service tells).");

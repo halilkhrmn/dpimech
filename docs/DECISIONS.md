@@ -476,3 +476,30 @@ own release), a launchd service and an unsigned universal `.dmg`. The wizard hid
   - Once a minute connections that came up since get the chosen service; ones already set are left alone (no
     fighting with a router that keeps announcing its own IPv6 server).
 - **Not done:** DNS over HTTPS on Windows (needs per-interface DoH settings), macOS.
+
+## 59. Strategies remembered per network; a new network is checked and tested (2026-11-25)
+- **Recognising a network:** the router, by its MAC from the neighbour cache (Windows `GetIpNetEntry2`, Linux
+  `/proc/net/arp`, macOS `arp`), else its address on that connection. Local only: the ISP lookup (ipwho.is) stays
+  a button, unlike Android's automatic lookup, so nothing leaves the computer for this.
+- **Memory:** `Profile.per_network` (network key → engine arguments); `args_for(network)` picks the entry, else
+  `args`. Saving a profile keeps what was learned (the editor does not carry it) and records a changed strategy
+  for the current network. Every entry goes through the argument policy on save, like `args`.
+- **On a change** (looked at every 15 s; offline in between is not a change): running profiles whose strategy
+  differs on the new network restart with it. On a network without an entry, 8 s later the profile's sites are
+  requested through the engine: half or more open → remembered; fewer, with the internet up → proxy engines run
+  the Lab with their standard strategies on those sites (beside the running profile, the tray blinks) and use and
+  remember the best one if it opened more than half; packet engines only log advice to run the Lab, because testing
+  them takes over all traffic.
+
+## 60. Service down: a start button and the service pages wait (2026-11-25)
+- The warning band says the service is not running and offers "Start the service": the same elevated step as
+  "Install the service" (`dpimech-service install` re-registers and starts it on Windows; `systemctl enable --now`
+  for packages), so no new privileged path. Failures show in the band.
+- Profiles, the editor, the Strategy Lab and Engines show "The background service is not running" instead of
+  their content (an empty profile list looked like lost profiles); Logs and Settings stay open to find out why.
+- Also: the DNS a router forwards to is named from `whoami.akamai.net` (the address that asked Akamai) and the
+  big services' published ranges (`catalog::dns_operator`), at most every 5 minutes; software known to get in the
+  way (AdGuard, Killer / SmartByte network services, ZoneAlarm, VPN clients, Cloudflare WARP; exact process names)
+  gets its own amber warning, apart from the DPI-tool conflict.
+- **Not done:** a "game filter" (all UDP ports): without an IP list of the game's servers it would tamper with
+  every UDP flow; it needs a concrete target and testing on a real provider.

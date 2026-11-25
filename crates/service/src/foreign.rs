@@ -26,12 +26,32 @@ const KNOWN: &[(&str, &str)] = &[
     ("dpimngr-service", "dpimngr (old version of DPIMech)"),
 ];
 
+/// Software that is not a DPI tool but is known to break bypassing: it filters or reroutes the
+/// same traffic (the list zapret users check first when nothing helps).
+const INTERFERING: &[(&str, &str)] = &[
+    ("adguardsvc", "AdGuard"),
+    ("adguard", "AdGuard"),
+    ("killernetworkservice", "Killer Network Service"),
+    ("smartbytenetworkservice", "SmartByte"),
+    ("smartbyteanalyticsservice", "SmartByte"),
+    ("vsmon", "ZoneAlarm / Check Point"),
+    ("openvpn", "OpenVPN"),
+    ("wireguard", "WireGuard"),
+    ("warp-svc", "Cloudflare WARP"),
+    ("protonvpnservice", "Proton VPN"),
+    ("windscribeservice", "Windscribe"),
+    ("nordvpn-service", "NordVPN"),
+    ("nordvpnd", "NordVPN"),
+    ("expressvpnd", "ExpressVPN"),
+    ("expressvpn.service", "ExpressVPN"),
+];
+
 /// Every known tool that is running from outside `<data>/engines`.
 pub fn scan(engines_dir: &Path) -> Vec<ForeignTool> {
     let ours = normalise(&engines_dir.to_string_lossy());
     let mut found: Vec<ForeignTool> = Vec::new();
     for (name, path) in processes() {
-        let Some(display) = classify(&name) else {
+        let Some((display, interferes)) = classify(&name) else {
             continue;
         };
         if path
@@ -44,22 +64,29 @@ pub fn scan(engines_dir: &Path) -> Vec<ForeignTool> {
             found.push(ForeignTool {
                 name: display.to_owned(),
                 path: path.unwrap_or(name),
+                interferes,
             });
         }
     }
     found
 }
 
-/// Name of the tool an executable belongs to. Unix builds may carry the CPU in the name
-/// (`ciadpi-x86_64`).
-fn classify(file_name: &str) -> Option<&'static str> {
+/// Name of the tool an executable belongs to, and whether it only interferes (not a DPI tool).
+/// Unix builds of DPI tools may carry the CPU in the name (`ciadpi-x86_64`).
+fn classify(file_name: &str) -> Option<(&'static str, bool)> {
     let lower = file_name.to_ascii_lowercase();
     let stem = lower.strip_suffix(".exe").unwrap_or(&lower);
-    KNOWN.iter().find_map(|(known, display)| {
+    let dpi = KNOWN.iter().find_map(|(known, display)| {
         let arch_suffixed = stem
             .strip_prefix(known)
             .is_some_and(|rest| rest.starts_with('-') && *known != "dpimngr-service");
-        (stem == *known || arch_suffixed).then_some(*display)
+        (stem == *known || arch_suffixed).then_some((*display, false))
+    });
+    dpi.or_else(|| {
+        INTERFERING
+            .iter()
+            .find(|(known, _)| stem == *known)
+            .map(|(_, display)| (*display, true))
     })
 }
 
@@ -180,17 +207,31 @@ mod tests {
 
     #[test]
     fn recognises_known_tools_but_not_lookalikes() {
-        assert_eq!(classify("GoodbyeDPI.exe"), Some("GoodbyeDPI"));
-        assert_eq!(classify("winws.exe"), Some("zapret (winws)"));
-        assert_eq!(classify("ciadpi-x86_64"), Some("ByeDPI"));
-        assert_eq!(classify("nfqws"), Some("zapret (nfqws)"));
+        let dpi = |name: &'static str| Some((name, false));
+        assert_eq!(classify("GoodbyeDPI.exe"), dpi("GoodbyeDPI"));
+        assert_eq!(classify("winws.exe"), dpi("zapret (winws)"));
+        assert_eq!(classify("ciadpi-x86_64"), dpi("ByeDPI"));
+        assert_eq!(classify("nfqws"), dpi("zapret (nfqws)"));
         assert_eq!(
             classify("dpimngr-service.exe"),
-            Some("dpimngr (old version of DPIMech)")
+            dpi("dpimngr (old version of DPIMech)")
         );
         assert_eq!(classify("dpimech-service.exe"), None);
         assert_eq!(classify("gtk-update-icon-cache"), None);
         assert_eq!(classify("winwsx.exe"), None);
         assert_eq!(classify("chrome.exe"), None);
+    }
+
+    #[test]
+    fn software_that_gets_in_the_way_is_told_apart() {
+        assert_eq!(classify("AdguardSvc.exe"), Some(("AdGuard", true)));
+        assert_eq!(classify("warp-svc"), Some(("Cloudflare WARP", true)));
+        assert_eq!(
+            classify("KillerNetworkService.exe"),
+            Some(("Killer Network Service", true))
+        );
+        // Exact names only: no guessing from parts of a name.
+        assert_eq!(classify("openvpn-gui.exe"), None);
+        assert_eq!(classify("wireguard.exe"), Some(("WireGuard", true)));
     }
 }

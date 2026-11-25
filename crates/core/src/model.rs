@@ -243,9 +243,20 @@ pub struct Profile {
     /// System-wide profiles fall back to their domain list.
     #[serde(default)]
     pub check_sites: Vec<String>,
+    /// The strategy that worked on each network DPIMech has seen (network key → engine
+    /// arguments); `args` is used on networks without an entry.
+    #[serde(default, skip_serializing_if = "std::collections::BTreeMap::is_empty")]
+    pub per_network: std::collections::BTreeMap<String, String>,
 }
 
 impl Profile {
+    /// The engine arguments for a network: what worked there before, else `args`.
+    pub fn args_for(&self, network: Option<&str>) -> &str {
+        network
+            .and_then(|key| self.per_network.get(key))
+            .map_or(self.args.as_str(), String::as_str)
+    }
+
     /// Sites the connection monitor should request.
     pub fn monitored_sites(&self) -> Vec<String> {
         if !self.check_sites.is_empty() {

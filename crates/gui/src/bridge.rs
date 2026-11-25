@@ -499,6 +499,10 @@ fn set_connected(ui: &Weak<AppWindow>, connected: bool, info: String) {
     let _ = ui.upgrade_in_event_loop(move |ui| {
         ui.set_service_connected(connected);
         ui.set_service_info(info.into());
+        if connected {
+            ui.set_service_starting(false);
+            ui.set_service_error(SharedString::new());
+        }
         if !connected {
             crate::apply_profiles(&ui, Vec::new());
             apply_packages(&ui, &[]);
@@ -549,12 +553,18 @@ fn replace_logs(ui: &Weak<AppWindow>, lines: Vec<LogLine>) {
 /// The DNS servers in use, for Settings and problem reports. Asked with the other periodic
 /// checks: a network change (Wi-Fi to cable, a VPN) changes them.
 async fn refresh_dns(ui: &Weak<AppWindow>, client: &Client) {
-    let (text, chosen) = match client.request(Request::DnsInUse).await {
+    let (text, chosen, network) = match client.request(Request::DnsInUse).await {
         Ok(Reply::DnsInUse {
             connections,
             chosen,
-        }) => (convert::dns_text(&connections), chosen),
-        _ => (String::new(), None),
+            upstream,
+            network,
+        }) => (
+            convert::dns_text(&connections, upstream.as_deref()),
+            chosen,
+            network.unwrap_or_default(),
+        ),
+        _ => (String::new(), None, String::new()),
     };
     // 0 is "the network's own"; the services follow in catalog order.
     let index = chosen
@@ -568,6 +578,9 @@ async fn refresh_dns(ui: &Weak<AppWindow>, client: &Client) {
         if ui.get_dns_in_use() != text.as_str() {
             ui.set_dns_in_use(text.into());
         }
+        if ui.get_network_label() != network.as_str() {
+            ui.set_network_label(network.into());
+        }
         // The dropdown follows the service, except while the user is about to apply a choice.
         if !ui.get_dns_busy() {
             ui.set_dns_chosen(index);
@@ -576,15 +589,25 @@ async fn refresh_dns(ui: &Weak<AppWindow>, client: &Client) {
 }
 
 async fn refresh_foreign_tools(ui: &Weak<AppWindow>, client: &Client) {
-    let text = match client.request(Request::ForeignTools).await {
-        Ok(Reply::ForeignTools { tools }) => tools
-            .iter()
-            .map(|t| t.name.as_str())
-            .collect::<Vec<_>>()
-            .join(", "),
-        _ => String::new(),
+    let tools = match client.request(Request::ForeignTools).await {
+        Ok(Reply::ForeignTools { tools }) => tools,
+        _ => Vec::new(),
     };
-    let _ = ui.upgrade_in_event_loop(move |ui| ui.set_foreign_tools(text.into()));
+    // DPI tools clash with DPIMech's engines; the others only may get in the way.
+    let names = |interferes: bool| {
+        let mut names: Vec<&str> = Vec::new();
+        for t in tools.iter().filter(|t| t.interferes == interferes) {
+            if !names.contains(&t.name.as_str()) {
+                names.push(&t.name);
+            }
+        }
+        names.join(", ")
+    };
+    let (dpi, others) = (names(false), names(true));
+    let _ = ui.upgrade_in_event_loop(move |ui| {
+        ui.set_foreign_tools(dpi.into());
+        ui.set_interfering_tools(others.into());
+    });
 }
 
 fn append_log(ui: &Weak<AppWindow>, line: LogLine) {

@@ -237,6 +237,15 @@ pub async fn monitor_sites(
     }
 }
 
+/// How many of `sites` open right now (through the engine on `proxy_port`, else directly).
+pub async fn sites_open(sites: &[String], proxy_port: Option<u16>) -> (u32, u32) {
+    let Ok(client) = client(proxy_port) else {
+        return (0, sites.len() as u32);
+    };
+    let (_, failed) = measure(&client, sites).await;
+    ((sites.len() - failed.len()) as u32, sites.len() as u32)
+}
+
 fn client(proxy_port: Option<u16>) -> reqwest::Result<reqwest::Client> {
     let mut builder = reqwest::Client::builder()
         .timeout(SITE_TIMEOUT)

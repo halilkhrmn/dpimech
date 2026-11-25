@@ -148,6 +148,12 @@ pub enum Reply {
         /// The public DNS service DPIMech set, if any.
         #[serde(default)]
         chosen: Option<String>,
+        /// The address the servers in use ask others from (`netdns::upstream`).
+        #[serde(default)]
+        upstream: Option<String>,
+        /// The network the computer is on, as people read it ("Wi-Fi via 192.168.1.1").
+        #[serde(default)]
+        network: Option<String>,
     },
     DefenderStatus {
         excluded: bool,
@@ -209,6 +215,10 @@ pub struct ForeignTool {
     pub name: String,
     /// Executable path, or the process name when the path is not readable.
     pub path: String,
+    /// Not a DPI tool but software known to get in the way (traffic filters, VPN clients):
+    /// worth knowing when sites do not open, not a conflict by itself.
+    #[serde(default)]
+    pub interferes: bool,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

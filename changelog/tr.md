@@ -1,5 +1,12 @@
 # Değişiklikler
 
+## 0.4.7
+- DPIMech her ağda hangi stratejinin çalıştığını hatırlıyor (ağ modeminden tanınıyor, hiçbir yere bir şey gönderilmiyor) ve o ağa dönünce ona geçiyor. Yeni bir ağda profillerin sitelerini kontrol ediyor; açılmıyorlarsa stratejileri kendisi deneyip en iyisini kullanıyor (ByeDPI, SpoofDPI, tpws).
+- Arka plan servisi çalışmıyorsa pencere bunu "Servisi başlat" düğmesiyle söylüyor; profiller, motorlar ve Strateji Laboratuvarı servis yeniden çalışana kadar bekliyor.
+- Ayarlar → Ağ, modeminin soruları ilettiği DNS servisini de gösteriyor (örneğin modemde ayarlı Cloudflare).
+- Kısayoldan profil başlatınca ilerleme çubuğu olmayan sade bir "… başlatılıyor" bildirimi çıkıyor; yalnızca hata olursa ikinci bir bildirim geliyor.
+- DPIMech, engel aşmaya karışabilen yazılımlar için de uyarıyor (AdGuard, Killer ve SmartByte ağ servisleri, ZoneAlarm, VPN istemcileri, Cloudflare WARP).
+
 ## 0.4.6
 - İnternet yokken motor artık tekrar tekrar yeniden başlatılmıyor. DPIMech bekliyor, ağını kontrol etmeni söylüyor (kartta ve tek bir bildirimde) ve bağlantı gelince kendiliğinden devam ediyor.
 - Bir profil bağlanırken ya da bir test çalışırken tepsi simgesi turuncu yanıp sönüyor.

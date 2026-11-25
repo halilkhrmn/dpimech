@@ -147,6 +147,23 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
   shortcut no longer exists." without a bar.
 - Not verified: the Windows toast (layout of the progress element, updating by tag), macOS.
 
+### 2026-11-25 (58) — 0.4.7: network memory, service start button, upstream DNS, interfering software
+- Why: owner's feedback on 0.4.6 (shortcut notification stuck at 80 %; router DNS hides the Cloudflare set in the
+  router; service-down window looks broken) and steps 4–5 of the plan.
+- Done: plain start notification (no bar); upstream DNS line (`netdns::upstream`, `catalog::dns_operator`); service
+  band with "Start the service" and blocked service pages; per-network strategies and new-network check / test
+  (`netdns::network`, supervisor `watch_network` / `learn_network`, `Lab::find_best`); interfering software warning
+  (`foreign.rs` INTERFERING). DECISIONS #59, #60; notes and strings in 5 languages.
+- Verified: fmt, clippy (Linux, Windows and macOS targets), tests (DNS text and operators, route / arp parsing,
+  network keys, interfering classification). Linux end to end with a dev service, a fake engine logging its
+  arguments and a stand-in `ip` whose default route I switched: a profile with `-s1` remembered for network B
+  restarted with `-s1` on B and with its default on A again; on an unknown network whose site did not open the
+  service started the Lab by itself (12 strategies) and reported that none worked (fake engine); saving from the
+  editor kept the memory. Bus capture with dunst: one "Starting Discord" notification, no bar; an error adds
+  "Could not start". Screenshot of the service-down window (band + blocked page).
+- Not verified: the "works here, remembered" branch with a real engine; Windows (router MAC lookup, start button
+  with UAC, upstream line); the game filter is not done (DECISIONS #60).
+
 ### 2026-11-25 (57) — 0.4.6 released as one version
 - Owner's choice: the three steps below (PRs #32, #33, #34) ship together as 0.4.6 instead of 0.4.6 / 0.4.7 / 0.4.8;
   release notes merged into one 0.4.6 section in all five languages.

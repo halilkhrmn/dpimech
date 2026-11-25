@@ -20,6 +20,58 @@ pub fn in_use() -> Vec<DnsInUse> {
     platform::in_use()
 }
 
+/// The network the computer is on, recognised by its router: the router's hardware (MAC)
+/// address where the system knows it, else its address on that connection. Found locally,
+/// nothing is sent anywhere.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct NetworkId {
+    /// Stable key for "this network" (per-network strategy memory).
+    pub key: String,
+    /// For people: "Wi-Fi via 192.168.1.1".
+    pub label: String,
+}
+
+pub fn network() -> Option<NetworkId> {
+    platform::network()
+}
+
+/// Key from the router's MAC when known, else from its address and the connection.
+fn network_id(connection: &str, gateway: &str, mac: Option<&str>) -> NetworkId {
+    let key = match mac {
+        Some(mac) => format!("mac:{}", mac.to_ascii_lowercase()),
+        None => format!("gw:{gateway}@{connection}"),
+    };
+    NetworkId {
+        key,
+        label: format!("{connection} via {gateway}"),
+    }
+}
+
+/// The address the DNS servers in use talk to other servers from: when the computer asks its
+/// router, this shows what the router forwards to (e.g. Cloudflare set in the router). Akamai's
+/// `whoami.akamai.net` answers with the address of whoever asked it. Asked at most every 5
+/// minutes; `None` when it does not answer (offline, or a resolver that hides it).
+pub fn upstream() -> Option<String> {
+    use std::net::ToSocketAddrs;
+    use std::sync::Mutex;
+    use std::time::{Duration, Instant};
+    static LAST: Mutex<Option<(Instant, Option<String>)>> = Mutex::new(None);
+    const EVERY: Duration = Duration::from_secs(5 * 60);
+    let mut last = LAST.lock().unwrap();
+    if let Some((at, answer)) = last.as_ref()
+        && at.elapsed() < EVERY
+    {
+        return answer.clone();
+    }
+    let answer = ("whoami.akamai.net", 0)
+        .to_socket_addrs()
+        .ok()
+        .and_then(|mut addrs| addrs.find(|a| a.is_ipv4()))
+        .map(|a| a.ip().to_string());
+    *last = Some((Instant::now(), answer.clone()));
+    answer
+}
+
 /// What DPIMech changed: the chosen service and, per connection, what to put back.
 #[derive(Debug, Default, Serialize, Deserialize)]
 struct State {
@@ -181,6 +233,43 @@ mod platform {
         servers: Vec<String>,
         /// Up with a gateway: it carries traffic.
         connected: bool,
+        /// The IPv4 router, as the system gave it (for the neighbour lookup).
+        gateway: Option<SOCKADDR_IN>,
+    }
+
+    pub fn network() -> Option<super::NetworkId> {
+        let a = adapters()
+            .into_iter()
+            .find(|a| a.connected && a.gateway.is_some())?;
+        let gateway = a.gateway?;
+        let ip = Ipv4Addr::from(u32::from_be(unsafe { gateway.sin_addr.S_un.S_addr }));
+        Some(super::network_id(
+            &a.name,
+            &ip.to_string(),
+            router_mac(gateway, a.if_index).as_deref(),
+        ))
+    }
+
+    /// The router's MAC from the neighbour cache (filled as soon as anything talked to it).
+    fn router_mac(gateway: SOCKADDR_IN, if_index: u32) -> Option<String> {
+        use windows_sys::Win32::NetworkManagement::IpHelper::{GetIpNetEntry2, MIB_IPNET_ROW2};
+        // SAFETY: a zeroed row with the address and interface set is what the call expects.
+        unsafe {
+            let mut row: MIB_IPNET_ROW2 = std::mem::zeroed();
+            row.Address.Ipv4 = gateway;
+            row.InterfaceIndex = if_index;
+            if GetIpNetEntry2(&mut row) != 0 {
+                return None;
+            }
+            let len = (row.PhysicalAddressLength as usize).min(row.PhysicalAddress.len());
+            let mac = &row.PhysicalAddress[..len];
+            (len >= 6 && mac.iter().any(|b| *b != 0)).then(|| {
+                mac.iter()
+                    .map(|b| format!("{b:02x}"))
+                    .collect::<Vec<_>>()
+                    .join(":")
+            })
+        }
     }
 
     pub fn in_use() -> Vec<DnsInUse> {
@@ -351,6 +440,19 @@ mod platform {
             }
             let connected =
                 adapter.OperStatus == IfOperStatusUp && !adapter.FirstGatewayAddress.is_null();
+            let mut gateway = None;
+            let mut gw = adapter.FirstGatewayAddress;
+            // SAFETY: same list; an AF_INET sockaddr is a SOCKADDR_IN.
+            while let Some(entry) = unsafe { gw.as_ref() } {
+                let addr = entry.Address.lpSockaddr;
+                if let Some(a) = unsafe { addr.as_ref() }
+                    && a.sa_family == AF_INET
+                {
+                    gateway = Some(unsafe { *(addr as *const SOCKADDR_IN) });
+                    break;
+                }
+                gw = entry.Next;
+            }
             let mut servers = Vec::new();
             let mut dns = adapter.FirstDnsServerAddress;
             // SAFETY: same list; each sockaddr is as long as the adapter says.
@@ -376,6 +478,7 @@ mod platform {
                 ipv6_if_index: adapter.Ipv6IfIndex,
                 servers,
                 connected,
+                gateway,
             });
         }
         out
@@ -526,6 +629,40 @@ mod platform {
         Ok(())
     }
 
+    pub fn network() -> Option<super::NetworkId> {
+        let out = std::process::Command::new("ip")
+            .args(["-4", "-o", "route", "show", "default"])
+            .output()
+            .ok()?;
+        let (gateway, dev) = default_gateway(&String::from_utf8_lossy(&out.stdout))?;
+        let arp = std::fs::read_to_string("/proc/net/arp").unwrap_or_default();
+        let mac = arp_mac(&arp, &gateway, &dev);
+        Some(super::network_id(&dev, &gateway, mac.as_deref()))
+    }
+
+    /// `(gateway, dev)` of the first default route with a gateway.
+    pub(super) fn default_gateway(routes: &str) -> Option<(String, String)> {
+        routes.lines().find_map(|line| {
+            let words: Vec<&str> = line.split_whitespace().collect();
+            let after = |k: &str| {
+                words
+                    .iter()
+                    .position(|w| *w == k)
+                    .and_then(|i| words.get(i + 1))
+            };
+            Some((after("via")?.to_string(), after("dev")?.to_string()))
+        })
+    }
+
+    /// The MAC of `ip` on `dev` from `/proc/net/arp` (`00:00:00:00:00:00` = not resolved).
+    pub(super) fn arp_mac(arp: &str, ip: &str, dev: &str) -> Option<String> {
+        arp.lines().skip(1).find_map(|line| {
+            let w: Vec<&str> = line.split_whitespace().collect();
+            (w.len() >= 6 && w[0] == ip && w[5] == dev && w[3] != "00:00:00:00:00:00")
+                .then(|| w[3].to_owned())
+        })
+    }
+
     /// Links that carry a default route (IPv4 or IPv6).
     fn default_links() -> Vec<String> {
         let mut links = Vec::new();
@@ -590,6 +727,32 @@ mod platform {
         Ok(())
     }
 
+    pub fn network() -> Option<super::NetworkId> {
+        let out = std::process::Command::new("route")
+            .args(["-n", "get", "default"])
+            .output()
+            .ok()?;
+        let text = String::from_utf8_lossy(&out.stdout);
+        let value = |k: &str| {
+            text.lines()
+                .find_map(|l| l.trim().strip_prefix(k).map(|v| v.trim().to_owned()))
+        };
+        let gateway = value("gateway:")?;
+        let dev = value("interface:").unwrap_or_default();
+        let arp = std::process::Command::new("arp")
+            .args(["-n", &gateway])
+            .output()
+            .ok()?;
+        // "? (192.168.1.1) at a4:2b:b0:12:34:56 on en0 ifscope [ethernet]"
+        let mac = String::from_utf8_lossy(&arp.stdout)
+            .split_whitespace()
+            .skip_while(|w| *w != "at")
+            .nth(1)
+            .filter(|m| m.contains(':'))
+            .map(str::to_owned);
+        Some(super::network_id(&dev, &gateway, mac.as_deref()))
+    }
+
     pub fn in_use() -> Vec<DnsInUse> {
         let Ok(out) = std::process::Command::new("scutil").arg("--dns").output() else {
             return Vec::new();
@@ -643,6 +806,31 @@ mod tests {
     fn default_route_devices() {
         let text = "default via 192.168.1.1 dev wlp2s0 proto dhcp src 192.168.1.20 metric 600\ndefault dev wg0 scope link\n";
         assert_eq!(super::platform::route_devices(text), ["wlp2s0", "wg0"]);
+    }
+
+    #[cfg(all(unix, not(target_os = "macos")))]
+    #[test]
+    fn router_is_found_in_routes_and_arp() {
+        use super::platform::{arp_mac, default_gateway};
+        let routes =
+            "default dev wg0 scope link\ndefault via 192.168.1.1 dev wlan0 proto dhcp metric 600\n";
+        assert_eq!(
+            default_gateway(routes),
+            Some(("192.168.1.1".into(), "wlan0".into()))
+        );
+        let arp = "IP address       HW type     Flags       HW address            Mask     Device\n192.168.1.1      0x1         0x2         a4:2b:b0:12:34:56     *        wlan0\n10.0.0.1         0x1         0x0         00:00:00:00:00:00     *        eth0\n";
+        assert_eq!(
+            arp_mac(arp, "192.168.1.1", "wlan0").as_deref(),
+            Some("a4:2b:b0:12:34:56")
+        );
+        assert_eq!(arp_mac(arp, "10.0.0.1", "eth0"), None);
+        let id = super::network_id("wlan0", "192.168.1.1", Some("A4:2B:B0:12:34:56"));
+        assert_eq!(id.key, "mac:a4:2b:b0:12:34:56");
+        assert_eq!(id.label, "wlan0 via 192.168.1.1");
+        assert_eq!(
+            super::network_id("eth0", "10.0.0.1", None).key,
+            "gw:10.0.0.1@eth0"
+        );
     }
 
     #[test]

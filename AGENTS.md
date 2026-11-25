@@ -53,7 +53,8 @@ crates/service/   dpimech-service binary
   src/health.rs     SOCKS5 health probe used by the restart watchdog; internet check (offline: wait, no restart)
   src/crash.rs      panic hook → <data>/logs/crash.txt, handed to the first app in `Hello`
   src/dnscheck.rs   Lab: compares system DNS with 1.1.1.1 (DoH) to spot DNS blocking
-  src/netdns.rs     DNS in use per connection; optional switch to a catalog::PUBLIC_DNS service (saved, restored)
+  src/netdns.rs     DNS in use per connection; optional switch to a catalog::PUBLIC_DNS service (saved, restored);
+                    the router a DNS forwards to (`upstream`); which network this is (`network`, router MAC)
   src/sni.rs        TLS SNI parser: the detailed log names the site of a redirected connection (Linux)
   src/foreign.rs    finds other DPI tools running outside <data>/engines (ForeignTools request)
   src/migrate.rs    one-time move from the old name dpimngr (data dir) during `install`

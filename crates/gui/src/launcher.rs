@@ -29,36 +29,11 @@ pub fn from_args(args: &[String]) -> Option<(String, Option<String>)> {
     Some((id, value(shortcut::OPEN_FLAG).filter(|t| !t.is_empty())))
 }
 
-/// The notification of one launch. It appears once the profile's name is known, titled with it;
-/// an error before that (no service, profile deleted) is titled "DPIMech".
-struct Steps {
-    title: Option<String>,
-    icon: Option<PathBuf>,
-    note: Option<TaskNote>,
-}
-
-impl Steps {
-    fn note(&mut self) -> &mut TaskNote {
-        let (title, icon) = (&self.title, &self.icon);
-        self.note.get_or_insert_with(|| {
-            TaskNote::new(title.as_deref().unwrap_or("DPIMech"), icon.clone())
-        })
-    }
-
-    fn step(&mut self, status: &str, value: f32) {
-        self.note().update(&tr("Starting…"), status, value);
-    }
-}
-
 pub fn run(profile_id: String, open: Option<String>) -> anyhow::Result<()> {
     crate::i18n::apply(&prefs::load().language);
     // The launcher is its own process: it needs the app's notification identity too.
     crate::notify::register_identity();
-    let mut steps = Steps {
-        title: None,
-        icon: launch_icon(open.as_deref()),
-        note: None,
-    };
+    let note = TaskNote::new(launch_icon(open.as_deref()));
     // Without the main app there is no tray to switch the profile off again.
     if !single::is_running() {
         start_main(&[autostart::MINIMIZED_FLAG]);
@@ -67,8 +42,8 @@ pub fn run(profile_id: String, open: Option<String>) -> anyhow::Result<()> {
     let runtime = tokio::runtime::Builder::new_current_thread()
         .enable_all()
         .build()?;
-    let result = runtime.block_on(start_profile(&mut steps, &profile_id));
-    let result = result.and_then(|(name, routing)| {
+    let result = runtime.block_on(start_profile(&note, &profile_id));
+    let result = result.and_then(|(_name, routing)| {
         let target = match (&routing, &open) {
             // The app only uses the engine when DPIMech opens it with the proxy switch.
             (Routing::AppProxy { app, port }, _) => Some((app.clone(), Some(*port))),
@@ -76,30 +51,23 @@ pub fn run(profile_id: String, open: Option<String>) -> anyhow::Result<()> {
             (_, None) => None,
         };
         let Some((target, port)) = target else {
-            return Ok(name);
+            return Ok(());
         };
-        steps.step(&trf!("Opening {}…", display_name(&target)), 0.8);
         match port {
             Some(port) => appproxy::open(&target, port),
             None => open_target(&target),
         }
-        .map(|()| name)
         .map_err(|e| trf!("Could not open {}: {}", display_name(&target), e))
     });
-    match result {
-        Ok(name) => {
-            steps.note().finish(&trf!("{} is on", name), "", false);
-        }
-        Err(message) => {
-            if !steps.note().finish(&tr("Could not start"), &message, true) {
-                // No notification could be shown: an error must still be seen.
-                rfd::MessageDialog::new()
-                    .set_level(rfd::MessageLevel::Error)
-                    .set_title(tr("Could not start"))
-                    .set_description(message)
-                    .show();
-            }
-        }
+    if let Err(message) = result
+        && !note.failed(&tr("Could not start"), &message)
+    {
+        // No notification could be shown: an error must still be seen.
+        rfd::MessageDialog::new()
+            .set_level(rfd::MessageLevel::Error)
+            .set_title(tr("Could not start"))
+            .set_description(message)
+            .show();
     }
     Ok(())
 }
@@ -122,7 +90,7 @@ fn launch_icon(open: Option<&str>) -> Option<PathBuf> {
 
 /// Switches the profile on (if it is not already) and waits until it runs.
 /// Returns the profile's name and routing.
-async fn start_profile(steps: &mut Steps, id: &str) -> Result<(String, Routing), String> {
+async fn start_profile(note: &TaskNote, id: &str) -> Result<(String, Routing), String> {
     let (client, _events) = Client::connect()
         .await
         .map_err(|_| tr("The DPIMech service is not running. Open DPIMech to set it up."))?;
@@ -134,12 +102,11 @@ async fn start_profile(steps: &mut Steps, id: &str) -> Result<(String, Routing),
         .ok_or_else(|| tr("The profile of this shortcut no longer exists."))?;
     let name = state.profile.name.clone();
     let routing = state.profile.routing.clone();
-    steps.title = Some(name.clone());
+    note.started(&name);
     if matches!(state.status, ProfileStatus::Running { .. }) {
         return Ok((name, routing));
     }
 
-    steps.step(&tr("Turning the profile on…"), 0.3);
     client
         .request(Request::StartProfile { id: id.to_owned() })
         .await

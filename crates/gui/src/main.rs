@@ -661,10 +661,17 @@ fn main() -> anyhow::Result<()> {
                 let weak = ui.as_weak();
                 move |result: Result<(), String>| {
                     let _ = weak.upgrade_in_event_loop(move |ui| {
+                        let failed = result.is_err();
                         let text = match result {
                             Ok(()) => tr("The service is installed. Connecting…"),
                             Err(e) => trf!("Installing the service failed: {}", e),
                         };
+                        // The banner's button: a successful start is cleared once connected,
+                        // a failure says why.
+                        if failed && !ui.get_service_connected() {
+                            ui.set_service_starting(false);
+                            ui.set_service_error(text.clone().into());
+                        }
                         ui.set_wizard_message(text.clone().into());
                         ui.set_service_info(text.into());
                     });
@@ -672,7 +679,12 @@ fn main() -> anyhow::Result<()> {
             };
             match prefs::install_service_elevated(finished) {
                 Ok(()) => show(&ui, tr("Installing… confirm the prompt. DPIMech connects by itself when the service is ready.")),
-                Err(e) => show(&ui, trf!("Could not start the installer: {}", e)),
+                Err(e) => {
+                    let text = trf!("Could not start the installer: {}", e);
+                    ui.set_service_starting(false);
+                    ui.set_service_error(text.clone().into());
+                    show(&ui, text)
+                }
             }
         }
     });

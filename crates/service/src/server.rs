@@ -193,6 +193,11 @@ async fn dispatch(supervisor: &Supervisor, request: Request) -> anyhow::Result<R
                 .await
                 .unwrap_or_default(),
             chosen: crate::netdns::chosen(supervisor.data_dir()),
+            upstream: tokio::task::spawn_blocking(crate::netdns::upstream)
+                .await
+                .ok()
+                .flatten(),
+            network: supervisor.network_label(),
         },
         Request::SetDns { provider } => {
             let data = supervisor.data_dir().clone();

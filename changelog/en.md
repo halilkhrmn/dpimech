@@ -3,6 +3,13 @@
 User-facing changes per version. The app shows the new entries once after an update ("What's new"),
 and the release page on GitHub uses the English text. Translations: tr.md, ru.md, fa.md, ar.md.
 
+## 0.4.7
+- DPIMech remembers which strategy works on each network (recognised by your router, nothing is sent anywhere) and switches to it when you come back. On a new network it checks the profiles' sites; if they do not open, it tests strategies by itself and uses the best one (ByeDPI, SpoofDPI, tpws).
+- When the background service is not running, the window says so with a "Start the service" button, and profiles, engines and the Strategy Lab wait until it runs again.
+- Settings → Network also names the DNS service your router forwards to (for example Cloudflare set in the router).
+- Starting a profile from a shortcut shows a plain "Starting …" notification without a progress bar; only a failure adds another one.
+- DPIMech also warns about software that can get in the way of bypassing (AdGuard, Killer and SmartByte network services, ZoneAlarm, VPN clients, Cloudflare WARP).
+
 ## 0.4.6
 - Without internet the engine is no longer restarted again and again. DPIMech waits, says to check your network (on the card and in one notification) and carries on by itself once the connection is back.
 - The tray icon blinks amber while a profile is connecting or a test is running.
