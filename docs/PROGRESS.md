@@ -147,6 +147,13 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
   shortcut no longer exists." without a bar.
 - Not verified: the Windows toast (layout of the progress element, updating by tag), macOS.
 
+### 2026-11-25 (59) — 0.4.8: VPN warning only while connected
+- Why: owner's report: "Also running: Cloudflare WARP" while WARP was installed but not connected.
+- Done: `foreign.rs` drops VPN clients unless the route to the internet uses a virtual interface (DECISIONS #60).
+- Verified: fmt, clippy (Linux, Windows and macOS targets), tests (route parsing, every VPN has a process entry);
+  Linux dev service with a stand-in `warp-svc` process and no VPN route: not reported.
+- Not verified: Windows with WARP connected / disconnected.
+
 ### 2026-11-25 (58) — 0.4.7: network memory, service start button, upstream DNS, interfering software
 - Why: owner's feedback on 0.4.6 (shortcut notification stuck at 80 %; router DNS hides the Cloudflare set in the
   router; service-down window looks broken) and steps 4–5 of the plan.
