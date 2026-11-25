@@ -152,6 +152,7 @@ Phases are defined in [PLAN.md](PLAN.md). Tick items as they land; add a dated l
 - Done: `foreign.rs` drops VPN clients unless the route to the internet uses a virtual interface (DECISIONS #60).
 - Verified: fmt, clippy (Linux, Windows and macOS targets), tests (route parsing, every VPN has a process entry);
   Linux dev service with a stand-in `warp-svc` process and no VPN route: not reported.
+- Also: the "also running" log line comes from `service`, not the profile (owner: "looks like Discord found WARP").
 - Not verified: Windows with WARP connected / disconnected.
 
 ### 2026-11-25 (58) — 0.4.7: network memory, service start button, upstream DNS, interfering software

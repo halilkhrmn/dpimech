@@ -5,6 +5,7 @@ and the release page on GitHub uses the English text. Translations: tr.md, ru.md
 
 ## 0.4.8
 - VPN clients (Cloudflare WARP, WireGuard, OpenVPN, …) are named only while they are connected; their background service alone no longer causes a warning.
+- The "also running" log line is written by the service instead of under the profile's name, so it no longer looks as if the profile's app found the other tool.
 
 ## 0.4.7
 - DPIMech remembers which strategy works on each network (recognised by your router, nothing is sent anywhere) and switches to it when you come back. On a new network it checks the profiles' sites; if they do not open, it tests strategies by itself and uses the best one (ByeDPI, SpoofDPI, tpws).
