@@ -499,6 +499,10 @@ fn set_connected(ui: &Weak<AppWindow>, connected: bool, info: String) {
     let _ = ui.upgrade_in_event_loop(move |ui| {
         ui.set_service_connected(connected);
         ui.set_service_info(info.into());
+        if connected {
+            ui.set_service_starting(false);
+            ui.set_service_error(SharedString::new());
+        }
         if !connected {
             crate::apply_profiles(&ui, Vec::new());
             apply_packages(&ui, &[]);
@@ -553,7 +557,8 @@ async fn refresh_dns(ui: &Weak<AppWindow>, client: &Client) {
         Ok(Reply::DnsInUse {
             connections,
             chosen,
-        }) => (convert::dns_text(&connections), chosen),
+            upstream,
+        }) => (convert::dns_text(&connections, upstream.as_deref()), chosen),
         _ => (String::new(), None),
     };
     // 0 is "the network's own"; the services follow in catalog order.

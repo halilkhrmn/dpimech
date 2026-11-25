@@ -4,45 +4,61 @@ msgstr ""
 "Language: ru\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: ui/app.slint:232
+#: ui/app.slint:236
 msgid "Profiles"
 msgstr "Профили"
 
-#: ui/app.slint:237
+#: ui/app.slint:241
 msgid "Strategy Lab"
 msgstr "Лаборатория"
 
-#: ui/app.slint:242
+#: ui/app.slint:246
 msgid "Engines"
 msgstr "Движки"
 
-#: ui/app.slint:248
+#: ui/app.slint:252
 msgid "Logs"
 msgstr "Журнал"
 
-#: ui/app.slint:254
+#: ui/app.slint:258
 msgid "Settings"
 msgstr "Настройки"
 
-#: ui/app.slint:305
+#: ui/app.slint:309
 msgid "Another DPI tool is running: {}. Two tools on the same traffic break connections — close it, or turn DPIMech's profiles off."
 msgstr "Работает другой инструмент обхода DPI: {}. Два инструмента на одном трафике ломают соединения — закройте его или выключите профили DPIMech."
 
-#: ui/app.slint:313
+#: ui/app.slint:317
 msgid "Hide"
 msgstr "Скрыть"
 
-#: ui/app.slint:330
+#: ui/app.slint:334
 msgid "DPIMech {} is ready to install."
 msgstr "DPIMech {} готов к установке."
 
-#: ui/app.slint:334
+#: ui/app.slint:338
 msgid "Restart and update"
 msgstr "Перезапустить и обновить"
 
-#: ui/app.slint:346
+#: ui/app.slint:359
 msgid "Background service is not running. Engines can't be started until it is."
 msgstr "Фоновая служба не запущена. Пока она не работает, движки нельзя запустить."
+
+#: ui/app.slint:372
+msgid "Starting…"
+msgstr "Запуск…"
+
+#: ui/app.slint:372
+msgid "Start the service"
+msgstr "Запустить службу"
+
+#: ui/app.slint:396
+msgid "The background service is not running"
+msgstr "Фоновая служба не запущена"
+
+#: ui/app.slint:402
+msgid "Profiles, engines and the Strategy Lab work through it. Start it with the button above; Logs and Settings stay available."
+msgstr "Профили, движки и Лаборатория стратегий работают через неё. Запустите её кнопкой выше; Журнал и Настройки остаются доступными."
 
 #: ui/components.slint:132
 msgid "Edit"
@@ -824,11 +840,11 @@ msgstr "Загрузка DPIMech {}…"
 msgid "Saved the log to {}"
 msgstr "Журнал сохранён: {}"
 
-#: src/bridge.rs:507
+#: src/bridge.rs:511
 msgid "Looking up…"
 msgstr "Поиск…"
 
-#: src/bridge.rs:509
+#: src/bridge.rs:513
 msgid "This needs the background service."
 msgstr "Для этого нужна фоновая служба."
 
@@ -836,107 +852,107 @@ msgstr "Для этого нужна фоновая служба."
 msgid "DPIMech needs the libxkbcommon-x11 library to open its window. Install it with your package manager (Arch: sudo pacman -S libxkbcommon-x11) and start DPIMech again."
 msgstr "Чтобы открыть окно, DPIMech нужна библиотека libxkbcommon-x11. Установите её менеджером пакетов (Arch: sudo pacman -S libxkbcommon-x11) и запустите DPIMech снова."
 
-#: src/convert.rs:30
+#: src/convert.rs:32
 msgid "set by hand"
 msgstr "задано вручную"
 
-#: src/convert.rs:31
+#: src/convert.rs:33
 msgid "from your network"
 msgstr "от вашей сети"
 
-#: src/convert.rs:172
+#: src/convert.rs:55
+msgid "They pass the questions on to: {}"
+msgstr "Они передают запросы дальше: {}"
+
+#: src/convert.rs:188
 msgid "Give the profile a name."
 msgstr "Дайте профилю имя."
 
-#: src/convert.rs:177
+#: src/convert.rs:193
 msgid "Choose an engine."
 msgstr "Выберите движок."
 
-#: src/convert.rs:181
+#: src/convert.rs:197
 msgid "Choose a routing mode."
 msgstr "Выберите режим маршрутизации."
 
-#: src/convert.rs:185
+#: src/convert.rs:201
 msgid "Port must be between 1024 and 65535."
 msgstr "Порт должен быть от 1024 до 65535."
 
-#: src/convert.rs:192
+#: src/convert.rs:208
 msgid "Choose the app DPIMech should open."
 msgstr "Выберите приложение, которое откроет DPIMech."
 
-#: src/convert.rs:195
+#: src/convert.rs:211
 msgid "Choose the app from the list or with Browse…"
 msgstr "Выберите приложение из списка или через «Обзор…»"
 
-#: src/convert.rs:201
+#: src/convert.rs:217
 msgid "Add at least one application for per-app routing."
 msgstr "Добавьте хотя бы одно приложение для маршрутизации по приложениям."
 
-#: src/convert.rs:242
+#: src/convert.rs:258
 msgid "{} · port {}"
 msgstr "{} · порт {}"
 
-#: src/convert.rs:254
+#: src/convert.rs:270
 msgid "All matching traffic"
 msgstr "Весь подходящий трафик"
 
-#: src/convert.rs:255
+#: src/convert.rs:271
 msgid "{} site(s): {}"
 msgstr "Сайтов: {} — {}"
 
-#: src/convert.rs:268
+#: src/convert.rs:284
 msgid "Stopped"
 msgstr "Остановлен"
 
-#: src/convert.rs:269
-msgid "Starting…"
-msgstr "Запуск…"
-
-#: src/convert.rs:277
+#: src/convert.rs:293
 msgid "1 auto-restart"
 msgstr "1 автоперезапуск"
 
-#: src/convert.rs:278
+#: src/convert.rs:294
 msgid "{} auto-restarts"
 msgstr "автоперезапусков: {}"
 
-#: src/convert.rs:287
+#: src/convert.rs:303
 msgid "Sites not answering ({}/{})"
 msgstr "Сайты не отвечают ({}/{})"
 
-#: src/convert.rs:289
+#: src/convert.rs:305
 msgid "Slow: avg. {} ms (usually {} ms)"
 msgstr "Медленно: в среднем {} мс (обычно {} мс)"
 
-#: src/convert.rs:291
+#: src/convert.rs:307
 msgid "Only {}/{} sites answer"
 msgstr "Отвечают только {}/{} сайтов"
 
-#: src/convert.rs:298
+#: src/convert.rs:314
 msgid "Running · {}"
 msgstr "Работает · {}"
 
-#: src/convert.rs:299
+#: src/convert.rs:315
 msgid "avg. {} ms"
 msgstr "в среднем {} мс"
 
-#: src/convert.rs:407
+#: src/convert.rs:423
 msgid "just now"
 msgstr "только что"
 
-#: src/convert.rs:408
+#: src/convert.rs:424
 msgid "{} min"
 msgstr "{} мин"
 
-#: src/convert.rs:409
+#: src/convert.rs:425
 msgid "{} h {} min"
 msgstr "{} ч {} мин"
 
-#: src/convert.rs:421
+#: src/convert.rs:437
 msgid "Last check: {}/{} sites answered"
 msgstr "Последняя проверка: ответили {}/{} сайтов"
 
-#: src/convert.rs:427
+#: src/convert.rs:443
 msgid "(usually {} ms)"
 msgstr "(обычно {} мс)"
 
@@ -1044,39 +1060,27 @@ msgstr "Готово — ни одна не открыла все сайты в 
 msgid "No bypass"
 msgstr "Без обхода"
 
-#: src/launcher.rs:81
-msgid "Opening {}…"
-msgstr "Открываем {}…"
-
-#: src/launcher.rs:87
+#: src/launcher.rs:60
 msgid "Could not open {}: {}"
 msgstr "Не удалось открыть {}: {}"
 
-#: src/launcher.rs:91
-msgid "{} is on"
-msgstr "{} включён"
-
-#: src/launcher.rs:94
+#: src/launcher.rs:63
 msgid "Could not start"
 msgstr "Не удалось запустить"
 
-#: src/launcher.rs:128
+#: src/launcher.rs:96
 msgid "The DPIMech service is not running. Open DPIMech to set it up."
 msgstr "Служба DPIMech не запущена. Откройте DPIMech, чтобы настроить её."
 
-#: src/launcher.rs:134
+#: src/launcher.rs:102
 msgid "The profile of this shortcut no longer exists."
 msgstr "Профиль этого ярлыка больше не существует."
 
-#: src/launcher.rs:142
-msgid "Turning the profile on…"
-msgstr "Включаем профиль…"
-
-#: src/launcher.rs:158
+#: src/launcher.rs:125
 msgid "The profile stopped right after starting. The Logs page in DPIMech shows why."
 msgstr "Профиль остановился сразу после запуска. Причину покажет страница «Журнал» в DPIMech."
 
-#: src/launcher.rs:163
+#: src/launcher.rs:130
 msgid "The profile is taking too long to start. The Logs page in DPIMech shows why."
 msgstr "Профиль запускается слишком долго. Причину покажет страница «Журнал» в DPIMech."
 
@@ -1084,31 +1088,31 @@ msgstr "Профиль запускается слишком долго. При�
 msgid "Your network's own (no change)"
 msgstr "DNS вашей сети (без изменений)"
 
-#: src/main.rs:152
+#: src/main.rs:155
 msgid "The background service is not running."
 msgstr "Фоновая служба не запущена."
 
-#: src/main.rs:464
+#: src/main.rs:467
 msgid "Folder for DPIMech log files"
 msgstr "Папка для файлов журнала DPIMech"
 
-#: src/main.rs:662
+#: src/main.rs:666
 msgid "The service is installed. Connecting…"
 msgstr "Служба установлена. Подключение…"
 
-#: src/main.rs:663
+#: src/main.rs:667
 msgid "Installing the service failed: {}"
 msgstr "Не удалось установить службу: {}"
 
-#: src/main.rs:671
+#: src/main.rs:681
 msgid "Installing… confirm the prompt. DPIMech connects by itself when the service is ready."
 msgstr "Установка… подтвердите запрос. DPIMech подключится сам, когда служба будет готова."
 
-#: src/main.rs:672
+#: src/main.rs:683
 msgid "Could not start the installer: {}"
 msgstr "Не удалось запустить установку: {}"
 
-#: src/main.rs:743
+#: src/main.rs:758
 msgid "Downloading online lists…"
 msgstr "Загрузка онлайн-списков…"
 
@@ -1179,6 +1183,10 @@ msgstr "DPIMech {} готов"
 #: src/notify.rs:227
 msgid "Restart DPIMech to update: use the button at the top of the window."
 msgstr "Перезапустите DPIMech, чтобы обновить: кнопка вверху окна."
+
+#: src/notify.rs:296
+msgid "Starting {}"
+msgstr "Запуск {}"
 
 #: src/picker.rs:101
 msgid "Choose an application"

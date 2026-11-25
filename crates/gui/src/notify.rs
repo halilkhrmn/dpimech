@@ -278,134 +278,65 @@ fn show(title: &str, body: &str) {
     }
 }
 
-/// One system notification that follows a task (a profile shortcut starting its profile): shown
-/// once, then updated in place, so the user sees a single native notification instead of a
-/// window of our own. `title` (the profile) stays; `heading` and `status` change with the task.
+/// The notifications of a profile shortcut: one when it starts, one more only if it fails.
+/// No progress bar: a start takes a second or two, and a bar that stopped short (it was not
+/// always updated to the end) looked like something hung.
 pub struct TaskNote {
-    title: String,
     #[cfg_attr(target_os = "macos", allow(dead_code))] // osascript cannot show our icon
     icon: Option<std::path::PathBuf>,
-    shown: bool,
-    /// Linux: the notification's id, to replace it (`notify-send -r`). `None` when this
-    /// notify-send cannot replace (older libnotify): then only the result is shown.
-    #[cfg(all(unix, not(target_os = "macos")))]
-    id: Option<String>,
 }
 
 impl TaskNote {
-    pub fn new(title: &str, icon: Option<std::path::PathBuf>) -> TaskNote {
-        TaskNote {
-            title: title.to_owned(),
-            icon,
-            shown: false,
-            #[cfg(all(unix, not(target_os = "macos")))]
-            id: None,
-        }
+    pub fn new(icon: Option<std::path::PathBuf>) -> TaskNote {
+        TaskNote { icon }
     }
 
-    /// Shows or updates the notification; `value` is the progress between 0 and 1.
-    pub fn update(&mut self, heading: &str, status: &str, value: f32) {
-        self.post(heading, status, value, false);
+    /// "Starting Discord".
+    pub fn started(&self, name: &str) {
+        self.post(&trf!("Starting {}", name), "");
     }
 
-    /// The task ended. Returns false when no notification could be shown at all, so the caller
-    /// can fall back to a dialog for an error.
-    pub fn finish(&mut self, heading: &str, status: &str, failed: bool) -> bool {
-        // A failed task gets no bar: an empty one would look like it is still going.
-        let value = if failed { -1.0 } else { 1.0 };
-        self.post(heading, status, value, true)
+    /// The start failed. Returns false when no notification could be shown, so the caller can
+    /// fall back to a dialog.
+    pub fn failed(&self, title: &str, message: &str) -> bool {
+        self.post(title, message)
     }
 
     #[cfg(windows)]
-    fn post(&mut self, heading: &str, status: &str, value: f32, _last: bool) -> bool {
-        use tauri_winrt_notification::{IconCrop, Progress, Toast};
-        let progress = Progress {
-            tag: "launch".into(),
-            title: heading.into(),
-            status: status.into(),
-            value: value.max(0.0),
-            value_string: String::new(),
-        };
-        if self.shown {
-            return Toast::new(APP_ID).set_progress(&progress).is_ok();
+    fn post(&self, title: &str, body: &str) -> bool {
+        use tauri_winrt_notification::{IconCrop, Toast};
+        let mut toast = Toast::new(APP_ID).title(title).sound(None);
+        if !body.is_empty() {
+            toast = toast.text1(body);
         }
-        let mut toast = Toast::new(APP_ID)
-            .title(&self.title)
-            .sound(None)
-            .progress(&progress);
         if let Some(icon) = &self.icon {
             toast = toast.icon(icon, IconCrop::Square, "");
         }
-        self.shown = toast.show().is_ok();
-        self.shown
+        toast.show().is_ok()
     }
 
     #[cfg(all(unix, not(target_os = "macos")))]
-    fn post(&mut self, heading: &str, status: &str, value: f32, last: bool) -> bool {
-        // Without replacing, every step would pile up as its own notification: show the result only.
-        if self.shown && self.id.is_none() && !last {
-            return true;
-        }
-        let mut cmd = std::process::Command::new("notify-send");
-        cmd.args(["--app-name=DPIMech", "--print-id"]);
-        cmd.arg(format!(
-            "--icon={}",
-            self.icon
-                .as_ref()
-                .map_or("dpimech".into(), |p| p.display().to_string())
-        ));
-        if value >= 0.0 {
-            cmd.arg(format!(
-                "--hint=int:value:{}",
-                (value * 100.0).round() as i32
-            ));
-        }
-        if let Some(id) = &self.id {
-            cmd.arg(format!("--replace-id={id}"));
-        }
-        let body = if status.is_empty() {
-            heading.to_owned()
-        } else {
-            format!("{heading}\n{status}")
-        };
-        cmd.args(["--", &self.title, &body]);
-        let Ok(out) = cmd.stdin(std::process::Stdio::null()).output() else {
-            return false;
-        };
-        if !out.status.success() {
-            // An older notify-send without --print-id / --replace-id: plain notification.
-            let shown = std::process::Command::new("notify-send")
-                .args([
-                    "--app-name=DPIMech",
-                    "--icon=dpimech",
-                    "--",
-                    &self.title,
-                    &body,
-                ])
-                .status()
-                .is_ok_and(|s| s.success());
-            self.shown |= shown;
-            return shown;
-        }
-        let id = String::from_utf8_lossy(&out.stdout).trim().to_owned();
-        self.id = (!id.is_empty() && id.bytes().all(|b| b.is_ascii_digit())).then_some(id);
-        self.shown = true;
-        true
+    fn post(&self, title: &str, body: &str) -> bool {
+        let icon = self
+            .icon
+            .as_ref()
+            .map_or("dpimech".into(), |p| p.display().to_string());
+        std::process::Command::new("notify-send")
+            .args([
+                "--app-name=DPIMech",
+                &format!("--icon={icon}"),
+                "--",
+                title,
+                body,
+            ])
+            .stdin(std::process::Stdio::null())
+            .status()
+            .is_ok_and(|s| s.success())
     }
 
-    /// Notification Center cannot update a notification: the first step and the result only.
     #[cfg(target_os = "macos")]
-    fn post(&mut self, heading: &str, status: &str, _value: f32, last: bool) -> bool {
-        if self.shown && !last {
-            return true;
-        }
-        self.shown = true;
-        let body = if status.is_empty() {
-            heading.to_owned()
-        } else {
-            format!("{heading} — {status}")
-        };
-        show(&self.title, &body);
+    fn post(&self, title: &str, body: &str) -> bool {
+        show(title, body);
         true
     }
 }

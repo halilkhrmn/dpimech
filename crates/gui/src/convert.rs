@@ -13,8 +13,10 @@ use slint::Image;
 use crate::{AppItem, LogItem, PackageItem, ProfileDraft, ProfileItem};
 
 /// One line per connection: "Wi-Fi: 192.168.1.1 (router) — from your network".
-pub fn dns_text(connections: &[dpimech_core::model::DnsInUse]) -> String {
-    connections
+/// With `upstream` (what the servers forward to) as a last line when it adds something: the
+/// computer asks the router, the router asks, e.g., Cloudflare.
+pub fn dns_text(connections: &[dpimech_core::model::DnsInUse], upstream: Option<&str>) -> String {
+    let mut lines: Vec<String> = connections
         .iter()
         .map(|c| {
             let servers = c
@@ -37,8 +39,22 @@ pub fn dns_text(connections: &[dpimech_core::model::DnsInUse]) -> String {
                 format!("{}: {servers}{source}", c.connection)
             }
         })
-        .collect::<Vec<_>>()
-        .join("\n")
+        .collect();
+    let only_local = connections.iter().flat_map(|c| &c.servers).all(|s| {
+        matches!(
+            dpimech_core::catalog::dns_label(s),
+            Some("router" | "this computer")
+        )
+    });
+    if let Some(address) = upstream
+        && !connections.is_empty()
+        && only_local
+    {
+        let who = dpimech_core::catalog::dns_operator(address)
+            .map_or_else(|| address.to_owned(), |name| format!("{name} ({address})"));
+        lines.push(trf!("They pass the questions on to: {}", who));
+    }
+    lines.join("\n")
 }
 
 pub fn modes_for(engines: &[EngineKind], engine_index: i32) -> Vec<RoutingMode> {
@@ -509,4 +525,37 @@ pub fn pack_rows(place: Chips, selected: &[String]) -> slint::ModelRc<crate::Pac
             })
             .collect::<Vec<_>>(),
     ))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::dns_text;
+    use dpimech_core::model::DnsInUse;
+
+    fn ethernet(servers: &[&str]) -> Vec<DnsInUse> {
+        vec![DnsInUse {
+            connection: "Ethernet".into(),
+            servers: servers.iter().map(|s| (*s).to_owned()).collect(),
+            manual: Some(false),
+        }]
+    }
+
+    #[test]
+    fn router_dns_names_what_it_forwards_to() {
+        let text = dns_text(&ethernet(&["192.168.1.1", "fe80::1"]), Some("162.158.88.7"));
+        let lines: Vec<&str> = text.lines().collect();
+        assert_eq!(lines.len(), 2, "{text}");
+        assert!(lines[0].starts_with("Ethernet: 192.168.1.1 (router), fe80::1 (router)"));
+        assert!(lines[1].ends_with("Cloudflare (162.158.88.7)"), "{text}");
+    }
+
+    #[test]
+    fn public_dns_needs_no_upstream_line() {
+        // The servers are already named; what Google forwards to says nothing more.
+        let text = dns_text(&ethernet(&["8.8.8.8"]), Some("172.253.221.17"));
+        assert_eq!(text.lines().count(), 1, "{text}");
+        // Unknown answer: just the address.
+        let text = dns_text(&ethernet(&["192.168.1.1"]), Some("195.175.39.39"));
+        assert!(text.ends_with("195.175.39.39"), "{text}");
+    }
 }

@@ -148,6 +148,9 @@ pub enum Reply {
         /// The public DNS service DPIMech set, if any.
         #[serde(default)]
         chosen: Option<String>,
+        /// The address the servers in use ask others from (`netdns::upstream`).
+        #[serde(default)]
+        upstream: Option<String>,
     },
     DefenderStatus {
         excluded: bool,

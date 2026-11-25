@@ -141,6 +141,10 @@ export component AppWindow inherits Window {
     callback wizard-set-where(int);
     callback wizard-detect-isp;
     callback install-service;
+    /// "Start the service" was pressed and the elevated start is under way.
+    in-out property <bool> service-starting;
+    /// Why starting the service failed; cleared on the next try or once it is connected.
+    in-out property <string> service-error;
     callback wizard-next;
     callback wizard-back;
     callback wizard-retry;
@@ -336,20 +340,75 @@ export component AppWindow inherits Window {
             }
 
             if !service-connected: Rectangle {
-                height: 40px;
+                vertical-stretch: 0;
                 background: Theme.starting.transparentize(0.8);
                 HorizontalLayout {
                     padding-left: 24px;
+                    padding-right: 16px;
+                    padding-top: 8px;
+                    padding-bottom: 8px;
                     spacing: 10px;
-                    Glyph { source: Icons.warning; color: Theme.starting; }
-                    Text {
-                        text: @tr("Background service is not running. Engines can't be started until it is.");
-                        vertical-alignment: center;
+                    VerticalLayout {
+                        alignment: center;
+                        Glyph { source: Icons.warning; color: Theme.starting; }
+                    }
+                    VerticalLayout {
+                        alignment: center;
+                        horizontal-stretch: 1;
+                        spacing: 2px;
+                        Text {
+                            text: @tr("Background service is not running. Engines can't be started until it is.");
+                            wrap: word-wrap;
+                        }
+                        if service-error != "": Text {
+                            text: service-error;
+                            color: Theme.error;
+                            font-size: 12px;
+                            wrap: word-wrap;
+                        }
+                    }
+                    VerticalLayout {
+                        alignment: center;
+                        Button {
+                            text: service-starting ? @tr("Starting…") : @tr("Start the service");
+                            primary: true;
+                            enabled: !service-starting;
+                            clicked => {
+                                root.service-starting = true;
+                                root.service-error = "";
+                                root.install-service();
+                            }
+                        }
                     }
                 }
             }
 
-            if page == Page.dashboard: DashboardPage {
+            // Profiles, engines and the Lab only work through the service; Logs and Settings stay
+            // open to find out why it stopped.
+            if !service-connected && (page == Page.dashboard || page == Page.editor || page == Page.lab || page == Page.engines): VerticalLayout {
+                vertical-stretch: 1;
+                alignment: center;
+                spacing: 12px;
+                padding: 32px;
+                HorizontalLayout {
+                    alignment: center;
+                    Glyph { source: Icons.warning; color: Theme.starting; size: 40px; }
+                }
+                Text {
+                    text: @tr("The background service is not running");
+                    font-size: 20px;
+                    font-weight: 700;
+                    horizontal-alignment: center;
+                }
+                Text {
+                    text: @tr("Profiles, engines and the Strategy Lab work through it. Start it with the button above; Logs and Settings stay available.");
+                    color: Theme.muted;
+                    horizontal-alignment: center;
+                    wrap: word-wrap;
+                }
+            }
+
+            if service-connected && page == Page.dashboard: DashboardPage {
                 profiles: profiles;
                 easy-mode: easy-mode;
                 new-profile => { root.new-profile(); }
@@ -359,7 +418,7 @@ export component AppWindow inherits Window {
                 check-profile(id) => { root.check-profile(id); }
                 shortcut-profile(id) => { root.open-shortcut(id); }
             }
-            if page == Page.editor: ProfileEditorPage {
+            if service-connected && page == Page.editor: ProfileEditorPage {
                 draft <=> root.draft;
                 engine-names: engine-names;
                 routing-names: routing-names;
@@ -382,7 +441,7 @@ export component AppWindow inherits Window {
                 delete(id) => { root.delete-profile(id); }
                 shortcut(id) => { root.open-shortcut(id); }
             }
-            if page == Page.lab: LabPage {
+            if service-connected && page == Page.lab: LabPage {
                 engines: lab-engines;
                 engine-index <=> root.lab-engine-index;
                 packs: lab-packs;
@@ -405,7 +464,7 @@ export component AppWindow inherits Window {
                 cancel => { root.lab-cancel(); }
                 use-result(i) => { root.lab-use(i); }
             }
-            if page == Page.engines: EnginesPage {
+            if service-connected && page == Page.engines: EnginesPage {
                 packages: packages;
                 checking: checking-updates;
                 check-updates => { root.check-updates(); }

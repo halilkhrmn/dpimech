@@ -20,6 +20,31 @@ pub fn in_use() -> Vec<DnsInUse> {
     platform::in_use()
 }
 
+/// The address the DNS servers in use talk to other servers from: when the computer asks its
+/// router, this shows what the router forwards to (e.g. Cloudflare set in the router). Akamai's
+/// `whoami.akamai.net` answers with the address of whoever asked it. Asked at most every 5
+/// minutes; `None` when it does not answer (offline, or a resolver that hides it).
+pub fn upstream() -> Option<String> {
+    use std::net::ToSocketAddrs;
+    use std::sync::Mutex;
+    use std::time::{Duration, Instant};
+    static LAST: Mutex<Option<(Instant, Option<String>)>> = Mutex::new(None);
+    const EVERY: Duration = Duration::from_secs(5 * 60);
+    let mut last = LAST.lock().unwrap();
+    if let Some((at, answer)) = last.as_ref()
+        && at.elapsed() < EVERY
+    {
+        return answer.clone();
+    }
+    let answer = ("whoami.akamai.net", 0)
+        .to_socket_addrs()
+        .ok()
+        .and_then(|mut addrs| addrs.find(|a| a.is_ipv4()))
+        .map(|a| a.ip().to_string());
+    *last = Some((Instant::now(), answer.clone()));
+    answer
+}
+
 /// What DPIMech changed: the chosen service and, per connection, what to put back.
 #[derive(Debug, Default, Serialize, Deserialize)]
 struct State {
